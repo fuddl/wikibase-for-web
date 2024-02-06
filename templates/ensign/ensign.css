@@ -1,0 +1,70 @@
+.ensign {
+  margin-bottom: 2em;
+}
+
+.ensign__title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Linux Libertine, Georgia, Times, pIqaD, FairfaxHaxHD, serif;
+  font-size: 1.7em;
+  font-weight: 400;
+  line-height: 1.3;
+  display: inline;
+}
+
+.ensign__title small {
+  font-size: .725em;
+}
+
+.ensign__description {
+  margin-top: 0;
+}
+
+.ensign__description--provisional {
+  opacity: .75;
+}
+
+.ensign__id {
+  color: #72777d;
+  user-select: all;
+  font-family: Linux Libertine, Georgia, Times, serif;
+  font-size: 16px;
+}
+
+.ensign__id__link {
+  color: inherit;
+  cursor: inherit;
+}
+
+.ensign__id__link:hover {
+  text-decoration: none;
+}
+
+.ensign__id:before {
+  content: "(";
+}
+
+.ensign__id:after {
+  content: ")";
+}
+
+.ensign__description-form {
+  justify-content: stretch;
+  display: flex;
+}
+
+.ensign__opener {
+  opacity: 0;
+}
+
+.ensign__opener:after {
+  content: " ❐ ";
+}
+
+:hover > .ensign__opener {
+  opacity: 1;
+}
+
+.ensign__opener:hover {
+  text-decoration: none;
+}

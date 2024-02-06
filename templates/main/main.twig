@@ -1,0 +1,11 @@
+<main>
+	{% if labels and descriptions %}
+		{% include 'ensign' with { 
+			labels: labels,
+			descriptions: descriptions,
+		} %}
+	{% endif %}
+	{% for claim in claims %}
+		{% include 'remark' with claim %}
+	{% endfor %}
+</main>

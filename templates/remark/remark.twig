@@ -1,0 +1,18 @@
+<dl class="remark remark--inline" id="{{ verb }}">
+    <dt class="remark__verb">
+        {% include 'thing' with { id: verb } %}
+    </dt>
+    {% for object in objects %}
+        <dd id="{{ object.id }}" class="remark__object">
+            {% if object.mainsnak.snaktype == 'value' %}
+                {% if object.mainsnak.datatype == 'external-id' %}
+                    <code>{{ object.mainsnak.datavalue.value }}</code>
+                {% elseif object.mainsnak.datatype == 'wikibase-item' %}
+                    {% include 'thing' with object.mainsnak.datavalue.value %}
+                {% endif %}
+            {% else %}
+                {{ object.mainsnak.snaktype == 'novalue' ? '–' : '?' }}
+            {% endif %}
+        </dd>
+    {% endfor %}
+</dl>

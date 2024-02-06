@@ -1,0 +1,46 @@
+{
+  "manifest_version": 2,
+  "name": "Wikidata",
+  "version": "0.5",
+  "description": "Display information from wikidata.",
+  "icons": {
+    "48": "icons/wd.svg",
+    "96": "icons/wd.svg",
+    "128": "icons/wd.svg"
+  },
+  "browser_action": {
+    "default_icon": "icons/inactive-32.png",
+    "default_title": "Wikidata"
+  },
+  "sidebar_action": {
+    "default_icon": "icons/wd.svg",
+    "default_title": "Wikidata",
+    "default_panel": "sidebar/index.html",
+    "open_at_install": true
+  },
+  "permissions": [
+    "storage",
+    "webNavigation",
+    "<all_urls>",
+    "search",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "background": {
+    "page": "background/index.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{8b348118-df28-4d6b-aa90-4e90049c7f19}",
+      "strict_min_version": "89.0"
+    }
+  },
+  "commands": {
+    "toggle-sidebar": {
+      "suggested_key": {
+        "default": "Alt+3"
+      },
+      "description": "Show/hide sidebar"
+    }
+  }
+}

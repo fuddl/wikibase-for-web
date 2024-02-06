@@ -1,0 +1,56 @@
+.remark {
+  background: var(--paper);
+  border: 1px solid var(--contour);
+  padding: 7px 10px;
+  line-height: 24px;
+}
+
+.remark + .remark {
+  border-top: none;
+  margin-top: -1em;
+}
+
+@media (min-width: 300px) {
+  .remark--inline {
+    grid-template-columns: 1fr 2fr auto;
+    display: grid;
+  }
+}
+
+.remark__verb {
+  min-width: 0;
+  top: var(--top-offset, 7px);
+  grid-area: span 2 / 1;
+  font-weight: 700;
+  transition: top .25s;
+  position: sticky;
+}
+
+@media (max-width: 299px) {
+  .remark__verb {
+    margin: 0 0 .75em;
+  }
+}
+
+.remark__object {
+  min-width: 0;
+  grid-column: 2;
+  margin-bottom: .5em;
+  padding: 0;
+}
+
+.remark__check {
+  grid-column: 3;
+  margin: auto;
+  padding: 0;
+}
+
+.remark--block > .remark__object {
+  margin: 0;
+}
+
+@media (max-width: 299px) {
+  .remark__object {
+    margin: 0;
+  }
+}
