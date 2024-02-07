@@ -1,10 +1,10 @@
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 import { isInViewport } from '../../modules/isInViewport.mjs'
 
-export default async (element, api) => {
+export default async (element, manager) => {
 	isInViewport(element, () => {
 		(async () => {
-			const entity = await api.get(`wikidata:${element.dataset.id}`, ['labels', 'descriptions'])
+			const entity = await manager.fetchEntity(element.dataset.id, ['labels', 'descriptions'])
 			const label = getByUserLanguage(entity.labels)
 			element.innerText = label?.value ?? element.dataset.id
 			if (label?.language) {
@@ -15,7 +15,7 @@ export default async (element, api) => {
 	}, '500px')
 	isInViewport(element, () => {
 		const link = document.createElement('link')
-		link.href = api.getLink(element.dataset.id)
+		link.href = manager.getEntityLink(element.dataset.id)
 		link.rel = 'preload'
 		link.as = 'fetch'
 		document.head.appendChild(link)

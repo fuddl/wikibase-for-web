@@ -1,10 +1,15 @@
 export const wikidata = {
 	id: 'wikidata',
-	regex: /^https:\/\/[\w]+.wikidata.org\/w(?:iki\/|\/index\.php\?title=)(?:Special:WhatLinksHere\/|Talk:)?(?:\w+:)?([QMPL]\d+)/,
-	applies: function (location) {
-		return location.match(this.regex) !== null
+	getRegex: function (url) {
+		const baseUrl = url.replace(/[.*+?^${}/()|[\]\\]/g, "\\$&")
+		const pathPrefix = 'w(?:iki\\/|\\/index\\.php\\?title=)'
+		const namespaces = '(?:Special:WhatLinksHere\\/|Talk:|Item:|Lexeme:|Property:)?'
+		return new RegExp(`^${baseUrl}\\/${pathPrefix}${namespaces}([QMPL]\\d+)`)
 	},
-	resolve: function (location) {
-		return location.match(this.regex)[1]
+	applies: function (location, context) {
+		return location.match(this.getRegex(context.instance)) !== null
+	},
+	resolve: function (location, context) {
+		return `${context.id}:${location.match(this.getRegex(context.instance))[1]}`
 	}
 }

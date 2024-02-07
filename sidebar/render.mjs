@@ -16,7 +16,7 @@ const requreStylesheet = (path) => {
 	}
 }
 
-async function render(api) {
+async function render(manager) {
 
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 
@@ -35,12 +35,13 @@ async function render(api) {
 		})
 	})
 
-	const applyPostprocess = async (dom, api) => {
+	const applyPostprocess = async (dom, manager) => {
 		await Promise.all(templates.map(async (template) => {
 			if (template.postprocess) {
 				dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
+					const instanceName = element.closest('[data-instance]').dataset.instance
 					if (!element?.postprocessed) {
-						await template.postprocess(element, api)
+						await template.postprocess(element, manager.getInstance(instanceName))
 						element.postprocessed = true
 					}
 				})
@@ -53,13 +54,13 @@ async function render(api) {
 		return console.debug(args)
 	});
 
-	const render = await document.entities.map(async (entity) => {
+	const render = await manager.entities.map(async (entity) => {
 		if (entity.active) {
 			const mainTemplate = Twig.twig({
 				data: templates.find((t) => t.id == 'main').template,
 			});
 			requreStylesheet(browser.runtime.getURL('/templates/main/main.css'))
-			return mainTemplate.render(entity.data)
+			return mainTemplate.render({...entity.data, ...manager.extractIdComponents(entity.id)})
 		} else {
 			return ''
 		}
@@ -68,7 +69,7 @@ async function render(api) {
 	const dd = new DiffDOM()
 	const diff = dd.diff(document.body, `<body>${rendered.join('')}</body>`)
 	dd.apply(document.body, diff)
-	applyPostprocess(document.body, api)
+	applyPostprocess(document.body, manager)
 }
 
 export { render }

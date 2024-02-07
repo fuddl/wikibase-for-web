@@ -1,4 +1,6 @@
 import { wikidata } from './wikidata.mjs';
+import wikibases from '../wikibases.mjs'
+
 const resolvers = {
 	list: [
 		wikidata,
@@ -6,14 +8,16 @@ const resolvers = {
 }
 
 resolvers.resolve = function (url) {
-	let result = ''
-	this.list.forEach((resolver) => {
-		if (resolver.applies(url)) {
-			const entity = resolver.resolve(url)
-			result = `wikidata:${entity}`
-		}
+	let results = []
+	Object.keys(wikibases).forEach((name) => {
+		this.list.forEach((resolver) => {
+			const context = { ...wikibases[name], id: name }
+			if (resolver.applies(url, context)) {
+				results.push(resolver.resolve(url, context))
+			}
+		})
 	})
-	return result
+	return results
 }
 
 export { resolvers }

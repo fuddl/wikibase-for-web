@@ -14,26 +14,41 @@ function getCurrentTab() {
     });
 }
 
-async function resolveAndUpdateSidebar(url) {
-	const result = await resolvers.resolve(url)
-	if (result) {
-		try {
-			await browser.runtime.sendMessage(
-				browser.runtime.id,
-				{
-					type: 'display_entity',
-					id: result,
-				},
-			)
-		} catch (error) {
-			console.error(error);
-		}
+async function updateSidebar(id) {
+	try {
+		await browser.runtime.sendMessage(
+			browser.runtime.id,
+			{
+				type: 'display_entity',
+				id: id,
+			},
+		)
+	} catch (error) {
+		console.error(error);
 	}
 }
 
-browser.webNavigation.onCommitted.addListener(function(details) {
-	resolveAndUpdateSidebar(details.url)
+async function resolveAndUpdateSidebar(url) {
+	const results = await resolvers.resolve(url)
+	if (results) {
+		await updateSidebar(results[0])
+		return results[0]
+	}
+}
+
+const tabs = {}
+
+browser.webNavigation.onCommitted.addListener(async function(details) {
+	const entities = await resolveAndUpdateSidebar(details.url)
+	tabs[details.tabId] = entities
 })
+
+browser.tabs.onActivated.addListener(function(activeInfo) {
+	console.debug(tabs?.[activeInfo.tabId])
+	if (tabs?.[activeInfo.tabId]) {
+		updateSidebar(tabs[activeInfo.tabId])
+	}
+}) 
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === "request_entity") {
