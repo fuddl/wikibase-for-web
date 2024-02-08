@@ -28,8 +28,12 @@ async function updateSidebar(id) {
 	}
 }
 
+async function resolveUrl(url) {
+	return await resolvers.resolve(url)
+}
+
 async function resolveAndUpdateSidebar(url) {
-	const results = await resolvers.resolve(url)
+	const results = await resolveUrl(url)
 	if (results) {
 		await updateSidebar(results[0])
 		return results[0]
@@ -39,12 +43,17 @@ async function resolveAndUpdateSidebar(url) {
 const tabs = {}
 
 browser.webNavigation.onCommitted.addListener(async function(details) {
-	const entities = await resolveAndUpdateSidebar(details.url)
-	tabs[details.tabId] = entities
+	const currentTab = await getCurrentTab()
+	if (details.tabId === currentTab.id) {
+		const entities = await resolveAndUpdateSidebar(details.url)
+		tabs[details.tabId] = entities
+	} else {
+		const results = await resolveUrl(details.url)
+		tabs[details.tabId] = results[0]
+	}
 })
 
 browser.tabs.onActivated.addListener(function(activeInfo) {
-	console.debug(tabs?.[activeInfo.tabId])
 	if (tabs?.[activeInfo.tabId]) {
 		updateSidebar(tabs[activeInfo.tabId])
 	}
@@ -53,7 +62,8 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === "request_entity") {
 		const currentTab = await getCurrentTab()
-		resolveAndUpdateSidebar(currentTab.url)
+		const entities = await resolveAndUpdateSidebar(currentTab.url)
+		tabs[currentTab.id] = entities
 		return Promise.resolve("done")
 	}
 	return false;

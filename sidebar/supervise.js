@@ -6,14 +6,13 @@ const manager = new WikiBaseEntityManager()
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "display_entity") {
 		try {
-
-		manager.addEntity(message.id)
+			manager.addEntity(message.id)
 		} catch (e) {
 			console.error(e)
 		}
 
 		(async () => {
-			manager.activate(message.id)
+			await manager.activate(message.id)
 			render(manager)
 		})()
 		return Promise.resolve('done')

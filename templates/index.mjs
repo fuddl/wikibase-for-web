@@ -2,12 +2,12 @@ async function loadTemplate(name) {
 	return await fetch(browser.runtime.getURL(`templates/${name}/${name}.twig`)).then(res => res.text())
 }
 async function loadPreprocess(name) {
-	const dynamicModile = await import(browser.runtime.getURL(`templates/${name}/${name}.preprocess.mjs`))
-	return dynamicModile.default
+	const dynamicModule = await import(browser.runtime.getURL(`templates/${name}/${name}.preprocess.mjs`))
+	return dynamicModule.default
 }
 async function loadPostprocess(name) {
-	const dynamicModile = await import(browser.runtime.getURL(`templates/${name}/${name}.postprocess.mjs`))
-	return dynamicModile.default
+	const dynamicModule = await import(browser.runtime.getURL(`templates/${name}/${name}.postprocess.mjs`))
+	return dynamicModule.default
 }
 
 const templateDefinition = [
@@ -28,6 +28,7 @@ const templateDefinition = [
 	{
 		id: 'thing',
 		postprocess: true,
+		preprocess: true,
 	},
 	{
 		id: 'nerd',

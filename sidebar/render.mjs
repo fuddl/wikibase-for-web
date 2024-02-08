@@ -21,19 +21,6 @@ async function render(manager) {
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 
 	const templates = await Templates
-	templates.forEach(function (template) {
-		Twig.extendFunction(`include_${template.id}`, function(args, context) {
-			const subTemplate = Twig.twig({ data: template.template })
-			const processedArgs = structuredClone(args)
-			if (template.preprocess) {
-				template.preprocess(processedArgs, context)
-			}
-			if (template.style) {
-				template.style.forEach((path) => { requreStylesheet(path) })
-			}
-			return subTemplate.render({ ...processedArgs, context: context })
-		})
-	})
 
 	const applyPostprocess = async (dom, manager) => {
 		await Promise.all(templates.map(async (template) => {
@@ -59,8 +46,27 @@ async function render(manager) {
 			const mainTemplate = Twig.twig({
 				data: templates.find((t) => t.id == 'main').template,
 			});
+			const idComponents = manager.extractIdComponents(entity.id)
+			templates.forEach(function (template) {
+				Twig.extendFunction(`include_${template.id}`, function(args, context) {
+					const subTemplate = Twig.twig({ data: template.template })
+					const processedArgs = structuredClone(args)
+					if (template.preprocess) {
+						try {
+							template.preprocess(processedArgs, context, manager.getInstance(idComponents.instance))
+						} catch (e) {
+							console.error(e)
+						}
+					}
+					if (template.style) {
+						template.style.forEach((path) => { requreStylesheet(path) })
+					}
+					return subTemplate.render({ ...processedArgs, context: context })
+				})
+			})
+
 			requreStylesheet(browser.runtime.getURL('/templates/main/main.css'))
-			return mainTemplate.render({...entity.data, ...manager.extractIdComponents(entity.id)})
+			return mainTemplate.render({...entity.data, ...idComponents})
 		} else {
 			return ''
 		}
@@ -68,8 +74,14 @@ async function render(manager) {
 	const rendered = await Promise.all(render)
 	const dd = new DiffDOM()
 	const diff = dd.diff(document.body, `<body>${rendered.join('')}</body>`)
+	
 	dd.apply(document.body, diff)
-	applyPostprocess(document.body, manager)
+	
+	document.documentElement.style.scrollbarWidth = 'none'
+	await applyPostprocess(document.body, manager)
+	document.addEventListener('scroll', () => {
+		document.documentElement.style.scrollbarWidth = 'thin'
+	})
 }
 
 export { render }

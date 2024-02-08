@@ -17,6 +17,10 @@ class WikiBaseEntityManager {
       this.instances[name].fetchEntity = (id) => {
         return this.fetchEntity(`${name}:${id}`)
       }
+      this.instances[name].fetchLabelsAndDescrptions = (id) => {
+        return this.fetchLabelsAndDescrptions(`${name}:${id}`)
+      }
+      this.instances[name].labelsAndDescrptionsCache = {}
     }
   }
 
@@ -63,6 +67,13 @@ class WikiBaseEntityManager {
 
     const result = await fetch(url).then(res => res.json())
     return result.entities[internalId]
+  }
+
+  async fetchLabelsAndDescrptions(id) {
+    const { id: internalId, instance } = this.extractIdComponents(id)
+    const fetchResult = await this.fetchEntity(id, ['labels', 'descriptions'])
+    this.getInstance(instance).labelsAndDescrptionsCache[internalId] = fetchResult
+    return fetchResult
   }
 }
 
