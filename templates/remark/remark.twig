@@ -9,6 +9,9 @@
                     <code>{{ object.mainsnak.datavalue.value }}</code>
                 {% elseif object.mainsnak.datatype == 'wikibase-item' %}
                     {% include 'thing' with object.mainsnak.datavalue.value %}
+                {% elseif object.mainsnak.datatype == 'time' %}
+                    {{ debug(object.mainsnak.datavalue.value) }}
+                    {% include 'tempus' with object.mainsnak.datavalue.value %}
                 {% endif %}
             {% else %}
                 {{ object.mainsnak.snaktype == 'novalue' ? '–' : '?' }}

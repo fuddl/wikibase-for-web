@@ -1,0 +1,9 @@
+<time class="tempus" datetime="{{ datetime }}">
+	<span  class="tempus__main">{{ localised }}</span>
+	{% if calendar %}
+		<br />
+		<small>
+			{% include 'thing' with calendar %}
+		</small>
+	{% endif %}
+</time>
