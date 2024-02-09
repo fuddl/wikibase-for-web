@@ -27,12 +27,15 @@ async function render(manager) {
 			if (template.postprocess) {
 				dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
 					const instanceName = element.closest('[data-instance]').dataset.instance
-					if (!element?.postprocessed) {
+					if (!element?.dataset.postprocessed) {
 						await template.postprocess({
 							element: element, 
-							manager: manager.getInstance(instanceName)
+							manager: manager,
+							instance: manager.getInstance(instanceName),
+							addEvents: !('eventsAdded' in element),
 						})
-						element.postprocessed = true
+						element.eventsAdded = true
+						element.dataset.postprocessed = true
 					}
 				})
 			}
@@ -62,6 +65,7 @@ async function render(manager) {
 								vars: processedArgs, 
 								context: context,
 								instance: manager.getInstance(idComponents.instance),
+								manager: manager,
 							})
 						} catch (e) {
 							console.error(e)

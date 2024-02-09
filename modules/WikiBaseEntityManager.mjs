@@ -2,9 +2,11 @@ import wikibases from '../wikibases.mjs'
 import { WBK } from '../node_modules/wikibase-sdk/dist/src/wikibase-sdk.js'
 
 class WikiBaseEntityManager {
-  constructor() {
+  constructor(params) {
     this.instances = wikibases
+    this.labelsAndDescrptionsCache = {}
     this.entities = []
+    this.activateCallback = params.activateCallback
 
     for (const name in this.instances) {
       this.instances[name].api = WBK({
@@ -12,16 +14,13 @@ class WikiBaseEntityManager {
         sparqlEndpoint: this.instances[name]?.sparqlEndpoint,
         wgScriptPath: this.instances[name]?.wgScriptPath ?? '/w',
       })
+      this.instances[name].id = name
       this.instances[name].getEntityLink = (id) => {
         return this.getEntityLink(`${name}:${id}`)
       }
       this.instances[name].fetchEntity = (id) => {
         return this.fetchEntity(`${name}:${id}`)
       }
-      this.instances[name].fetchLabelsAndDescrptions = (id) => {
-        return this.fetchLabelsAndDescrptions(`${name}:${id}`)
-      }
-      this.instances[name].labelsAndDescrptionsCache = {}
     }
   }
 
@@ -29,6 +28,7 @@ class WikiBaseEntityManager {
   addEntity(id) {
     this.entities.find(entity => entity.id === id) || this.entities.push({ id: id })
   }
+
   async activate(id) {
     this.entities.forEach((entity) => {
       entity.active = entity.id === id
@@ -38,8 +38,14 @@ class WikiBaseEntityManager {
         entity.data = await this.fetchEntity(entity.id)
       }
     }))
+    this.activateCallback(this)
   }
   
+  async addAndActivate(id) {
+    this.addEntity(id)
+    await this.activate(id)
+  }
+
   extractIdComponents(externalId) {
     const parts = externalId.split(':')
     return {
@@ -52,7 +58,7 @@ class WikiBaseEntityManager {
     return this.instances[instance]
   }
 
-  getEntityLink(id, props = [ 'info', 'claims', 'labels', 'descriptions', 'sitelinks/urls' ]) {
+  getEntityUrl(id, props = [ 'info', 'claims', 'labels', 'descriptions', 'sitelinks/urls' ]) {
     const components = this.extractIdComponents(id)
     return this.instances[components.instance].api.getEntities({
       ids: [ components.id ],
@@ -62,19 +68,33 @@ class WikiBaseEntityManager {
     })
   }
 
-  async fetchEntity(id, props = [ 'info', 'claims', 'labels', 'descriptions', 'sitelinks/urls' ]) {
-    const { id: internalId } = this.extractIdComponents(id)
-    const url = this.getEntityLink(id, props)
+  async fetchEntity(globalId, props = [ 'info', 'claims', 'labels', 'descriptions', 'sitelinks/urls' ]) {
+    const url = this.getEntityUrl(globalId, props)
 
-    console.debug(url)
     const result = await fetch(url).then(res => res.json())
+    const { id: internalId } = this.extractIdComponents(globalId)
     return result.entities[internalId]
   }
 
-  async fetchLabelsAndDescrptions(id) {
-    const { id: internalId, instance } = this.extractIdComponents(id)
-    const fetchResult = await this.fetchEntity(id, ['labels', 'descriptions'])
-    this.getInstance(instance).labelsAndDescrptionsCache[internalId] = fetchResult
+  idFromEntityUrl(url) {
+    const normalisedUrl = url.replace(/^http:/, 'https:')
+    const instance = Object.keys(this.instances).find((name) => {
+      return normalisedUrl.startsWith(this.instances[name].instance)
+    })
+    const id = url.match(/\/entity\/(\w(?:\d+\w)\d+)$/)[1]
+    return `${instance}:${id}`
+  }
+
+  urlFromGlobalId(globalId) {
+    const { id, instance: instanceId } = this.extractIdComponents(globalId)
+    const instance = this.getInstance(instanceId)
+
+    return `${instance.instance}/entity/${id}`
+  }
+
+  async fetchLabelsAndDescrptions(globalId) {
+    const fetchResult = await this.fetchEntity(globalId, ['labels', 'descriptions'])
+    this.labelsAndDescrptionsCache[globalId] = fetchResult
     return fetchResult
   }
 }

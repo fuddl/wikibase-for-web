@@ -1,7 +1,7 @@
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 import { isInViewport } from '../../modules/isInViewport.mjs'
 
-export default async ({ element, manager }) => {
+export default async ({ element, manager, addEvents }) => {
 	if (!element?.dataset?.complete) {
 		isInViewport(element, () => {
 			(async () => {
@@ -14,17 +14,11 @@ export default async ({ element, manager }) => {
 				element.title = getByUserLanguage(entity.descriptions)?.value
 			})()
 		}, '500px')
-		isInViewport(element, () => {
-			const onScoll = () => {
-				const link = document.createElement('link')
-				link.href = manager.getEntityLink(element.dataset.id)
-				link.rel = 'preload'
-				link.as = 'fetch'
-				document.head.appendChild(link)
-				document.removeEventListener('scroll', onScoll)
-			}
-			document.addEventListener('scroll', onScoll)
-		}, '1000px')
 	}
-
+	if (addEvents) {
+		element.addEventListener('click', async (e) => {
+			e.preventDefault()
+			await manager.addAndActivate(element.dataset.id)
+		})
+	}
 }

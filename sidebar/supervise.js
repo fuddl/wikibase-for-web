@@ -1,7 +1,9 @@
 import { render } from './render.mjs'
 import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs'
 
-const manager = new WikiBaseEntityManager()
+const manager = new WikiBaseEntityManager({
+	activateCallback: render,
+})
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "display_entity") {
@@ -13,7 +15,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		(async () => {
 			await manager.activate(message.id)
-			render(manager)
 		})()
 		return Promise.resolve('done')
 	}

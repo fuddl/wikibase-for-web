@@ -40,6 +40,6 @@ export default ({ vars }) => {
 		vars.localised = browser.i18n.getMessage("date_millenium", [milleniaOrdinal, millenia])
 	}
 	vars.calendar = {
-		id: vars.calendarmodel
+		url: vars.calendarmodel
 	}
 }

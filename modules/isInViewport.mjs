@@ -1,5 +1,3 @@
-// isInViewport.js
-
 function isInViewport(element, callback, rootMargin = '0px') {
   
     // Define the callback function for IntersectionObserver
