@@ -28,7 +28,10 @@ async function render(manager) {
 				dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
 					const instanceName = element.closest('[data-instance]').dataset.instance
 					if (!element?.postprocessed) {
-						await template.postprocess(element, manager.getInstance(instanceName))
+						await template.postprocess({
+							element: element, 
+							manager: manager.getInstance(instanceName)
+						})
 						element.postprocessed = true
 					}
 				})
@@ -49,11 +52,17 @@ async function render(manager) {
 			const idComponents = manager.extractIdComponents(entity.id)
 			templates.forEach(function (template) {
 				Twig.extendFunction(`include_${template.id}`, function(args, context) {
-					const subTemplate = Twig.twig({ data: template.template })
+					const subTemplate = Twig.twig({
+						data: template.template,
+					})
 					const processedArgs = structuredClone(args)
 					if (template.preprocess) {
 						try {
-							template.preprocess(processedArgs, context, manager.getInstance(idComponents.instance))
+							template.preprocess({
+								vars: processedArgs, 
+								context: context,
+								instance: manager.getInstance(idComponents.instance),
+							})
 						} catch (e) {
 							console.error(e)
 						}

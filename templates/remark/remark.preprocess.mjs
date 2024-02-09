@@ -1,4 +1,4 @@
-export default (vars, context) => {
+export default ({ vars }) => {
 	vars.objects = []
 	for (const object of vars) {
 		vars.objects.push(object)

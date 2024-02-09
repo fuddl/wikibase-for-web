@@ -1,6 +1,6 @@
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 
-export default (vars, context, instance) => {
+export default ({ vars, instance}) => {
 	if (vars.id in instance.labelsAndDescrptionsCache) {
 		const cached = instance.labelsAndDescrptionsCache[vars.id]
 		vars.label = getByUserLanguage(cached.labels)

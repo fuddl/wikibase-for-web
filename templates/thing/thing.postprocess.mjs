@@ -1,7 +1,7 @@
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 import { isInViewport } from '../../modules/isInViewport.mjs'
 
-export default async (element, manager) => {
+export default async ({ element, manager }) => {
 	if (!element?.dataset?.complete) {
 		isInViewport(element, () => {
 			(async () => {
