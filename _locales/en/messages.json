@@ -1,0 +1,128 @@
+{
+  "unknown": {
+    "message": "unknown",
+    "description": "The snaktype unknown"
+  },
+  "no_value": {
+    "message": "no value",
+    "description": "The snaktype no value"
+  },
+  "month_1": {
+    "message": "January",
+    "description": "The name of the first month."
+  },
+  "month_2": {
+    "message": "February",
+    "description": "The name of the second month."
+  },
+  "month_3": {
+    "message": "March",
+    "description": "The name of the third month."
+  },
+  "month_4": {
+    "message": "April",
+    "description": "The name of the fourth month."
+  },
+  "month_5": {
+    "message": "May",
+    "description": "The name of the fifth month."
+  },
+  "month_6": {
+    "message": "June",
+    "description": "The name of the sixth month."
+  },
+  "month_7": {
+    "message": "July",
+    "description": "The name of the seventh month."
+  },
+  "month_8": {
+    "message": "August",
+    "description": "The name of the eighth month."
+  },
+  "month_9": {
+    "message": "September",
+    "description": "The name of the ninth month."
+  },
+  "month_10": {
+    "message": "October",
+    "description": "The name of the tenth month."
+  },
+  "month_11": {
+    "message": "November",
+    "description": "The name of the eleventh month."
+  },
+  "month_12": {
+    "message": "December",
+    "description": "The name of the twelfth month."
+  },
+  "date_month": {
+    "message": "$MONTHNAME$ $YEAR$",
+    "description": "The name of a month.",
+    "placeholders": {
+      "monthname" : {
+        "content" : "$1",
+        "example" : "February"
+      },
+      "monthnumber" : {
+        "content" : "$2",
+        "example" : "2"
+      },
+      "year" : {
+        "content" : "$3",
+        "example" : "2024"
+      }
+    }
+  },
+  "date_year": {
+    "message": "$NUMBER$",
+    "description": "The name of a year.",
+    "placeholders": {
+      "number" : {
+        "content" : "$1",
+        "example" : "2024"
+      }
+    }
+  },
+  "date_decade": {
+    "message": "$NUMBER$s",
+    "description": "The name of a century.",
+    "placeholders": {
+      "ordinal" : {
+        "content" : "$1",
+        "example" : "202"
+      },
+      "number" : {
+        "content" : "$2",
+        "example" : "2010"
+      }
+    }
+  },
+  "date_cenury": {
+    "message": "$ORDINAL$. century",
+    "description": "The name of a century.",
+    "placeholders": {
+      "ordinal" : {
+        "content" : "$1",
+        "example" : "21"
+      },
+      "number" : {
+        "content" : "$2",
+        "example" : "20"
+      }
+    }
+  },
+  "date_millenium": {
+    "message": "$ORDINAL$. millennium",
+    "description": "The name of a millennium.",
+    "placeholders": {
+      "ordinal" : {
+        "content" : "$1",
+        "example" : "1"
+      },
+      "number" : {
+        "content" : "$2",
+        "example" : "2"
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ class WikiBaseEntityManager {
       this.instances[name].api = WBK({
         instance: this.instances[name].instance,
         sparqlEndpoint: this.instances[name]?.sparqlEndpoint,
+        wgScriptPath: this.instances[name]?.wgScriptPath ?? '/w',
       })
       this.instances[name].getEntityLink = (id) => {
         return this.getEntityLink(`${name}:${id}`)
@@ -65,6 +66,7 @@ class WikiBaseEntityManager {
     const { id: internalId } = this.extractIdComponents(id)
     const url = this.getEntityLink(id, props)
 
+    console.debug(url)
     const result = await fetch(url).then(res => res.json())
     return result.entities[internalId]
   }

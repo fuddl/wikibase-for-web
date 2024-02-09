@@ -12,6 +12,7 @@ const wikibases = {
 	}, 
 	datatrek: {
 		instance: 'https://data.wikitrek.org',
+  		wgScriptPath: '/dt',
 	},
 	wikibaseWorld: {
 		instance: 'https://wikibase.world',

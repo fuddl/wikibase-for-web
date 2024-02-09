@@ -17,7 +17,7 @@
                     {{ debug('unsupported datatype ' ~ object.mainsnak.datatype) }}
                 {% endif %}
             {% else %}
-                {{ object.mainsnak.snaktype == 'novalue' ? '–' : '?' }}
+                <em>{{ object.mainsnak.snaktype == 'novalue' ? noValue : unknown }}</em>
             {% endif %}
         </dd>
     {% endfor %}
