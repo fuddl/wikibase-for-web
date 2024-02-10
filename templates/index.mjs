@@ -36,6 +36,19 @@ const templateDefinition = [
 		id: 'tempus',
 	},
 	{
+		id: 'pic',
+	},
+	{
+		id: 'play',
+	},
+	{
+		id: 'watch',
+	},
+	{
+		preprocess: true,
+		id: 'medius',
+	},
+	{
 		preprocess: true,
 		id: 'earl',
 	},

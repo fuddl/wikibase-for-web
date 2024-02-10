@@ -1,0 +1,6 @@
+<picture class="pic">
+	{% for source in sources %}
+		<source srcset="{{ source.srcSet }}" />
+	{% endfor %}
+	<img src="{{ src }}" loading="lazy"/>
+</picture>

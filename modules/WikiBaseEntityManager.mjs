@@ -9,10 +9,11 @@ class WikiBaseEntityManager {
     this.activateCallback = params.activateCallback
 
     for (const name in this.instances) {
+      const wgScriptPath = this.instances[name]?.wgScriptPath ?? '/w'
       this.instances[name].api = WBK({
         instance: this.instances[name].instance,
         sparqlEndpoint: this.instances[name]?.sparqlEndpoint,
-        wgScriptPath: this.instances[name]?.wgScriptPath ?? '/w',
+        wgScriptPath: wgScriptPath,
       })
       this.instances[name].id = name
       this.instances[name].getEntityLink = (id) => {
@@ -21,6 +22,7 @@ class WikiBaseEntityManager {
       this.instances[name].fetchEntity = (id) => {
         return this.fetchEntity(`${name}:${id}`)
       }
+      this.instances[name].wikiRoot = `${this.instances[name].instance}${wgScriptPath}`
     }
   }
 

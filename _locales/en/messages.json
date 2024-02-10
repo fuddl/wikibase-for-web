@@ -7,6 +7,10 @@
     "message": "no value",
     "description": "The snaktype no value"
   },
+  "media_info": {
+    "message": "Media information",
+    "description": "Label of a link showing more information about a file."
+  },
   "month_1": {
     "message": "January",
     "description": "The name of the first month."

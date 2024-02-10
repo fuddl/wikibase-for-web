@@ -1,0 +1,15 @@
+<div class="medius">
+	{% if image %}
+		<a href="{{ href }}">
+			{% include 'pic' with image %}
+		</a>
+	{% endif %}
+	{% if audio %}
+		{% include 'play' with audio %}
+		<a href="{{ href }}">{{ media_info }}</a>
+	{% endif %}
+	{% if video %}
+		{% include 'watch' with video %}
+		<a href="{{ href }}">{{ media_info }}</a>
+	{% endif %}
+</div>
