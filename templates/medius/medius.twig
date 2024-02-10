@@ -1,3 +1,9 @@
+{% import _self as media %}
+
+{% macro info(href, text) %}
+    <small><a href="{{ href }}">{{ media_info }}</a></small>
+{% endmacro %}
+
 <div class="medius">
 	{% if image %}
 		<a href="{{ href }}">
@@ -6,10 +12,10 @@
 	{% endif %}
 	{% if audio %}
 		{% include 'play' with audio %}
-		<a href="{{ href }}">{{ media_info }}</a>
+		{{ media.info(href, media_info) }}
 	{% endif %}
 	{% if video %}
 		{% include 'watch' with video %}
-		<a href="{{ href }}">{{ media_info }}</a>
+		{{ media.info(href, media_info) }}
 	{% endif %}
 </div>
