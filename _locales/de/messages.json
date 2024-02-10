@@ -1,22 +1,22 @@
 {
   "unknown": {
-    "message": "unknown",
+    "message": "unbekannt",
     "description": "The snaktype unknown"
   },
   "no_value": {
-    "message": "no value",
+    "message": "keine Angabe",
     "description": "The snaktype no value"
   },
   "month_1": {
-    "message": "January",
+    "message": "Januar",
     "description": "The name of the first month."
   },
   "month_2": {
-    "message": "February",
+    "message": "Februar",
     "description": "The name of the second month."
   },
   "month_3": {
-    "message": "March",
+    "message": "März",
     "description": "The name of the third month."
   },
   "month_4": {
@@ -24,15 +24,15 @@
     "description": "The name of the fourth month."
   },
   "month_5": {
-    "message": "May",
+    "message": "Mai",
     "description": "The name of the fifth month."
   },
   "month_6": {
-    "message": "June",
+    "message": "Juni",
     "description": "The name of the sixth month."
   },
   "month_7": {
-    "message": "July",
+    "message": "Juli",
     "description": "The name of the seventh month."
   },
   "month_8": {
@@ -44,7 +44,7 @@
     "description": "The name of the ninth month."
   },
   "month_10": {
-    "message": "October",
+    "message": "Oktober",
     "description": "The name of the tenth month."
   },
   "month_11": {
@@ -52,7 +52,7 @@
     "description": "The name of the eleventh month."
   },
   "month_12": {
-    "message": "December",
+    "message": "Dezember",
     "description": "The name of the twelfth month."
   },
   "date_month": {
@@ -75,7 +75,7 @@
   },
   "date_year": {
     "message": "$NUMBER$",
-    "description": "The name of a year.",
+    "description": "Der Name eines Jahres.",
     "placeholders": {
       "number" : {
         "content" : "$1",
@@ -84,8 +84,8 @@
     }
   },
   "date_decade": {
-    "message": "$NUMBER$s",
-    "description": "The name of a decade.",
+    "message": "$NUMBER$er",
+    "description": "Der Name eines Jahrzehnts.",
     "placeholders": {
       "ordinal" : {
         "content" : "$1",
@@ -98,8 +98,8 @@
     }
   },
   "date_cenury": {
-    "message": "$ORDINAL$. century",
-    "description": "The name of a century.",
+    "message": "$ORDINAL$. Jahrhundert",
+    "description": "Der Name eines Jahrhunderts.",
     "placeholders": {
       "ordinal" : {
         "content" : "$1",
@@ -112,8 +112,8 @@
     }
   },
   "date_millenium": {
-    "message": "$ORDINAL$. millennium",
-    "description": "The name of a millennium.",
+    "message": "$ORDINAL$. Jahrtausend",
+    "description": "Der Name eines Jahrtausends.",
     "placeholders": {
       "ordinal" : {
         "content" : "$1",

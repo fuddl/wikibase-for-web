@@ -27,8 +27,8 @@ export default ({ vars }) => {
 		const year = parseInt(vars.time.substring(1,6))
 		vars.localised = browser.i18n.getMessage("date_year", [year])
 	} else if (vars.precision == 8) {
-		const decade = parseInt(vars.time.substring(1,5))
-		const decadeOrdinal = `${decade + 10}`.slice(0, -1)
+		const decade = `${parseInt(vars.time.substring(1,4))}`.padEnd(4, '0')
+		const decadeOrdinal = `${parseInt(decade) + 10}`.slice(0, -1)
 		vars.localised = browser.i18n.getMessage("date_decade", [decadeOrdinal, decade])
 	} else if (vars.precision == 7) {
 		const century = parseInt(vars.time.substring(1,3))
