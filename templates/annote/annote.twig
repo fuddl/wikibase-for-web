@@ -1,15 +1,14 @@
 <dl class="annote">
-		{% for qualifier in qualifiers %}
-			{% for touple in qualifier %}
-				{% if loop.first %}
-					<dt class="annote__verb">
-							{% include 'thing' with { id: touple.property } %}
-					</dt>
-				{% endif %}
-				{{ debug(touple) }}
-				<dd class="annote__object">
-						{% include 'snack' with { mainsnak: touple } %} 
-				</dd>
-			{% endfor  %}
-		{% endfor %}
+	{% for qualifier in qualifiers %}
+		{% for touple in qualifier %}
+			{% if loop.first %}
+				<dt class="annote__verb">
+					{% include 'thing' with { id: touple.property } %}
+				</dt>
+			{% endif %}
+			<dd class="annote__object">
+				{% include 'snack' with { mainsnak: touple } %} 
+			</dd>
+		{% endfor  %}
+	{% endfor %}
 </dl>
