@@ -12,7 +12,9 @@
                 {% elseif object.mainsnak.datatype == 'time' %}
                     {% include 'tempus' with object.mainsnak.datavalue.value %}
                 {% elseif object.mainsnak.datatype == 'url' %}
-                    {% include 'earl' with object.mainsnak.datavalue %}
+                    {% include 'earl' with object.mainsnak.datavalue %}                
+                {% elseif object.mainsnak.datatype == 'string' %}
+                    <span>{{ object.mainsnak.datavalue.value }}</span>
                 {% else %}
                     {{ debug('unsupported datatype ' ~ object.mainsnak.datatype) }}
                 {% endif %}
