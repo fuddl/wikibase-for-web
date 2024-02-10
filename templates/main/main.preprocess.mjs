@@ -1,5 +1,6 @@
 export default ({ vars, instance }) => {
-	console.debug(vars.claims)
+	
+	// sort claims by /MediaWiki:Wikibase-SortedProperties
 	if (instance?.propOrder?.length > 0) {
 		vars.claims = instance.propOrder.reduce((acc, prop) => {
 		if (vars.claims[prop]) {
