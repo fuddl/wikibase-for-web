@@ -45,6 +45,9 @@ const templateDefinition = [
 		id: 'watch',
 	},
 	{
+		id: 'title',
+	},
+	{
 		preprocess: true,
 		id: 'medius',
 	},

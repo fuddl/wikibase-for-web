@@ -17,6 +17,8 @@
                     <span>{{ object.mainsnak.datavalue.value }}</span>
                 {% elseif object.mainsnak.datatype in ['localMedia', 'commonsMedia'] %}
                     {% include 'medius' with object.mainsnak %} 
+                {% elseif object.mainsnak.datatype == 'monolingualtext' %}
+                    {% include 'title' with object.mainsnak.datavalue.value %} 
                 {% else %}
                     {{ debug('unsupported datatype ' ~ object.mainsnak.datatype) }}
                 {% endif %}
