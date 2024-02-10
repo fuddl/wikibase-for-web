@@ -5,7 +5,15 @@
 			descriptions: descriptions,
 		} %}
 	{% endif %}
-	{% for claim in claims %}
+	{% for claim in mainClaims %}
 		{% include 'remark' with claim %}
 	{% endfor %}
+	{% if urls %}
+		<h3>Links</h3>
+		{% include 'register' with { claims: urls } %}
+	{% endif %}
+	{% if externalIds %}
+		<h3>{{ headline_ids }}</h3>
+		{% include 'chart' with { claims: externalIds } %}
+	{% endif %}
 </main>

@@ -1,0 +1,18 @@
+<table class="chart" id="{{ verb }}">
+    {% for claim in claims %}
+        <tbody>
+            {% for object in claim %}
+                <tr>
+                    {% if loop.first %}
+                        <th class="chart__verb" rowspan="{{ object|length }}">
+                            {% include 'thing' with { id: object.mainsnak.property } %}
+                        </th>
+                    {% endif %}
+                    <td id="{{ object.id }}" class="chart__object">
+                        {% include 'snack' with object %} 
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% endfor %}
+</table>

@@ -1,0 +1,16 @@
+<ul class="register">
+    {% for claim in claims %}
+        <li>
+            {% for object in claim %}
+                {% if loop.first %}
+                    <strong class="register__label">
+                        {% include 'thing' with { id: object.mainsnak.property } %}
+                    </strong>
+                {% endif %}
+                <div id="{{ object.id }}" >
+                    {% include 'snack' with object %} 
+                </div>
+            {% endfor %}
+        </li>
+    {% endfor %}
+</ul>

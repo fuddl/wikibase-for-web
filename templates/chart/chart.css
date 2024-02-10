@@ -1,0 +1,16 @@
+.chart {
+	border: 1px solid #a2a9b1;
+	width: 100%;
+}
+
+.chart__verb {
+	vertical-align: top;
+	padding: .25em;
+	background-color: #e6e6ff;
+	text-align: left;
+}
+
+.chart__object {
+	padding: .25em;
+	vertical-align: top;
+}

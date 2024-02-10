@@ -11,6 +11,22 @@
     "message": "Media information",
     "description": "Label of a link showing more information about a file."
   },
+  "external_id": {
+    "message": "External identifier",
+    "description": "Heading for a section containing a single external id."
+  },
+  "external_ids": {
+    "message": "External identifiers",
+    "description": "Heading for a section containing external ids."
+  },
+  "links": {
+    "message": "Links",
+    "description": "Heading for a section containing a single link."
+  },
+  "link": {
+    "message": "Link",
+    "description": "Heading for a section containing links."
+  },
   "month_1": {
     "message": "January",
     "description": "The name of the first month."

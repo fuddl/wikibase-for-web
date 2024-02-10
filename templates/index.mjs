@@ -27,6 +27,15 @@ const templateDefinition = [
 		style: true,
 	},
 	{
+		id: 'register',
+		style: true,
+	},
+	{
+		id: 'chart',
+		preprocess: true,
+		style: true,
+	},
+	{
 		id: 'snack',
 		preprocess: true,
 	},

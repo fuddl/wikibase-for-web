@@ -1,0 +1,7 @@
+.register__label {
+	font-weight: normal;
+}
+
+.register__label > a {
+	color: inherit;
+}

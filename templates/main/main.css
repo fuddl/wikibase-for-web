@@ -132,6 +132,15 @@ h3 {
   margin-top: 1.5em;
 }
 
+ul {
+  list-style-type: disc;
+  padding-left: 1em;
+}
+
+ul > li:not(:last-child) {
+  margin-bottom: 10px;
+}
+
 ol {
   padding-left: 2.25em;
 }
