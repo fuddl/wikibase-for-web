@@ -35,6 +35,10 @@ const templateDefinition = [
 		style: true,
 	},
 	{
+		id: 'amount',
+		preprocess: true,
+	},
+	{
 		id: 'thing',
 		postprocess: true,
 		preprocess: true,
@@ -82,7 +86,7 @@ export const Templates = await Promise.all(templateDefinition.map(async (item) =
 		]
 	}
 	item.template = template
-		.replace(/{%\s+include '([^']+)'\s%}/gm, `{{ include_$1({}, _context) }}`)
-		.replace(/{%\s+include '([^']+)'\s+with\s+([^%]+)\s%}/gm, `{{ include_$1($2, _context) }}`)
+		.replace(/{%(-)?\s+include '([^']+)'\s(-)?%}/gm, `{{$1 include_$2({}, _context) $3}}`)
+		.replace(/{%(-)?\s+include '([^']+)'\s+with\s+([^%]+)\s(-)?%}/gm, `{{$1 include_$2($3, _context) $4}}`)
 	return item
 }));

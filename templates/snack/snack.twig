@@ -12,9 +12,9 @@
     {% elseif mainsnak.datatype in ['localMedia', 'commonsMedia'] %}
         {% include 'medius' with mainsnak %} 
     {% elseif mainsnak.datatype == 'monolingualtext' %}
-        {% include 'title' with mainsnak.datavalue.value %} 
+        {% include 'title' with mainsnak.datavalue.value %}
     {% elseif mainsnak.datatype == 'quantity' %}
-        {{ debug(mainsnak.datavalue) }}
+        {% include 'amount' with mainsnak.datavalue.value %}
     {% else %}
         {{ debug('unsupported datatype ' ~ mainsnak.datatype) }}
     {% endif %}
