@@ -27,6 +27,14 @@ const templateDefinition = [
 		style: true,
 	},
 	{
+		id: 'snack',
+		preprocess: true,
+	},
+	{
+		id: 'annote',
+		style: true,
+	},
+	{
 		id: 'thing',
 		postprocess: true,
 		preprocess: true,

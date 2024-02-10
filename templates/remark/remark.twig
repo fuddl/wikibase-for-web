@@ -3,28 +3,10 @@
         {% include 'thing' with { id: verb } %}
     </dt>
     {% for object in objects %}
-        <dd id="{{ object.id }}" class="remark__object">
-            {% if object.mainsnak.snaktype == 'value' %}
-                {% if object.mainsnak.datatype == 'external-id' %}
-                    <code>{{ object.mainsnak.datavalue.value }}</code>
-                {% elseif object.mainsnak.datatype == 'wikibase-item' %}
-                    {% include 'thing' with object.mainsnak.datavalue.value %}
-                {% elseif object.mainsnak.datatype == 'time' %}
-                    {% include 'tempus' with object.mainsnak.datavalue.value %}
-                {% elseif object.mainsnak.datatype == 'url' %}
-                    {% include 'earl' with object.mainsnak.datavalue %}                
-                {% elseif object.mainsnak.datatype == 'string' %}
-                    <span>{{ object.mainsnak.datavalue.value }}</span>
-                {% elseif object.mainsnak.datatype in ['localMedia', 'commonsMedia'] %}
-                    {% include 'medius' with object.mainsnak %} 
-                {% elseif object.mainsnak.datatype == 'monolingualtext' %}
-                    {% include 'title' with object.mainsnak.datavalue.value %} 
-                {% else %}
-                    {{ debug('unsupported datatype ' ~ object.mainsnak.datatype) }}
-                {% endif %}
-            {% else %}
-                <em>{{ object.mainsnak.snaktype == 'novalue' ? noValue : unknown }}</em>
-            {% endif %}
+        <dd id="{{ object.id }}" class="remark__objects">
+            <div class="remark__object">
+                {% include 'snack' with object %} 
+            </div>
         </dd>
     {% endfor %}
 </dl>

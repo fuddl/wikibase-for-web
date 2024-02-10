@@ -32,7 +32,7 @@
   }
 }
 
-.remark__object {
+.remark__objects {
   min-width: 0;
   grid-column: 2;
   margin-bottom: .5em;
@@ -45,12 +45,12 @@
   padding: 0;
 }
 
-.remark--block > .remark__object {
+.remark--block > .remark__objects {
   margin: 0;
 }
 
 @media (max-width: 299px) {
-  .remark__object {
+  .remark__objects {
     margin: 0;
   }
 }

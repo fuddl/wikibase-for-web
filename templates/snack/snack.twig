@@ -1,0 +1,26 @@
+{% if mainsnak.snaktype == 'value' %}
+    {% if mainsnak.datatype == 'external-id' %}
+        <code>{{ mainsnak.datavalue.value }}</code>
+    {% elseif mainsnak.datatype == 'wikibase-item' %}
+        {% include 'thing' with mainsnak.datavalue.value %}
+    {% elseif mainsnak.datatype == 'time' %}
+        {% include 'tempus' with mainsnak.datavalue.value %}
+    {% elseif mainsnak.datatype == 'url' %}
+        {% include 'earl' with mainsnak.datavalue %}                
+    {% elseif mainsnak.datatype == 'string' %}
+        <span>{{ mainsnak.datavalue.value }}</span>
+    {% elseif mainsnak.datatype in ['localMedia', 'commonsMedia'] %}
+        {% include 'medius' with mainsnak %} 
+    {% elseif mainsnak.datatype == 'monolingualtext' %}
+        {% include 'title' with mainsnak.datavalue.value %} 
+    {% elseif mainsnak.datatype == 'quantity' %}
+        {{ debug(mainsnak.datavalue) }}
+    {% else %}
+        {{ debug('unsupported datatype ' ~ mainsnak.datatype) }}
+    {% endif %}
+{% else %}
+    <em>{{ mainsnak.snaktype in ['novalue', 'somevalue'] ? noValue : unknown }}</em>
+{% endif %}
+{% if qualifiers %}
+    {% include 'annote' with { qualifiers: qualifiers } %} 
+{% endif %}
