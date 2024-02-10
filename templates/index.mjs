@@ -13,6 +13,7 @@ async function loadPostprocess(name) {
 const templateDefinition = [
 	{
 		id: 'main',
+		preprocess: true,
 		style: true,
 	},
 	{

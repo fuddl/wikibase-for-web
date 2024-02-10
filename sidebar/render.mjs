@@ -50,7 +50,7 @@ async function render(manager) {
 	const render = await manager.entities.map(async (entity) => {
 		if (entity.active) {
 			const mainTemplate = Twig.twig({
-				data: templates.find((t) => t.id == 'main').template,
+				data: `{{ include_main(_context) }}`,
 			});
 			const idComponents = manager.extractIdComponents(entity.id)
 			templates.forEach(function (template) {
@@ -78,7 +78,6 @@ async function render(manager) {
 				})
 			})
 
-			requreStylesheet(browser.runtime.getURL('/templates/main/main.css'))
 			return mainTemplate.render({...entity.data, ...idComponents})
 		} else {
 			return ''

@@ -33,9 +33,11 @@ class WikiBaseEntityManager {
     this.entities.forEach((entity) => {
       entity.active = entity.id === id
     })
+
     await Promise.all(this.entities.map(async (entity) => {
       if (entity.active && !entity.data) {
         entity.data = await this.fetchEntity(entity.id)
+        await this.fetchPropOrder(entity.id)
       }
     }))
     this.activateCallback(this)
@@ -74,6 +76,25 @@ class WikiBaseEntityManager {
     const result = await fetch(url).then(res => res.json())
     const { id: internalId } = this.extractIdComponents(globalId)
     return result.entities[internalId]
+  }
+
+  async fetchPropOrder(globalId) {
+    const { instance: instanceId } = this.extractIdComponents(globalId)
+    const instance = this.getInstance(instanceId)
+    if (!('propOrder' in instance)) {
+      const endPoint = instance.api.instance.apiEndpoint
+      try {
+        const response = await fetch(`${endPoint}?action=query&titles=MediaWiki:Wikibase-SortedProperties&prop=revisions&rvprop=content&format=json&origin=*`)
+        const data = await response.json()
+        const pageId = Object.keys(data.query.pages)[0]
+        const lastRevisionContent = data.query.pages[pageId].revisions[0]['*'];
+        instance.propOrder = lastRevisionContent.match(/(P\d+)/g)
+
+      } catch (e) {
+        console.log(`Failed to load prop order from ${instance.id}`)
+        console.error(e)
+      }
+    }
   }
 
   idFromEntityUrl(url) {
