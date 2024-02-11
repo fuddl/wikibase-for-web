@@ -1,6 +1,6 @@
 {% if mainsnak.snaktype == 'value' %}
     {% if mainsnak.datatype == 'external-id' %}
-        <code>{{ mainsnak.datavalue.value }}</code>
+        <code>{{ mainsnak.datavalue.value | e }}</code>
     {% elseif mainsnak.datatype == 'wikibase-item' %}
         {% include 'thing' with mainsnak.datavalue.value %}
     {% elseif mainsnak.datatype == 'time' %}
@@ -8,7 +8,7 @@
     {% elseif mainsnak.datatype == 'url' %}
         {% include 'earl' with mainsnak.datavalue %}                
     {% elseif mainsnak.datatype == 'string' %}
-        <span>{{ mainsnak.datavalue.value }}</span>
+        <span>{{ mainsnak.datavalue.value | e }}</span>
     {% elseif mainsnak.datatype in ['localMedia', 'commonsMedia'] %}
         {% include 'medius' with mainsnak %} 
     {% elseif mainsnak.datatype == 'monolingualtext' %}
