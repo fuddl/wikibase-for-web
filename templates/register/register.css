@@ -1,3 +1,11 @@
+.register {
+	column-count: 2;
+}
+
+.register__item {
+	break-inside: avoid;
+}
+
 .register__label {
 	font-weight: normal;
 }
