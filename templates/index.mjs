@@ -23,6 +23,7 @@ const templateDefinition = [
 	},
 	{
 		id: 'remark',
+		postprocess: true,
 		preprocess: true,
 		style: true,
 	},
@@ -62,6 +63,7 @@ const templateDefinition = [
 	},
 	{
 		id: 'pic',
+		style: true,
 	},
 	{
 		id: 'play',

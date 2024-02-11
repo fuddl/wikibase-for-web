@@ -1,8 +1,37 @@
 .remark {
   background: var(--paper);
   border: 1px solid var(--contour);
-  padding: 7px 10px;
   line-height: 24px;
+}
+
+.remark__objects {
+  margin: 0;
+}
+
+.remark:not(.remark--poster) {
+  padding: 7px 10px;
+}
+
+.remark--poster {
+  position: relative;
+}
+
+.remark--poster > .remark__verb {
+  padding: 7px 10px;
+  position: absolute;
+  top: 0;
+  background-color: color-mix(in srgb, var(--paper) 50%, transparent);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.remark--poster .remark__qualifiers {
+  padding: 7px 10px;
+}
+
+:hover > .remark__verb {
+  opacity: 1;
 }
 
 .remark + .remark {
@@ -22,7 +51,6 @@
   top: var(--top-offset, 7px);
   grid-area: span 2 / 1;
   font-weight: 700;
-  transition: top .25s;
   position: sticky;
 }
 
@@ -32,10 +60,10 @@
   }
 }
 
-.remark__objects {
+:not(.remark--poster) > .remark__objects {
   min-width: 0;
   grid-column: 2;
-  margin-bottom: .5em;
+  margin: 0 0 .5em;
   padding: 0;
 }
 

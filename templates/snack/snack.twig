@@ -18,9 +18,10 @@
     {% else %}
         {{ debug('unsupported datatype ' ~ mainsnak.datatype) }}
     {% endif %}
-{% else %}
+{% elseif mainsnak.snaktype %}
     <em>{{ mainsnak.snaktype in ['novalue', 'somevalue'] ? noValue : unknown }}</em>
 {% endif %}
+
 {% if qualifiers %}
     {% include 'annote' with { qualifiers: qualifiers } %} 
 {% endif %}

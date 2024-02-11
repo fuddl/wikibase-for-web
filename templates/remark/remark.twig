@@ -5,7 +5,14 @@
     {% for object in objects %}
         <dd id="{{ object.id }}" class="remark__objects">
             <div class="remark__object">
-                {% include 'snack' with object %} 
+                <div class="remark__object__main">
+                    {% include 'snack' with { mainsnak: object.mainsnak } %}
+                </div>
+                {% if object.qualifiers %} 
+                    <div class="remark__qualifiers">
+                        {% include 'snack' with { qualifiers: object.qualifiers } %} 
+                    </div>
+                {% endif %} 
             </div>
         </dd>
     {% endfor %}
