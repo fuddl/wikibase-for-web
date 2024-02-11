@@ -3,6 +3,7 @@ import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs'
 
 const manager = new WikiBaseEntityManager({
 	activateCallback: render,
+	languages: navigator.languages,
 })
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

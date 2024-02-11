@@ -1,5 +1,6 @@
 import wikibases from '../wikibases.mjs'
 import { WBK } from '../node_modules/wikibase-sdk/dist/src/wikibase-sdk.js'
+import queries from '../queries/index.mjs'
 
 class WikiBaseEntityManager {
   constructor(params) {
@@ -7,6 +8,10 @@ class WikiBaseEntityManager {
     this.labelsAndDescrptionsCache = {}
     this.entities = []
     this.activateCallback = params.activateCallback
+    this.languages = params.languages
+    this.queries = queries
+
+    this.queryCache = {}
 
     for (const name in this.instances) {
       const wgScriptPath = this.instances[name]?.wgScriptPath ?? '/w'
@@ -23,6 +28,14 @@ class WikiBaseEntityManager {
         return this.fetchEntity(`${name}:${id}`)
       }
       this.instances[name].wikiRoot = `${this.instances[name].instance}${wgScriptPath}`
+      this.instances[name].query = async (queryId, params) => {
+        return this.query(this.instances[name], this.queries[queryId], params)
+      }
+      this.instances[name].queryCached = (queryId, params) => {
+        return this.queryCached(this.instances[name], this.queries[queryId], params)
+      }
+      // @todo add babel languages from instance
+      this.instances[name].languages = this.languages
     }
   }
 
@@ -66,7 +79,7 @@ class WikiBaseEntityManager {
     const components = this.extractIdComponents(id)
     return this.instances[components.instance].api.getEntities({
       ids: [ components.id ],
-      languages: [ 'en', 'fr', 'de' ], 
+      languages: this.languages, 
       props: props,
       redirections: false,
     })
@@ -119,6 +132,56 @@ class WikiBaseEntityManager {
     const fetchResult = await this.fetchEntity(globalId, ['labels', 'descriptions'])
     this.labelsAndDescrptionsCache[globalId] = fetchResult
     return fetchResult
+  }
+
+  queryCached(instance, q, params) {
+    if (q?.requiredProps && !this.checkRequiredProps(instance, q.requiredProps)) {
+      return []
+    }
+    
+    const queryCacheTag = `${instance.id}:${q.cacheTag({ params, instance })}`
+
+    if (!('sparqlEndpoint' in instance)) {
+      this.queryCache[queryCacheTag] = []
+      return []
+    }
+
+    // if its already cached, return cache
+    if (queryCacheTag in this.queryCache) {
+      return this.queryCache[queryCacheTag]
+    } else {
+      return false
+    }
+  }
+
+  async query(instance, q, params) {
+    if (q?.requiredProps && !this.checkRequiredProps(instance, q.requiredProps)) {
+      return []
+    }
+
+    const queryCacheTag = `${instance.id}:${q.cacheTag({ params, instance })}`
+
+    const cached = this.queryCached(instance, q, params)
+    if (cached) {
+      return cached
+    }
+
+    if (!('sparqlEndpoint' in instance)) {
+      this.queryCache[queryCacheTag] = []
+      return []
+    }
+
+    const query = q.query({ params, instance })
+    const queryUrl = instance.api.sparqlQuery(query)
+    const queryResult = await fetch(queryUrl).then(res => res.json())
+    const processedResult = q?.postProcess ? q.postProcess(queryResult) : queryResult
+    this.queryCache[queryCacheTag] = processedResult
+
+    return processedResult
+  }
+
+  checkRequiredProps (instance, requirements) {
+    return requirements.every((requirement) => requirement in (instance?.props ?? {}))
   }
 }
 

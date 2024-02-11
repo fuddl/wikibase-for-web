@@ -4,8 +4,8 @@
             {% for object in claim %}
                 <tr>
                     {% if loop.first %}
-                        <th class="chart__verb" rowspan="{{ object|length }}">
-                            {% include 'thing' with { id: object.mainsnak.property } %}
+                        <th class="chart__verb" rowspan="{{ claim | length }}">
+                            {% include 'thin' with { id: object.mainsnak.property } %}
                         </th>
                     {% endif %}
                     <td id="{{ object.id }}" class="chart__object">

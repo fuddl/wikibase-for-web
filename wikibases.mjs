@@ -2,6 +2,9 @@ const wikibases = {
 	wikidata: {
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
+		props: {
+			shortTitle: 'P1813',
+		}
 	},
 	testWikidata: {
 		instance: 'https://test.wikidata.org',
