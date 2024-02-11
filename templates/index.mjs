@@ -32,7 +32,6 @@ const templateDefinition = [
 	},
 	{
 		id: 'chart',
-		preprocess: true,
 		style: true,
 	},
 	{
