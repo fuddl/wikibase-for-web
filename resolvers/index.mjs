@@ -1,19 +1,28 @@
-import { wikidata } from './wikidata.mjs';
+import { wikibase } from './wikibase.mjs';
 import wikibases from '../wikibases.mjs'
 
 const resolvers = {
 	list: [
-		wikidata,
+		wikibase,
 	],
 }
 
+const resolvedCache = {}
+
 resolvers.resolve = function (url) {
+	if (url in resolvedCache) {
+		return resolvedCache[url]
+	}
+
 	let results = []
 	Object.keys(wikibases).forEach((name) => {
 		this.list.forEach((resolver) => {
 			const context = { ...wikibases[name], id: name }
 			if (resolver.applies(url, context)) {
-				results.push(resolver.resolve(url, context))
+				const resolved = resolver.resolve(url, context)
+				resolvedCache[url] = resolvedCache[url] ? [...resolvedCache[url], resolved] : [resolved]
+				
+				results.push(resolved)
 			}
 		})
 	})

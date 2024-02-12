@@ -1,5 +1,5 @@
-export const wikidata = {
-	id: 'wikidata',
+export const wikibase = {
+	id: 'wikibase',
 	getRegex: function (url) {
 		const baseUrl = url.replace(/[.*+?^${}/()|[\]\\]/g, "\\$&")
 		const pathPrefix = 'w(?:iki\\/|\\/index\\.php\\?title=)'
