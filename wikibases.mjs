@@ -4,6 +4,7 @@ const wikibases = {
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		props: {
 			shortTitle: 'P1813',
+			unitSymbol: 'P5061',
 		}
 	},
 	testWikidata: {

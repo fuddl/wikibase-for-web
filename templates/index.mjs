@@ -58,6 +58,11 @@ const templateDefinition = [
 		preprocess: true,
 	},
 	{
+		id: 'thi',
+		postprocess: true,
+		preprocess: true,
+	},
+	{
 		preprocess: true,
 		id: 'tempus',
 	},
