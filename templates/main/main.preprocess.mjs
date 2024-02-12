@@ -1,3 +1,5 @@
+import { filterBadClaims } from '../../modules/filterBadValues.mjs'
+
 export default ({ vars, instance }) => {
 	
 	// sort claims by /MediaWiki:Wikibase-SortedProperties
@@ -26,16 +28,5 @@ export default ({ vars, instance }) => {
 	vars.headline_links = browser.i18n.getMessage(vars.urls.length === 1 ? 'link' : 'links')
 
 	// filter for best values
-	vars.mainClaims.forEach((claim, ckey) => {
-	    const preferred = claim.some(statement => statement.rank === 'preferred');
-
-	    const filteredClaim = claim.filter(statement => {
-	        // Keep the statement if it's preferred or if there's no preferred and it's normal
-	        // Always remove deprecated
-	        return statement.rank !== 'deprecated' && (!preferred || statement.rank === 'preferred')
-	    });
-
-	    // Assign the filtered array back to the mainClaims
-	    vars.mainClaims[ckey] = filteredClaim
-	})
+	vars.mainClaims = filterBadClaims(vars.mainClaims)
 }

@@ -40,6 +40,10 @@ const templateDefinition = [
 		preprocess: true,
 	},
 	{
+		postprocess: true,
+		id: 'spot',
+	},
+	{
 		id: 'annote',
 		style: true,
 	},

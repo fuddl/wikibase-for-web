@@ -5,7 +5,16 @@ const wikibases = {
 		props: {
 			shortTitle: 'P1813',
 			unitSymbol: 'P5061',
-		}
+			formatterURL: 'P1630',
+			thirdPartyFormatterURL: 'P3303',
+			mobileFormatterURL: 'P7250',
+			appliesIfRegularExpressionMatches: 'P8460', 
+		},
+		badResolvers: [
+			'https://wikidata-externalid-url.toolforge.org/',
+			'https://web.archive.org/web/',
+			'https://resolve.eidr.org/',
+		]
 	},
 	testWikidata: {
 		instance: 'https://test.wikidata.org',

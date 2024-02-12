@@ -1,6 +1,6 @@
 {% if mainsnak.snaktype == 'value' %}
     {% if mainsnak.datatype == 'external-id' %}
-        <code>{{ mainsnak.datavalue.value | e }}</code>
+        {% include 'spot' with { value: mainsnak.datavalue.value, property: mainsnak.property } %}
     {% elseif mainsnak.datatype in ['wikibase-item', 'wikibase-property'] %}
         {% include 'thing' with mainsnak.datavalue.value %}
     {% elseif mainsnak.datatype == 'time' %}
