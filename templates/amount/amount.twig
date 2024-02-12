@@ -1,5 +1,7 @@
 <span>
 	{{- number -}}
 	{{- ' ' -}}
-	{%- include 'thing' with { url: unit } -%}
+	{%- if unit != 1 -%} 
+		{%- include 'thing' with { url: unit } -%}
+	{%- endif -%}
 </span>
