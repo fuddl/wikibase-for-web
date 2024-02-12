@@ -7,7 +7,7 @@ export const unitSymbol = {
 			FILTER (?language in ('${instance.languages.join("', '")}'))
 		} order by desc(strlen(?u))
 	`,
-	cacheTag: ({ instance, params }) => `${params.subject}:${instance.props.shortTitle}:${instance.languages.join("', '")}`,
+	cacheTag: ({ instance, params }) => `${params.subject}:${instance.props.unitSymbol}:${instance.languages.join("', '")}`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
 			return []

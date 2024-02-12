@@ -6,10 +6,10 @@ export const wikibase = {
 		const namespaces = '(?:Special:WhatLinksHere\\/|Talk:|Item:|Lexeme:|Property:)?'
 		return new RegExp(`^${baseUrl}\\/${pathPrefix}${namespaces}([QMPL]\\d+)`)
 	},
-	applies: function (location, context) {
-		return location.match(this.getRegex(context.instance)) !== null
+	applies: function (location, { wikibase }) {
+		return location.match(this.getRegex(wikibase.instance)) !== null
 	},
-	resolve: function (location, context) {
-		return `${context.id}:${location.match(this.getRegex(context.instance))[1]}`
+	resolve: function (location, { wikibase, wikibaseID }) {
+		return [`${wikibaseID}:${location.match(this.getRegex(wikibase.instance))[1]}`]
 	}
 }
