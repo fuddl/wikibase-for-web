@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "diff-dom": "^5.1.2",
+    "leaflet": "^1.9.4",
     "normalize.css": "^8.0.1",
     "twig": "^1.17.1",
     "wikibase-sdk": "^9.2.4"

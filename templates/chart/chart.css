@@ -8,6 +8,8 @@
 	padding: .25em;
 	background-color: #e6e6ff;
 	text-align: left;
+	font-weight: normal;
+	font-size: .75em;
 }
 
 .chart__object {

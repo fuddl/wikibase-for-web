@@ -83,7 +83,9 @@ const templateDefinition = [
 		id: 'earl',
 	},
 	{
-		id: 'nerd',
+		preprocess: true,
+		style: true,
+		id: 'map',
 	},
 ]
 
