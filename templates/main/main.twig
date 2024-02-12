@@ -9,7 +9,7 @@
 		{% include 'remark' with claim %}
 	{% endfor %}
 	{% if urls %}
-		<h3>Links</h3>
+		<h3>{{ headline_links }}</h3>
 		{% include 'register' with { claims: urls } %}
 	{% endif %}
 	{% if externalIds %}
