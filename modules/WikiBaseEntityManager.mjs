@@ -34,9 +34,13 @@ class WikiBaseEntityManager {
 		this.entities.find(entity => entity.id === id) || this.entities.push({ id: id })
 	}
 
-	async activate(id) {
+	addEntities(ids) {
+		ids.map((id) => this.addEntity(id))
+	}
+
+	async activate(ids) {
 		this.entities.forEach((entity) => {
-			entity.active = entity.id === id
+			entity.active = ids.includes(entity.id)
 		})
 
 		await Promise.all(this.entities.map(async (entity) => {

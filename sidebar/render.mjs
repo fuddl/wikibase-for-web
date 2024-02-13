@@ -47,42 +47,41 @@ async function render(manager) {
 		return console.debug(args)
 	});
 
-	const render = await manager.entities.map(async (entity) => {
-		if (entity.active) {
-			const mainTemplate = Twig.twig({
-				data: `{{ include_main(_context) }}`,
-			});
-			const idComponents = manager.extractIdComponents(entity.id)
-			templates.forEach(function (template) {
-				Twig.extendFunction(`include_${template.id}`, function(args, context) {
-					const subTemplate = Twig.twig({
-						data: template.template,
-					})
-					const processedArgs = structuredClone(args)
-					if (template.preprocess) {
-						try {
-							template.preprocess({
-								vars: processedArgs, 
-								context: context,
-								instance: manager.getInstance(idComponents.instance),
-								manager: manager,
-							})
-						} catch (e) {
-							console.error(e)
-						}
-					}
-					if (template.style) {
-						template.style.forEach((path) => { requreStylesheet(path) })
-					}
-					return subTemplate.render({ ...processedArgs, context: context })
-				})
-			})
+	const entitiesForRender = manager.entities.filter((entity) => entity.active)
 
-			return mainTemplate.render({...entity.data, ...idComponents})
-		} else {
-			return ''
-		}
+	const render = await entitiesForRender.map(async (entity) => {
+		const mainTemplate = Twig.twig({
+			data: `{{ include_main(_context) }}`,
+		});
+		const idComponents = manager.extractIdComponents(entity.id)
+		templates.forEach(function (template) {
+			Twig.extendFunction(`include_${template.id}`, function(args, context) {
+				const subTemplate = Twig.twig({
+					data: template.template,
+				})
+				const processedArgs = structuredClone(args)
+				if (template.preprocess) {
+					try {
+						template.preprocess({
+							vars: processedArgs, 
+							context: context,
+							instance: manager.getInstance(idComponents.instance),
+							manager: manager,
+						})
+					} catch (e) {
+						console.error(e)
+					}
+				}
+				if (template.style) {
+					template.style.forEach((path) => { requreStylesheet(path) })
+				}
+				return subTemplate.render({ ...processedArgs, context: context })
+			})
+		})
+
+		return mainTemplate.render({...entity.data, ...idComponents, selecting: entitiesForRender.length > 1})
 	})
+
 	const rendered = await Promise.all(render)
 	const dd = new DiffDOM()
 	const diff = dd.diff(document.body, `<body>${rendered.join('')}</body>`)

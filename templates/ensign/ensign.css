@@ -1,5 +1,20 @@
 .ensign {
-  margin-bottom: 2em;
+  color: inherit;
+  display: block;
+}
+
+a.ensign {
+  padding: 1em;
+  background: #55555522;
+  text-decoration: none;
+}
+
+.ensign__scope {
+  background: var(--platform, var(--ink));
+  color: var(--paper);
+  font-size: .75em;
+  padding: 0 .25em;
+  width: max-content;
 }
 
 .ensign__title {

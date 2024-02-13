@@ -1,4 +1,7 @@
-<header class="ensign">
+{% set tag = selecting ? 'a' : 'div' %}
+
+<{{ tag }} class="ensign" {% if selecting %}href="{{ canonical }}"{% endif %}>
+	<div class="ensign__scope">{{ instancename }}</div>
 	<h1 class="ensign__title" lang="{{ title.language }}">{{ title.value | e }}</h1>
 	{% spaceless %}
 		<small class="ensign__id">
@@ -8,4 +11,4 @@
 	<p class="ensign__description" lang="{{ description.language }}">
 		{{ description.value | e }}
 	</p>
-</header>
+</{{ tag }}>

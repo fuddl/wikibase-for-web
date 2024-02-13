@@ -14,13 +14,13 @@ function getCurrentTab() {
     });
 }
 
-async function updateSidebar(id) {
+async function updateSidebar(ids) {
 	try {
 		await browser.runtime.sendMessage(
 			browser.runtime.id,
 			{
 				type: 'display_entity',
-				id: id,
+				ids: ids,
 			},
 		)
 	} catch (error) {
@@ -35,8 +35,8 @@ async function resolveUrl(url) {
 async function resolveAndUpdateSidebar(url) {
 	const results = await resolveUrl(url)
 	if (results) {
-		await updateSidebar(results[0])
-		return results[0]
+		await updateSidebar(results)
+		return results
 	}
 }
 

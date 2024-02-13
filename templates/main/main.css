@@ -9,7 +9,6 @@
 }
 
 main {
-  min-height: 100vh;
   background: var(--paper);
   padding: 1em;
 }
@@ -237,7 +236,6 @@ form input {
 }
 
 main {
-  min-height: 100vh;
   background: white;
   padding: 1em;
 }

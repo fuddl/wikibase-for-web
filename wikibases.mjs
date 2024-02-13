@@ -2,6 +2,8 @@ import { WBK } from './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js'
 
 const wikibases = {
 	wikidata: {
+		name: 'Wikidata',
+		color: '#069',
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		props: {
@@ -32,21 +34,31 @@ const wikibases = {
 		]
 	},
 	testWikidata: {
+		name: 'Wikidata Test',
+		color: 'black',
 		instance: 'https://test.wikidata.org',
 	},
 	osmWiki: {
+		name: 'OpenStreetMap Wiki',
+		color: '#ded',
 		instance: 'https://wiki.openstreetmap.org',
 		sparqlEndpoint: 'https://sophox.org/sparql',
 	}, 
 	datatrek: {
+		name: 'DataTrek',
+		color: '#00a300',
 		instance: 'https://data.wikitrek.org',
   		wgScriptPath: '/dt',
 	},
 	wikibaseWorld: {
+		name: 'Wikibase World',
+		color: '#394fa4',
 		instance: 'https://wikibase.world',
 		sparqlEndpoint: 'https://wikibase.world/query/sparql',
 	},
 	commons: {
+		name: 'Wikimedia Commons',
+		color: '#36c',
 		instance: 'https://commons.wikimedia.org',
 		sparqlEndpoint: 'https://wikibase.world/query/sparql',
 	}

@@ -29,4 +29,5 @@ export default ({ vars, instance }) => {
 
 	// filter for best values
 	vars.mainClaims = filterBadClaims(vars.mainClaims)
+	vars.color = instance.color
 }
