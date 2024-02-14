@@ -1,3 +1,5 @@
+import { requreStylesheet } from '../../modules/requreStylesheet.mjs'
+
 async function loadTemplate(name) {
 	return await fetch(browser.runtime.getURL(`templates/${name}/${name}.twig`)).then(res => res.text())
 }
@@ -98,21 +100,87 @@ const templateDefinition = [
 	},
 ]
 
-export const Templates = await Promise.all(templateDefinition.map(async (item) => {
-	const template = await loadTemplate(item.id)
-	if (item.preprocess) {
-		item.preprocess = await loadPreprocess(item.id)
+Twig.extendFunction('debug', function(args) {
+	return console.debug(args)
+});
+
+
+class templateRenderer {
+	constructor(manager) {
+		this.manager = manager
+		this.rootTemplate = `{{ include_main(_context) }}`
 	}
-	if (item.postprocess) {
-		item.postprocess = await loadPostprocess(item.id)
+ 	getDeepestContext (obj) {
+ 		return obj?.context ? this.getDeepestContext(obj.context) : obj
+ 	}
+	async init () {	
+		this.templates = await Promise.all(templateDefinition.map(async (item) => {
+			const template = await loadTemplate(item.id)
+			if (item.preprocess) {
+				item.preprocess = await loadPreprocess(item.id)
+			}
+			if (item.postprocess) {
+				item.postprocess = await loadPostprocess(item.id)
+			}
+			if (item?.style === true) {
+				item.style = [
+					browser.runtime.getURL(`templates/${item.id}/${item.id}.css`)
+				]
+			}
+			item.template = template
+				.replace(/{%(-)?\s+include '([^']+)'\s(-)?%}/gm, `{{$1 include_$2({}, _context) $3}}`)
+				.replace(/{%(-)?\s+include '([^']+)'\s+with\s+([^%]+)\s(-)?%}/gm, `{{$1 include_$2($3, _context) $4}}`)
+
+			return item
+		}))
+		this.templates.forEach((template) => {
+			Twig.extendFunction(`include_${template.id}`, (args, context) => {
+				const subTemplate = Twig.twig({
+					data: template.template,
+				})
+				const processedArgs = structuredClone(args)
+				if (template.preprocess) {
+					try {
+						template.preprocess({
+							vars: processedArgs, 
+							context: this.getDeepestContext(context),
+							manager: this.manager,
+						})
+					} catch (e) {
+						console.error(e)
+					}
+				}
+				if (template.style) {
+					template.style.forEach((path) => { requreStylesheet(path) })
+				}
+				return subTemplate.render({ ...processedArgs, context: context })
+			})
+		})
 	}
-	if (item?.style === true) {
-		item.style = [
-			browser.runtime.getURL(`templates/${item.id}/${item.id}.css`)
-		]
+	applyPostprocess = async (dom) => {
+		await Promise.all(this.templates.map((template) => {
+			if (!template.postprocess) {
+				return
+			}
+			dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
+				const instance = element.closest('[data-instance]').dataset.instance
+				if (!element?.dataset.postprocessed) {
+					await template.postprocess({
+						element: element, 
+						manager: this.manager,
+						instance: this.manager.getInstance(instance),
+						addEvents: !('eventsAdded' in element),
+					})
+					element.eventsAdded = true
+					element.dataset.postprocessed = true
+				}
+			})
+		}))
 	}
-	item.template = template
-		.replace(/{%(-)?\s+include '([^']+)'\s(-)?%}/gm, `{{$1 include_$2({}, _context) $3}}`)
-		.replace(/{%(-)?\s+include '([^']+)'\s+with\s+([^%]+)\s(-)?%}/gm, `{{$1 include_$2($3, _context) $4}}`)
-	return item
-}));
+	renderRoot(data) {
+		const rootTemplat = Twig.twig({ data: this.rootTemplate })
+		return rootTemplat.render(data)
+	}
+}
+
+export default templateRenderer

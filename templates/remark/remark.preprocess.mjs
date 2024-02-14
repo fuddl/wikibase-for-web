@@ -3,5 +3,5 @@ export default ({ vars }) => {
 	for (const object of vars) {
 		vars.objects.push(object)
 	}
-	vars.verb = vars[0].mainsnak.property
+	vars.verb = vars[0].mainsnak.propertyGlobalID
 }

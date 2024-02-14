@@ -5,7 +5,7 @@
                 <tr>
                     {% if loop.first %}
                         <th class="chart__verb" rowspan="{{ claim | length }}">
-                            {% include 'thin' with { id: object.mainsnak.property } %}
+                            {% include 'thin' with { globalID: object.mainsnak.propertyGlobalID } %}
                         </th>
                     {% endif %}
                     <td id="{{ object.id }}" class="chart__object">

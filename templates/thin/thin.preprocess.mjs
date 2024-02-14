@@ -1,11 +1,11 @@
 import { objectGetFirst } from '../../modules/objectGetFirst.mjs'
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 
-export default ({ vars, context, instance, manager }) => {
-	vars.globalId = vars.id ? `${instance.id}:${vars.id}` : vars.url ? manager.idFromEntityUrl(vars.url) : null
+export default ({ vars, context, manager }) => {
+	const instance = manager.getInstance(context.instance)
 	
-	if (vars.globalId in manager.labelsAndDescrptionsCache) {
-		const cached = manager.labelsAndDescrptionsCache[vars.globalId]
+	if (vars.globalID in manager.labelsAndDescrptionsCache) {
+		const cached = manager.labelsAndDescrptionsCache[vars.globalID]
 		vars.label = getByUserLanguage(cached.labels)
 		const description = getByUserLanguage(cached.descriptions)
 		vars.description = description?.value

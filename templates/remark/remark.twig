@@ -1,19 +1,19 @@
 <dl class="remark remark--inline" id="{{ verb }}">
-    <dt class="remark__verb">
-        {% include 'thin' with { id: verb } %}
-    </dt>
-    {% for object in objects %}
-        <dd id="{{ object.id }}" class="remark__objects">
-            <div class="remark__object">
-                <div class="remark__object__main">
-                    {% include 'snack' with { mainsnak: object.mainsnak } %}
-                </div>
-                {% if object.qualifiers %} 
-                    <div class="remark__qualifiers">
-                        {% include 'snack' with { qualifiers: object.qualifiers } %} 
-                    </div>
-                {% endif %} 
-            </div>
-        </dd>
-    {% endfor %}
+	<dt class="remark__verb">
+		{% include 'thin' with { globalID: verb } %}
+	</dt>
+	{% for object in objects %}
+		<dd id="{{ object.id }}" class="remark__objects">
+			<div class="remark__object">
+				<div class="remark__object__main">
+					{% include 'snack' with { mainsnak: object.mainsnak } %}
+				</div>
+				{% if object.qualifiers %} 
+					<div class="remark__qualifiers">
+						{% include 'snack' with { qualifiers: object.qualifiers } %} 
+					</div>
+				{% endif %} 
+			</div>
+		</dd>
+	{% endfor %}
 </dl>

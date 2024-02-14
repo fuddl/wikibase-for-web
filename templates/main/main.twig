@@ -1,4 +1,4 @@
-<main data-instance="{{ instance }}" id="{{ id }}" {% if color %}style="--platform: {{ color }}"{% endif %}>
+<main data-instance="{{ instance }}" id="{{ globalID }}" {% if color %}style="--platform: {{ color }}"{% endif %}>
 	{% if labels and descriptions %}
 		{% include 'ensign' with { 
 			labels: labels,

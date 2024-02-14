@@ -4,7 +4,7 @@
             {% for object in claim %}
                 {% if loop.first %}
                     <strong class="register__label">
-                        {% include 'thing' with { id: object.mainsnak.property } %}
+                        {% include 'thing' with { globalID: object.mainsnak.propertyGlobalID } %}
                     </strong>
                 {% endif %}
                 <div id="{{ object.id }}" >

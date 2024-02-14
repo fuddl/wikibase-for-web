@@ -1,7 +1,8 @@
 import { filterBadClaims } from '../../modules/filterBadValues.mjs'
 
-export default ({ vars, instance }) => {
-	
+export default ({ vars, manager }) => {
+	const instance = manager.getInstance(vars.instance)
+
 	// sort claims by /MediaWiki:Wikibase-SortedProperties
 	if (instance?.propOrder?.length > 0) {
 		vars.claims = instance.propOrder.reduce((acc, prop) => {

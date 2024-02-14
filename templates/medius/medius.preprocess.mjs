@@ -1,4 +1,6 @@
-export default ({ vars, instance }) => {
+export default ({ vars, context, manager}) => {
+	const instance = manager.getInstance(context.instance)
+
 	const fileName = encodeURIComponent(vars.datavalue.value)
 	const mediaPrefix = {
 		'localMedia': `${instance.wikiRoot}/index.php?title=Special:Redirect/file/`,

@@ -3,7 +3,7 @@
 		{% for touple in qualifier %}
 			{% if loop.first %}
 				<dt class="annote__verb">
-					{% include 'thing' with { id: touple.property } %}
+					{% include 'thing' with { globalID: touple.propertyGlobalID } %}
 				</dt>
 			{% endif %}
 			<dd class="annote__object">

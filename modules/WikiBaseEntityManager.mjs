@@ -83,8 +83,38 @@ class WikiBaseEntityManager {
 		const url = this.getEntityUrl(globalId, props)
 
 		const result = await fetch(url).then(res => res.json())
-		const { id: internalId } = this.extractIdComponents(globalId)
-		return result.entities[internalId]
+		const { id: internalId, instance } = this.extractIdComponents(globalId)
+		return this.entityAddContext({
+			entity: result.entities[internalId],
+			globalId: globalId,
+			instance: instance,
+		})
+	}
+
+	entityAddContext({ entity, globalId, instance }) {
+		entity.instance = instance
+		const iterate = (item, prefix) => {
+			if (Array.isArray(item)) {
+				// If the item is an array, iterate over its elements
+				item.forEach((element) => iterate(element, prefix));
+			} else if (typeof item === 'object' && item !== null) {
+				// If the item is an object, iterate over its properties
+				for (const key in item) {
+					if (Object.hasOwnProperty.call(item, key)) {
+						if (key === 'id' && !item.globalID) {
+							item.globalID = `${instance}:${item[key]}`
+						} else if (key === 'property' && !item.propertyGlobalID) {
+							item.propertyGlobalID = `${instance}:${item[key]}`
+						} else {
+							// Otherwise, recursively call the function for nested objects/arrays
+							iterate(item[key], prefix);
+						}
+					}
+				}
+			}
+		}
+		iterate(entity)
+		return entity
 	}
 
 	async fetchPropOrder(globalId) {

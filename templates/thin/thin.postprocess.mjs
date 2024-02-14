@@ -2,7 +2,7 @@ import { objectGetFirst } from '../../modules/objectGetFirst.mjs'
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 import { isInViewport } from '../../modules/isInViewport.mjs'
 
-export default async ({ element, instance, manager, addEvents}) => {
+export default async ({ element, manager, instance, addEvents }) => {
 	if (!element?.dataset?.complete) {
 		isInViewport(element, async () => {
 			const shortTitles = await instance.query('shortTitle', { subject: element.dataset.id.split(':')[1] })
