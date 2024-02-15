@@ -1,0 +1,12 @@
+<nav class="pick">
+	{% for option in options %}
+		<a href="{{ option.url }}" class="pick__option" data-instance="{{ option.instance }}" data-id="{{ option.globalID }}">
+			<div class="pick__option-label" lang="{{ option.label.language }}">
+				{{ option.label.value }}
+			</div>
+			<div class="pick__option-description" lang="{{ option.description.language }}">
+				{{ option.description.value }}
+			</div>
+		</a>
+	{% endfor %}
+</nav>

@@ -1,11 +1,11 @@
 <main>
 	{% if activity == 'view' %}
 		{% for entity in entities %}
-			{% include 'entity' with entity.data %}
+			{% if entity.active %}
+				{% include 'entity' with entity.data %}
+			{% endif %}
 		{% endfor %}
-	{% elseif activity == 'choose' %}
-		<nav>
-			asd
-		</nav>
+	{% elseif activity == 'select' %}
+		{% include 'pick' with entities %}
 	{% endif %}
 </main>

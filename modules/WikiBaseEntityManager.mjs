@@ -54,11 +54,26 @@ class WikiBaseEntityManager {
 		this.render(this)
 	}
 
+	async selector(ids) {
+		this.entities.forEach((entity) => {
+			entity.selectable = ids.includes(entity.id)
+		})
+
+		await Promise.all(this.entities.map(async (entity) => {
+			if (entity.selectable && !entity.data) {
+				entity.data = await this.fetchEntity(entity.id)
+				await this.fetchPropOrder(entity.id)
+			}
+		}))
+		this.activity = 'select'
+		this.render(this)
+	}
+
 
 	
 	async addAndActivate(id) {
 		this.addEntity(id)
-		await this.activate(id)
+		await this.activate([id])
 	}
 
 	extractIdComponents(externalId) {

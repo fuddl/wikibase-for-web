@@ -81,6 +81,12 @@ const templateDefinition = [
 		style: true,
 	},
 	{
+		id: 'pick',
+		preprocess: true,
+		postprocess: true,
+		style: true,
+	},
+	{
 		id: 'play',
 	},
 	{
@@ -179,12 +185,13 @@ class templateRenderer {
 				return
 			}
 			dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
-				const instance = element.closest('[data-instance]').dataset.instance
+				const instanceWrapper = element.closest('[data-instance]')
+				const instance = instanceWrapper?.dataset?.instance
 				if (!element?.dataset.postprocessed) {
 					await template.postprocess({
 						element: element, 
 						manager: this.manager,
-						instance: this.manager.getInstance(instance),
+						instance: instance ? this.manager.getInstance(instance) : null,
 						addEvents: !('eventsAdded' in element),
 					})
 					element.eventsAdded = true
