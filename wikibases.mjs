@@ -61,6 +61,12 @@ const wikibases = {
 		color: '#36c',
 		instance: 'https://commons.wikimedia.org',
 		sparqlEndpoint: 'https://wikibase.world/query/sparql',
+	},
+	playground: {
+		name: 'Playground',
+		color: '#f0d722',
+		instance: 'https://playground.wikibase.cloud',
+		sparqlEndpoint: 'https://playground.wikibase.cloud/query/sparql',
 	}
 }
 
