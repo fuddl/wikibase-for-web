@@ -3,12 +3,6 @@
   display: block;
 }
 
-a.ensign {
-  padding: 1em;
-  background: #55555522;
-  text-decoration: none;
-}
-
 .ensign__scope {
   background: var(--platform, var(--ink));
   color: var(--paper);

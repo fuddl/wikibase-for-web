@@ -6,8 +6,9 @@ class WikiBaseEntityManager {
 		this.instances = wikibases
 		this.labelsAndDescrptionsCache = {}
 		this.entities = []
-		this.activateCallback = params.activateCallback
+		this.render = params.render
 		this.languages = params.languages
+		this.activity = 'view'
 
 		this.queryManager = new WikiBaseQueryManager()
 
@@ -49,8 +50,11 @@ class WikiBaseEntityManager {
 				await this.fetchPropOrder(entity.id)
 			}
 		}))
-		this.activateCallback(this)
+		this.activity = 'view'
+		this.render(this)
 	}
+
+
 	
 	async addAndActivate(id) {
 		this.addEntity(id)

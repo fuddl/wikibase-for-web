@@ -2,7 +2,7 @@ import { render } from './render.mjs'
 import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs'
 
 const manager = new WikiBaseEntityManager({
-	activateCallback: render,
+	render: render,
 	languages: navigator.languages,
 })
 
@@ -15,7 +15,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		}
 
 		(async () => {
-			await manager.activate(message.ids)
+			if (message.ids.length < 2) {
+				await manager.activate(message.ids)
+			} else {
+				await manager.selector(message.ids)
+			}
 		})()
 		return Promise.resolve('done')
 	}

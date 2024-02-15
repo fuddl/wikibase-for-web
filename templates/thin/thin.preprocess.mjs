@@ -1,8 +1,7 @@
 import { objectGetFirst } from '../../modules/objectGetFirst.mjs'
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 
-export default ({ vars, context, manager }) => {
-	const instance = manager.getInstance(context.instance)
+export default ({ vars, manager, instance }) => {
 	
 	if (vars.globalID in manager.labelsAndDescrptionsCache) {
 		const cached = manager.labelsAndDescrptionsCache[vars.globalID]

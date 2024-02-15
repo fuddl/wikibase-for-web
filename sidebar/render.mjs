@@ -8,14 +8,13 @@ async function render(manager) {
 	await renderer.init()
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 
-	const entitiesForRender = manager.entities.filter((entity) => entity.active)
-
-	const rendered = entitiesForRender.map((entity) => {
-		return renderer.renderRoot(entity.data)
+	const rendered = renderer.renderRoot({
+		entities: manager.entities,
+		activity: manager.activity,
 	})
 
 	const dd = new DiffDOM()
-	const diff = dd.diff(document.body, `<body>${rendered.join('')}</body>`)
+	const diff = dd.diff(document.body, `<body>${rendered}</body>`)
 	
 	dd.apply(document.body, diff)
 	

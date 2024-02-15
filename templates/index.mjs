@@ -15,12 +15,16 @@ async function loadPostprocess(name) {
 const templateDefinition = [
 	{
 		id: 'main',
-		preprocess: true,
 		style: true,
+		preprocess: true,
 	},
 	{
 		id: 'ensign',
 		style: true,
+		preprocess: true,
+	},
+	{
+		id: 'entity',
 		preprocess: true,
 	},
 	{
@@ -110,9 +114,19 @@ class templateRenderer {
 		this.manager = manager
 		this.rootTemplate = `{{ include_main(_context) }}`
 	}
- 	getDeepestContext (obj) {
- 		return obj?.context ? this.getDeepestContext(obj.context) : obj
- 	}
+	getInstance(obj) {
+		// Base case: if the current object is null or undefined, return false
+		if (!obj) return false
+
+		// If the current object has a key named 'instance', return the current object
+		if ('instance' in obj) return obj.instance
+
+		// Recursively search in the 'context' property if it exists
+		if (obj.context) return this.getInstance(obj.context)
+
+		// If none of the conditions are met, return false indicating 'instance' was not found
+		return false
+	}
 	async init () {	
 		this.templates = await Promise.all(templateDefinition.map(async (item) => {
 			const template = await loadTemplate(item.id)
@@ -141,9 +155,11 @@ class templateRenderer {
 				const processedArgs = structuredClone(args)
 				if (template.preprocess) {
 					try {
+						const contextInstance = this.getInstance(context)
 						template.preprocess({
 							vars: processedArgs, 
-							context: this.getDeepestContext(context),
+							instance: contextInstance ? this.manager.getInstance(contextInstance) : false,
+							context: context,
 							manager: this.manager,
 						})
 					} catch (e) {

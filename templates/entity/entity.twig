@@ -1,0 +1,20 @@
+<div data-instance="{{ instance }}" id="{{ globalID }}" {% if color %}style="--platform: {{ color }}"{% endif %}>
+	{% if labels and descriptions %}
+		{% include 'ensign' with { 
+			labels: labels,
+			descriptions: descriptions,
+			instance: instance,
+		} %}
+	{% endif %}
+	{% for claim in mainClaims %}
+		{% include 'remark' with claim %}
+	{% endfor %}
+	{% if urls %}
+		<h3>{{ headline_links }}</h3>
+		{% include 'register' with { claims: urls } %}
+	{% endif %}
+	{% if externalIds %}
+		<h3>{{ headline_ids }}</h3>
+		{% include 'chart' with { claims: externalIds } %}
+	{% endif %}
+</div>

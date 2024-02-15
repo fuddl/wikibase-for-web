@@ -1,5 +1,4 @@
-export default ({ vars, context, manager}) => {
-	const instance = manager.getInstance(context.instance)
+export default ({ vars, context, instance}) => {
 
 	const fileName = encodeURIComponent(vars.datavalue.value)
 	const mediaPrefix = {

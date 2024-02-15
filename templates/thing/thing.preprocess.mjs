@@ -1,9 +1,7 @@
 import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs'
 
-export default ({ vars, context, manager }) => {
-	const instance = manager.getInstance(context.instance)
-
-	//vars.href = manager.urlFromGlobalId(vars.globalID)
+export default ({ vars, instance, manager }) => {
+	vars.href = manager.urlFromGlobalId(vars.globalID)
 
 	if (vars.globalID in manager.labelsAndDescrptionsCache) {
 		const cached = manager.labelsAndDescrptionsCache[vars.globalID]
