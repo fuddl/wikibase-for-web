@@ -1,4 +1,4 @@
-export default ({ vars }) => {
+export default ({ vars, manager }) => {
 	vars.datetime = vars.time.replace(/^(\+|\-)/, '')
 	const negative = vars.time.startsWith('-')
 
@@ -60,6 +60,6 @@ export default ({ vars }) => {
 	}
 
 	vars.calendar = {
-		url: vars.calendarmodel
+		globalID: manager.idFromEntityUrl(vars.calendarmodel)
 	}
 }
