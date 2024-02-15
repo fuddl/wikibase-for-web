@@ -1,3 +1,14 @@
 .pic__placeholder {
 	vertical-align: bottom;
+	display: block;
+}
+
+.pic--scaleable {
+	padding: 1em;
+	box-sizing: border-box;
+	display: block;
+}
+
+.pic--scaleable > .pic__placeholder {
+	width: 100%;
 }

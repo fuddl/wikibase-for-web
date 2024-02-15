@@ -1,4 +1,4 @@
-<picture class="pic">
+<picture class="pic {% if scaleable %}pic--scaleable{% endif %}">
 	{% for source in sources %}
 		<source srcset="{{ source.srcSet }}" />
 	{% endfor %}

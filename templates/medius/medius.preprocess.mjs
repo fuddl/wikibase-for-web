@@ -16,6 +16,7 @@ export default ({ vars, context, manager}) => {
 	if (fileName.match(/\.svg$/i)) {
 		vars.image = {
 			src: srcUrl,
+			scaleable: true,
 		}
 	} else if (fileName.match(/\.(jpe?g|png|gif|tiff?|stl)$/i)) {
 		vars.image = {
