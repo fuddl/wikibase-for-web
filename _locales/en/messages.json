@@ -93,6 +93,16 @@
       }
     }
   },
+  "date_bce": {
+    "message": "$DATE$ BCE",
+    "description": "A date before the year 0.",
+    "placeholders": {
+      "date" : {
+        "content" : "$1",
+        "example" : "2032-12-34"
+      }
+    }
+  },
   "date_year": {
     "message": "$NUMBER$",
     "description": "The name of a year.",
@@ -142,6 +152,28 @@
       "number" : {
         "content" : "$2",
         "example" : "2"
+      }
+    }
+  },
+  "date_year_range": {
+    "message": "$year$ ±$DELTA$ years",
+    "description": "A range between two years.",
+    "placeholders": {
+      "year" : {
+        "content" : "$1",
+        "example" : "1967"
+      },
+      "lower" : {
+        "content" : "$2",
+        "example" : "1966"
+      },
+      "upper" : {
+        "content" : "$3",
+        "example" : "1969"
+      },
+      "delta" : {
+        "content" : "$4",
+        "example" : "5.000"
       }
     }
   }
