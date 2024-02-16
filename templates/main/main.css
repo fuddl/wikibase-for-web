@@ -4,6 +4,7 @@
   --link: #3366cc;
   --mark: #eaf3ff;
   --code: #c8ccd1;
+  --border: #a2a9b1;
   --contour: #eaecf0;
   --shadow: #00000011;
 }
@@ -26,6 +27,7 @@ main {
     --ink: #F7F8F9;
     --link: #7198F7;
     --mark: #27292D;
+    --border: #a2a9b1;
     --code: #55595D;
     --contour: #27292D;
     --shadow: #F7F8F911;
@@ -118,8 +120,15 @@ video {
   word-wrap: anywhere;
 }
 
-h2 {
+h1 {
+  font-family: Linux Libertine, Georgia, Times, pIqaD, FairfaxHaxHD, serif;
   font-size: 1.7em;
+  font-weight: 400;
+  margin: .5em 0;
+}
+
+h2 {
+  font-size: 1.5em;
   font-family: "Linux Libertine", "Georgia", "Times", 'pIqaD', FairfaxHaxHD, serif;
   font-weight: normal;
 }
@@ -215,7 +224,7 @@ form input {
   box-sizing: border-box;
   padding: 6px 8px;
   border-radius: 2px;
-  border: 1px solid #a2a9b1;
+  border: 1px solid var(--border);
   font-size: 16px;
   flex-grow: 1;
 }
@@ -223,8 +232,8 @@ form input {
 .footer {
   position: sticky;
   bottom: 0;
-  border-top: 1px solid #eaecf0;
-  background: white;
+  border-top: 1px solid var(--border);
+  background: var(--paper);
   padding: 1em;
 }
 

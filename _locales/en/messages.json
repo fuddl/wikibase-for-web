@@ -1,4 +1,12 @@
 {
+  "ambiguous_url_title": {
+    "message": "Multiple Matches Found",
+    "description": "Title of a disambiguation screen."
+  },
+  "ambiguous_url_intro": {
+    "message": "This url was matched to multiple wikibase entites. Please select the desired entity.",
+    "description": "Message shown when a url was matched to multiple entitis over a selection."
+  }, 
   "unknown": {
     "message": "unknown",
     "description": "The snaktype unknown"

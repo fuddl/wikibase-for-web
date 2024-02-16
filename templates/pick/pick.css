@@ -1,5 +1,30 @@
 .pick__option {
 	color: inherit;
 	text-decoration: none;
+	background-color: var(--paper);
 	padding: 1em;
+	border: 1px solid #a2a9b1;
+	display: block;
+}
+
+.pick__option:hover {
+	background-color: #eaecf0;
+	text-decoration: none;
+}
+
+.pick__option:not(:first-child) {
+	margin-top: 1em;
+}
+
+.pick__option-description {
+	margin-top: .25em;
+}
+
+.pick__title {
+	margin-top: 0;
+}
+
+.pick__option-id {
+	font-size: inherit;
+	opacity: .75;
 }

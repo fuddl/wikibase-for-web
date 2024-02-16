@@ -14,4 +14,6 @@ export default ({ vars, manager }) => {
 		}
 	}
 	vars.options = options
+	vars.intro = browser.i18n.getMessage('ambiguous_url_intro')
+	vars.title = browser.i18n.getMessage('ambiguous_url_title')
 }
