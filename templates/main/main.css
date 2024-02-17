@@ -327,3 +327,7 @@ small {
   font-size: .5em;
   line-height: 1;
 }
+
+.main__bar {
+  padding: 1em;
+}

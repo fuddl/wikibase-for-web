@@ -11,12 +11,18 @@ async function loadPostprocess(name) {
 	const dynamicModule = await import(browser.runtime.getURL(`templates/${name}/${name}.postprocess.mjs`))
 	return dynamicModule.default
 }
+async function loadEventsprocess(name) {
+	const dynamicModule = await import(browser.runtime.getURL(`templates/${name}/${name}.events.mjs`))
+	return dynamicModule.default
+}
+
 
 const templateDefinition = [
 	{
 		id: 'main',
 		style: true,
 		preprocess: true,
+		events: true,
 	},
 	{
 		id: 'ensign',
@@ -59,22 +65,25 @@ const templateDefinition = [
 	},
 	{
 		id: 'thing',
+		events: true,
 		postprocess: true,
 		preprocess: true,
 	},
 	{
 		id: 'thin',
+		events: true,
 		postprocess: true,
 		preprocess: true,
 	},
 	{
 		id: 'thi',
+		events: true,
 		postprocess: true,
 		preprocess: true,
 	},
 	{
-		preprocess: true,
 		id: 'tempus',
+		preprocess: true,
 	},
 	{
 		id: 'pic',
@@ -181,21 +190,29 @@ class templateRenderer {
 	}
 	applyPostprocess = async (dom) => {
 		await Promise.all(this.templates.map((template) => {
-			if (!template.postprocess) {
+			if (!template.postprocess && !template.events) {
 				return
 			}
 			dom.querySelectorAll(`.${template.id}`).forEach(async (element) => {
 				const instanceWrapper = element.closest('[data-instance]')
 				const instance = instanceWrapper?.dataset?.instance
-				if (!element?.dataset.postprocessed) {
+				if (template.postprocess && !element?.dataset.postprocessed) {
 					await template.postprocess({
 						element: element, 
 						manager: this.manager,
 						instance: instance ? this.manager.getInstance(instance) : null,
-						addEvents: !('eventsAdded' in element),
 					})
-					element.eventsAdded = true
 					element.dataset.postprocessed = true
+				}
+				if (template.events) {
+					template.events = await loadEventsprocess(template.id)
+					const events = template.events({ element: element, manager: this.manager })
+					events.forEach((event) => {
+						if (event.target && !event.target?.eventsAttatched) {
+							event.target.addEventListener(event.type, event.listener)
+							event.target.eventsAttatched = true
+						}
+					})
 				}
 			})
 		}))

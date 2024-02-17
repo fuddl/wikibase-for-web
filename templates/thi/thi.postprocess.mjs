@@ -25,7 +25,10 @@ export default async ({ element, instance, manager, addEvents}) => {
 	if (addEvents) {
 		element.addEventListener('click', async (e) => {
 			e.preventDefault()
-			await manager.addAndActivate(element.dataset.id)
+			manager.navigator.navigate({
+				activity: 'view',
+				id: element.dataset.id,
+			})
 		})
 	}
 }

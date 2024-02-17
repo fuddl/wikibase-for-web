@@ -33,6 +33,7 @@ export const urlMatchPattern = {
 				// label: label, @todo proposed label 
 				value: id,
 				case: prop.c ?? '',
+				specificity: prop.search.toString().length,
 			})
 		
 		}
@@ -45,7 +46,10 @@ export const urlMatchPattern = {
 		for (const property of properties) {
 			const results = await queryManager.query(wikibase, queryManager.queries.itemByExternalId, { prop: property.prop, id: property.value, case: property.case })
 			for (const entity of results) {
-				found.push(`${wikibase.id}:${entity}`)
+				found.push({
+					id: `${wikibase.id}:${entity}`,
+					specificity: property.specificity,
+				})
 			}
 		}
 		return found

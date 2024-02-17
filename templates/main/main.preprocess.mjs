@@ -1,4 +1,4 @@
-export default ({ vars }) => {
+export default ({ vars, manager }) => {
 	if (vars.activity == 'select') {
 		browser.sidebarAction.setIcon({
 			path: {
@@ -12,5 +12,8 @@ export default ({ vars }) => {
 			title: 'Disambiguate',
 		})
 
-	} 
+	}
+	if (manager.navigator.canGoBack()) {
+		vars.back = true
+	}
 }

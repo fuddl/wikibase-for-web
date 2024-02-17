@@ -35,6 +35,8 @@ resolvers.resolve = async function (url) {
 		}))
 	}))
 
+	results.sort((a, b) => b.specificity - a.specificity);
+
 	resolvedCache[url] = resolvedCache[url] ? [...resolvedCache[url], results] : [results]
 	
 	return results

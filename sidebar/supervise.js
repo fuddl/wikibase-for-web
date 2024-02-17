@@ -9,16 +9,19 @@ const manager = new WikiBaseEntityManager({
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "display_entity") {
 		try {
-			manager.addEntities(message.ids)
+			manager.addEntities(message.resolved)
 		} catch (e) {
 			console.error(e)
 		}
 
 		(async () => {
-			if (message.ids.length < 2) {
-				await manager.activate(message.ids)
+			if (message.resolved.length < 2) {
+				await manager.navigator.resetHistory({
+					activity: 'view',
+					id: message.resolved[0].id,
+				})
 			} else {
-				await manager.selector(message.ids)
+				await manager.selector(message.resolved)
 			}
 		})()
 		return Promise.resolve('done')

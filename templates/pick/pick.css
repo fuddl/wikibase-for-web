@@ -5,10 +5,11 @@
 	padding: 1em;
 	border: 1px solid #a2a9b1;
 	display: block;
+	user-select: none;
 }
 
 .pick__option:hover {
-	background-color: #eaecf0;
+	background-color: #eaecf022;
 	text-decoration: none;
 }
 

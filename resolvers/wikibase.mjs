@@ -10,6 +10,9 @@ export const wikibase = {
 		return location.match(this.getRegex(wikibase.instance)) !== null
 	},
 	resolve: function (location, { wikibase, wikibaseID }) {
-		return [`${wikibaseID}:${location.match(this.getRegex(wikibase.instance))[1]}`]
+		return [{
+			id: `${wikibaseID}:${location.match(this.getRegex(wikibase.instance))[1]}`,
+			specificity: 1000,
+		}]
 	}
 }

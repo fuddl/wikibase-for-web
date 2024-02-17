@@ -15,10 +15,4 @@ export default async ({ element, manager, addEvents }) => {
 			})()
 		}, '500px')
 	}
-	if (addEvents) {
-		element.addEventListener('click', async (e) => {
-			e.preventDefault()
-			await manager.addAndActivate(element.dataset.id)
-		})
-	}
 }

@@ -1,5 +1,6 @@
 import wikibases from '../wikibases.mjs'
 import WikiBaseQueryManager from '../queries/index.mjs'
+import NavigationManager from './NavigationManager.mjs'
 
 class WikiBaseEntityManager {
 	constructor(params) {
@@ -9,6 +10,7 @@ class WikiBaseEntityManager {
 		this.render = params.render
 		this.languages = params.languages
 		this.activity = 'view'
+		this.navigator = new NavigationManager
 
 		this.queryManager = new WikiBaseQueryManager()
 
@@ -28,6 +30,15 @@ class WikiBaseEntityManager {
 			// @todo add babel languages from instance
 			this.instances[name].languages = this.languages
 		}
+
+		this.navigator.onStateChange(async (state) => {
+			switch (state.activity) {
+				case 'view':
+					await this.addAndActivate(state.id)
+				break;
+			}
+			this.render(this)
+		})
 	}
 
 	// Method to add a new entity to the instances object
@@ -65,7 +76,6 @@ class WikiBaseEntityManager {
 				await this.fetchPropOrder(entity.id)
 			}
 		}))
-		this.activity = 'select'
 		this.render(this)
 	}
 
