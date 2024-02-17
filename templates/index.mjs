@@ -92,7 +92,7 @@ const templateDefinition = [
 	{
 		id: 'pick',
 		preprocess: true,
-		postprocess: true,
+		events: true,
 		style: true,
 	},
 	{
@@ -141,6 +141,15 @@ class templateRenderer {
 
 		// If none of the conditions are met, return false indicating 'instance' was not found
 		return false
+	}
+	elementToArray(element) {
+		// Check if the element is already a NodeList or an array
+		if (NodeList.prototype.isPrototypeOf(element) || Array.isArray(element)) {
+			return element; // Return the NodeList or array if it already is one
+		} else {
+			// Create an array and add the element to it
+			return [element];
+		}
 	}
 	async init () {	
 		this.templates = await Promise.all(templateDefinition.map(async (item) => {
@@ -209,8 +218,8 @@ class templateRenderer {
 					const events = template.events({ element: element, manager: this.manager })
 					events.forEach((event) => {
 						if (event.target) {
-							// Ensure event.target is treated as an array (or array-like) whether it's a NodeList or a single element
-							[].concat(event.target).forEach((target) => {
+
+							this.elementToArray(event.target).forEach((target) => {
 								if (!target?.eventsAttatched) {
 									target.addEventListener(event.type, event.listener);
 									target.eventsAttached = true;
