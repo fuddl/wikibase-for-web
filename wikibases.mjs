@@ -67,6 +67,20 @@ const wikibases = {
 		color: '#f0d722',
 		instance: 'https://playground.wikibase.cloud',
 		sparqlEndpoint: 'https://playground.wikibase.cloud/query/sparql',
+		props: {
+			instanceOf: 'P1',
+			urlMatchPattern: 'P26',
+			urlMatchReplacementValue: 'P27', 
+			hasCharacteristic: 'P28',
+			websiteTitleExtractPattern: 'P29', 
+		},
+		items: {
+			allCaps: 'Q7', 
+			lowercase: 'Q9',
+			obsoleteProperty: 'Q8',
+			caseInsensitive: 'Q10',
+			propertyLinkingToArticlesInMediaWikiWebsites: 'Q11',
+		}
 	}
 }
 

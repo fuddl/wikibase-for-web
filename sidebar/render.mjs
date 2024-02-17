@@ -2,16 +2,17 @@ import { DiffDOM } from '../node_modules/diff-dom/dist/module.js'
 import templateRenderer from '../templates/index.mjs'
 import { requreStylesheet } from '../../modules/requreStylesheet.mjs'
 
-async function render(manager) {
+async function render(manager, activity) {
 
 	const renderer = new templateRenderer(manager)
 	await renderer.init()
+
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 	requreStylesheet(browser.runtime.getURL('/style/index.css'))
 
 	const rendered = renderer.renderRoot({
 		entities: manager.entities,
-		activity: manager.activity,
+		activity: activity,
 	})
 
 	const dd = new DiffDOM()

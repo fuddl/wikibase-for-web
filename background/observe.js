@@ -20,7 +20,7 @@ async function updateSidebar(resolved) {
 			browser.runtime.id,
 			{
 				type: 'display_entity',
-				resolved: resolved,
+				...resolved,
 			},
 		)
 	} catch (error) {

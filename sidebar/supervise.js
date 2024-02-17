@@ -9,7 +9,7 @@ const manager = new WikiBaseEntityManager({
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "display_entity") {
 		try {
-			manager.addEntities(message.resolved)
+			manager.addEntities(message.resolved.map((item) => item.id))
 		} catch (e) {
 			console.error(e)
 		}
@@ -21,7 +21,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					id: message.resolved[0].id,
 				})
 			} else {
-				await manager.selector(message.resolved)
+				await manager.navigator.resetHistory({
+					activity: 'select',
+					ids: message.resolved.map((item) => item.id),
+				})
 			}
 		})()
 		return Promise.resolve('done')

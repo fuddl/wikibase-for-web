@@ -1,10 +1,10 @@
 export const urlMatchPattern = {
 	requiredProps: [
 		'hasCharacteristic',
-		'hasCharacteristic',
 		'instanceOf', 
 		'urlMatchPattern', 
 		'urlMatchReplacementValue',
+		'websiteTitleExtractPattern',
 	],
 	requiredItems: [
 		'allCaps', 
@@ -23,7 +23,7 @@ export const urlMatchPattern = {
 					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive', '')
 				)
 			) AS ?c)
-			BIND(REPLACE(STR(?prop), 'http://www.wikidata.org/entity/', '')	AS ?p ).
+			BIND(REPLACE(STR(?prop), '${instance.instance.replace(/^https/, 'http')}/entity/', '') AS ?p ).
 			${ instance?.props?.mastodonAddress ?
 				`FILTER (?p != '${instance.props.mastodonAddress}')
 			`: '' }

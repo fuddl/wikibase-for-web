@@ -41,6 +41,7 @@ class WikiBaseQueryManager {
 			return []
 		}
 
+
 		const queryCacheTag = `${instance.id}:${queryObject.cacheTag({ params, instance })}`
 
 		const cached = this.queryCached(instance, queryObject, params)

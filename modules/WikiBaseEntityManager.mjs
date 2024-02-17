@@ -35,9 +35,12 @@ class WikiBaseEntityManager {
 			switch (state.activity) {
 				case 'view':
 					await this.addAndActivate(state.id)
-				break;
+					break;
+				case 'select':
+					await this.selector(state.ids)
+					break;
 			}
-			this.render(this)
+			this.render(this, state.activity)
 		})
 	}
 
@@ -61,8 +64,6 @@ class WikiBaseEntityManager {
 				await this.fetchPropOrder(entity.id)
 			}
 		}))
-		this.activity = 'view'
-		this.render(this)
 	}
 
 	async selector(ids) {
@@ -73,10 +74,8 @@ class WikiBaseEntityManager {
 		await Promise.all(this.entities.map(async (entity) => {
 			if (entity.selectable && !entity.data) {
 				entity.data = await this.fetchEntity(entity.id)
-				await this.fetchPropOrder(entity.id)
 			}
 		}))
-		this.render(this)
 	}
 
 

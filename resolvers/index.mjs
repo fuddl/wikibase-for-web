@@ -20,6 +20,7 @@ resolvers.resolve = async function (url) {
 	}
 
 	let results = []
+	let candidates = []
 	await Promise.all(this.list.map(async (resolver) => {
 		await Promise.all(Object.keys(wikibases).map(async (name) => {
 			const context = {
@@ -27,8 +28,13 @@ resolvers.resolve = async function (url) {
 				queryManager: queryManager,
 				wikibaseID: name,
 			}
-			if (await resolver.applies(url, context)) {
+			const applies = await resolver.applies(url, context)
+			if (applies === true || applies.length > 0) {
 				const resolved = await resolver.resolve(url, context)
+
+				if (applies.length) {
+					candidates = [...candidates, ...applies]
+				}
 
 				results = [...results, ...resolved]
 			}
@@ -39,7 +45,10 @@ resolvers.resolve = async function (url) {
 
 	resolvedCache[url] = resolvedCache[url] ? [...resolvedCache[url], results] : [results]
 	
-	return results
+	return { 
+		resolved: results,
+		candidates: candidates,
+	}
 }
 
 export { resolvers }
