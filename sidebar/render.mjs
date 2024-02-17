@@ -7,6 +7,7 @@ async function render(manager) {
 	const renderer = new templateRenderer(manager)
 	await renderer.init()
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
+	requreStylesheet(browser.runtime.getURL('/style/index.css'))
 
 	const rendered = renderer.renderRoot({
 		entities: manager.entities,

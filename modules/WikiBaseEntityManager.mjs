@@ -160,7 +160,7 @@ class WikiBaseEntityManager {
 
 			} catch (e) {
 				console.log(`Failed to load prop order from ${instance.id}`)
-				console.error(e)
+				console.log(e)
 			}
 		}
 	}

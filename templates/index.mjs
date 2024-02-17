@@ -208,9 +208,17 @@ class templateRenderer {
 					template.events = await loadEventsprocess(template.id)
 					const events = template.events({ element: element, manager: this.manager })
 					events.forEach((event) => {
-						if (event.target && !event.target?.eventsAttatched) {
-							event.target.addEventListener(event.type, event.listener)
-							event.target.eventsAttatched = true
+						if (event.target) {
+							// Ensure event.target is treated as an array (or array-like) whether it's a NodeList or a single element
+							[].concat(event.target).forEach((target) => {
+								if (!target?.eventsAttatched) {
+									target.addEventListener(event.type, event.listener);
+									target.eventsAttached = true;
+									if (event?.initial) {
+										target.dispatchEvent(new Event(event.type));
+									}
+								}
+							});
 						}
 					})
 				}
