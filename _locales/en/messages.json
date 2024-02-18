@@ -1,4 +1,8 @@
 {
+  "disambiguation_title": {
+    "message": "Disambiguator",
+    "description": "Title of the sidebar when it shows disambiguation screen."
+  },
   "ambiguous_url_title": {
     "message": "Multiple Matches Found",
     "description": "Title of a disambiguation screen."

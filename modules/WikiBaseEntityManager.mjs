@@ -42,6 +42,34 @@ class WikiBaseEntityManager {
 			}
 			this.render(this, state.activity)
 		})
+
+		this.navigator.onStateChange((state) => {
+			switch (state.activity) {
+				case 'view':
+					const instance = this.getInstanceFromGlobalId(state.id)
+					browser.sidebarAction.setTitle({
+						title: instance.name,
+					})
+					if (instance.favicon) {
+						browser.sidebarAction.setIcon({
+							path: {
+								128: browser.runtime.getURL(instance.favicon),
+							},
+						})
+					} else {
+						browser.sidebarAction.setIcon({path: null})
+					}
+					break;
+				case 'select':
+					browser.sidebarAction.setTitle({
+						title: browser.i18n.getMessage('disambiguation_title'),
+					})
+					browser.sidebarAction.setIcon({path: {
+						128: browser.runtime.getURL('icons/disambiguate.svg'),
+					}})
+					break;
+			}
+		})
 	}
 
 	// Method to add a new entity to the instances object
@@ -94,6 +122,11 @@ class WikiBaseEntityManager {
 	}
 
 	getInstance(instance) {
+		return this.instances[instance]
+	}
+
+	getInstanceFromGlobalId(globalID) {
+		const { instance } = this.extractIdComponents(globalID)
 		return this.instances[instance]
 	}
 

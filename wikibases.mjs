@@ -6,6 +6,7 @@ const wikibases = {
 		color: '#069',
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
+		favicon: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Wikidata_Favicon_color.svg',
 		props: {
 			appliesIfRegularExpressionMatches: 'P8460', 
 			formatterURL: 'P1630',
@@ -71,6 +72,7 @@ const wikibases = {
 			instanceOf: 'P1',
 			urlMatchPattern: 'P26',
 			urlMatchReplacementValue: 'P27', 
+			formatterURL: 'P30',
 			hasCharacteristic: 'P28',
 			websiteTitleExtractPattern: 'P29', 
 		},
