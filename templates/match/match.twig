@@ -7,7 +7,7 @@
 					{% include 'thing' with { globalID: item.instance ~ ':' ~ item.snack.property } %}
 				</dt>
 				<dd class="match__value">{% include 'snack' with { mainsnak: item.snack } %}</dd>
-				<dd class="match__bool"><input type="checkbox" checked disabled /></dd>
+				<dd class="match__bool"><input type="checkbox" value="{{ key }}" checked disabled /></dd>
 			</dl>
 			{% include 'choose' %}
 		</div>

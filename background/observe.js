@@ -45,11 +45,11 @@ const tabs = {}
 browser.webNavigation.onCommitted.addListener(async function(details) {
 	const currentTab = await getCurrentTab()
 	if (details.tabId === currentTab.id) {
-		const entities = await resolveAndUpdateSidebar(details.url)
-		tabs[details.tabId] = entities
+		const results = await resolveAndUpdateSidebar(details.url)
+		tabs[details.tabId] = results
 	} else {
 		const results = await resolveUrl(details.url)
-		tabs[details.tabId] = results[0]
+		tabs[details.tabId] = results
 	}
 })
 
@@ -62,8 +62,8 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === "request_entity") {
 		const currentTab = await getCurrentTab()
-		const entities = await resolveAndUpdateSidebar(currentTab.url)
-		tabs[currentTab.id] = entities
+		const results = await resolveAndUpdateSidebar(currentTab.url)
+		tabs[currentTab.id] = results
 		return Promise.resolve("done")
 	}
 	return false;

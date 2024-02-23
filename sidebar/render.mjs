@@ -2,10 +2,11 @@ import { DiffDOM } from '../node_modules/diff-dom/dist/module.js'
 import templateRenderer from '../templates/index.mjs'
 import { requreStylesheet } from '../../modules/requreStylesheet.mjs'
 
-const renderer = new templateRenderer()
-await renderer.init(manager)
 
 async function render(manager, state) {
+
+	const renderer = new templateRenderer(manager)
+	await renderer.init()
 	
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 	requreStylesheet(browser.runtime.getURL('/style/index.css'))
