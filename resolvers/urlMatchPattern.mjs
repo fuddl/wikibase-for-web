@@ -29,10 +29,27 @@ export const urlMatchPattern = {
 			// @todo handle isbn numbers?
 
 			output.push({
-				prop: prop.property,
-				// label: label, @todo proposed label 
-				value: id,
+				snack: {
+					snaktype: 'value',
+					datatype: 'external-id',
+					property: prop.property,
+					datavalue: { value: id, type: 'string' },
+				},
+				// label: label, @todo proposed label
+				references: wikibase.props.referenceURL ? [{
+					snacks: {
+						[wikibase.props.referenceURL]: [{
+							property: wikibase.props.referenceURL,
+							datatype: 'url',
+							datavalue: {
+								value: location,
+								type: 'string',
+							}
+						}],
+					},
+				}] : [],
 				specificity: prop.search.toString().length,
+				instance: wikibase.id,
 			})
 		
 		}
@@ -42,10 +59,10 @@ export const urlMatchPattern = {
 		const properties = await this.applies(location, { wikibase, queryManager })
 		const entities = []
 		const found = []
-		for (const property of properties) {
+		for (const { snack } of properties) {
 			const results = await queryManager.query(wikibase, queryManager.queries.itemByExternalId, {
-				prop: property.prop,
-				id: property.value,
+				property: snack.property,
+				id: snack.datavalue.value,
 			})
 			for (const entity of results) {
 				found.push({

@@ -1,0 +1,30 @@
+.match__statement {
+	display: grid;
+	grid-template-columns: max-content auto;
+	grid-template-rows: auto auto;
+	grid-template-areas:	'check key' 
+							'check value';
+	grid-gap: 1em;
+	background: var(--paper);
+	border: 1px solid var(--contour);
+	padding: 7px 10px;
+}
+
+.match__bool {
+	grid-area: check;
+	margin: 0;
+}
+
+.match__key {
+	grid-area: key;
+}
+.match__key a {
+	color: inherit;
+}
+
+.match__value {
+	grid-area: value;
+	margin: 0;
+}
+
+/* state */

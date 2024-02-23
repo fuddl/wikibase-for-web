@@ -40,7 +40,7 @@ class WikiBaseEntityManager {
 					await this.selector(state.ids)
 					break;
 			}
-			this.render(this, state.activity)
+			this.render(this, state)
 		})
 
 		this.navigator.onStateChange((state) => {

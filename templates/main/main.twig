@@ -5,14 +5,16 @@
 		</nav>
 	{% endif %}
 	<main class="main__content">
-		{% if activity == 'view' %}
+		{% if state.activity == 'view' %}
 			{% for entity in entities %}
 				{% if entity.active %}
 					{% include 'entity' with entity.data %}
 				{% endif %}
 			{% endfor %}
-		{% elseif activity == 'select' %}
+		{% elseif state.activity == 'select' %}
 			{% include 'pick' with entities %}
+		{% elseif state.activity == 'match' %}
+			{% include 'match' with { items: state.candidates } %}
 		{% endif %}
 	</main>
 </div>

@@ -2,17 +2,17 @@ import { DiffDOM } from '../node_modules/diff-dom/dist/module.js'
 import templateRenderer from '../templates/index.mjs'
 import { requreStylesheet } from '../../modules/requreStylesheet.mjs'
 
-async function render(manager, activity) {
+const renderer = new templateRenderer()
+await renderer.init(manager)
 
-	const renderer = new templateRenderer(manager)
-	await renderer.init()
-
+async function render(manager, state) {
+	
 	requreStylesheet(browser.runtime.getURL('/node_modules/normalize.css/normalize.css'))
 	requreStylesheet(browser.runtime.getURL('/style/index.css'))
 
 	const rendered = renderer.renderRoot({
 		entities: manager.entities,
-		activity: activity,
+		state: state,
 	})
 
 	const dd = new DiffDOM()
@@ -22,7 +22,7 @@ async function render(manager, activity) {
 	
 	document.documentElement.style.scrollbarWidth = 'none'
 
-	await renderer.applyPostprocess(document.body, manager)
+	await renderer.applyPostprocess(document.body, state)
 
 	document.addEventListener('scroll', () => {
 		document.documentElement.style.scrollbarWidth = 'thin'

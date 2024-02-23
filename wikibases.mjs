@@ -19,7 +19,8 @@ const wikibases = {
 			unitSymbol: 'P5061',
 			urlMatchPattern: 'P8966',
 			urlMatchReplacementValue: 'P8967', 
-			websiteTitleExtractPattern: 'P10999', 
+			websiteTitleExtractPattern: 'P10999',
+			referenceURL: 'P854', 
 		},
 		items: {
 			allCaps: 'Q3960579', 

@@ -1,4 +1,5 @@
 export default ({ element, manager }) => [{
+	id: 'navigate',
 	target: element,
 	type: 'click',
 	listener: (e) => {

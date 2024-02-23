@@ -1,0 +1,15 @@
+<div class="match">
+	<h1>Match</h1>
+	{% for key, item in items %}
+		<div class="match__item" data-key="{{ key }}" data-instance="{{ item.instance }}">
+			<dl class="match__statement">
+				<dt class="match__key">
+					{% include 'thing' with { globalID: item.instance ~ ':' ~ item.snack.property } %}
+				</dt>
+				<dd class="match__value">{% include 'snack' with { mainsnak: item.snack } %}</dd>
+				<dd class="match__bool"><input type="checkbox" checked disabled /></dd>
+			</dl>
+			{% include 'choose' %}
+		</div>
+	{% endfor %}
+</div>

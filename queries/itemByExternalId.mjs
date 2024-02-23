@@ -1,12 +1,12 @@
 export const itemByExternalId = {
 	query: ({ instance, params }) => `
 		SELECT ?item WHERE {
-			?item wdt:${ params.prop } ${ params.case == 'insensitive' ? '?id' : `"${ params.id.replace(/"/g, '\\"') }"`}.
+			?item wdt:${ params.property } ${ params.case == 'insensitive' ? '?id' : `"${ params.id.replace(/"/g, '\\"') }"`}.
 			${ params.case == 'insensitive' ? `filter(lcase(?id) = "${ params.id }")` : ''}
 		}
 
 	`,
-	cacheTag: ({ instance, params }) => `external-id:${ params.id }:${ params.prop }:${ params.case }`,
+	cacheTag: ({ instance, params }) => `external-id:${ params.id }:${ params.property }:${ params.case }`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
 			return []

@@ -1,0 +1,15 @@
+<div class="choose">
+	<input class="choose__type" value="{{ item.search }}" type="search">
+	{{ item.search }}
+	<div class="choose__picker"></div>
+	<template class="choose__picker__pick">
+		<a class="choose__picker__pick">
+			<div class="choose__picker__pick-title">
+				<slot name="label" /> (<slot name="id" />)
+			</div>
+			<div class="choose__picker__pick-description">
+				<slot name="description" />
+			</div>
+		</a>
+	</template>
+</div>

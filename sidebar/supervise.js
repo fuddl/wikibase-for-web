@@ -9,21 +9,32 @@ const manager = new WikiBaseEntityManager({
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "display_entity") {
 		try {
-			manager.addEntities(message.resolved.map((item) => item.id))
+			if (message?.resolved) {
+				manager.addEntities(message.resolved.map((item) => item.id))
+			}
 		} catch (e) {
 			console.error(e)
 		}
 
 		(async () => {
-			if (message.resolved.length < 2) {
+			if (message?.resolved?.length > 0) {
+				if (message?.resolved.length < 2 && message?.resolved.length > 0) {
+					await manager.navigator.resetHistory({
+						activity: 'view',
+						id: message.resolved[0].id,
+					})
+				} else {
+					await manager.navigator.resetHistory({
+						activity: 'select',
+						ids: message.resolved.map((item) => item.id),
+					})
+				}
+			}
+
+			if (message?.candidates?.length > 0) {
 				await manager.navigator.resetHistory({
-					activity: 'view',
-					id: message.resolved[0].id,
-				})
-			} else {
-				await manager.navigator.resetHistory({
-					activity: 'select',
-					ids: message.resolved.map((item) => item.id),
+					activity: 'match',
+					candidates: message.candidates,
 				})
 			}
 		})()

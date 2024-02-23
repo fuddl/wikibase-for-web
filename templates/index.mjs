@@ -25,6 +25,10 @@ const templateDefinition = [
 		events: true,
 	},
 	{
+		id: 'match',
+		style: true,
+	},
+	{
 		id: 'ensign',
 		style: true,
 		preprocess: true,
@@ -32,6 +36,11 @@ const templateDefinition = [
 	{
 		id: 'entity',
 		preprocess: true,
+	},
+	{
+		id: 'choose',
+		events: true,
+		style: true,
 	},
 	{
 		id: 'remark',
@@ -151,6 +160,14 @@ class templateRenderer {
 			return [element];
 		}
 	}
+	debounce(func, wait) {
+	    let timeout;
+	    return function() {
+	        const context = this, args = arguments;
+	        clearTimeout(timeout);
+	        timeout = setTimeout(() => func.apply(context, args), wait);
+	    };
+	}
 	async init () {	
 		this.templates = await Promise.all(templateDefinition.map(async (item) => {
 			const template = await loadTemplate(item.id)
@@ -197,7 +214,7 @@ class templateRenderer {
 			})
 		})
 	}
-	applyPostprocess = async (dom) => {
+	applyPostprocess = async (dom, state) => {
 		await Promise.all(this.templates.map((template) => {
 			if (!template.postprocess && !template.events) {
 				return
@@ -218,11 +235,13 @@ class templateRenderer {
 					const events = template.events({ element: element, manager: this.manager })
 					events.forEach((event) => {
 						if (event.target) {
-
 							this.elementToArray(event.target).forEach((target) => {
-								if (!target?.eventsAttatched) {
+								if (!('eventsAttached' in target)) {
+									target.eventsAttached = []
+								}
+								if (!target?.eventsAttached.includes(event.id)) {
 									target.addEventListener(event.type, event.listener);
-									target.eventsAttached = true;
+									target.eventsAttached.push(event.id);
 									if (event?.initial) {
 										target.dispatchEvent(new Event(event.type));
 									}
