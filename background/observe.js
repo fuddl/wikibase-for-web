@@ -1,4 +1,5 @@
 import { resolvers } from '../resolvers/index.mjs';
+import { pollTabTitle } from '../modules/pollTabTitle.mjs'
 
 
 function getCurrentTab() {
@@ -28,12 +29,13 @@ async function updateSidebar(resolved) {
 	}
 }
 
-async function resolveUrl(url) {
-	return await resolvers.resolve(url)
+async function resolveUrl(url, tabId) {
+	const title = await pollTabTitle(tabId)
+	return await resolvers.resolve(url, title)
 }
 
-async function resolveAndUpdateSidebar(url) {
-	const results = await resolveUrl(url)
+async function resolveAndUpdateSidebar(url, tabId) {
+	const results = await resolveUrl(url, tabId)
 	if (results) {
 		await updateSidebar(results)
 		return results
@@ -45,10 +47,10 @@ const tabs = {}
 browser.webNavigation.onCommitted.addListener(async function(details) {
 	const currentTab = await getCurrentTab()
 	if (details.tabId === currentTab.id) {
-		const results = await resolveAndUpdateSidebar(details.url)
+		const results = await resolveAndUpdateSidebar(details.url, details.tabId)
 		tabs[details.tabId] = results
 	} else {
-		const results = await resolveUrl(details.url)
+		const results = await resolveUrl(details.url, details.tabId)
 		tabs[details.tabId] = results
 	}
 })
@@ -62,7 +64,7 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === "request_entity") {
 		const currentTab = await getCurrentTab()
-		const results = await resolveAndUpdateSidebar(currentTab.url)
+		const results = await resolveAndUpdateSidebar(currentTab.url, currentTab.id)
 		tabs[currentTab.id] = results
 		return Promise.resolve("done")
 	}

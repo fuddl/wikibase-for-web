@@ -3,6 +3,7 @@ export default ({ element, manager, state }) => [{
 	target: element.querySelector('.choose__type'),
 	type: 'input',
 	debounce: 250,
+	initial: true,
 	listener: async function (e) {
 		const key = this.closest('[data-key]').dataset.key
 		if (this.value === '' || state?.candidates[key]?.search === this.value) {

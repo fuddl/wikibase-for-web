@@ -14,7 +14,7 @@ const resolvers = {
 
 const resolvedCache = {}
 
-resolvers.resolve = async function (url) {
+resolvers.resolve = async function (url, title) {
 	if (url in resolvedCache) {
 		return resolvedCache[url]
 	}
@@ -27,6 +27,7 @@ resolvers.resolve = async function (url) {
 				wikibase: wikibases[name],
 				queryManager: queryManager,
 				wikibaseID: name,
+				title: title,
 			}
 			const applies = await resolver.applies(url, context)
 			if (applies === true || applies.length > 0) {

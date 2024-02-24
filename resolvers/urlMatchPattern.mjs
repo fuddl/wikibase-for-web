@@ -1,6 +1,6 @@
 export const urlMatchPattern = {
 	id: 'urlMatchPattern',
-	applies: async function (location, { wikibase, queryManager }) {
+	applies: async function (location, { wikibase, queryManager, title }) {
 		const patterns = await queryManager.query(wikibase, queryManager.queries.urlMatchPattern)
 		const href = decodeURIComponent(location)
 		
@@ -28,6 +28,22 @@ export const urlMatchPattern = {
 
 			// @todo handle isbn numbers?
 
+			const getLabel = () => {
+				if (title && prop?.title) {
+					try {
+						const extractionResult = new RegExp(prop.title , 'g').exec(title)
+						if (extractionResult?.[1]) {
+							return extractionResult[1]
+						} else {
+							return title
+						}
+					} catch(e) {
+						console.warn('This title extractor regex is probably not valid', JSON.stringify(prop, null, 2))
+					}
+				}
+				return title
+			}
+
 			output.push({
 				snack: {
 					snaktype: 'value',
@@ -35,7 +51,7 @@ export const urlMatchPattern = {
 					property: prop.property,
 					datavalue: { value: id, type: 'string' },
 				},
-				// label: label, @todo proposed label
+				label: getLabel(),
 				references: wikibase.props.referenceURL ? [{
 					snacks: {
 						[wikibase.props.referenceURL]: [{
