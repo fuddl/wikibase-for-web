@@ -1,10 +1,13 @@
 <div class="choose">
-	<input class="choose__type" value="{{ label }}" type="search">
+	<div class="choose__type-wrap">
+		<input class="choose__type" value="{{ label }}" type="search">
+		<span class="choose__id">asd</span>
+	</div>
 	<div class="choose__picker"></div>
 	<template class="choose__picker__pick">
 		<a class="choose__picker__pick">
 			<div class="choose__picker__pick-title">
-				<slot name="label"></slot> (<slot name="id"></slot>)
+				<slot name="label"></slot>
 			</div>
 			<div class="choose__picker__pick-description">
 				<slot name="description"></slot>

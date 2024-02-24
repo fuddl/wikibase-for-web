@@ -213,17 +213,6 @@ button[disabled] {
   opacity: .5;
 }
 
-form input {
-  height: 2.28571429em;
-  box-sizing: border-box;
-  padding: 6px 8px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  font-size: 16px;
-  flex-grow: 1;
-}
-
-
 summary {
   outline: none;
   user-select: none;
