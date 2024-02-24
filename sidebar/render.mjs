@@ -16,9 +16,18 @@ async function render(manager, state) {
 		state: state,
 	})
 
+
 	const dd = new DiffDOM()
+
+	// clear the dom as a fix for form elements loosing their values
+	if (document.querySelector('input')) {
+		while (document.body.firstChild) {
+	        document.body.removeChild(document.body.firstChild);
+		}
+    }
+    
 	const diff = dd.diff(document.body, `<body>${rendered}</body>`)
-	
+	 
 	dd.apply(document.body, diff)
 	
 	document.documentElement.style.scrollbarWidth = 'none'
