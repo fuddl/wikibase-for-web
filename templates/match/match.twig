@@ -1,15 +1,47 @@
 <div class="match">
 	<h1>Match</h1>
-	{% for key, item in items %}
-		<div class="match__item" data-key="{{ key }}" data-instance="{{ item.instance }}">
-			<dl class="match__statement">
-				<dt class="match__key">
-					{% include 'thing' with { globalID: item.instance ~ ':' ~ item.snack.property } %}
-				</dt>
-				<dd class="match__value">{% include 'snack' with { mainsnak: item.snack } %}</dd>
-				<dd class="match__bool"><input type="checkbox" value="{{ key }}" checked="checked" disabled="disabled"></dd>
-			</dl>
-			{% include 'choose' with { label: item.label } %}
-		</div>
+	{% for key, instance in instances %}
+		<form class="match__instance">
+			<div class="match__item" data-key="{{ key }}" data-instance="{{ instance.instance }}">
+				<div class="match__statements">
+					{%- for editId, edit in instance.proposeEdits -%}
+						<dl class="match__statement">
+							<dt class="match__key">
+								{% if edit.action == 'wbcreateclaim' %}
+									{% include 'thing' with { globalID: instance.instance ~ ':' ~ edit.property } %}
+								{% elseif edit.action == 'wbsetaliases' %}
+									{{ setAlias }}
+								{% endif %}
+							</dt>
+							<dd class="match__value">
+								{% if edit.action == 'wbcreateclaim' %}
+									{% include 'snack' with { mainsnak: edit.snack } %}
+								{% elseif edit.action == 'wbsetaliases' %}
+									<em>
+										{{- edit.add -}}
+									</em>
+								{% endif %}
+							</dd>
+							<dd class="match__bool">
+								<input
+									name="edit-{{ editId }}"
+									type="checkbox"
+									value='{{ edit | json_encode() }}'
+									checked="checked"
+								>
+							</dd>
+						</dl>
+					{%- endfor -%}
+				</div>
+				{%- include 'choose' with {
+					label: instance.label,
+					name: 'subjectId',
+					required: true,
+				} -%}
+			</div>
+			<div class="match__bottom">
+				<button class="match__send" disabled type="submit">{{ instance.buttonLabel }}</button>
+			</div>
+		</form>
 	{% endfor %}
 </div>

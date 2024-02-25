@@ -24,6 +24,7 @@
     "webNavigation",
     "<all_urls>",
     "search",
+    "scripting",
     "webRequest",
     "webRequestBlocking"
   ],

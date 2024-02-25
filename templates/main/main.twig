@@ -14,7 +14,7 @@
 		{% elseif state.activity == 'select' %}
 			{% include 'pick' with entities %}
 		{% elseif state.activity == 'match' %}
-			{% include 'match' with { items: state.candidates } %}
+			{% include 'match' with { instances: state.candidates } %}
 		{% endif %}
 	</main>
 </div>

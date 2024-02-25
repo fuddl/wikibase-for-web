@@ -1,55 +1,58 @@
 import { wikibase } from './wikibase.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
-import wikibases from '../wikibases.mjs'
-import WikiBaseQueryManager from '../queries/index.mjs'
+import wikibases from '../wikibases.mjs';
+import WikiBaseQueryManager from '../queries/index.mjs';
 
-const queryManager = new WikiBaseQueryManager()
+const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [
-		wikibase,
-		urlMatchPattern,
-	],
-}
+	list: [wikibase, urlMatchPattern],
+};
 
-const resolvedCache = {}
+const resolvedCache = {};
 
-resolvers.resolve = async function (url, title) {
+resolvers.resolve = async function (url, metadata) {
 	if (url in resolvedCache) {
-		return resolvedCache[url]
+		return resolvedCache[url];
 	}
 
-	let results = []
-	let candidates = []
-	await Promise.all(this.list.map(async (resolver) => {
-		await Promise.all(Object.keys(wikibases).map(async (name) => {
-			const context = {
-				wikibase: wikibases[name],
-				queryManager: queryManager,
-				wikibaseID: name,
-				title: title,
-			}
-			const applies = await resolver.applies(url, context)
-			if (applies === true || applies.length > 0) {
-				const resolved = await resolver.resolve(url, context)
+	let results = [];
+	let candidates = [];
+	await Promise.all(
+		this.list.map(async resolver => {
+			await Promise.all(
+				Object.keys(wikibases).map(async name => {
+					const context = {
+						wikibase: wikibases[name],
+						queryManager: queryManager,
+						wikibaseID: name,
+						metadata: metadata,
+					};
+					const applies = await resolver.applies(url, context);
+					if (applies === true || applies.length > 0) {
+						const resolved = await resolver.resolve(url, context);
 
-				if (applies.length) {
-					candidates = [...candidates, ...applies]
-				}
+						if (applies.length) {
+							candidates = [...candidates, ...applies];
+						}
 
-				results = [...results, ...resolved]
-			}
-		}))
-	}))
+						results = [...results, ...resolved];
+					}
+				}),
+			);
+		}),
+	);
 
 	results.sort((a, b) => b.specificity - a.specificity);
 
-	resolvedCache[url] = resolvedCache[url] ? [...resolvedCache[url], results] : [results]
-	
-	return { 
+	resolvedCache[url] = resolvedCache[url]
+		? [...resolvedCache[url], results]
+		: [results];
+
+	return {
 		resolved: results,
 		candidates: candidates,
-	}
-}
+	};
+};
 
-export { resolvers }
+export { resolvers };

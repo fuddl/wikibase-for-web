@@ -1,0 +1,43 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "js_prettier": {
+            "debug": false,
+            "prettier_cli_path": "",
+            "node_path": "",
+            "auto_format_on_save": true,
+            "auto_format_on_save_excludes": [],
+            "auto_format_on_save_requires_prettier_config": false,
+            "allow_inline_formatting": false,
+            "custom_file_extensions": [],
+            "max_file_size_limit": -1,
+            "disable_tab_width_auto_detection": false,
+            "disable_prettier_cursor_offset": false,
+            "additional_cli_args": {},
+            "prettier_options": {
+                "printWidth": 80,
+                "tabWidth": 1,
+                "singleQuote": true,
+                "trailingComma": "all",
+                "bracketSpacing": true,
+                "bracketSameLine": true,
+                "jsxSingleQuote": false,
+                "parser": "babel",
+                "semi": true,
+                "requirePragma": false,
+                "proseWrap": "always",
+                "arrowParens": "avoid",
+                "htmlWhitespaceSensitivity": "css",
+                "quoteProps": "as-needed",
+                "vueIndentScriptAndStyle": false,
+                "embeddedLanguageFormatting": "auto",
+                "editorconfig": true,
+                "singleAttributePerLine": false
+            }
+        }
+    }
+}

@@ -63,17 +63,17 @@
     "message": "$MONTHNAME$ $YEAR$",
     "description": "The name of a month.",
     "placeholders": {
-      "monthname" : {
-        "content" : "$1",
-        "example" : "February"
+      "monthname": {
+        "content": "$1",
+        "example": "February"
       },
-      "monthnumber" : {
-        "content" : "$2",
-        "example" : "2"
+      "monthnumber": {
+        "content": "$2",
+        "example": "2"
       },
-      "year" : {
-        "content" : "$3",
-        "example" : "2024"
+      "year": {
+        "content": "$3",
+        "example": "2024"
       }
     }
   },
@@ -81,9 +81,9 @@
     "message": "$NUMBER$",
     "description": "Der Name eines Jahres.",
     "placeholders": {
-      "number" : {
-        "content" : "$1",
-        "example" : "2024"
+      "number": {
+        "content": "$1",
+        "example": "2024"
       }
     }
   },
@@ -91,13 +91,13 @@
     "message": "$NUMBER$er",
     "description": "Der Name eines Jahrzehnts.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "202"
+      "ordinal": {
+        "content": "$1",
+        "example": "202"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "2010"
+      "number": {
+        "content": "$2",
+        "example": "2010"
       }
     }
   },
@@ -105,13 +105,13 @@
     "message": "$ORDINAL$. Jahrhundert",
     "description": "Der Name eines Jahrhunderts.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "21"
+      "ordinal": {
+        "content": "$1",
+        "example": "21"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "20"
+      "number": {
+        "content": "$2",
+        "example": "20"
       }
     }
   },
@@ -119,13 +119,13 @@
     "message": "$ORDINAL$. Jahrtausend",
     "description": "Der Name eines Jahrtausends.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "1"
+      "ordinal": {
+        "content": "$1",
+        "example": "1"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "2"
+      "number": {
+        "content": "$2",
+        "example": "2"
       }
     }
   }

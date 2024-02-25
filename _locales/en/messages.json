@@ -3,6 +3,20 @@
     "message": "Disambiguator",
     "description": "Title of the sidebar when it shows disambiguation screen."
   },
+  "send_to_instance": {
+    "message": "Send to $INSTANCE$",
+    "description": "Title of a button that sends claims to a particular wikibase instance.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "wb_set_alias": {
+    "message": "Set alias",
+    "description": "Name of the command that sets aliases of the wikibase api."
+  },
   "ambiguous_url_title": {
     "message": "Multiple Matches Found",
     "description": "Title of a disambiguation screen."
@@ -10,7 +24,7 @@
   "ambiguous_url_intro": {
     "message": "This url was matched to multiple wikibase entites. Please select the desired entity.",
     "description": "Message shown when a url was matched to multiple entitis over a selection."
-  }, 
+  },
   "unknown": {
     "message": "unknown",
     "description": "The snaktype unknown"
@@ -91,17 +105,17 @@
     "message": "$MONTHNAME$ $YEAR$",
     "description": "The name of a month.",
     "placeholders": {
-      "monthname" : {
-        "content" : "$1",
-        "example" : "February"
+      "monthname": {
+        "content": "$1",
+        "example": "February"
       },
-      "monthnumber" : {
-        "content" : "$2",
-        "example" : "2"
+      "monthnumber": {
+        "content": "$2",
+        "example": "2"
       },
-      "year" : {
-        "content" : "$3",
-        "example" : "2024"
+      "year": {
+        "content": "$3",
+        "example": "2024"
       }
     }
   },
@@ -109,9 +123,9 @@
     "message": "$DATE$ BCE",
     "description": "A date before the year 0.",
     "placeholders": {
-      "date" : {
-        "content" : "$1",
-        "example" : "2032-12-34"
+      "date": {
+        "content": "$1",
+        "example": "2032-12-34"
       }
     }
   },
@@ -119,9 +133,9 @@
     "message": "$NUMBER$",
     "description": "The name of a year.",
     "placeholders": {
-      "number" : {
-        "content" : "$1",
-        "example" : "2024"
+      "number": {
+        "content": "$1",
+        "example": "2024"
       }
     }
   },
@@ -129,13 +143,13 @@
     "message": "$NUMBER$s",
     "description": "The name of a decade.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "202"
+      "ordinal": {
+        "content": "$1",
+        "example": "202"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "2010"
+      "number": {
+        "content": "$2",
+        "example": "2010"
       }
     }
   },
@@ -143,13 +157,13 @@
     "message": "$ORDINAL$. century",
     "description": "The name of a century.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "21"
+      "ordinal": {
+        "content": "$1",
+        "example": "21"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "20"
+      "number": {
+        "content": "$2",
+        "example": "20"
       }
     }
   },
@@ -157,13 +171,13 @@
     "message": "$ORDINAL$. millennium",
     "description": "The name of a millennium.",
     "placeholders": {
-      "ordinal" : {
-        "content" : "$1",
-        "example" : "1"
+      "ordinal": {
+        "content": "$1",
+        "example": "1"
       },
-      "number" : {
-        "content" : "$2",
-        "example" : "2"
+      "number": {
+        "content": "$2",
+        "example": "2"
       }
     }
   },
@@ -171,21 +185,21 @@
     "message": "$year$ ±$DELTA$ years",
     "description": "A range between two years.",
     "placeholders": {
-      "year" : {
-        "content" : "$1",
-        "example" : "1967"
+      "year": {
+        "content": "$1",
+        "example": "1967"
       },
-      "lower" : {
-        "content" : "$2",
-        "example" : "1966"
+      "lower": {
+        "content": "$2",
+        "example": "1966"
       },
-      "upper" : {
-        "content" : "$3",
-        "example" : "1969"
+      "upper": {
+        "content": "$3",
+        "example": "1969"
       },
-      "delta" : {
-        "content" : "$4",
-        "example" : "5.000"
+      "delta": {
+        "content": "$4",
+        "example": "5.000"
       }
     }
   }

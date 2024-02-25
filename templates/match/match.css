@@ -2,12 +2,22 @@
 	display: grid;
 	grid-template-columns: max-content auto;
 	grid-template-rows: auto auto;
-	grid-template-areas:	'check key' 
-							'check value';
+	grid-template-areas:
+		'check key'
+		'check value';
 	grid-gap: 1em;
 	background: var(--paper);
 	border: 1px solid var(--contour);
 	padding: 7px 10px;
+	margin: 0;
+}
+
+.match__statement:not(:first-child) {
+	border-top: none;
+}
+
+.match__statements {
+	margin-bottom: 1em;
 }
 
 .match__bool {
@@ -27,4 +37,6 @@
 	margin: 0;
 }
 
-/* state */
+.match__bottom {
+	margin-top: 1em;
+}

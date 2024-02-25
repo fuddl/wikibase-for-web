@@ -1,7 +1,8 @@
 <div class="choose">
 	<div class="choose__type-wrap">
+		<input class="choose__value" type="text" value="{{ value }}" {% if required %}required{% endif %} name="{{ name }}">
 		<input class="choose__type" value="{{ label }}" type="search">
-		<span class="choose__id">asd</span>
+		<span class="choose__id"></span>
 	</div>
 	<div class="choose__picker"></div>
 	<template class="choose__picker__pick">

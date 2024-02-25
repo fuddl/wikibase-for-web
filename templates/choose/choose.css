@@ -1,20 +1,25 @@
+.choose {
+	border: 1px solid var(--border);
+	border-radius: 2px;
+}
+
 .choose__picker {
-	border: 1px solid #a2a9b1;
- 	border-radius: 2px;
- 	background: white;
- 	border-top: none;
+	background: white;
+	border-top: none;
 }
 
 .choose__picker__pick {
 	padding: 8px 12px;
-	background: white;
 	display: block;
-	color: black;
+	color: inherit;
 }
-.choose__picker__pick:hover,
-.choose__picker__pick--active {
+
+.choose__picker__pick:hover {
 	text-decoration: none;
-	background: #EAECF0;
+}
+
+.choose__picker__pick--active {
+	background: #eaecf0;
 }
 
 .choose__picker__id {
@@ -25,20 +30,12 @@
 	opacity: 1;
 }
 
-
 .choose__picker__pick-title {
 	font-weight: bold;
 }
 
-
 template.choose__picker__pick {
 	display: none;
-}
-
-.choose__type--picker-open {
-	border-bottom: none;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
 }
 
 .choose__type-wrap {
@@ -48,11 +45,22 @@ template.choose__picker__pick {
 
 .choose__type {
 	grid-area: stack;
+	border: none;
+}
+
+.choose__value {
+	grid-area: stack;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.choose__type:focus {
+	outline: none;
 }
 
 .choose__id {
 	margin: 3px 3px 3px auto;
 	grid-area: stack;
 	padding: 8px;
-	background: white;
+	background: var(--input-paper);
 }
