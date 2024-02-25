@@ -57,12 +57,8 @@ export const urlMatchPattern = {
 			proposeEdits.push({
 				action: 'wbcreateclaim',
 				property: prop.property,
-				snack: {
-					snaktype: 'value',
-					datatype: 'external-id',
-					datavalue: { value: id, type: 'string' },
-					property: prop.property,
-				},
+				snaktype: 'value',
+				value: `"${id}"`,
 				status: 'required',
 			});
 
@@ -122,7 +118,7 @@ export const urlMatchPattern = {
 			);
 			for (const entity of results) {
 				found.push({
-					prop: snack.property,
+					prop: property,
 					id: `${wikibase.id}:${entity}`,
 					specificity: specificity,
 				});

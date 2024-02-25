@@ -2,6 +2,7 @@
 	<h1>Match</h1>
 	{% for key, instance in instances %}
 		<form class="match__instance">
+			<input type="hidden" value="{{ instance.instance }}" name="instance">
 			<div class="match__item" data-key="{{ key }}" data-instance="{{ instance.instance }}">
 				<div class="match__statements">
 					{%- for editId, edit in instance.proposeEdits -%}

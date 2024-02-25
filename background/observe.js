@@ -1,5 +1,19 @@
 import { resolvers } from '../resolvers/index.mjs';
 import { getTabMetadata } from '../modules/getTabMetadata.mjs';
+import { WikibaseEditQueue } from '../modules/WikibaseEditQueue.mjs';
+
+const wikibaseEditQueue = new WikibaseEditQueue();
+
+wikibaseEditQueue.setProgressUpdateCallback(async queue => {
+	try {
+		await browser.runtime.sendMessage(browser.runtime.id, {
+			type: 'update_edit_queue_progress',
+			...queue,
+		});
+	} catch (error) {
+		console.error(error);
+	}
+});
 
 function getCurrentTab() {
 	// Query for the active tab in the current window
@@ -66,6 +80,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			currentTab.id,
 		);
 		tabs[currentTab.id] = results;
+		return Promise.resolve('done');
+	} else if (message.type === 'add_to_edit_queue') {
+		wikibaseEditQueue.addJobs(message.edits);
 		return Promise.resolve('done');
 	}
 	return false;

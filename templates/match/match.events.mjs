@@ -8,14 +8,28 @@ export default ({ element, manager, state }) => [
 			const formData = new FormData(e.target);
 			const edits = [];
 			for (const [key, value] of formData) {
-				if (key !== 'subjectId') {
+				if (!['instance', 'subjectId'].includes(key)) {
 					const placeholder = document.createElement('div');
 					let newEdit = JSON.parse(value);
-					newEdit.id = formData.get('subjectId');
+					newEdit[newEdit.action === 'wbsetaliases' ? 'id' : 'entity'] =
+						formData.get('subjectId');
+					newEdit.instance = formData.get('instance');
 					edits.push(newEdit);
 				}
 			}
-			console.debug(edits);
+
+			browser.browserAction.setPopup({
+				popup: browser.runtime.getURL('popup/edit-queue.html'),
+			});
+			browser.browserAction.openPopup();
+			try {
+				await browser.runtime.sendMessage(browser.runtime.id, {
+					type: 'add_to_edit_queue',
+					edits: edits,
+				});
+			} catch (error) {
+				console.error(error);
+			}
 		},
 	},
 	{
