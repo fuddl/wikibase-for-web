@@ -1,4 +1,4 @@
-import { WBK } from './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js'
+import { WBK } from './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js';
 
 const wikibases = {
 	wikidata: {
@@ -6,9 +6,10 @@ const wikibases = {
 		color: '#069',
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
-		favicon: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Wikidata_Favicon_color.svg',
+		favicon:
+			'https://upload.wikimedia.org/wikipedia/commons/4/4a/Wikidata_Favicon_color.svg',
 		props: {
-			appliesIfRegularExpressionMatches: 'P8460', 
+			appliesIfRegularExpressionMatches: 'P8460',
 			formatterURL: 'P1630',
 			hasCharacteristic: 'P1552',
 			instanceOf: 'P31',
@@ -18,12 +19,12 @@ const wikibases = {
 			thirdPartyFormatterURL: 'P3303',
 			unitSymbol: 'P5061',
 			urlMatchPattern: 'P8966',
-			urlMatchReplacementValue: 'P8967', 
+			urlMatchReplacementValue: 'P8967',
 			websiteTitleExtractPattern: 'P10999',
-			referenceURL: 'P854', 
+			referenceURL: 'P854',
 		},
 		items: {
-			allCaps: 'Q3960579', 
+			allCaps: 'Q3960579',
 			caseInsensitive: 'Q55121183',
 			lowercase: 'Q65048529',
 			obsoleteProperty: 'Q18644427',
@@ -33,7 +34,7 @@ const wikibases = {
 			'https://wikidata-externalid-url.toolforge.org/',
 			'https://web.archive.org/web/',
 			'https://resolve.eidr.org/',
-		]
+		],
 	},
 	testWikidata: {
 		name: 'Wikidata Test',
@@ -45,12 +46,12 @@ const wikibases = {
 		color: '#ded',
 		instance: 'https://wiki.openstreetmap.org',
 		sparqlEndpoint: 'https://sophox.org/sparql',
-	}, 
+	},
 	datatrek: {
 		name: 'DataTrek',
 		color: '#00a300',
 		instance: 'https://data.wikitrek.org',
-  		wgScriptPath: '/dt',
+		wgScriptPath: '/dt',
 	},
 	wikibaseWorld: {
 		name: 'Wikibase World',
@@ -72,30 +73,30 @@ const wikibases = {
 		props: {
 			instanceOf: 'P1',
 			urlMatchPattern: 'P26',
-			urlMatchReplacementValue: 'P27', 
+			urlMatchReplacementValue: 'P27',
 			formatterURL: 'P30',
 			hasCharacteristic: 'P28',
-			websiteTitleExtractPattern: 'P29', 
+			websiteTitleExtractPattern: 'P29',
 		},
 		items: {
-			allCaps: 'Q7', 
+			allCaps: 'Q7',
 			lowercase: 'Q9',
 			obsoleteProperty: 'Q8',
 			caseInsensitive: 'Q10',
 			propertyLinkingToArticlesInMediaWikiWebsites: 'Q11',
-		}
-	}
-}
+		},
+	},
+};
 
 Object.keys(wikibases).forEach(name => {
-	wikibases[name].id = name
-	const wgScriptPath = wikibases[name]?.wgScriptPath ?? '/w'
+	wikibases[name].id = name;
+	const wgScriptPath = wikibases[name]?.wgScriptPath ?? '/w';
 	wikibases[name].api = WBK({
 		instance: wikibases[name].instance,
 		sparqlEndpoint: wikibases[name]?.sparqlEndpoint,
 		wgScriptPath: wgScriptPath,
-		wikiRoot: `${wikibases[name].instance}${wgScriptPath}`
-	})
-})
+		wikiRoot: `${wikibases[name].instance}${wgScriptPath}`,
+	});
+});
 
-export default wikibases
+export default wikibases;

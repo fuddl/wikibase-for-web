@@ -23,7 +23,7 @@
   background-color: color-mix(in srgb, var(--paper) 50%, transparent);
   backdrop-filter: blur(10px);
   opacity: 0;
-  transition: opacity .25s;
+  transition: opacity 0.25s;
 }
 
 .remark--poster .remark__qualifiers {
@@ -56,14 +56,14 @@
 
 @media (max-width: 299px) {
   .remark__verb {
-    margin: 0 0 .75em;
+    margin: 0 0 0.75em;
   }
 }
 
 :not(.remark--poster) > .remark__objects {
   min-width: 0;
   grid-column: 2;
-  margin: 0 0 .5em;
+  margin: 0 0 0.5em;
   padding: 0;
 }
 

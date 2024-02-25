@@ -18,7 +18,7 @@
 }
 
 .pick__option-description {
-	margin-top: .25em;
+	margin-top: 0.25em;
 }
 
 .pick__title {
@@ -27,5 +27,5 @@
 
 .pick__option-id {
 	font-size: inherit;
-	opacity: .75;
+	opacity: 0.75;
 }

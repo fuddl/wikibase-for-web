@@ -1,9 +1,9 @@
 .annote {
-	font-size: .5em;
+	font-size: 0.5em;
 	display: grid;
 	grid-template-columns: max-content auto;
 	line-height: 1em;
-	grid-gap: .5em 1em;
+	grid-gap: 0.5em 1em;
 }
 
 .annote__verb {

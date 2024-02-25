@@ -1,5 +1,4 @@
 function isInViewport(element, callback, rootMargin = '0px') {
-  
     // Define the callback function for IntersectionObserver
     const observerCallback = (entries, observer) => {
         entries.forEach(entry => {
@@ -13,7 +12,7 @@ function isInViewport(element, callback, rootMargin = '0px') {
 
     // Create an IntersectionObserver instance
     const observer = new IntersectionObserver(observerCallback, {
-        rootMargin: rootMargin
+        rootMargin: rootMargin,
     });
 
     // Start observing the specified element

@@ -5,14 +5,14 @@
 
 .chart__verb {
 	vertical-align: top;
-	padding: .25em;
+	padding: 0.25em;
 	background-color: #e6e6ff;
 	text-align: left;
 	font-weight: normal;
-	font-size: .75em;
+	font-size: 0.75em;
 }
 
 .chart__object {
-	padding: .25em;
+	padding: 0.25em;
 	vertical-align: top;
 }

@@ -6,8 +6,8 @@
 .ensign__scope {
   background: var(--platform, var(--ink));
   color: var(--paper);
-  font-size: .75em;
-  padding: 0 .25em;
+  font-size: 0.75em;
+  padding: 0 0.25em;
   width: max-content;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .ensign__title small {
-  font-size: .725em;
+  font-size: 0.725em;
 }
 
 .ensign__description {
@@ -27,13 +27,17 @@
 }
 
 .ensign__description--provisional {
-  opacity: .75;
+  opacity: 0.75;
 }
 
 .ensign__id {
   color: #72777d;
   user-select: all;
-  font-family: Linux Libertine, Georgia, Times, serif;
+  font-family:
+    Linux Libertine,
+    Georgia,
+    Times,
+    serif;
   font-size: 16px;
 }
 
@@ -47,11 +51,11 @@
 }
 
 .ensign__id:before {
-  content: "(";
+  content: '(';
 }
 
 .ensign__id:after {
-  content: ")";
+  content: ')';
 }
 
 .ensign__description-form {
@@ -64,7 +68,7 @@
 }
 
 .ensign__opener:after {
-  content: " ❐ ";
+  content: ' ❐ ';
 }
 
 :hover > .ensign__opener {

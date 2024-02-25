@@ -7,23 +7,24 @@ export const unitSymbol = {
 			FILTER (?language in ('${instance.languages.join("', '")}'))
 		} order by desc(strlen(?u))
 	`,
-	cacheTag: ({ instance, params }) => `${params.subject}:${instance.props.unitSymbol}:${instance.languages.join("', '")}`,
+	cacheTag: ({ instance, params }) =>
+		`${params.subject}:${instance.props.unitSymbol}:${instance.languages.join("', '")}`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
-			return []
+			return [];
 		}
-		const processed = {}
-		results.bindings.forEach((bind) => {
-			const lang = bind.u["xml:lang"]
+		const processed = {};
+		results.bindings.forEach(bind => {
+			const lang = bind.u['xml:lang'];
 			if (lang in processed) {
-				return
+				return;
 			}
 			// format should be compatible with entity labels
 			processed[lang] = {
 				value: bind.u.value,
 				language: lang,
-			}
-		})
-		return processed
-	}
-}
+			};
+		});
+		return processed;
+	},
+};

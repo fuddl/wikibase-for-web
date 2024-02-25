@@ -7,23 +7,24 @@ export const shortTitle = {
 			FILTER (?language in ('${instance.languages.join("', '")}'))
 		} order by desc(strlen(?short))
 	`,
-	cacheTag: ({ instance, params }) => `${params.subject}:${instance.props.shortTitle}:${instance.languages.join("', '")}`,
+	cacheTag: ({ instance, params }) =>
+		`${params.subject}:${instance.props.shortTitle}:${instance.languages.join("', '")}`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
-			return []
+			return [];
 		}
-		const processed = {}
-		results.bindings.forEach((bind) => {
-			const lang = bind.short["xml:lang"]
+		const processed = {};
+		results.bindings.forEach(bind => {
+			const lang = bind.short['xml:lang'];
 			if (lang in processed) {
-				return
+				return;
 			}
 			// format should be compatible with entity labels
 			processed[lang] = {
 				value: bind.short.value,
 				language: lang,
-			}
-		})
-		return processed
-	}
-}
+			};
+		});
+		return processed;
+	},
+};

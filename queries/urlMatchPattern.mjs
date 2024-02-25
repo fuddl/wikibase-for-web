@@ -1,13 +1,13 @@
 export const urlMatchPattern = {
 	requiredProps: [
 		'hasCharacteristic',
-		'instanceOf', 
-		'urlMatchPattern', 
+		'instanceOf',
+		'urlMatchPattern',
 		'urlMatchReplacementValue',
 		'websiteTitleExtractPattern',
 	],
 	requiredItems: [
-		'allCaps', 
+		'allCaps',
 		'caseInsensitive',
 		'lowercase',
 		'propertyLinkingToArticlesInMediaWikiWebsites',
@@ -24,59 +24,74 @@ export const urlMatchPattern = {
 				)
 			) AS ?c)
 			BIND(REPLACE(STR(?prop), '${instance.instance.replace(/^https/, 'http')}/entity/', '') AS ?p ).
-			${ instance?.props?.mastodonAddress ?
-				`FILTER (?p != '${instance.props.mastodonAddress}')
-			`: '' }
-			${ instance?.items?.obsoleteProperty ? `
+			${
+				instance?.props?.mastodonAddress
+					? `FILTER (?p != '${instance.props.mastodonAddress}')
+			`
+					: ''
+			}
+			${
+				instance?.items?.obsoleteProperty
+					? `
 				MINUS {
 					?prop wdt:${instance.props.instanceOf} wd:${instance.items.obsoleteProperty}.
 				}
-			`: '' }
+			`
+					: ''
+			}
 			MINUS {
 				?prop wikibase:propertyType wikibase:GlobeCoordinate.
 		    }
-			${ /* giving a high priority to ids representing wiki articles */ '' }
-			${ instance?.items?.propertyLinkingToArticlesInMediaWikiWebsites ? `
+			${/* giving a high priority to ids representing wiki articles */ ''}
+			${
+				instance?.items?.propertyLinkingToArticlesInMediaWikiWebsites
+					? `
 				OPTIONAL {
 					?prop wdt:${instance.props.instanceOf} wd:${instance.items.propertyLinkingToArticlesInMediaWikiWebsites}.
 					BIND(1 as ?prio)
 				}
-			`: ''}
+			`
+					: ''
+			}
 
-			${ /* giving a low priority to ids representing a full url */ '' }
+			${/* giving a low priority to ids representing a full url */ ''}
 			OPTIONAL {
 				?prop wikibase:propertyType wikibase:Url.
 				BIND(3 as ?prio)
 			}
-			${ /* giving everything else a default priority */ '' }
+			${/* giving everything else a default priority */ ''}
 			BIND(IF(BOUND(?prio),?prio,2) AS ?prio).
 		} ORDER BY ?prio STRLEN(str(?s))
 	`,
-	cacheTag: ({ instance, params }) => `url-match-patterns:${instance.props.shortTitle}`,
+	cacheTag: ({ instance, params }) =>
+		`url-match-patterns:${instance.props.shortTitle}`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
-			return []
+			return [];
 		}
-		const processed = []
-		results.bindings.forEach((bind) => {
-			let isValid = true
-			let regexp = false
+		const processed = [];
+		results.bindings.forEach(bind => {
+			let isValid = true;
+			let regexp = false;
 			try {
-				regexp = new RegExp(bind.s.value + '.*', 'g')
-			} catch(e) {
-				isValid = false
-				console.warn(`This regex is not valid ${JSON.stringify(bind, null, 2)}`)
+				regexp = new RegExp(bind.s.value + '.*', 'g');
+			} catch (e) {
+				isValid = false;
+				console.warn(
+					`This regex is not valid ${JSON.stringify(bind, null, 2)}`,
+				);
 			}
 			if (isValid) {
 				processed.push({
 					property: bind.p.value,
 					search: regexp,
-					replace: 'r' in bind ? bind.r.value.replace(/\\(\d+)/g, '$$$1') : '$1',
+					replace:
+						'r' in bind ? bind.r.value.replace(/\\(\d+)/g, '$$$1') : '$1',
 					format: 'c' in bind ? bind.c.value : '',
 					title: 't' in bind ? bind.t.value : '',
-				})
+				});
 			}
-		})
-		return processed
-	}
-}
+		});
+		return processed;
+	},
+};

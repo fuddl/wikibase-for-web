@@ -1,8 +1,8 @@
 class NavigationManager {
   constructor() {
     this.historyStates = 0; // Track the number of states in the app's history
-    this.listeners = []; 
-    window.addEventListener('popstate', (event) => {
+    this.listeners = [];
+    window.addEventListener('popstate', event => {
       // Adjust the historyStates based on forward/backward navigation
       this.triggerListeners(event.state);
     });
@@ -28,14 +28,13 @@ class NavigationManager {
     this.listeners.forEach(listener => listener(state));
   }
 
-
   back() {
     if (this.canGoBack()) {
       window.history.back();
       // Assuming successful navigation, decrement the counter
       this.historyStates--;
     } else {
-      console.log("No more history to go back to.");
+      console.log('No more history to go back to.');
     }
   }
 
@@ -58,4 +57,4 @@ class NavigationManager {
   }
 }
 
-export default NavigationManager
+export default NavigationManager;

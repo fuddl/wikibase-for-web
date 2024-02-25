@@ -5,11 +5,11 @@
 }
 
 .title:lang(ja) {
-	quotes: "「" "」" "『" "』";
+	quotes: '「' '」' '『' '』';
 }
 
 .title:lang(zh) {
-	quotes: "《" "》" "〈" "〉";
+	quotes: '《' '》' '〈' '〉';
 }
 
 .title:lang(ja)::before,

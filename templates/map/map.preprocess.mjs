@@ -1,3 +1,3 @@
 export default ({ vars }) => {
-	vars.src = browser.runtime.getURL(`sidebar/map.html`)
-}
+	vars.src = browser.runtime.getURL(`sidebar/map.html`);
+};
