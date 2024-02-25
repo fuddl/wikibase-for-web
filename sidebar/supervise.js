@@ -39,6 +39,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			}
 		})();
 		return Promise.resolve('done');
+	} else if (message.type === 'update_entity') {
+		manager.update(message.entity);
+		return Promise.resolve('done');
 	}
 	return false;
 });

@@ -92,6 +92,23 @@ class WikiBaseEntityManager {
 		ids.map(id => this.addEntity(id));
 	}
 
+	async update(globalId) {
+		// Fetch the latest data for the entity
+		const updatedData = await this.fetchEntity(globalId);
+
+		// Find the entity in the entities array by its globalId
+		const entityIndex = this.entities.findIndex(
+			entity => entity.id === globalId,
+		);
+
+		if (entityIndex !== -1) {
+			this.entities[entityIndex].data = updatedData;
+			this.render(this, { activity: this.activity, id: globalId });
+		} else {
+			this.addEntity(globalId);
+		}
+	}
+
 	async activate(ids) {
 		this.entities.forEach(entity => {
 			entity.active = ids.includes(entity.id);

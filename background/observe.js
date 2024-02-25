@@ -1,6 +1,7 @@
 import { resolvers } from '../resolvers/index.mjs';
 import { getTabMetadata } from '../modules/getTabMetadata.mjs';
 import { WikibaseEditQueue } from '../modules/WikibaseEditQueue.mjs';
+import wikibases from '../wikibases.mjs';
 
 const wikibaseEditQueue = new WikibaseEditQueue();
 
@@ -87,3 +88,30 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	}
 	return false;
 });
+
+browser.webRequest.onCompleted.addListener(
+	function (details) {
+		if (details.method === 'POST') {
+			const wbk = Object.values(wikibases).find(
+				entry => entry.api.instance.apiEndpoint == details.url,
+			);
+
+			const editedEnity = details.originUrl
+				.replace(wbk.instance, '')
+				.match(/([QPLM]\d+)/);
+
+			browser.runtime
+				.sendMessage({
+					type: 'update_entity',
+					entity: `${wbk.id}:${editedEnity[0]}`,
+				})
+				.then(response => {})
+				.catch(error => console.error('Message failed:', error));
+		}
+	},
+	{
+		urls: Object.values(wikibases).map(
+			entry => `${entry.api.instance.apiEndpoint}*`,
+		),
+	},
+);
