@@ -27,6 +27,10 @@ export default ({ element, manager, state }) => [
 					type: 'add_to_edit_queue',
 					edits: edits,
 				});
+				manager.navigator.replaceState({
+					activity: 'view',
+					id: `${formData.get('instance')}:${formData.get('subjectId')}`,
+				});
 			} catch (error) {
 				console.error(error);
 			}

@@ -123,8 +123,25 @@ export class WikibaseEditQueue {
 
     let parsedResponse = JSON.parse(await response.text());
 
-    console.debug(parsedResponse);
     if (parsedResponse?.success === 1) {
+      let updatedEntity = '';
+      switch (job.action) {
+        case 'wbcreateclaim':
+          updatedEntity = job.entity;
+          break;
+        case 'wbsetaliases':
+          updatedEntity = job.id;
+          break;
+      }
+      if (updatedEntity) {
+        browser.runtime
+          .sendMessage({
+            type: 'update_entity',
+            entity: `${job.instance}:${updatedEntity}`,
+          })
+          .then(response => {})
+          .catch(error => console.error('Message failed:', error));
+      }
     }
   }
 

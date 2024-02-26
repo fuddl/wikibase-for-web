@@ -100,13 +100,15 @@ browser.webRequest.onCompleted.addListener(
 				.replace(wbk.instance, '')
 				.match(/([QPLM]\d+)/);
 
-			browser.runtime
-				.sendMessage({
-					type: 'update_entity',
-					entity: `${wbk.id}:${editedEnity[0]}`,
-				})
-				.then(response => {})
-				.catch(error => console.error('Message failed:', error));
+			if (editedEnity) {
+				browser.runtime
+					.sendMessage({
+						type: 'update_entity',
+						entity: `${wbk.id}:${editedEnity[0]}`,
+					})
+					.then(response => {})
+					.catch(error => console.error('Message failed:', error));
+			}
 		}
 	},
 	{
