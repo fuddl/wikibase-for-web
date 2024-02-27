@@ -6,38 +6,63 @@ const manager = new WikiBaseEntityManager({
 	languages: navigator.languages,
 });
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	if (message.type === 'display_entity') {
-		try {
-			if (message?.resolved) {
-				manager.addEntities(message.resolved.map(item => item.id));
-			}
-		} catch (e) {
-			console.error(e);
+browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+	if (message.type === 'resolved') {
+		// extract all entities that have been matched so far
+		const directMatches = message.candidates.filter(item => {
+			return item?.resolved.length > 0;
+		});
+
+		const allEntities = directMatches
+			.map(item => {
+				return item.resolved;
+			})
+			.flat();
+
+		if (directMatches) {
+			manager.addEntities(allEntities);
 		}
 
-		(async () => {
-			if (message?.resolved?.length > 0) {
-				if (message?.resolved.length < 2 && message?.resolved.length > 0) {
-					await manager.navigator.resetHistory({
-						activity: 'view',
-						id: message.resolved[0].id,
-					});
-				} else {
-					await manager.navigator.resetHistory({
-						activity: 'select',
-						ids: message.resolved.map(item => item.id),
-					});
-				}
-			}
+		const specificities = directMatches.map(item => parseInt(item.specificity));
+		const maxSpecific = Math.max(...specificities);
 
-			if (message?.candidates?.length > 0) {
+		const unmatchedHigherSpecificity = message.candidates.filter(
+			item => item.specificity > maxSpecific,
+		);
+
+		const unmatchedLowerSpecificity = message.candidates.filter(
+			item => item.specificity < maxSpecific,
+		);
+
+		const bestMatches = directMatches
+			.filter(item => item.specificity === maxSpecific)
+			.map(item => {
+				return item.resolved;
+			})
+			.flat();
+
+		if (bestMatches.length > 0) {
+			if (bestMatches.length < 2) {
 				await manager.navigator.resetHistory({
-					activity: 'match',
-					candidates: message.candidates,
+					activity: 'view',
+					id: bestMatches[0],
+					others: allEntities,
+				});
+			} else {
+				await manager.navigator.resetHistory({
+					activity: 'select',
+					ids: bestMatches,
 				});
 			}
-		})();
+		}
+
+		if (message?.candidates?.length > 0) {
+			await manager.navigator.resetHistory({
+				activity: 'match',
+				candidates: message.candidates,
+			});
+		}
+
 		return Promise.resolve('done');
 	} else if (message.type === 'update_entity') {
 		manager.update(message.entity);

@@ -16,7 +16,13 @@
 							</dt>
 							<dd class="match__value">
 								{% if edit.action == 'wbcreateclaim' %}
-									{% include 'snack' with { mainsnak: edit.snack } %}
+									{% include 'snack' with {
+										mainsnak: {
+											snaktype: edit.snaktype,
+											datatype: 'external-id',
+											datavalue: { value: edit.value },
+										}
+									} %}
 								{% elseif edit.action == 'wbsetaliases' %}
 									<em>
 										{{- edit.add -}}

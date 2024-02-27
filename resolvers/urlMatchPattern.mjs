@@ -27,30 +27,7 @@ export const urlMatchPattern = {
 					break;
 			}
 
-			// @todo extract title
-
 			// @todo handle isbn numbers?
-
-			const getLabel = () => {
-				if (metadata?.title && prop?.title) {
-					try {
-						const extractionResult = new RegExp(prop.title, 'g').exec(
-							metadata.title,
-						);
-						if (extractionResult?.[1]) {
-							return extractionResult[1];
-						} else {
-							return false;
-						}
-					} catch (e) {
-						console.warn(
-							'This title extractor regex is probably not valid',
-							JSON.stringify(prop, null, 2),
-						);
-					}
-				}
-				return metadata?.title;
-			};
 
 			const proposeEdits = [];
 
@@ -60,19 +37,6 @@ export const urlMatchPattern = {
 				snaktype: 'value',
 				value: `"${id}"`,
 				status: 'required',
-			});
-
-			if (getLabel() && metadata.lang) {
-				proposeEdits.push({
-					action: 'wbsetaliases',
-					add: getLabel(),
-					language: metadata.lang,
-				});
-			}
-
-			output.push({
-				proposeEdits: proposeEdits,
-				label: getLabel() ?? metadata?.title,
 				references: wikibase.props.referenceURL
 					? [
 							{
@@ -91,38 +55,35 @@ export const urlMatchPattern = {
 							},
 						]
 					: [],
+			});
+
+			output.push({
 				specificity: prop.search.toString().length,
 				instance: wikibase.id,
-				property: prop.property,
-				value: id,
+				proposeEdits: proposeEdits,
+				matchProperty: prop.property,
+				matchValue: id,
+				directMatch: false,
 			});
 		}
 
 		return output;
 	},
-	resolve: async function (location, { wikibase, queryManager }) {
-		const properties = await this.applies(location, {
-			wikibase,
-			queryManager,
-		});
-		const entities = [];
+	resolve: async function (
+		{ matchProperty, matchValue },
+		{ wikibase, queryManager },
+	) {
 		const found = [];
-		for (const { property, value, specificity } of properties) {
-			const results = await queryManager.query(
-				wikibase,
-				queryManager.queries.itemByExternalId,
-				{
-					property: property,
-					id: value,
-				},
-			);
-			for (const entity of results) {
-				found.push({
-					prop: property,
-					id: `${wikibase.id}:${entity}`,
-					specificity: specificity,
-				});
-			}
+		const results = await queryManager.query(
+			wikibase,
+			queryManager.queries.itemByExternalId,
+			{
+				property: matchProperty,
+				id: matchValue,
+			},
+		);
+		for (const entity of results) {
+			found.push(`${wikibase.id}:${entity}`);
 		}
 		return found;
 	},

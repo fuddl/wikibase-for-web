@@ -8,14 +8,13 @@ export const wikibase = {
 		return new RegExp(`^${baseUrl}\\/${pathPrefix}${namespaces}([QMPL]\\d+)`);
 	},
 	applies: function (location, { wikibase }) {
-		return location.match(this.getRegex(wikibase.instance)) !== null;
+		return location.match(this.getRegex(wikibase.instance)) !== null
+			? [{ specificity: 1000, instance: wikibase.id, matchFromUrl: location }]
+			: [];
 	},
-	resolve: function (location, { wikibase, wikibaseID }) {
+	resolve: function ({ matchFromUrl }, { wikibase, wikibaseID }) {
 		return [
-			{
-				id: `${wikibaseID}:${location.match(this.getRegex(wikibase.instance))[1]}`,
-				specificity: 1000,
-			},
+			`${wikibaseID}:${matchFromUrl.match(this.getRegex(wikibase.instance))[1]}`,
 		];
 	},
 };

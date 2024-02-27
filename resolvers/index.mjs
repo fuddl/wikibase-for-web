@@ -16,7 +16,6 @@ resolvers.resolve = async function (url, metadata) {
 		return resolvedCache[url];
 	}
 
-	let results = [];
 	let candidates = [];
 	await Promise.all(
 		this.list.map(async resolver => {
@@ -26,33 +25,24 @@ resolvers.resolve = async function (url, metadata) {
 						wikibase: wikibases[name],
 						queryManager: queryManager,
 						wikibaseID: name,
-						metadata: metadata,
 					};
 					const applies = await resolver.applies(url, context);
-					if (applies === true || applies.length > 0) {
-						const resolved = await resolver.resolve(url, context);
-
-						if (applies.length) {
-							candidates = [...candidates, ...applies];
+					if (applies.length > 0) {
+						for (const apply of applies) {
+							apply.resolved = await resolver.resolve(apply, context);
 						}
-
-						results = [...results, ...resolved];
+						candidates = [...candidates, ...applies];
 					}
 				}),
 			);
 		}),
 	);
 
-	results.sort((a, b) => b.specificity - a.specificity);
+	candidates.sort((a, b) => b.specificity - a.specificity);
 
-	resolvedCache[url] = resolvedCache[url]
-		? [...resolvedCache[url], results]
-		: [results];
+	resolvedCache[url] = candidates;
 
-	return {
-		resolved: results,
-		candidates: candidates,
-	};
+	return candidates;
 };
 
 export { resolvers };

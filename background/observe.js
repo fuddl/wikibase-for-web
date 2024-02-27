@@ -33,17 +33,16 @@ function getCurrentTab() {
 async function updateSidebar(resolved) {
 	try {
 		await browser.runtime.sendMessage(browser.runtime.id, {
-			type: 'display_entity',
-			...resolved,
+			type: 'resolved',
+			candidates: resolved,
 		});
 	} catch (error) {
 		console.error(error);
 	}
 }
 
-async function resolveUrl(url, tabId) {
-	const metadata = await getTabMetadata(tabId);
-	return await resolvers.resolve(url, metadata);
+async function resolveUrl(url) {
+	return await resolvers.resolve(url);
 }
 
 async function resolveAndUpdateSidebar(url, tabId) {
