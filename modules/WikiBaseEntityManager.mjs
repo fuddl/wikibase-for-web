@@ -92,6 +92,10 @@ class WikiBaseEntityManager {
 		ids.map(id => this.addEntity(id));
 	}
 
+	setMeta(metaObject) {
+		this.meta = metaObject;
+	}
+
 	async update(globalId) {
 		// Fetch the latest data for the entity
 		const updatedData = await this.fetchEntity(globalId);
@@ -122,6 +126,10 @@ class WikiBaseEntityManager {
 				}
 			}),
 		);
+	}
+
+	getEntity(id) {
+		return this.entities.filter(entity => entity.id == id)[0];
 	}
 
 	async selector(ids) {

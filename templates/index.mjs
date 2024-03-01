@@ -26,6 +26,12 @@ async function loadEventsprocess(name) {
 
 const templateDefinition = [
 	{
+		id: 'actions',
+		style: true,
+		preprocess: true,
+		postprocess: true,
+	},
+	{
 		id: 'main',
 		style: true,
 		preprocess: true,
@@ -161,10 +167,7 @@ class templateRenderer {
 	}
 	elementToArray(element) {
 		// Check if the element is already a NodeList or an array
-		if (
-			NodeList.prototype.isPrototypeOf(element) ||
-			Array.isArray(element)
-		) {
+		if (NodeList.prototype.isPrototypeOf(element) || Array.isArray(element)) {
 			return element; // Return the NodeList or array if it already is one
 		} else {
 			// Create an array and add the element to it
@@ -192,9 +195,7 @@ class templateRenderer {
 				}
 				if (item?.style === true) {
 					item.style = [
-						browser.runtime.getURL(
-							`templates/${item.id}/${item.id}.css`,
-						),
+						browser.runtime.getURL(`templates/${item.id}/${item.id}.css`),
 					];
 				}
 				item.template = template
@@ -249,64 +250,41 @@ class templateRenderer {
 				if (!template.postprocess && !template.events) {
 					return;
 				}
-				dom.querySelectorAll(`.${template.id}`).forEach(
-					async element => {
-						const instanceWrapper =
-							element.closest('[data-instance]');
-						const instance = instanceWrapper?.dataset?.instance;
-						if (
-							template.postprocess &&
-							!element?.dataset.postprocessed
-						) {
-							await template.postprocess({
-								element: element,
-								manager: this.manager,
-								instance: instance
-									? this.manager.getInstance(instance)
-									: null,
-							});
-							element.dataset.postprocessed = true;
-						}
-						if (template.events) {
-							template.events = await loadEventsprocess(
-								template.id,
-							);
-							const events = template.events({
-								element: element,
-								manager: this.manager,
-							});
-							events.forEach(event => {
-								if (event.target) {
-									this.elementToArray(event.target).forEach(
-										target => {
-											if (!('eventsAttached' in target)) {
-												target.eventsAttached = [];
-											}
-											if (
-												!target?.eventsAttached.includes(
-													event.id,
-												)
-											) {
-												target.addEventListener(
-													event.type,
-													event.listener,
-												);
-												target.eventsAttached.push(
-													event.id,
-												);
-												if (event?.initial) {
-													target.dispatchEvent(
-														new Event(event.type),
-													);
-												}
-											}
-										},
-									);
-								}
-							});
-						}
-					},
-				);
+				dom.querySelectorAll(`.${template.id}`).forEach(async element => {
+					const instanceWrapper = element.closest('[data-instance]');
+					const instance = instanceWrapper?.dataset?.instance;
+					if (template.postprocess && !element?.dataset.postprocessed) {
+						await template.postprocess({
+							element: element,
+							manager: this.manager,
+							instance: instance ? this.manager.getInstance(instance) : null,
+						});
+						element.dataset.postprocessed = true;
+					}
+					if (template.events) {
+						template.events = await loadEventsprocess(template.id);
+						const events = template.events({
+							element: element,
+							manager: this.manager,
+						});
+						events.forEach(event => {
+							if (event.target) {
+								this.elementToArray(event.target).forEach(target => {
+									if (!('eventsAttached' in target)) {
+										target.eventsAttached = [];
+									}
+									if (!target?.eventsAttached.includes(event.id)) {
+										target.addEventListener(event.type, event.listener);
+										target.eventsAttached.push(event.id);
+										if (event?.initial) {
+											target.dispatchEvent(new Event(event.type));
+										}
+									}
+								});
+							}
+						});
+					}
+				});
 			}),
 		);
 	};

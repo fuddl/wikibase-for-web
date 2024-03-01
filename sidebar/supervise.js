@@ -41,12 +41,17 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			})
 			.flat();
 
+		manager.setMeta({
+			betterProps: unmatchedHigherSpecificity,
+			otherMatches: directMatches,
+			otherProps: unmatchedLowerSpecificity,
+		});
+
 		if (bestMatches.length > 0) {
 			if (bestMatches.length < 2) {
 				await manager.navigator.resetHistory({
 					activity: 'view',
 					id: bestMatches[0],
-					others: allEntities,
 				});
 			} else {
 				await manager.navigator.resetHistory({

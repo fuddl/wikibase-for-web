@@ -11,19 +11,13 @@
 					{% include 'entity' with entity.data %}
 				{% endif %}
 			{% endfor %}
-			{% if state.others %}
-				Other less specific entities:
-				<ul>
-				{% for other in state.others %}
-					{{ debug(other) }}
-					<li>{% include 'thing' with { globalID: other } %}</li>
-				{% endfor %}
-				</ul>
-			{% endif %}
 		{% elseif state.activity == 'select' %}
 			{% include 'pick' with entities %}
 		{% elseif state.activity == 'match' %}
 			{% include 'match' with { instances: state.candidates } %}
 		{% endif %}
 	</main>
+	{% if meta and state.activity == 'view' %}
+		{% include 'actions' with meta %}
+	{% endif %}
 </div>

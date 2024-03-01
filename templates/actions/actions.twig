@@ -1,0 +1,20 @@
+<nav class="actions">
+	{% for group in groups %}
+		<h2 class="actions__headline">{{ group.title }}</h2>
+		<ul class="actions__actions">
+			{% for item in group.items %}
+				<li>
+					<a class="actions__action" href="{{ item.href }}" {% if item.postProcess %}data-post-process="{{ item.postProcess }}"{% endif %}{% if item.id %}data-id="{{ item.id }}"{% endif %}>
+						{% if item.icon %}
+							<img class="actions__moji" src="{{ item.icon }}" />
+						{% else %}
+							<span class="actions__moji"></span>
+						{% endif %}
+						<span class="actions__title">{{ item.title }}</span>
+						<span class="actions__desc">{{ item.description }}</span>
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endfor %}
+</nav>
