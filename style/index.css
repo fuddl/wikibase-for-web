@@ -9,6 +9,9 @@
   --border: #a2a9b1;
   --contour: #eaecf0;
   --shadow: #00000011;
+  --icon-flood: brightness(0) saturate(100%) invert(48%) sepia(2%)
+    saturate(1347%) hue-rotate(173deg) brightness(93%) contrast(69%);
+  --background: #fff;
 }
 
 @media (max-width: 300px) {
@@ -29,6 +32,9 @@
     --code: #55595d;
     --contour: #27292d;
     --shadow: #f7f8f911;
+    --icon-flood: brightness(0) saturate(100%) invert(91%) sepia(6%)
+      saturate(195%) hue-rotate(164deg) brightness(93%) contrast(83%);
+    --background: #2e3136;
   }
 }
 

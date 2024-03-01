@@ -21,6 +21,7 @@ export default ({ vars, manager }) => {
           href: manager.urlFromGlobalId(item),
           postProcess: !cached ? 'getLabelsAndDescriptions' : null,
           title: cached ? getByUserLanguage(cached.labels)?.value : item,
+          icon: browser.runtime.getURL('icons/wd.svg'),
           description: cached
             ? getByUserLanguage(cached.descriptions)?.value
             : item,

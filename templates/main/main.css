@@ -10,7 +10,7 @@ main {
 }
 
 .main__content {
-  background: var(--paper);
+  background: var(--background);
   padding: 1em;
 }
 
