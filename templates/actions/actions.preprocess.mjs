@@ -11,7 +11,7 @@ export default ({ vars, manager }) => {
       const key = match.instance;
 
       const items = [];
-      for (const item of match.resolved) {
+      for (const item of match.resolved.map(item => item.id)) {
         if (activeEntities.includes(item)) {
           continue;
         }

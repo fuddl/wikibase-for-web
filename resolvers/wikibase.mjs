@@ -14,7 +14,9 @@ export const wikibase = {
 	},
 	resolve: function ({ matchFromUrl }, { wikibase, wikibaseID }) {
 		return [
-			`${wikibaseID}:${matchFromUrl.match(this.getRegex(wikibase.instance))[1]}`,
+			{
+				id: `${wikibaseID}:${matchFromUrl.match(this.getRegex(wikibase.instance))[1]}`,
+			},
 		];
 	},
 };

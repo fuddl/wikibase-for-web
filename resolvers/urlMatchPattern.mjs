@@ -70,7 +70,7 @@ export const urlMatchPattern = {
 		return output;
 	},
 	resolve: async function (
-		{ matchProperty, matchValue },
+		{ matchProperty, matchValue, specificity },
 		{ wikibase, queryManager },
 	) {
 		const found = [];
@@ -83,7 +83,10 @@ export const urlMatchPattern = {
 			},
 		);
 		for (const entity of results) {
-			found.push(`${wikibase.id}:${entity}`);
+			found.push({
+				id: `${wikibase.id}:${entity}`,
+				specificity: specificity,
+			});
 		}
 		return found;
 	},

@@ -1,12 +1,13 @@
 import { wikibase } from './wikibase.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
+import { url } from './url.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [wikibase, urlMatchPattern],
+	list: [wikibase, urlMatchPattern, url],
 };
 
 const resolvedCache = {};

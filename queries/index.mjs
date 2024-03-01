@@ -1,13 +1,17 @@
+import { itemByExternalId } from './itemByExternalId.mjs';
+import { itemByUrl } from './itemByUrl.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
-import { itemByExternalId } from './itemByExternalId.mjs';
+import { urlProperties } from './urlProperties.mjs';
 
 const queries = {
+	itemByExternalId,
+	itemByUrl,
 	shortTitle,
 	unitSymbol,
 	urlMatchPattern,
-	itemByExternalId,
+	urlProperties,
 };
 
 class WikiBaseQueryManager {

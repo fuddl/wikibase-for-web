@@ -23,7 +23,7 @@ export const urlMatchPattern = {
 					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive', '')
 				)
 			) AS ?c)
-			BIND(REPLACE(STR(?prop), '${instance.instance.replace(/^https/, 'http')}/entity/', '') AS ?p ).
+			BIND(REPLACE(STR(?prop), '^.*/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$', '$1') AS ?p).
 			${
 				instance?.props?.mastodonAddress
 					? `FILTER (?p != '${instance.props.mastodonAddress}')

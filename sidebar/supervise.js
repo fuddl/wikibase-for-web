@@ -15,7 +15,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
 		const allEntities = directMatches
 			.map(item => {
-				return item.resolved;
+				return item.resolved.map(item => item.id);
 			})
 			.flat();
 
@@ -37,7 +37,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		const bestMatches = directMatches
 			.filter(item => item.specificity === maxSpecific)
 			.map(item => {
-				return item.resolved;
+				return item.resolved.map(item => item.id);
 			})
 			.flat();
 
