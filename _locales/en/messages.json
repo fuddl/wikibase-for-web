@@ -13,15 +13,9 @@
       }
     }
   },
-  "contextual_matches_title": {
-    "message": "Contexual matches from $INSTANCE$",
-    "description": "Title for a section that contains contextual matches from a specific wikibase instance.",
-    "placeholders": {
-      "instance": {
-        "content": "$1",
-        "example": "Wikidata"
-      }
-    }
+  "other_matches_title": {
+    "message": "Other matches",
+    "description": "Title for a section that contains contextual matches for a particular website."
   },
   "wb_set_alias": {
     "message": "Set alias",

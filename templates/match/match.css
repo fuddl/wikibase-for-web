@@ -1,3 +1,7 @@
+.match {
+	margin: 1em;
+}
+
 .match__statement {
 	display: grid;
 	grid-template-columns: max-content auto;

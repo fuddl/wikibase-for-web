@@ -4,6 +4,9 @@
 			<button class="main__back">←</button>
 		</nav>
 	{% endif %}
+	{% if meta.betterProps %}
+		{% include 'match' with { instances: [ meta.betterProps[0] ] } %}
+	{% endif %}
 	<main class="main__content">
 		{% if state.activity == 'view' %}
 			{% for entity in entities %}

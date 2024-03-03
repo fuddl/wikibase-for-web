@@ -9,59 +9,65 @@ const manager = new WikiBaseEntityManager({
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === 'resolved') {
 		// extract all entities that have been matched so far
-		const directMatches = message.candidates.filter(item => {
-			return item?.resolved.length > 0;
-		});
-
-		const allEntities = directMatches
-			.map(item => {
-				return item.resolved.map(item => item.id);
-			})
+		const directMatches = message.candidates
+			.filter(item => item?.resolved.length > 0)
+			.map(item => item.resolved)
 			.flat();
+
+		const allEntities = directMatches.map(item => {
+			return item.id;
+		});
 
 		if (directMatches) {
 			manager.addEntities(allEntities);
 		}
 
-		const specificities = directMatches.map(item => parseInt(item.specificity));
-		const maxSpecific = Math.max(...specificities);
-
-		const unmatchedHigherSpecificity = message.candidates.filter(
-			item => item.specificity > maxSpecific,
+		const entitySpecificities = directMatches.map(item =>
+			parseInt(item.specificity),
 		);
 
-		const unmatchedLowerSpecificity = message.candidates.filter(
-			item => item.specificity < maxSpecific,
-		);
+		const propertySpecificities = message.candidates
+			.filter(item => item.resolved.length === 0)
+			.map(item => parseInt(item.specificity));
+
+		const entityMaxSpecific = Math.max(...entitySpecificities);
+		const propertyMaxSecific = Math.max(...propertySpecificities);
+
+		const propertiesHigherSpecificity = message.candidates
+			.filter(item => item.resolved.length === 0)
+			.filter(item => item.specificity > entityMaxSpecific);
+
+		const propertiesLowerSpecificity = message.candidates
+			.filter(item => item.resolved.length === 0)
+			.filter(item => item.specificity < entityMaxSpecific);
 
 		const bestMatches = directMatches
-			.filter(item => item.specificity === maxSpecific)
-			.map(item => {
-				return item.resolved.map(item => item.id);
-			})
-			.flat();
+			// only the most specific item
+			.filter(item => item.specificity === entityMaxSpecific)
+			// remove duplicates
+			.filter((item, index, array) => array.indexOf(item) === index);
 
 		manager.setMeta({
-			betterProps: unmatchedHigherSpecificity,
-			otherMatches: directMatches,
-			otherProps: unmatchedLowerSpecificity,
+			betterProps: propertiesHigherSpecificity,
+			otherMatches: directMatches.filter(
+				item => item.specificity < entityMaxSpecific,
+			),
+			otherProps: propertiesLowerSpecificity,
 		});
 
 		if (bestMatches.length > 0) {
 			if (bestMatches.length < 2) {
 				await manager.navigator.resetHistory({
 					activity: 'view',
-					id: bestMatches[0],
+					id: bestMatches[0].id,
 				});
 			} else {
 				await manager.navigator.resetHistory({
 					activity: 'select',
-					ids: bestMatches,
+					ids: bestMatches.map(item => item.id),
 				});
 			}
-		}
-
-		if (message?.candidates?.length > 0) {
+		} else if (message?.candidates?.length > 0) {
 			await manager.navigator.resetHistory({
 				activity: 'match',
 				candidates: message.candidates,

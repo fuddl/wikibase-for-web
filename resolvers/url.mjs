@@ -19,6 +19,7 @@ export const url = {
 			action: 'wbcreateclaim',
 			possibleProperties: urlProperties,
 			snaktype: 'value',
+			datatype: 'url',
 			value: location,
 			status: 'required',
 		});
@@ -46,9 +47,13 @@ export const url = {
 			url.match(/https?:\/\/www\./)
 				? url.replace(/^(http:\/\/)www\./, '$1')
 				: url,
-		domainOnly: url => {
+		domainOnlyTrailingSlash: url => {
 			const u = new URL(url);
 			return `${u.protocol}//${u.hostname}/`;
+		},
+		domainOnly: url => {
+			const u = new URL(url);
+			return `${u.protocol}//${u.hostname}`;
 		},
 	},
 	resolve: async function ({ matchFromUrl }, { wikibase, queryManager }) {
@@ -74,8 +79,11 @@ export const url = {
 		);
 		const found = [];
 		results.forEach(obj => {
-			// Calculate specificity based on the URL length
-			const specificity = obj.url.length;
+			// Non-properties get a specificity bonus
+			const specificityBonus = obj.item.startsWith('P') ? 0 : 1;
+
+			// Calculate specificity based on the URL length and the bonus
+			const specificity = obj.url.length + specificityBonus;
 
 			// Find if the item already exists in the result array
 			const existingIndex = found.findIndex(item => item.item === obj.item);

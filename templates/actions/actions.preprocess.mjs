@@ -7,35 +7,25 @@ export default ({ vars, manager }) => {
 
   vars.groups = {};
   if (vars.otherMatches) {
+    const othermatchesItems = [];
     for (const match of vars.otherMatches) {
-      const key = match.instance;
-
-      const items = [];
-      for (const item of match.resolved.map(item => item.id)) {
-        if (activeEntities.includes(item)) {
-          continue;
-        }
-        const cached = manager.labelsAndDescrptionsCache[item];
-
-        items.push({
-          href: manager.urlFromGlobalId(item),
-          postProcess: !cached ? 'getLabelsAndDescriptions' : null,
-          title: cached ? getByUserLanguage(cached.labels)?.value : item,
-          icon: browser.runtime.getURL('icons/wd.svg'),
-          description: cached
-            ? getByUserLanguage(cached.descriptions)?.value
-            : item,
-          id: !cached ? item : null,
-        });
-      }
-      if (items.length > 0)
-        vars.groups[`othermatches-${key}`] = {
-          items: items,
-          title: browser.i18n.getMessage(
-            'contextual_matches_title',
-            manager.instances[match.instance].name,
-          ),
-        };
+      const cached = manager.labelsAndDescrptionsCache[match.id];
+      othermatchesItems.push({
+        href: manager.urlFromGlobalId(match.id),
+        postProcess: !cached ? 'getLabelsAndDescriptions' : null,
+        title: cached ? getByUserLanguage(cached.labels)?.value : match.id,
+        icon: browser.runtime.getURL('icons/wd.svg'),
+        description: cached
+          ? getByUserLanguage(cached.descriptions)?.value
+          : match.id,
+        id: !cached ? match.id : null,
+      });
+    }
+    if (othermatchesItems.length > 0) {
+      vars.groups['othermatches'] = {
+        items: othermatchesItems,
+        title: browser.i18n.getMessage('other_matches_title'),
+      };
     }
   }
 };

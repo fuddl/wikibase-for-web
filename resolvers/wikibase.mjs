@@ -12,9 +12,10 @@ export const wikibase = {
 			? [{ specificity: 1000, instance: wikibase.id, matchFromUrl: location }]
 			: [];
 	},
-	resolve: function ({ matchFromUrl }, { wikibase, wikibaseID }) {
+	resolve: function ({ matchFromUrl, specificity }, { wikibase, wikibaseID }) {
 		return [
 			{
+				specificity: specificity,
 				id: `${wikibaseID}:${matchFromUrl.match(this.getRegex(wikibase.instance))[1]}`,
 			},
 		];

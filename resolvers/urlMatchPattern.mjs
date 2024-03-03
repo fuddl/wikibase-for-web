@@ -35,6 +35,7 @@ export const urlMatchPattern = {
 				action: 'wbcreateclaim',
 				property: prop.property,
 				snaktype: 'value',
+				datatype: 'external-id',
 				value: id,
 				status: 'required',
 				references: wikibase.props.referenceURL
