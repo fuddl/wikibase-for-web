@@ -18,7 +18,7 @@
     <defs>
         <linearGradient id="b" x1="12" x2="12" y1="1" y2="23" gradientUnits="userSpaceOnUse">
             <stop stop-opacity="0"/>
-            <stop offset="1" stop-opacity=".5"/>
+            <stop offset="1" stop-opacity=".75"/>
         </linearGradient>
     </defs>
 </svg>
