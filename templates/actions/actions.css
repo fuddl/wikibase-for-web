@@ -52,7 +52,7 @@
 .actions__moji {
 	grid-area: moji;
 	text-align: center;
-	margin: auto;
+	margin: 0.25em 0 auto;
 	width: 20px;
 	aspect-ratio: 1/1;
 	filter: var(--icon-flood);

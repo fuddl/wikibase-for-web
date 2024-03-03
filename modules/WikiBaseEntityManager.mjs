@@ -55,18 +55,17 @@ class WikiBaseEntityManager {
 			switch (state.activity) {
 				case 'view':
 					const instance = this.getInstanceFromGlobalId(state.id);
+
 					browser.sidebarAction.setTitle({
 						title: instance.name,
 					});
-					if (instance.favicon) {
-						browser.sidebarAction.setIcon({
-							path: {
-								128: browser.runtime.getURL(instance.favicon),
-							},
-						});
-					} else {
-						browser.sidebarAction.setIcon({ path: null });
-					}
+
+					browser.sidebarAction.setIcon({
+						path: {
+							128: this.getIcon(instance),
+						},
+					});
+
 					break;
 				case 'select':
 					browser.sidebarAction.setTitle({
@@ -161,6 +160,14 @@ class WikiBaseEntityManager {
 
 	getInstance(instance) {
 		return this.instances[instance];
+	}
+
+	getIcon(instance) {
+		if (instance.icon) {
+			return browser.runtime.getURL(instance.icon);
+		} else {
+			return browser.runtime.getURL('icons/wikibase.svg');
+		}
 	}
 
 	getInstanceFromGlobalId(globalID) {

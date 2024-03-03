@@ -6,8 +6,7 @@ const wikibases = {
 		color: '#069',
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
-		favicon:
-			'https://upload.wikimedia.org/wikipedia/commons/4/4a/Wikidata_Favicon_color.svg',
+		icon: 'icons/wikidata.svg',
 		props: {
 			appliesIfRegularExpressionMatches: 'P8460',
 			formatterURL: 'P1630',
@@ -52,18 +51,20 @@ const wikibases = {
 		color: '#00a300',
 		instance: 'https://data.wikitrek.org',
 		wgScriptPath: '/dt',
+		icon: 'icons/datatrek.svg',
 	},
 	wikibaseWorld: {
 		name: 'Wikibase World',
 		color: '#394fa4',
 		instance: 'https://wikibase.world',
 		sparqlEndpoint: 'https://wikibase.world/query/sparql',
+		icon: 'icons/wikibaseworld.svg',
 	},
 	commons: {
 		name: 'Wikimedia Commons',
 		color: '#36c',
 		instance: 'https://commons.wikimedia.org',
-		sparqlEndpoint: 'https://wikibase.world/query/sparql',
+		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
 	},
 	playground: {
 		name: 'Playground',

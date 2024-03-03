@@ -10,7 +10,7 @@
     "128": "icons/wd.svg"
   },
   "browser_action": {
-    "default_icon": "icons/wikibase.svg",
+    "default_icon": "icons/wikidata.svg",
     "default_title": "Wikibase for Web"
   },
   "sidebar_action": {

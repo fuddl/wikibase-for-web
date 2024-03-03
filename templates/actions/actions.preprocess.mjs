@@ -9,12 +9,13 @@ export default ({ vars, manager }) => {
   if (vars.otherMatches) {
     const othermatchesItems = [];
     for (const match of vars.otherMatches) {
+      const instance = manager.getInstanceFromGlobalId(match.id);
       const cached = manager.labelsAndDescrptionsCache[match.id];
       othermatchesItems.push({
         href: manager.urlFromGlobalId(match.id),
         postProcess: !cached ? 'getLabelsAndDescriptions' : null,
         title: cached ? getByUserLanguage(cached.labels)?.value : match.id,
-        icon: browser.runtime.getURL('icons/wd.svg'),
+        icon: manager.getIcon(instance),
         description: cached
           ? getByUserLanguage(cached.descriptions)?.value
           : match.id,
