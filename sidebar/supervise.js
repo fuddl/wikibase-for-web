@@ -55,23 +55,53 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			otherProps: propertiesLowerSpecificity,
 		});
 
-		if (bestMatches.length > 0) {
-			if (bestMatches.length < 2) {
+		const go = async () => {
+			if (bestMatches.length > 0) {
+				if (bestMatches.length < 2) {
+					await manager.navigator.resetHistory({
+						activity: 'view',
+						id: bestMatches[0].id,
+					});
+				} else {
+					await manager.navigator.resetHistory({
+						activity: 'select',
+						ids: bestMatches.map(item => item.id),
+					});
+				}
+			} else if (message?.candidates?.length > 0) {
 				await manager.navigator.resetHistory({
-					activity: 'view',
-					id: bestMatches[0].id,
-				});
-			} else {
-				await manager.navigator.resetHistory({
-					activity: 'select',
-					ids: bestMatches.map(item => item.id),
+					activity: 'match',
+					candidates: message.candidates,
 				});
 			}
-		} else if (message?.candidates?.length > 0) {
-			await manager.navigator.resetHistory({
-				activity: 'match',
-				candidates: message.candidates,
-			});
+		};
+		await go();
+
+		if (propertiesHigherSpecificity) {
+			try {
+				const { response } = await browser.runtime.sendMessage({
+					type: 'request_metadata',
+					url: propertiesHigherSpecificity[0].matchFromUrl,
+				});
+				if (
+					response.lang &&
+					response.title &&
+					propertiesHigherSpecificity[0].titleExtractPattern
+				) {
+					propertiesHigherSpecificity[0].proposeEdits.push({
+						action: 'wbsetaliases',
+						add: new RegExp(
+							propertiesHigherSpecificity[0].titleExtractPattern,
+							'g',
+						).exec(response.title)[1],
+						language: response.lang,
+					});
+					console.debug(propertiesHigherSpecificity[0].proposeEdits);
+					go();
+				}
+			} catch (error) {
+				console.error('Error in sending message:', error);
+			}
 		}
 
 		return Promise.resolve('done');

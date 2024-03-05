@@ -59,12 +59,14 @@ export const urlMatchPattern = {
 			});
 
 			output.push({
-				specificity: prop.search.toString().length,
+				directMatch: false,
 				instance: wikibase.id,
-				proposeEdits: proposeEdits,
+				matchFromUrl: location,
 				matchProperty: prop.property,
 				matchValue: id,
-				directMatch: false,
+				proposeEdits: proposeEdits,
+				specificity: prop.search.toString().length,
+				titleExtractPattern: prop.title,
 			});
 		}
 

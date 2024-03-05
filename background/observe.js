@@ -30,6 +30,23 @@ function getCurrentTab() {
 		});
 }
 
+async function findTabByUrl(url) {
+	try {
+		const tabs = await browser.tabs.query({ url: url });
+
+		if (tabs.length > 0) {
+			const firstTab = tabs[0];
+			return firstTab.id; // Return the ID of the first matching tab
+		} else {
+			console.log(`No tabs found with URL: ${url}`);
+			return null; // No matching tabs found
+		}
+	} catch (error) {
+		console.error(`Error finding tab by URL: ${error}`);
+		return null; // Error case
+	}
+}
+
 async function updateSidebar(resolved) {
 	try {
 		await browser.runtime.sendMessage(browser.runtime.id, {
@@ -84,6 +101,10 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'add_to_edit_queue') {
 		wikibaseEditQueue.addJobs(message.edits);
 		return Promise.resolve('done');
+	} else if (message.type === 'request_metadata') {
+		const tabId = await findTabByUrl(message.url);
+		const metadata = await getTabMetadata(tabId);
+		return Promise.resolve({ response: metadata });
 	}
 	return false;
 });
