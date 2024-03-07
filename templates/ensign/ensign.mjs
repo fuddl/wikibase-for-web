@@ -10,10 +10,9 @@ class Ensign extends Component {
     requireStylesheet(browser.runtime.getURL('/templates/ensign/ensign.css'));
   }
 
-  render({ labels, descriptions, title }) {
+  render({ labels, descriptions, id }) {
     const label = getByUserLanguage(labels);
     const description = getByUserLanguage(descriptions);
-    const id = title;
 
     return html`
       <div class="ensign">

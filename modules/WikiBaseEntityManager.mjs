@@ -85,6 +85,25 @@ class WikiBaseEntityManager {
 
 		return await this.queryManager.query(instance, queryObject, params);
 	}
+	async fetchPropOrder(wikibase) {
+		if (!('propOrder' in this.wikibases[wikibase])) {
+			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
+			try {
+				const response = await fetch(
+					`${endPoint}?action=query&titles=MediaWiki:Wikibase-SortedProperties&prop=revisions&rvprop=content&format=json&origin=*`,
+				);
+				const data = await response.json();
+				const pageId = Object.keys(data.query.pages)[0];
+				const lastRevisionContent = data.query.pages[pageId].revisions[0]['*'];
+				this.wikibases[wikibase].propOrder =
+					lastRevisionContent.match(/(P\d+)/g);
+			} catch (e) {
+				console.log(`Failed to load prop order from ${wikibase}`);
+				console.log(e);
+			}
+		}
+		return this.wikibases[wikibase].propOrder;
+	}
 }
 
 export default WikiBaseEntityManager;
