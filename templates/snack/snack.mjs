@@ -21,7 +21,9 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
               ...${mainsnak.datavalue.value}
               manager=${manager} />`;
           case 'time':
-            return html`<${Tempus} ...${mainsnak.datavalue.value} />`;
+            return html`<${Tempus}
+              ...${mainsnak.datavalue.value}
+              manager=${manager} />`;
           case 'url':
             return html`<${Earl} ...${mainsnak.datavalue} />`;
           case 'string':

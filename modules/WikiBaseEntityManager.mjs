@@ -104,6 +104,14 @@ class WikiBaseEntityManager {
 		}
 		return this.wikibases[wikibase].propOrder;
 	}
+	idFromEntityUrl(url) {
+		const normalisedUrl = url.replace(/^http:/, 'https:');
+		const instance = Object.keys(this.wikibases).find(name => {
+			return normalisedUrl.startsWith(this.wikibases[name].instance);
+		});
+		const id = url.match(/\/entity\/(\w(?:\d+\w)\d+)$/)[1];
+		return `${instance}:${id}`;
+	}
 }
 
 export default WikiBaseEntityManager;
