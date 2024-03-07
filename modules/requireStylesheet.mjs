@@ -1,4 +1,4 @@
-export function requreStylesheet(path) {
+export function requireStylesheet(path) {
 	let exists = false;
 	for (const sheet of document.styleSheets) {
 		if (sheet.href === path) {

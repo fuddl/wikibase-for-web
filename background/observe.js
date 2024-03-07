@@ -48,14 +48,10 @@ async function findTabByUrl(url) {
 }
 
 async function updateSidebar(resolved) {
-	try {
-		await browser.runtime.sendMessage(browser.runtime.id, {
-			type: 'resolved',
-			candidates: resolved,
-		});
-	} catch (error) {
-		console.error(error);
-	}
+	await browser.runtime.sendMessage(browser.runtime.id, {
+		type: 'resolved',
+		candidates: resolved,
+	});
 }
 
 async function resolveUrl(url) {
