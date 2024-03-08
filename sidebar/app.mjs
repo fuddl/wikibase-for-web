@@ -31,8 +31,10 @@ class Sidebar extends Component {
 	handleMessage = async message => {
 		if (message.type === 'resolved') {
 			const organised = organiseView(message);
-			const currentItem = await manager.add(organised.bestMatches[0].id);
-			this.setState({ item: currentItem });
+			if (organised.bestMatches.length > 0) {
+				const currentItem = await manager.add(organised.bestMatches[0].id);
+				this.setState({ item: currentItem });
+			}
 			return Promise.resolve('done');
 		}
 	};

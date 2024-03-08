@@ -16,11 +16,11 @@ class Spot extends Component {
 			}
 			const prop = await manager.add(id);
 			if (prop.claims?.[formatterProp]) {
-				const filteredClaoms = filterBadClaims([prop.claims[formatterProp]]);
-				if (filteredClaoms) {
+				const filteredClaims = filterBadClaims([prop.claims[formatterProp]]);
+				if (filteredClaims.length === 0) {
 					return [];
 				}
-				return filteredClaoms[0].map(value => {
+				return filteredClaims[0].map(value => {
 					if (value.mainsnak?.datavalue?.value) {
 						return value.mainsnak.datavalue.value;
 					}
@@ -29,7 +29,7 @@ class Spot extends Component {
 			return [];
 		};
 
-		let [formatters, setFormatters] = useState();
+		let [formatters, setFormatters] = useState([]);
 		const elementRef = useRef(null);
 
 		if (!formatters) {
@@ -49,7 +49,8 @@ class Spot extends Component {
 			}, []);
 		}
 
-		const href = formatters?.[0].replace('$1', value);
+		const href =
+			formatters.length > 0 ? formatters[0].replace('$1', value) : false;
 
 		return html`
 			<span class="spot" ref=${elementRef}>

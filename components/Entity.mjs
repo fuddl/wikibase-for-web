@@ -74,7 +74,7 @@ class Entity extends Component {
         )}
         ${urlClaims.length > 0
           ? html`
-              <h2>
+              <h2 key="links">
                 ${browser.i18n.getMessage(
                   urlClaims.length === 1 ? 'link' : 'links',
                 )}
@@ -82,9 +82,9 @@ class Entity extends Component {
               <${Register} claims=${urlClaims} manager=${manager} />
             `
           : null}
-        ${externalIdClaims
+        ${externalIdClaims.length > 0
           ? html`
-              <h2>
+              <h2 key="external_ids">
                 ${browser.i18n.getMessage(
                   externalIdClaims.length === 1
                     ? 'external_id'
