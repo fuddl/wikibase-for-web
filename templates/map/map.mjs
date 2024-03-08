@@ -10,7 +10,6 @@ class Map extends Component {
   }
   render({ latitude, longitude }) {
     const src = browser.runtime.getURL(`sidebar/map.html`);
-    console.debug(`${src}?${latitude}/${longitude}`);
     return html`<iframe
       class="map"
       src="${src}?${latitude}/${longitude}"
