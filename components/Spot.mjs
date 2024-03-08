@@ -38,7 +38,6 @@ class Spot extends Component {
 				const observer = new IntersectionObserver(async entries => {
 					if (entries[0].isIntersecting) {
 						const formatters = await getFormatterUrls(property);
-						console.debug(formatters);
 						setFormatters(formatters);
 					}
 				});
