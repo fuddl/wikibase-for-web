@@ -1,5 +1,6 @@
 import { h, Component } from '../../node_modules/preact/dist/preact.mjs';
 import { useState, useEffect } from '../../libraries/preact-hooks.js';
+import { filterBadClaims } from '../../modules/filterBadValues.mjs';
 import htm from '../../node_modules/htm/dist/htm.mjs';
 const html = htm.bind(h);
 import Ensign from '../ensign/ensign.mjs';
@@ -34,9 +35,11 @@ class Entity extends Component {
       }, {});
     }
 
-    const mainClaims = Object.values(claims).filter(claim => {
+    let mainClaims = Object.values(claims).filter(claim => {
       return !['external-id', 'url'].includes(claim[0].mainsnak.datatype);
     });
+
+    mainClaims = filterBadClaims(mainClaims);
 
     return html`
       <section>
@@ -57,16 +60,14 @@ class Entity extends Component {
               manager=${manager}
               key=${claim[0].mainsnak.property} />`,
         )}
-        ${
-          /*urls
+        ${urls
           ? html`
               <h3>
                 ${browser.i18n.getMessage(urls.length === 1 ? 'link' : 'links')}
               </h3>
               <${Register} claims=${urls} />
             `
-          : null */ ''
-        }
+          : null}
         ${
           /*externalIds
           ? html`
