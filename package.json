@@ -12,6 +12,7 @@
     "binary-variations": "^1.0.2",
     "htm": "^3.1.1",
     "leaflet": "^1.9.4",
+    "normalize.css": "^8.0.1",
     "preact": "^10.19.2",
     "wikibase-sdk": "^9.2.4"
   },
