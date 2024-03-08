@@ -6,6 +6,7 @@ import Tempus from '../tempus/tempus.mjs';
 import Earl from '../earl/earl.mjs';
 import Mediate from '../mediate/mediate.mjs';
 import Amount from '../amount/amount.mjs';
+import Map from '../map/map.mjs';
 
 const html = htm.bind(h);
 

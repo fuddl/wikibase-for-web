@@ -94,9 +94,14 @@ class WikiBaseEntityManager {
 				);
 				const data = await response.json();
 				const pageId = Object.keys(data.query.pages)[0];
-				const lastRevisionContent = data.query.pages[pageId].revisions[0]['*'];
-				this.wikibases[wikibase].propOrder =
-					lastRevisionContent.match(/(P\d+)/g);
+				const lastRevisionContent =
+					data?.query?.pages?.[pageId]?.revisions?.[0]['*'];
+				if (lastRevisionContent) {
+					this.wikibases[wikibase].propOrder =
+						lastRevisionContent.match(/(P\d+)/g);
+				} else {
+					return [];
+				}
 			} catch (e) {
 				console.log(`Failed to load prop order from ${wikibase}`);
 				console.log(e);
