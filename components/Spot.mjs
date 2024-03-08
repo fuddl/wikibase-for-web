@@ -16,7 +16,11 @@ class Spot extends Component {
 			}
 			const prop = await manager.add(id);
 			if (prop.claims?.[formatterProp]) {
-				return filterBadClaims([prop.claims[formatterProp]])[0].map(value => {
+				const filteredClaoms = filterBadClaims([prop.claims[formatterProp]]);
+				if (filteredClaoms) {
+					return [];
+				}
+				return filteredClaoms[0].map(value => {
 					if (value.mainsnak?.datavalue?.value) {
 						return value.mainsnak.datavalue.value;
 					}

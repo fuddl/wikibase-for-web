@@ -7,7 +7,7 @@ const html = htm.bind(h);
 
 class Ensign extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/ensign.css'));
+    requireStylesheet(browser.runtime.getURL('/components/ensign.css'));
   }
 
   render({ labels, descriptions, id, manager }) {

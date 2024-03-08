@@ -10,7 +10,7 @@ const html = htm.bind(h);
 
 class Chart extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/chart.css'));
+    requireStylesheet(browser.runtime.getURL('/components/chart.css'));
   }
 
   render({ claims, manager }) {

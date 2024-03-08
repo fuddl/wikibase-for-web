@@ -74,23 +74,23 @@ class Entity extends Component {
         )}
         ${urlClaims.length > 0
           ? html`
-              <h3>
+              <h2>
                 ${browser.i18n.getMessage(
                   urlClaims.length === 1 ? 'link' : 'links',
                 )}
-              </h3>
+              </h2>
               <${Register} claims=${urlClaims} manager=${manager} />
             `
           : null}
         ${externalIdClaims
           ? html`
-              <h3>
+              <h2>
                 ${browser.i18n.getMessage(
                   externalIdClaims.length === 1
                     ? 'external_id'
                     : 'external_ids',
                 )}
-              </h3>
+              </h2>
               <${Chart} claims=${externalIdClaims} manager=${manager} />
             `
           : null}

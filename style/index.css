@@ -162,7 +162,12 @@ h1 {
 
 h2 {
   font-size: 1.5rem;
-  font-family: 'Linux Libertine', 'Georgia', 'Times', 'pIqaD', FairfaxHaxHD,
+  font-family:
+    Linux Libertine,
+    Georgia,
+    Times,
+    pIqaD,
+    FairfaxHaxHD,
     serif;
   font-weight: normal;
 }

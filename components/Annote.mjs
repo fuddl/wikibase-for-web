@@ -9,7 +9,7 @@ const html = htm.bind(h);
 
 class Annote extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/annote.css'));
+    requireStylesheet(browser.runtime.getURL('/components/annote.css'));
   }
 
   render({ qualifiers, manager }) {

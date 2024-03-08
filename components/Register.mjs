@@ -9,7 +9,7 @@ const html = htm.bind(h);
 
 class Register extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/remark.css'));
+    requireStylesheet(browser.runtime.getURL('/components/remark.css'));
   }
 
   render({ claims, manager }) {

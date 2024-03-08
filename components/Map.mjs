@@ -6,7 +6,7 @@ const html = htm.bind(h);
 
 class Map extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/map.css'));
+    requireStylesheet(browser.runtime.getURL('/components/map.css'));
   }
   render({ latitude, longitude }) {
     const src = browser.runtime.getURL(`sidebar/map.html`);

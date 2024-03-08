@@ -8,7 +8,7 @@ const html = htm.bind(h);
 
 class Main extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/main.css'));
+    requireStylesheet(browser.runtime.getURL('/components/main.css'));
   }
 
   render({ entity, manager }) {

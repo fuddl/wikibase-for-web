@@ -1,11 +1,12 @@
 import { h, Component } from '../node_modules/preact/dist/preact.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
+import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
 
 class Pic extends Component {
   componentDidMount() {
-    requireStylesheet(browser.runtime.getURL('/templates/pic.css'));
+    requireStylesheet(browser.runtime.getURL('/components/pic.css'));
   }
   render({ src, sources, scaleable }) {
     return html`<picture class="pic ${scaleable && 'pic--scaleable'}">

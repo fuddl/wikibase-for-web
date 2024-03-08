@@ -10,7 +10,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 if (location?.search) {
-	const loc = location?.search.match(/\?(\d+(?:.\d+))\/(\d+(?:.\d+))/);
+	const loc = location?.search.match(/\?-?(\d+(?:.\d+)?)\/-?(\d+(?:.\d+)?)/);
 	loc.shift();
 	map.setView(loc, 13);
 	map.scrollWheelZoom.disable();
