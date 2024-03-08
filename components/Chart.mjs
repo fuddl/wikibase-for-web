@@ -18,20 +18,21 @@ class Chart extends Component {
       ${claims &&
       claims.map(
         claim =>
-          html` <tbody>
-            <tr>
-              ${claim.map(
-                object =>
+          html`<tbody>
+            ${claim.map(
+              (object, index) =>
+                html`<tr>
+                  ${index === 0 &&
                   html`<th class="chart__verb" rowspan="${claim.length}">
-                      <${Thin}
-                        id=${object.mainsnak.property}
-                        manager=${manager} />
-                    </th>
-                    <td class="chart__object">
-                      <${Snack} ...${object} manager=${manager} />
-                    </td>`,
-              )}
-            </tr>
+                    <${Thin}
+                      id=${object.mainsnak.property}
+                      manager=${manager} />
+                  </th>`}
+                  <td class="chart__object">
+                    <${Snack} ...${object} manager=${manager} />
+                  </td>
+                </tr>`,
+            )}
           </tbody>`,
       )}
     </table>`;

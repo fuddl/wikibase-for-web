@@ -29,14 +29,16 @@ class Spot extends Component {
 			return [];
 		};
 
-		let [formatters, setFormatters] = useState([]);
+		let [formatters, setFormatters] = useState(false);
 		const elementRef = useRef(null);
 
 		if (!formatters) {
 			useEffect(() => {
+				console.debug('formatters');
 				const observer = new IntersectionObserver(async entries => {
 					if (entries[0].isIntersecting) {
 						const formatters = await getFormatterUrls(property);
+						console.debug(formatters);
 						setFormatters(formatters);
 					}
 				});
@@ -49,8 +51,7 @@ class Spot extends Component {
 			}, []);
 		}
 
-		const href =
-			formatters.length > 0 ? formatters[0].replace('$1', value) : false;
+		const href = formatters ? formatters[0].replace('$1', value) : false;
 
 		return html`
 			<span class="spot" ref=${elementRef}>
