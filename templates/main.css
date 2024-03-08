@@ -1,0 +1,28 @@
+main {
+  background: white;
+  padding: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  main {
+    background: #2e3136;
+  }
+}
+
+.main__content {
+  background: var(--background);
+  padding: 1rem;
+}
+
+.main__content:not(:first-child) {
+  border-top: 0.0714rem solid #ccd0d4;
+}
+
+.main__content:not(:last-child) {
+  border-bottom: 0.0714rem solid #ccd0d4;
+}
+
+.main__bar {
+  padding: 1rem;
+  background: ThreeDFace;
+}

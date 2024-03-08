@@ -2,7 +2,7 @@ import htm from '../node_modules/htm/dist/htm.mjs';
 import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
 import { requireStylesheet } from '../../modules/requireStylesheet.mjs';
 import { organiseView } from './organise-view.js';
-import Main from '../templates/main/main.mjs';
+import Main from '../templates/Main.mjs';
 import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs';
 
 const html = htm.bind(h);
