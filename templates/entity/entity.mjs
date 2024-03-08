@@ -5,6 +5,7 @@ import htm from '../../node_modules/htm/dist/htm.mjs';
 import Ensign from '../ensign/ensign.mjs';
 import Remark from '../remark/remark.mjs';
 import Register from '../register/register.mjs';
+import Chart from '../chart/chart.mjs';
 
 const html = htm.bind(h);
 
@@ -47,6 +48,10 @@ class Entity extends Component {
       return claim[0].mainsnak.datatype === 'url';
     });
 
+    const externalIdClaims = Object.values(claims).filter(claim => {
+      return claim[0].mainsnak.datatype === 'external-id';
+    });
+
     return html`
       <section>
         ${labels && descriptions
@@ -76,18 +81,18 @@ class Entity extends Component {
               <${Register} claims=${urlClaims} manager=${manager} />
             `
           : null}
-        ${
-          /*externalIds
+        ${externalIdClaims
           ? html`
               <h3>
                 ${browser.i18n.getMessage(
-                  externalIds.length === 1 ? 'external_id' : 'external_ids',
+                  externalIdClaims.length === 1
+                    ? 'external_id'
+                    : 'external_ids',
                 )}
               </h3>
-              <${Chart} claims=${externalIds} />
+              <${Chart} claims=${externalIdClaims} manager=${manager} />
             `
-          : null*/ ''
-        }
+          : null}
       </section>
     `;
   }
