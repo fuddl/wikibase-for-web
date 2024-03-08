@@ -78,6 +78,8 @@ const wikibases = {
 			formatterURL: 'P30',
 			hasCharacteristic: 'P28',
 			websiteTitleExtractPattern: 'P29',
+			shortTitle: 'P37',
+			unitSymbol: 'P38',
 		},
 		items: {
 			allCaps: 'Q7',

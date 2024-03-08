@@ -7,7 +7,8 @@ import { getByUserLanguage } from '../../modules/getByUserLanguage.mjs';
 const html = htm.bind(h);
 
 class Thin extends Component {
-  render({ id, manager }) {
+  render({ id, manager, unit = false }) {
+    const query = unit ? 'unitSymbol' : 'shortTitle';
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const [short, setShort] = useState({});
     const elementRef = useRef(null);
@@ -23,7 +24,7 @@ class Thin extends Component {
             const newDesignators = await manager.fetchDesignators(id);
             setDesignator(newDesignators);
             const [wikibase, localId] = id.split(':');
-            const newShort = await manager.query(wikibase, 'shortTitle', {
+            const newShort = await manager.query(wikibase, query, {
               subject: localId,
             });
             setShort(getByUserLanguage(newShort));

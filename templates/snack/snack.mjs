@@ -5,6 +5,7 @@ import Title from '../title/title.mjs';
 import Tempus from '../tempus/tempus.mjs';
 import Earl from '../earl/earl.mjs';
 import Mediate from '../mediate/mediate.mjs';
+import Amount from '../amount/amount.mjs';
 
 const html = htm.bind(h);
 
@@ -36,7 +37,9 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
           case 'monolingualtext':
             return html`<${Title} ...${mainsnak.datavalue.value} />`;
           case 'quantity':
-            return html`<${Amount} ...${mainsnak.datavalue.value} />`;
+            return html`<${Amount}
+              ...${mainsnak.datavalue.value}
+              manager=${manager} />`;
           case 'globe-coordinate':
             return html`<${Map} ...${mainsnak.datavalue.value} />`;
           default:
