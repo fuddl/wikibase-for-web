@@ -14,6 +14,7 @@ class Thin extends Component {
 
     let label = '';
     let description = '';
+    const href = manager.urlFromId(id);
 
     if (!designator) {
       useEffect(() => {
@@ -43,7 +44,7 @@ class Thin extends Component {
     return html`
       <a
         class="thing"
-        href="${'href'}"
+        href="${href}"
         lang="${short?.language ?? label?.language ?? id}"
         title="${description?.value ?? ''}"
         ref=${elementRef}

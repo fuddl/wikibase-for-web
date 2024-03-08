@@ -10,6 +10,8 @@ class Thing extends Component {
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const elementRef = useRef(null);
 
+    const href = manager.urlFromId(id);
+
     let label = '';
     let description = '';
 
@@ -36,7 +38,7 @@ class Thing extends Component {
     return html`
       <a
         class="thing"
-        href="${'href'}"
+        href="${href}"
         lang="${label?.language ?? id}"
         title="${description?.value ?? ''}"
         ref=${elementRef}

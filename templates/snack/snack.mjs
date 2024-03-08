@@ -3,6 +3,8 @@ import htm from '../../node_modules/htm/dist/htm.mjs';
 import Thing from '../thing/thing.mjs';
 import Title from '../title/title.mjs';
 import Tempus from '../tempus/tempus.mjs';
+import Earl from '../earl/earl.mjs';
+import Mediate from '../mediate/mediate.mjs';
 
 const html = htm.bind(h);
 
@@ -30,7 +32,7 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
             return html`<span>${mainsnak.datavalue.value}</span>`;
           case 'localMedia':
           case 'commonsMedia':
-            return html`<${Medius} ...${mainsnak} />`;
+            return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
           case 'monolingualtext':
             return html`<${Title} ...${mainsnak.datavalue.value} />`;
           case 'quantity':

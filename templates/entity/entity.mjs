@@ -12,6 +12,8 @@ class Entity extends Component {
 
     const [wikibase, localId] = id.split(':');
 
+    manager.wikibase = manager.wikibases[wikibase];
+
     const [propOrder, setPropOrder] = useState(
       manager.wikibases[wikibase]?.propOrder ?? null,
     );
@@ -44,7 +46,8 @@ class Entity extends Component {
                 labels=${labels}
                 descriptions=${descriptions}
                 title=${title}
-                id=${localId} />
+                id=${id}
+                manager=${manager} />
             `
           : null}
         ${mainClaims.map(

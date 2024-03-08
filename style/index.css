@@ -65,9 +65,7 @@ html {
   unicode-range: U+F1900-F19FF;
 }
 
-body {
-  background: var(--paper);
-  color: var(--ink);
+:root {
   font-family:
     'base-icons',
     -apple-system,
@@ -81,10 +79,21 @@ body {
     FairfaxHaxHD,
     cc-icons,
     sans-serif;
-  font-size: 14px;
   line-height: 1.2;
   margin: 0;
   user-select: text;
+  font-size: 14px;
+}
+
+@media (max-width: 260px) {
+  :root {
+    font-size: 5vw;
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
 }
 
 mark {
@@ -128,7 +137,7 @@ video {
 .placeholder {
   color: #eaecf0;
   white-space: break-word;
-  font-size: 0.6em;
+  font-size: 0.6rem;
 }
 
 .url {
@@ -143,40 +152,40 @@ h1 {
     pIqaD,
     FairfaxHaxHD,
     serif;
-  font-size: 1.7em;
+  font-size: 1.7rem;
   font-weight: 400;
-  margin: 0.5em 0;
+  margin: 0.5rem 0;
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   font-family: 'Linux Libertine', 'Georgia', 'Times', 'pIqaD', FairfaxHaxHD,
     serif;
   font-weight: normal;
 }
 
 h3 {
-  font-size: 1.2em;
+  font-size: 1.2rem;
   font-weight: bold;
   padding: 0.5em 0;
-  margin-top: 1.5em;
+  margin-top: 1.5rem;
 }
 
 ul {
   list-style-type: disc;
-  padding-left: 1em;
+  padding-left: 1rem;
 }
 
 ul > li:not(:last-child) {
-  margin-bottom: 10px;
+  margin-bottom: 0.7rem;
 }
 
 ol {
-  padding-left: 2.25em;
+  padding-left: 2.25rem;
 }
 
 ol > li {
-  margin-bottom: 10px;
+  margin-bottom: 0.7rem;
 }
 
 li:target {
@@ -188,18 +197,18 @@ figure {
 }
 
 figcaption {
-  font-size: 0.35em;
+  font-size: 0.35rem;
   line-height: 1;
 }
 
 code {
   font-family: 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
-  border: solid 1px var(--code);
+  border: solid 0.07rem var(--code);
   white-space: nowrap;
-  padding: 0.05em 0.5em;
+  padding: 0.05rem 0.5rem;
   display: inline-block;
-  max-width: calc(100% - 1em);
-  font-size: 0.8em;
+  max-width: calc(100% - 1rem);
+  font-size: 0.8rem;
   overflow: auto;
   scrollbar-width: thin;
   vertical-align: bottom;
@@ -207,12 +216,12 @@ code {
 }
 
 sup {
-  font-size: 10px;
+  font-size: 0.7rem;
   line-height: 1;
 }
 
 .submit-actions {
-  margin-top: 1em;
+  margin-top: 1rem;
 }
 
 button {
@@ -234,7 +243,7 @@ form button,
   padding-left: 12px;
   padding-right: 12px;
   font-weight: bold;
-  font-size: 17px;
+  font-size: 1.214rem;
 }
 
 button[disabled] {
@@ -249,7 +258,7 @@ summary {
 blockquote {
   border-left: 3px solid #c8ccd1;
   font-family: 'Linux Libertine', 'Georgia', 'Times', 'pIqaD', serif;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   overflow: hidden;
   margin: 1em 0;
   padding: 0 1em;
@@ -273,9 +282,9 @@ math {
 }
 
 math[display='block'] {
-  padding: 2em 1em;
+  padding: 2rem 1rem;
   background: #f8f9fa;
-  font-size: 1.5em;
+  font-size: 1.5rem;
   border: 1px solid #eaecf0;
 }
 
@@ -291,19 +300,19 @@ mrow + munder {
 }
 
 small {
-  font-size: 0.75em;
+  font-size: 0.75rem;
   line-height: 1;
 }
 
 [type='checkbox'] {
   background-color: var(--input-paper);
   box-sizing: border-box;
-  width: 1.42857143em;
-  height: 1.42857143em;
+  width: 1.42857143rem;
+  height: 1.42857143rem;
   border-color: var(--border);
   border-style: solid;
-  border-radius: 2px;
-  border-width: 1px;
+  border-radius: 0.14rem;
+  border-width: 0.071rem;
 }
 
 [type='text'],

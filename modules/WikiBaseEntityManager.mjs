@@ -112,6 +112,10 @@ class WikiBaseEntityManager {
 		const id = url.match(/\/entity\/(\w(?:\d+\w)\d+)$/)[1];
 		return `${instance}:${id}`;
 	}
+	urlFromId(id) {
+		const [wikibase, localId] = id.split(':');
+		return `${this.wikibases[wikibase].api.instance.root}/entity/${localId}`;
+	}
 }
 
 export default WikiBaseEntityManager;

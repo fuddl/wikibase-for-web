@@ -6,8 +6,8 @@
 .ensign__scope {
   background: var(--platform, var(--ink));
   color: var(--paper);
-  font-size: 0.75em;
-  padding: 0 0.25em;
+  font-size: 0.75rem;
+  padding: 0 0.25rem;
   width: max-content;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .ensign__title small {
-  font-size: 0.725em;
+  font-size: 0.725rem;
 }
 
 .ensign__description {
@@ -38,7 +38,7 @@
     Georgia,
     Times,
     serif;
-  font-size: 16px;
+  font-size: 1.14rem;
 }
 
 .ensign__id__link {
