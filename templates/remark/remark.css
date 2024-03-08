@@ -1,7 +1,7 @@
 .remark {
   background: var(--paper);
   border: 1px solid var(--contour);
-  line-height: 24px;
+  line-height: 1.714;
 }
 
 .remark__objects {
@@ -17,7 +17,7 @@
 }
 
 .remark--poster > .remark__verb {
-  padding: 7px 10px;
+  padding: 0.5rem 0.714rem;
   position: absolute;
   top: 0;
   background-color: color-mix(in srgb, var(--paper) 50%, transparent);
@@ -56,14 +56,14 @@
 
 @media (max-width: 299px) {
   .remark__verb {
-    margin: 0 0 0.75em;
+    margin: 0 0 0.75rem;
   }
 }
 
 :not(.remark--poster) > .remark__objects {
   min-width: 0;
   grid-column: 2;
-  margin: 0 0 0.5em;
+  margin: 0 0 0.5rem;
   padding: 0;
 }
 

@@ -81,8 +81,11 @@ html {
     sans-serif;
   line-height: 1.2;
   margin: 0;
-  user-select: text;
   font-size: 14px;
+}
+
+body {
+  user-select: text;
 }
 
 @media (max-width: 260px) {

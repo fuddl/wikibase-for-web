@@ -2,9 +2,11 @@ import { h, Component } from '../../node_modules/preact/dist/preact.mjs';
 import { useState, useEffect } from '../../libraries/preact-hooks.js';
 import { filterBadClaims } from '../../modules/filterBadValues.mjs';
 import htm from '../../node_modules/htm/dist/htm.mjs';
-const html = htm.bind(h);
 import Ensign from '../ensign/ensign.mjs';
 import Remark from '../remark/remark.mjs';
+import Register from '../register/register.mjs';
+
+const html = htm.bind(h);
 
 class Entity extends Component {
   render({ id, labels, descriptions, title, claims, manager }) {
@@ -41,6 +43,10 @@ class Entity extends Component {
 
     mainClaims = filterBadClaims(mainClaims);
 
+    const urlClaims = Object.values(claims).filter(claim => {
+      return claim[0].mainsnak.datatype === 'url';
+    });
+
     return html`
       <section>
         ${labels && descriptions
@@ -60,12 +66,14 @@ class Entity extends Component {
               manager=${manager}
               key=${claim[0].mainsnak.property} />`,
         )}
-        ${urls
+        ${urlClaims.length > 0
           ? html`
               <h3>
-                ${browser.i18n.getMessage(urls.length === 1 ? 'link' : 'links')}
+                ${browser.i18n.getMessage(
+                  urlClaims.length === 1 ? 'link' : 'links',
+                )}
               </h3>
-              <${Register} claims=${urls} />
+              <${Register} claims=${urlClaims} manager=${manager} />
             `
           : null}
         ${

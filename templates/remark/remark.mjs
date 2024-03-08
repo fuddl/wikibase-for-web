@@ -17,7 +17,7 @@ class Remark extends Component {
     for (const object of claim) {
       objects.push(object);
     }
-    const verb = claim[0].mainsnak.property; //.propertyGlobalID;
+    const verb = claim[0].mainsnak.property;
 
     return html`
       <dl class="remark remark--inline" id="{{ verb }}">
@@ -34,9 +34,9 @@ class Remark extends Component {
                 ${object.qualifiers &&
                 html`
                   <div class="remark__qualifiers">
-                    ${
-                      /*include 'snack' with { qualifiers: object.qualifiers }*/ ''
-                    }
+                    <${Snack}
+                      qualifiers=${object.qualifiers}
+                      manager=${manager} />
                   </div>
                 `}
               </div>

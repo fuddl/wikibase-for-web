@@ -5,20 +5,23 @@ import Title from '../title/title.mjs';
 import Tempus from '../tempus/tempus.mjs';
 import Earl from '../earl/earl.mjs';
 import Mediate from '../mediate/mediate.mjs';
+import Annote from '../annote/annote.mjs';
 import Amount from '../amount/amount.mjs';
 import Map from '../map/map.mjs';
+import Spot from '../spot/spot.mjs';
 
 const html = htm.bind(h);
 
 const Snack = ({ mainsnak, qualifiers, manager }) => html`
   <div>
-    ${(mainsnak.snaktype === 'value' &&
+    ${(mainsnak?.snaktype === 'value' &&
       (function () {
         switch (mainsnak.datatype) {
           case 'external-id':
             return html`<${Spot}
               value=${mainsnak.datavalue.value}
-              property=${mainsnak.property} />`;
+              property=${mainsnak.property}
+              manager=${manager} />`;
           case 'wikibase-item':
           case 'wikibase-property':
             return html`<${Thing}
@@ -49,13 +52,14 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
             </span>`;
         }
       })()) ||
-    (mainsnak.snaktype &&
+    (mainsnak?.snaktype &&
       html`<em
         >${['novalue', 'somevalue'].includes(mainsnak.snaktype)
           ? browser.i18n.getMessage('no_value')
           : browser.i18n.getMessage('unknown')}</em
       >`)}
-    ${qualifiers && html`<${Annote} qualifiers=${qualifiers} />`}
+    ${qualifiers &&
+    html`<${Annote} qualifiers=${qualifiers} manager=${manager} />`}
   </div>
 `;
 
