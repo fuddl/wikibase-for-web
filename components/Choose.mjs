@@ -8,7 +8,7 @@ const html = htm.bind(h);
 const Choose = ({ value, label, name, required = false, manager }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [inputValue, setInputValue] = useState(value || '');
+  const [inputValue, setInputValue] = useState('');
   const [shouldFetch, setShouldFetch] = useState(true);
   const [choosenId, setChoosenId] = useState('');
 
@@ -17,6 +17,10 @@ const Choose = ({ value, label, name, required = false, manager }) => {
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/choose.css'));
   }, []);
+
+  useEffect(() => {
+    setInputValue(label);
+  }, [label]);
 
   useEffect(() => {
     const fetchSuggestions = async () => {

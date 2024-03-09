@@ -17,7 +17,7 @@ export const url = {
 
 		proposeEdits.push({
 			action: 'wbcreateclaim',
-			possibleProperties: urlProperties,
+			propertyOptions: urlProperties,
 			snaktype: 'value',
 			datatype: 'url',
 			value: location,

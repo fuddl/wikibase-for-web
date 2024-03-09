@@ -11,15 +11,51 @@ const html = htm.bind(h);
 
 const Match = ({ suggestions, manager }) => {
   const [open, setOpen] = useState(0);
+  const [metaData, setMetaData] = useState(
+    new Array(suggestions.length).fill(null),
+  );
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/match.css'));
+    (async () => {
+      requestMetadata(open);
+    })();
   }, []);
+
+  const requestMetadata = async index => {
+    const requestedMetadata = await browser.runtime.sendMessage({
+      type: 'request_metadata',
+      url: suggestions[index].matchFromUrl,
+    });
+    const newMetaData = [...metaData];
+    newMetaData[index] = requestedMetadata.response;
+    setMetaData(newMetaData);
+  };
+
+  useEffect(() => {
+    (async () => {
+      await requestMetadata(open);
+    })();
+  }, [open]);
 
   return html`
     <div class="match">
       <h1>Match</h1>
-      ${suggestions.map(
-        (suggestion, key) => html`
+      ${suggestions.map((suggestion, key) => {
+        let label = '';
+        if (metaData?.[key]?.title) {
+          if (suggestion?.titleExtractPattern) {
+            const matches = metaData[key].title.match(
+              suggestion.titleExtractPattern,
+            );
+            if (matches?.[1]) {
+              label = matches[1];
+            }
+          } else {
+            label = metaData[key].title;
+          }
+        }
+
+        return html`
           <details ...${{ open: key == open }} class="match__instance">
             <summary
               class="match__instance-name"
@@ -71,7 +107,7 @@ const Match = ({ suggestions, manager }) => {
                         </dd>
                         <dd class="match__bool">
                           <input
-                            name=${'edit-' + editId}
+                            name=${`edit-${editId}`}
                             type="checkbox"
                             value=${JSON.stringify(edit)}
                             checked />
@@ -81,7 +117,7 @@ const Match = ({ suggestions, manager }) => {
                   )}
                 </div>
                 <${Choose}
-                  label=${suggestion.label}
+                  label=${label}
                   manager=${manager}
                   name="subjectId"
                   required="true" />
@@ -95,8 +131,8 @@ const Match = ({ suggestions, manager }) => {
               </div>
             </form>
           </details>
-        `,
-      )}
+        `;
+      })}
     </div>
   `;
 };
