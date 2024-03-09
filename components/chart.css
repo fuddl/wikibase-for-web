@@ -5,7 +5,7 @@
 
 .chart__verb {
 	vertical-align: top;
-	padding: 0.25em;
+	padding: 0.5rem;
 	background-color: #e6e6ff;
 	text-align: left;
 	font-weight: normal;
@@ -13,6 +13,6 @@
 }
 
 .chart__object {
-	padding: 0.25em;
+	padding: 0.25rem;
 	vertical-align: top;
 }
