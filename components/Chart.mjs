@@ -21,7 +21,7 @@ class Chart extends Component {
           html`<tbody>
             ${claim.map(
               (object, index) =>
-                html`<tr>
+                html`<tr key=${object.id}>
                   ${index === 0 &&
                   html`<th class="chart__verb" rowspan="${claim.length}">
                     <${Thin}
