@@ -4,6 +4,7 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Entity from './Entity.mjs';
 import Actions from './Actions.mjs';
+import Match from './Match.mjs';
 
 const html = htm.bind(h);
 
@@ -12,7 +13,7 @@ class Main extends Component {
     requireStylesheet(browser.runtime.getURL('/components/main.css'));
   }
 
-  render({ entity, otherEntities, manager }) {
+  render({ entity, suggestions, otherEntities, manager }) {
     const actionGroups = [];
 
     if (otherEntities) {
@@ -26,9 +27,11 @@ class Main extends Component {
         });
       }
     }
-
     return html`
       <div class="main">
+        ${suggestions.length > 0
+          ? html`<${Match} suggestions=${suggestions} manager=${manager} />`
+          : null}
         <main class="main__content">
           <${Entity} ...${entity} manager=${manager} />
         </main>

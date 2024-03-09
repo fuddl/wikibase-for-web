@@ -34,6 +34,8 @@ class Sidebar extends Component {
 			if (organised.bestMatches.length > 0) {
 				const currentEntity = await manager.add(organised.bestMatches[0].id);
 				this.setState({
+					suggestions:
+						organised?.betterProps.length > 0 ? organised.betterProps : 0,
 					entity: currentEntity,
 					otherEntities: organised.otherMatches,
 				});
@@ -43,11 +45,12 @@ class Sidebar extends Component {
 	};
 
 	render() {
-		const { entity, otherEntities } = this.state;
+		const { entity, suggestions, otherEntities } = this.state;
 
 		return entity
 			? html`<${Main}
 					entity=${entity}
+					suggestions=${suggestions}
 					otherEntities=${otherEntities}
 					manager=${manager} />`
 			: null;

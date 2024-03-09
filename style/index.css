@@ -1,5 +1,6 @@
 :root {
   --paper: #f8fafb;
+  --real-paper: white;
   --input-paper: white;
   --active-paper: #eaecf0;
   --ink: #222222;
@@ -23,6 +24,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --paper: #27292d;
+    --real-paper: #2e3136;
     --input-paper: black;
     --active-paper: #27292d;
     --ink: #f7f8f9;

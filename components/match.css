@@ -44,3 +44,22 @@
 .match__bottom {
 	margin-top: 1em;
 }
+
+.match__instance {
+	background-color: var(--real-paper);
+	border: 1px solid var(--contour);
+}
+
+.match__instance:not(:first-child) {
+	margin-top: 0.5rem;
+}
+
+.match__form {
+	padding: 0.714rem;
+}
+
+.match__instance-name {
+	padding: 0.714rem;
+	list-style: none;
+	cursor: pointer;
+}
