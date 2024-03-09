@@ -19,7 +19,7 @@ class Actions extends Component {
             <ul class="actions__actions">
               ${group.items.map(
                 item => html`
-                  <li>
+                  <li key=${item?.id}>
                     <a
                       class="actions__action"
                       href="${item.href ?? manager.urlFromId(item.id)}">

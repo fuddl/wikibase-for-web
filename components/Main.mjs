@@ -16,12 +16,15 @@ class Main extends Component {
     const actionGroups = [];
 
     if (otherEntities) {
-      actionGroups.push({
-        title: browser.i18n.getMessage('other_matches_title'),
-        items: otherEntities.map(otherEntity => {
-          return { id: otherEntity.id };
-        }),
+      const otherEntityIds = otherEntities.map(otherEntity => {
+        return { id: otherEntity.id };
       });
+      if (otherEntityIds.length > 0) {
+        actionGroups.push({
+          title: browser.i18n.getMessage('other_matches_title'),
+          items: otherEntityIds,
+        });
+      }
     }
 
     return html`
@@ -29,7 +32,7 @@ class Main extends Component {
         <main class="main__content">
           <${Entity} ...${entity} manager=${manager} />
         </main>
-        ${actionGroups
+        ${actionGroups.length > 0
           ? html`<${Actions} groups=${actionGroups} manager=${manager} />`
           : null}
       </div>
