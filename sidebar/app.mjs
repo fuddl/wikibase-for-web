@@ -32,16 +32,25 @@ class Sidebar extends Component {
 		if (message.type === 'resolved') {
 			const organised = organiseView(message);
 			if (organised.bestMatches.length > 0) {
-				const currentItem = await manager.add(organised.bestMatches[0].id);
-				this.setState({ item: currentItem });
+				const currentEntity = await manager.add(organised.bestMatches[0].id);
+				this.setState({
+					entity: currentEntity,
+					otherEntities: organised.otherMatches,
+				});
 			}
 			return Promise.resolve('done');
 		}
 	};
 
 	render() {
-		const { item } = this.state;
-		return item ? html`<${Main} entity=${item} manager=${manager} />` : null;
+		const { entity, otherEntities } = this.state;
+
+		return entity
+			? html`<${Main}
+					entity=${entity}
+					otherEntities=${otherEntities}
+					manager=${manager} />`
+			: null;
 	}
 }
 

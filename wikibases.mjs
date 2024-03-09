@@ -60,6 +60,7 @@ const wikibases = {
 		instance: 'https://wikibase.world',
 		sparqlEndpoint: 'https://wikibase.world/query/sparql',
 		icon: 'icons/wikibaseworld.svg',
+		props: { formatterURL: 'P16' },
 	},
 	commons: {
 		name: 'Wikimedia Commons',

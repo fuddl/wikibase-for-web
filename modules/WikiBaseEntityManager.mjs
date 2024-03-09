@@ -121,6 +121,13 @@ class WikiBaseEntityManager {
 		const [wikibase, localId] = id.split(':');
 		return `${this.wikibases[wikibase].api.instance.root}/entity/${localId}`;
 	}
+	iconFromId(id) {
+		const [wikibase] = id.split(':');
+		if (this?.wikibases?.[wikibase]?.icon) {
+			return browser.runtime.getURL(this.wikibases[wikibase].icon);
+		}
+		return browser.runtime.getURL('/icons/wikibase.svg');
+	}
 }
 
 export default WikiBaseEntityManager;
