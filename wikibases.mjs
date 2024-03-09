@@ -52,6 +52,7 @@ const wikibases = {
 		instance: 'https://data.wikitrek.org',
 		wgScriptPath: '/dt',
 		icon: 'icons/datatrek.svg',
+		props: { formatterURL: 'P5' },
 	},
 	wikibaseWorld: {
 		name: 'Wikibase World',

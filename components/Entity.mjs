@@ -10,11 +10,35 @@ import Chart from './Chart.mjs';
 
 const html = htm.bind(h);
 
+function applyPropOrder(claims, propOrder) {
+  // Separate claims into those in propOrder and those not
+  let sortedClaims = {};
+  let otherClaims = {};
+
+  Object.keys(claims).forEach(key => {
+    if (propOrder.includes(key)) {
+      sortedClaims[key] = claims[key];
+    } else {
+      otherClaims[key] = claims[key];
+    }
+  });
+
+  // Sort the `sortedClaims` according to `propOrder`
+  sortedClaims = propOrder.reduce((acc, prop) => {
+    if (sortedClaims[prop]) {
+      acc[prop] = sortedClaims[prop];
+    }
+    return acc;
+  }, {});
+
+  // Combine sorted claims with those not in propOrder
+  const orderedClaims = { ...sortedClaims, ...otherClaims };
+
+  return orderedClaims;
+}
+
 class Entity extends Component {
   render({ id, labels, descriptions, title, claims, manager }) {
-    const urls = null;
-    const externalIds = null;
-
     const [wikibase, localId] = id.split(':');
 
     manager.wikibase = manager.wikibases[wikibase];
@@ -31,12 +55,7 @@ class Entity extends Component {
         })();
       }, []);
     } else if (propOrder.length > 0) {
-      claims = propOrder.reduce((acc, prop) => {
-        if (claims[prop]) {
-          acc[prop] = claims[prop];
-        }
-        return acc;
-      }, {});
+      claims = applyPropOrder(claims, propOrder);
     }
 
     let mainClaims = Object.values(claims).filter(claim => {

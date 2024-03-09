@@ -34,11 +34,12 @@ class Spot extends Component {
 
 		if (!formatters) {
 			useEffect(() => {
-				console.debug('formatters');
 				const observer = new IntersectionObserver(async entries => {
 					if (entries[0].isIntersecting) {
 						const formatters = await getFormatterUrls(property);
-						setFormatters(formatters);
+						if (formatters.length > 0) {
+							setFormatters(formatters);
+						}
 					}
 				});
 
