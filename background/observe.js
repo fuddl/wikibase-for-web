@@ -32,7 +32,7 @@ function getCurrentTab() {
 
 async function findTabByUrl(url) {
 	try {
-		const tabs = await browser.tabs.query({ url: url });
+		const tabs = await browser.tabs.query({ url: url.replace(/:\d+/, '') });
 
 		if (tabs.length > 0) {
 			const firstTab = tabs[0];

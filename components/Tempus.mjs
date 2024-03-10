@@ -89,12 +89,12 @@ class Tempus extends Component {
       localised = browser.i18n.getMessage('date_bce', [localised]);
     }
 
-    const calendar = manager.idFromEntityUrl(calendarmodel);
-
     return html`<time class="tempus" datetime="${'datetime'}">
       <span class="tempus__main">${localised}</span>
-      ${calendar &&
-      html`<br /><small><${Thing} id=${calendar} manager=${manager} /></small>`}
+      ${calendarmodel &&
+      html`<br /><small
+          ><${Thing} id=${calendarmodel} manager=${manager}
+        /></small>`}
     </time>`;
   }
 }

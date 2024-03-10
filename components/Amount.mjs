@@ -10,10 +10,7 @@ class Amount extends Component {
     return html`<span>
       ${number} ${' '}
       ${unit != 1 &&
-      html`<${Thin}
-        id=${manager.idFromEntityUrl(unit)}
-        unit=${true}
-        manager=${manager} />`}
+      html`<${Thin} id=${unit} unit=${true} manager=${manager} />`}
     </span>`;
   }
 }

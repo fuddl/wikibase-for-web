@@ -12,31 +12,42 @@ const Change = ({ editId, edit, manager }) => {
 	useState(() => {
 		requireStylesheet(browser.runtime.getURL('/components/change.css'));
 	}, []);
+
+	const getKey = action => {
+		switch (action) {
+			case 'wbcreateclaim':
+				if (edit?.property) {
+					return html`<${Thing} id=${edit.property} manager=${manager} />`;
+				} else if (edit?.propertyOptions) {
+					return html`<select>
+						<option>@todo: implement options</option>
+					</select>`;
+				}
+			case 'wbsetaliases':
+				return browser.i18n.getMessage('set_alias');
+		}
+	};
+
+	const getValue = action => {
+		switch (action) {
+			case 'wbcreateclaim':
+				return html`<${Snack}
+					mainsnak=${{
+						snaktype: edit.snaktype,
+						datatype: edit.datatype,
+						property: edit.property,
+						datavalue: edit.datavalue ?? { value: edit.value },
+					}}
+					manager=${manager} />`;
+			case 'wbsetaliases':
+				return html`<em>${edit.add}</em>`;
+		}
+	};
+
 	return html`
 		<dl class="change">
-			<dt class="change__key">
-				${edit.action === 'wbcreateclaim' && edit?.property
-					? html` <${Thing} id=${edit.property} manager=${manager} /> `
-					: edit.action === 'wbsetaliases'
-						? 'setAlias'
-						: ''}
-			</dt>
-			<dd class="change__value">
-				${edit.action === 'wbcreateclaim' && edit.property
-					? html`
-							<${Snack}
-								mainsnak=${{
-									snaktype: edit.snaktype,
-									datatype: edit.datatype,
-									property: edit.property,
-									datavalue: { value: edit.value },
-								}}
-								manager=${manager} />
-						`
-					: edit.action === 'wbsetaliases'
-						? html`<em>${edit.add}</em>`
-						: ''}
-			</dd>
+			<dt class="change__key">${getKey(edit.action)}</dt>
+			<dd class="change__value">${getValue(edit.action)}</dd>
 			<dd class="change__bool">
 				<input
 					name=${`edit-${editId}`}

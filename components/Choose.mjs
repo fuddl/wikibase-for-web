@@ -5,7 +5,14 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
 
-const Choose = ({ value, label, name, required = false, manager }) => {
+const Choose = ({
+  value,
+  label,
+  name,
+  required = false,
+  manager,
+  wikibase,
+}) => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputValue, setInputValue] = useState('');
@@ -24,7 +31,7 @@ const Choose = ({ value, label, name, required = false, manager }) => {
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      const searchUrl = manager.wikibase.api.searchEntities({
+      const searchUrl = manager.wikibases[wikibase].api.searchEntities({
         search: inputValue,
       });
       const autocomplete = await fetch(searchUrl).then(res => res.json());

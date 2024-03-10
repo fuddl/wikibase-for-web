@@ -1,4 +1,8 @@
 {
+  "set_alias": {
+    "message": "Set alias",
+    "description": "Title of an edit that sets an alias."
+  },
   "disambiguation_title": {
     "message": "Disambiguator",
     "description": "Title of the sidebar when it shows disambiguation screen."

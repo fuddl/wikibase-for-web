@@ -3,6 +3,8 @@ import { useState, useEffect } from '../libraries/preact-hooks.js';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
+import { metaToEdits } from '../mapping/meta.mjs';
+
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 
@@ -40,7 +42,7 @@ const Match = ({ suggestions, manager }) => {
     <div class="match">
       <h1>Match</h1>
       ${suggestions.map((suggestion, key) => {
-        const additionalEdits = [];
+        let additionalEdits = [];
         let label = '';
         if (metaData?.[key]?.title) {
           if (suggestion?.titleExtractPattern) {
@@ -56,6 +58,14 @@ const Match = ({ suggestions, manager }) => {
             }
           } else {
             label = metaData[key].title;
+          }
+          if (metaData[key]?.meta) {
+            additionalEdits = metaToEdits({
+              meta: metaData[key].meta,
+              wikibase: manager.wikibases[suggestion.instance],
+              lang: metaData[key]?.lang,
+              edits: additionalEdits,
+            });
           }
         }
 
@@ -90,6 +100,7 @@ const Match = ({ suggestions, manager }) => {
                 <${Choose}
                   label=${label}
                   manager=${manager}
+                  wikibase=${suggestion.instance}
                   name="subjectId"
                   required="true" />
               </div>

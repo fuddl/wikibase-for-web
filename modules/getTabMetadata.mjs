@@ -16,6 +16,27 @@ export async function getTabMetadata(tabId) {
                 return keywordsMeta ? keywordsMeta.content : '';
             };
 
+            const getMeta = () => {
+                const keywordsMeta = document.querySelectorAll(
+                    'meta:not([name="keywords"], [name="description"])',
+                );
+                const output = [];
+                keywordsMeta.forEach(tag => {
+                    if (
+                        tag.getAttribute('name') ||
+                        tag.getAttribute('property')
+                    ) {
+                        output.push({
+                            name:
+                                tag.getAttribute('name') ??
+                                tag.getAttribute('property'),
+                            content: tag.getAttribute('content'),
+                        });
+                    }
+                });
+                return output;
+            };
+
             const getCanonicalURL = () => {
                 const canonicalLink = document.querySelector(
                     'link[rel="canonical"]',
@@ -29,6 +50,7 @@ export async function getTabMetadata(tabId) {
                 description: getDescription(),
                 keywords: getKeywords(),
                 canonicalURL: getCanonicalURL(),
+                meta: getMeta(),
             };
         },
     });

@@ -50,6 +50,10 @@ class WikiBaseEntityManager {
 							item.id = `${wikibase}:${item[key]}`;
 						} else if (key === 'property') {
 							item.property = `${wikibase}:${item[key]}`;
+						} else if (key === 'unit') {
+							item.unit = this.idFromEntityUrl(item[key]);
+						} else if (key === 'calendarmodel') {
+							item.calendarmodel = this.idFromEntityUrl(item[key]);
 						} else {
 							// Otherwise, recursively call the function for nested objects/arrays
 							iterate(item[key], prefix);

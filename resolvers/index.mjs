@@ -12,7 +12,7 @@ const resolvers = {
 
 const resolvedCache = {};
 
-resolvers.resolve = async function (url, metadata) {
+resolvers.resolve = async function (url, allowedWikibases = wikibases) {
 	if (url in resolvedCache) {
 		return resolvedCache[url];
 	}
@@ -21,9 +21,9 @@ resolvers.resolve = async function (url, metadata) {
 	await Promise.all(
 		this.list.map(async resolver => {
 			await Promise.all(
-				Object.keys(wikibases).map(async name => {
+				Object.keys(allowedWikibases).map(async name => {
 					const context = {
-						wikibase: wikibases[name],
+						wikibase: allowedWikibases[name],
 						queryManager: queryManager,
 						wikibaseID: name,
 					};

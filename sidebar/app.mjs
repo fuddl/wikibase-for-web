@@ -36,17 +36,18 @@ class Sidebar extends Component {
 	handleMessage = async message => {
 		if (message.type === 'resolved') {
 			const organised = organiseView(message);
-			if (organised.bestMatches.length > 0) {
-				const currentEntity = await manager.add(organised.bestMatches[0].id);
-				this.setState({
-					suggestions:
-						organised?.betterProps.length > 0 ? organised.betterProps : 0,
-					entity: organised.bestMatches.length === 1 ? currentEntity : null,
-					selectable:
-						organised.bestMatches.length > 1 ? organised.bestMatches : null,
-					otherEntities: organised.otherMatches,
-				});
-			}
+
+			const currentEntity = organised?.bestMatches?.[0]?.id
+				? await manager.add(organised.bestMatches[0].id)
+				: null;
+			this.setState({
+				suggestions:
+					organised?.betterProps.length > 0 ? organised.betterProps : 0,
+				entity: organised.bestMatches.length === 1 ? currentEntity : null,
+				selectable:
+					organised.bestMatches.length > 1 ? organised.bestMatches : null,
+				otherEntities: organised.otherMatches,
+			});
 			return Promise.resolve('done');
 		}
 	};
