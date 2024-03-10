@@ -13,7 +13,12 @@ const manager = new WikiBaseEntityManager({
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { item: null }; // Initialize state
+		this.state = {
+			suggestions: null,
+			entity: null,
+			selectable: null,
+			otherEntities: null,
+		};
 		requireStylesheet(
 			browser.runtime.getURL('/node_modules/normalize.css/normalize.css'),
 		);
@@ -36,7 +41,9 @@ class Sidebar extends Component {
 				this.setState({
 					suggestions:
 						organised?.betterProps.length > 0 ? organised.betterProps : 0,
-					entity: currentEntity,
+					entity: organised.bestMatches.length === 1 ? currentEntity : null,
+					selectable:
+						organised.bestMatches.length > 1 ? organised.bestMatches : null,
 					otherEntities: organised.otherMatches,
 				});
 			}
@@ -45,15 +52,14 @@ class Sidebar extends Component {
 	};
 
 	render() {
-		const { entity, suggestions, otherEntities } = this.state;
+		const { entity, suggestions, otherEntities, selectable } = this.state;
 
-		return entity
-			? html`<${Main}
-					entity=${entity}
-					suggestions=${suggestions}
-					otherEntities=${otherEntities}
-					manager=${manager} />`
-			: null;
+		return html`<${Main}
+			entity=${entity}
+			selectable=${selectable}
+			suggestions=${suggestions}
+			otherEntities=${otherEntities}
+			manager=${manager} />`;
 	}
 }
 
