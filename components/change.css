@@ -1,0 +1,34 @@
+.change {
+	display: grid;
+	grid-template-columns: max-content auto;
+	grid-template-rows: auto auto;
+	grid-template-areas:
+		'check key'
+		'check value';
+	grid-gap: 1em;
+	background: var(--paper);
+	border: 1px solid var(--contour);
+	padding: 7px 10px;
+	margin: 0;
+}
+
+.change:not(:first-child) {
+	border-top: none;
+}
+
+.change__key {
+	grid-area: key;
+}
+.change__key a {
+	color: inherit;
+}
+
+.change__bool {
+	grid-area: check;
+	margin: 0;
+}
+
+.change__value {
+	grid-area: value;
+	margin: 0;
+}

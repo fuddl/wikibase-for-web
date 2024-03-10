@@ -3,9 +3,9 @@ import { useState, useEffect } from '../libraries/preact-hooks.js';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
-import Thing from './Thing.mjs';
 import Snack from './Snack.mjs';
 import Choose from './Choose.mjs';
+import Change from './Change.mjs';
 
 const html = htm.bind(h);
 
@@ -76,44 +76,11 @@ const Match = ({ suggestions, manager }) => {
                 data-instance=${suggestions.instance}>
                 <div class="match__statements">
                   ${Object.entries(suggestion.proposeEdits).map(
-                    ([editId, edit]) => html`
-                      <dl class="match__statement">
-                        <dt class="match__key">
-                          ${edit.action === 'wbcreateclaim' && edit?.property
-                            ? html`
-                                <${Thing}
-                                  id=${edit.property}
-                                  manager=${manager} />
-                              `
-                            : edit.action === 'wbsetaliases'
-                              ? 'setAlias'
-                              : ''}
-                        </dt>
-                        <dd class="match__value">
-                          ${edit.action === 'wbcreateclaim' && edit.property
-                            ? html`
-                                <${Snack}
-                                  mainsnak=${{
-                                    snaktype: edit.snaktype,
-                                    datatype: edit.datatype,
-                                    property: edit.property,
-                                    datavalue: { value: edit.value },
-                                  }}
-                                  manager=${manager} />
-                              `
-                            : edit.action === 'wbsetaliases'
-                              ? html`<em>${edit.add}</em>`
-                              : ''}
-                        </dd>
-                        <dd class="match__bool">
-                          <input
-                            name=${`edit-${editId}`}
-                            type="checkbox"
-                            value=${JSON.stringify(edit)}
-                            checked />
-                        </dd>
-                      </dl>
-                    `,
+                    ([editId, edit]) =>
+                      html`<${Change}
+                        key=${editId}
+                        edit=${edit}
+                        manager=${manager} />`,
                   )}
                 </div>
                 <${Choose}
