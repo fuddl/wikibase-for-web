@@ -3,7 +3,6 @@ import { useState, useEffect } from '../libraries/preact-hooks.js';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
-import Snack from './Snack.mjs';
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 
@@ -41,6 +40,7 @@ const Match = ({ suggestions, manager }) => {
     <div class="match">
       <h1>Match</h1>
       ${suggestions.map((suggestion, key) => {
+        const additionalEdits = [];
         let label = '';
         if (metaData?.[key]?.title) {
           if (suggestion?.titleExtractPattern) {
@@ -49,6 +49,10 @@ const Match = ({ suggestions, manager }) => {
             );
             if (matches?.[1]) {
               label = matches[1];
+              additionalEdits.push({
+                action: 'wbsetaliases',
+                add: label,
+              });
             }
           } else {
             label = metaData[key].title;
@@ -70,12 +74,12 @@ const Match = ({ suggestions, manager }) => {
                 type="hidden"
                 value=${suggestions.instance}
                 name="instance" />
-              <div
-                class="match__item"
-                data-key=${key}
-                data-instance=${suggestions.instance}>
+              <div class="match__item" data-key=${key}>
                 <div class="match__statements">
-                  ${Object.entries(suggestion.proposeEdits).map(
+                  ${Object.entries([
+                    ...suggestion.proposeEdits,
+                    ...additionalEdits,
+                  ]).map(
                     ([editId, edit]) =>
                       html`<${Change}
                         key=${editId}
