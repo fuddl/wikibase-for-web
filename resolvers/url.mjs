@@ -17,7 +17,7 @@ export const url = {
 
 		proposeEdits.push({
 			action: 'wbcreateclaim',
-			propertyOptions: urlProperties,
+			propertyOptions: urlProperties.map(option => `${wikibase.id}:${option}`),
 			snaktype: 'value',
 			datatype: 'url',
 			value: location,

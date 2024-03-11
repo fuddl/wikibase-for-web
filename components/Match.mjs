@@ -15,10 +15,15 @@ const Match = ({ suggestions, manager }) => {
   const [metaData, setMetaData] = useState(
     new Array(suggestions.length).fill(null),
   );
+
+  const [additionalEdits, setAdditionalEdits] = useState(
+    new Array(suggestions.length).fill([]),
+  );
+
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/match.css'));
     (async () => {
-      requestMetadata(open);
+      await requestMetadata(open);
     })();
   }, []);
 
@@ -30,6 +35,36 @@ const Match = ({ suggestions, manager }) => {
     const newMetaData = [...metaData];
     newMetaData[index] = requestedMetadata.response;
     setMetaData(newMetaData);
+    await updateAdditionalEdits(index, requestedMetadata.response);
+  };
+
+  const updateAdditionalEdits = async (index, metadata) => {
+    let edits = [...additionalEdits[index]];
+    if (metadata?.title) {
+      if (suggestions[index]?.titleExtractPattern) {
+        const matches = metadata.title.match(
+          suggestions[index].titleExtractPattern,
+        );
+        if (matches?.[1]) {
+          edits.push({
+            action: 'wbsetaliases',
+            add: matches[1],
+          });
+        }
+      }
+      if (metadata?.meta) {
+        const metaEdits = await metaToEdits({
+          meta: metadata.meta,
+          wikibase: manager.wikibases[suggestions[index].instance],
+          lang: metadata?.lang,
+          edits,
+        });
+        edits = metaEdits;
+      }
+    }
+    const newAdditionalEdits = [...additionalEdits];
+    newAdditionalEdits[index] = edits;
+    setAdditionalEdits(newAdditionalEdits);
   };
 
   useEffect(() => {
@@ -42,32 +77,7 @@ const Match = ({ suggestions, manager }) => {
     <div class="match">
       <h1>Match</h1>
       ${suggestions.map((suggestion, key) => {
-        let additionalEdits = [];
-        let label = '';
-        if (metaData?.[key]?.title) {
-          if (suggestion?.titleExtractPattern) {
-            const matches = metaData[key].title.match(
-              suggestion.titleExtractPattern,
-            );
-            if (matches?.[1]) {
-              label = matches[1];
-              additionalEdits.push({
-                action: 'wbsetaliases',
-                add: label,
-              });
-            }
-          } else {
-            label = metaData[key].title;
-          }
-          if (metaData[key]?.meta) {
-            additionalEdits = metaToEdits({
-              meta: metaData[key].meta,
-              wikibase: manager.wikibases[suggestion.instance],
-              lang: metaData[key]?.lang,
-              edits: additionalEdits,
-            });
-          }
-        }
+        const edits = [...suggestion.proposeEdits, ...additionalEdits[key]];
 
         return html`
           <details ...${{ open: key == open }} class="match__instance">
@@ -86,19 +96,16 @@ const Match = ({ suggestions, manager }) => {
                 name="instance" />
               <div class="match__item" data-key=${key}>
                 <div class="match__statements">
-                  ${Object.entries([
-                    ...suggestion.proposeEdits,
-                    ...additionalEdits,
-                  ]).map(
+                  ${Object.entries(edits).map(
                     ([editId, edit]) =>
-                      html`<${Change}
+                      html` <${Change}
                         key=${editId}
                         edit=${edit}
                         manager=${manager} />`,
                   )}
                 </div>
                 <${Choose}
-                  label=${label}
+                  label=${metaData[key]?.title}
                   manager=${manager}
                   wikibase=${suggestion.instance}
                   name="subjectId"

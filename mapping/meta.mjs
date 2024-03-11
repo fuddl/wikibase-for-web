@@ -1,6 +1,6 @@
 import { resolvers } from '../resolvers/index.mjs';
 
-function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
+async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 	const tagMap = [
 		{
 			name: 'og:title',
@@ -181,28 +181,27 @@ function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							datavalue: { value: { id: `${wikibase.id}:${targetValue}` } },
 						});
 					} else {
-						resolvers.resolve(tag.content, { wikibase }).then(result => {
-							const options = result
-								.map(suggestion => {
-									if (suggestion.resolved) {
-										return suggestion.resolved.map(resolved => {
-											return resolved.id;
-										});
-									}
-								})
-								.flat();
-							if (options.length > 0) {
-								newEdits.push({
-									action: 'wbcreateclaim',
-									property: `${wikibase.id}:${targetProperty}`,
-									snaktype: 'value',
-									datatype: item.type,
-									datavalueOptions: options.map(option => {
-										return { id: option };
-									}),
-								});
-							}
-						});
+						const result = await resolvers.resolve(tag.content, { wikibase });
+						const options = result
+							.map(suggestion => {
+								if (suggestion.resolved) {
+									return suggestion.resolved.map(resolved => {
+										return resolved.id;
+									});
+								}
+							})
+							.flat();
+						if (options.length > 0) {
+							newEdits.push({
+								action: 'wbcreateclaim',
+								property: `${wikibase.id}:${targetProperty}`,
+								snaktype: 'value',
+								datatype: item.type,
+								valueOptions: options.map(option => {
+									return option;
+								}),
+							});
+						}
 					}
 
 					break;
@@ -225,8 +224,6 @@ function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 			}
 		}
 	}
-
-	console.debug(newEdits);
 
 	return [...edits, ...newEdits];
 }

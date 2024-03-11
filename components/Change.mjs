@@ -7,6 +7,7 @@ const html = htm.bind(h);
 
 import Thing from './Thing.mjs';
 import Snack from './Snack.mjs';
+import Specify from './Specify.mjs';
 
 const Change = ({ editId, edit, manager }) => {
 	useState(() => {
@@ -19,9 +20,7 @@ const Change = ({ editId, edit, manager }) => {
 				if (edit?.property) {
 					return html`<${Thing} id=${edit.property} manager=${manager} />`;
 				} else if (edit?.propertyOptions) {
-					return html`<select>
-						<option>@todo: implement options</option>
-					</select>`;
+					return html`<${Specify} options=${edit.propertyOptions} />`;
 				}
 			case 'wbsetaliases':
 				return browser.i18n.getMessage('set_alias');
@@ -31,14 +30,18 @@ const Change = ({ editId, edit, manager }) => {
 	const getValue = action => {
 		switch (action) {
 			case 'wbcreateclaim':
-				return html`<${Snack}
-					mainsnak=${{
-						snaktype: edit.snaktype,
-						datatype: edit.datatype,
-						property: edit.property,
-						datavalue: edit.datavalue ?? { value: edit.value },
-					}}
-					manager=${manager} />`;
+				if (edit.value || edit.datavalue) {
+					return html`<${Snack}
+						mainsnak=${{
+							snaktype: edit.snaktype,
+							datatype: edit.datatype,
+							property: edit.property,
+							datavalue: edit.datavalue ?? { value: edit.value },
+						}}
+						manager=${manager} />`;
+				} else if (edit.valueOptions) {
+					return html`<${Specify} options=${edit.valueOptions} />`;
+				}
 			case 'wbsetaliases':
 				return html`<em>${edit.add}</em>`;
 		}
