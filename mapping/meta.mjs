@@ -1,13 +1,31 @@
 import { resolvers } from '../resolvers/index.mjs';
 
 async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
+	const processISBN = input => {
+		const isbnProperties = {
+			isbn13: {
+				test: 'isIsbn13',
+				format: 'isbn13h',
+			},
+			isbn10: {
+				test: 'isIsbn10',
+				format: 'isbn10h',
+			},
+		};
+
+		const parsed = ISBN.parse(input);
+
+		for (const key in isbnProperties) {
+			if (parsed[isbnProperties[key].test] && key in wikibase.props) {
+				return {
+					prop: wikibase.props[key],
+					id: parsed[isbnProperties[key].format],
+				};
+			}
+		}
+	};
 	const tagMap = [
-		{
-			name: 'og:title',
-			prop: 'title',
-			type: 'monolingualtext',
-			suggested: false,
-		},
+		// tags related to classes
 		{
 			name: 'og:type',
 			prop: 'instanceOf',
@@ -24,7 +42,22 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 				'video.tv_show': 'televisionSeries',
 				'wdff.edition': 'versionEditionOrTranslation',
 			},
-			suggested: false,
+		},
+		// tags related to books
+		{
+			name: 'og:title',
+			prop: 'title',
+			type: 'monolingualtext',
+		},
+		{
+			name: 'books:page_count',
+			prop: 'numberOfPages',
+			type: 'quantity',
+		},
+		{
+			name: 'book:author',
+			type: 'wikibase-item',
+			prop: 'author',
 		},
 		{
 			name: 'og:type',
@@ -33,69 +66,37 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 			options: {
 				'books.author': 'writer',
 			},
-			suggested: false,
 		},
+		{
+			name: 'books:isbn',
+			prop: 'isbn13',
+			type: 'external-id',
+			process: processISBN,
+		},
+		{
+			name: 'book:isbn',
+			prop: 'isbn13',
+			type: 'external-id',
+			process: processISBN,
+		},
+		// tags related to audiovisual works
 		{
 			name: 'music:duration',
 			type: 'quantity',
 			prop: 'duration',
-			suggested: true,
 			hasTimeUnit: true,
 		},
 		{
 			name: 'video:duration',
 			type: 'quantity',
 			prop: 'duration',
-			suggested: true,
 			hasTimeUnit: true,
 		},
 		{
 			name: 'video:series',
 			type: 'wikibase-item',
 			prop: 'partOfTheSeries',
-			suggested: true,
 		},
-		// {
-		// 	name: 'books:author',
-		// 	type: 'WikibaseItem',
-		// 	prop: 'P50',
-		// 	suggested: true,
-		// },
-		// {
-		// 	name: 'books:isbn',
-		// 	prop: 'P212',
-		// 	type: 'ExternalId',
-		// 	process: input => {
-		// 		const isbnProperties = {
-		// 			P212: {
-		// 				test: 'isIsbn13',
-		// 				format: 'isbn13h',
-		// 			},
-		// 			P957: {
-		// 				test: 'isIsbn10',
-		// 				format: 'isbn10h',
-		// 			},
-		// 		};
-
-		// 		const parsed = ISBN.parse(input);
-
-		// 		for (const key in isbnProperties) {
-		// 			if (parsed[isbnProperties[key].test]) {
-		// 				return {
-		// 					prop: key,
-		// 					id: parsed[isbnProperties[key].format],
-		// 				};
-		// 			}
-		// 		}
-		// 	},
-		// 	suggested: true,
-		// },
-		// {
-		// 	name: 'books:page_count',
-		// 	prop: 'P1104',
-		// 	type: 'Quantity',
-		// 	suggested: true,
-		// },
 	];
 
 	const durationMap = [
@@ -180,14 +181,13 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							datatype: item.type,
 							datavalue: { value: { id: `${wikibase.id}:${targetValue}` } },
 						});
-					} else {
-						const result = await resolvers.resolve(tag.content, { wikibase });
+					} else if (URL.canParse(tag.content)) {
+						const result = await resolvers.resolve(tag.content, wikibase.id);
+
 						const options = result
 							.map(suggestion => {
 								if (suggestion.resolved) {
-									return suggestion.resolved.map(resolved => {
-										return resolved.id;
-									});
+									return suggestion.resolved.map(resolved => resolved.id);
 								}
 							})
 							.flat();
@@ -197,9 +197,14 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 								property: `${wikibase.id}:${targetProperty}`,
 								snaktype: 'value',
 								datatype: item.type,
-								valueOptions: options.map(option => {
-									return option;
-								}),
+								datavalue:
+									options.length === 1 ? { value: { id: options[0] } } : null,
+								valueOptions:
+									options.length > 1
+										? options.map(option => {
+												return option;
+											})
+										: null,
 							});
 						}
 					}
@@ -216,7 +221,29 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
-							datavalue: { value: { amount: amount, unit: unit } },
+							datavalue: { value: { amount: amount, unit: unit ?? '1' } },
+						});
+					}
+
+					break;
+				case 'external-id':
+					if (item.prop in wikibase?.props) {
+						let prop = targetProperty;
+						let id = tag.content;
+						if (item.process) {
+							const { prop: processedProp, id: processedId } = item.process(
+								tag.content,
+							);
+							prop = processedProp;
+							id = processedId;
+						}
+
+						newEdits.push({
+							action: 'wbcreateclaim',
+							property: `${wikibase.id}:${prop}`,
+							snaktype: 'value',
+							datatype: item.type,
+							value: id,
 						});
 					}
 

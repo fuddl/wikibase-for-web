@@ -50,7 +50,7 @@ class WikiBaseEntityManager {
 							item.id = `${wikibase}:${item[key]}`;
 						} else if (key === 'property') {
 							item.property = `${wikibase}:${item[key]}`;
-						} else if (key === 'unit') {
+						} else if (key === 'unit' && item.unit !== '1') {
 							item.unit = this.idFromEntityUrl(item[key]);
 						} else if (key === 'calendarmodel') {
 							item.calendarmodel = this.idFromEntityUrl(item[key]);
