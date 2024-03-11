@@ -20,7 +20,9 @@ const Change = ({ editId, edit, manager }) => {
 				if (edit?.property) {
 					return html`<${Thing} id=${edit.property} manager=${manager} />`;
 				} else if (edit?.propertyOptions) {
-					return html`<${Specify} options=${edit.propertyOptions} />`;
+					return html`<${Specify}
+						options=${edit.propertyOptions}
+						manager="${manager}" />`;
 				}
 			case 'wbsetaliases':
 				return browser.i18n.getMessage('set_alias');

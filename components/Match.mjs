@@ -28,6 +28,9 @@ const Match = ({ suggestions, manager }) => {
   }, []);
 
   const requestMetadata = async index => {
+    if (additionalEdits[index].length > 0) {
+      return;
+    }
     const requestedMetadata = await browser.runtime.sendMessage({
       type: 'request_metadata',
       url: suggestions[index].matchFromUrl,
@@ -78,6 +81,8 @@ const Match = ({ suggestions, manager }) => {
       <h1>Match</h1>
       ${suggestions.map((suggestion, key) => {
         const edits = [...suggestion.proposeEdits, ...additionalEdits[key]];
+
+        manager.wikibase = manager.wikibases[suggestion.instance];
 
         return html`
           <details ...${{ open: key == open }} class="match__instance">

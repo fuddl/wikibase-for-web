@@ -66,6 +66,9 @@ class WikiBaseEntityManager {
 		return entity;
 	}
 	async fetchDesignators(id) {
+		if (id in this.designators) {
+			return this.designators[id];
+		}
 		const [wikibase, entity] = id.split(':');
 		const url = this.wikibases[wikibase].api.getEntities({
 			ids: [entity],
