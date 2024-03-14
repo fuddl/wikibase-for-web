@@ -1,19 +1,22 @@
 .change {
-	display: grid;
-	grid-template-columns: max-content auto;
-	grid-template-rows: auto auto;
-	grid-template-areas:
-		'check key'
-		'check value';
-	grid-gap: 1em;
 	background: var(--paper);
 	border: 1px solid var(--contour);
-	padding: 7px 10px;
 	margin: 0;
+	padding: 7px 10px;
 }
 
 .change:not(:first-child) {
 	border-top: none;
+}
+
+.change__preview {
+	display: grid;
+	grid-template-columns: max-content auto;
+	grid-template-rows: auto auto;
+	grid-gap: 1em;
+	grid-template-areas:
+		'check key'
+		'check value';
 }
 
 .change__key {

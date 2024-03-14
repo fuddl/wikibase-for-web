@@ -20,7 +20,7 @@ export const url = {
 			propertyOptions: urlProperties.map(option => `${wikibase.id}:${option}`),
 			snaktype: 'value',
 			datatype: 'url',
-			value: location,
+			datavalue: { type: 'string', value: location },
 			status: 'required',
 		});
 

@@ -36,7 +36,7 @@ export const urlMatchPattern = {
 				property: `${wikibase.id}:${prop.property}`,
 				snaktype: 'value',
 				datatype: 'external-id',
-				value: id,
+				datavalue: { type: 'string', value: id },
 				status: 'required',
 				references: wikibase.props.referenceURL
 					? [

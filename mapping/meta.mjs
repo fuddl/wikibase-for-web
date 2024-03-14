@@ -97,6 +97,12 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 			type: 'wikibase-item',
 			prop: 'partOfTheSeries',
 		},
+		// misc
+		{
+			name: 'geo.position',
+			type: 'globe-coordinate',
+			prop: 'location',
+		},
 	];
 
 	const durationMap = [
@@ -221,7 +227,12 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
-							datavalue: { value: { amount: amount, unit: unit ?? '1' } },
+							datavalue: {
+								value: {
+									amount: `+${amount}`,
+									unit: unit ?? '1',
+								},
+							},
 						});
 					}
 
@@ -243,8 +254,33 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							property: `${wikibase.id}:${prop}`,
 							snaktype: 'value',
 							datatype: item.type,
-							value: id,
+							datavalue: { type: 'string', value: id },
 						});
+					}
+
+					break;
+				case 'globe-coordinate':
+					if (item.prop in wikibase?.props) {
+						const latlon = tag.content.split(';');
+						const targetProperty = wikibase?.props[item.prop];
+
+						if (latlon.length === 2) {
+							newEdits.push({
+								action: 'wbcreateclaim',
+								property: `${wikibase.id}:${targetProperty}`,
+								snaktype: 'value',
+								datatype: item.type,
+								datavalue: {
+									type: 'globecoordinate',
+									value: {
+										latitude: latlon[0],
+										longitude: latlon[1],
+										globe: 'http://www.wikidata.org/entity/Q2',
+										precision: 1,
+									},
+								},
+							});
+						}
 					}
 
 					break;

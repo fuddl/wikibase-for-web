@@ -106,6 +106,7 @@ const Match = ({ suggestions, manager }) => {
                       html` <${Change}
                         key=${editId}
                         edit=${edit}
+                        name=${`[${editId}]`}
                         manager=${manager} />`,
                   )}
                 </div>

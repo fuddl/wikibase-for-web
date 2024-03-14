@@ -1,0 +1,9 @@
+.nibble {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.nibble__line {
+	display: flex;
+}

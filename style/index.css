@@ -326,13 +326,3 @@ small {
   border-radius: 0.14rem;
   border-width: 0.071rem;
 }
-
-[type='text'],
-[type='search'] {
-  background-color: var(--input-paper);
-  color: var(--ink);
-  padding: 5px 8px;
-  font-size: inherit;
-  font-family: inherit;
-  line-height: 1.4285;
-}
