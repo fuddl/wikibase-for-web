@@ -45,9 +45,9 @@ html {
 }
 
 @font-face {
-  font-family: 'base-icons';
+  font-family: 'icons';
   src: url('res/icons.woff2');
-  unicode-range: U+2B9C, U+1F5D9;
+  unicode-range: U+1F58A, U+FE0E, U+2713;
 }
 
 @font-face {
@@ -68,19 +68,8 @@ html {
 }
 
 :root {
-  font-family:
-    'base-icons',
-    -apple-system,
-    'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
-    'Lato',
-    'Helvetica',
-    'Arial',
-    'pIqaD',
-    FairfaxHaxHD,
-    cc-icons,
-    sans-serif;
+  font-family: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Lato',
+    'Helvetica', 'Arial', 'pIqaD', FairfaxHaxHD, cc-icons, sans-serif;
   line-height: 1.2;
   margin: 0;
   font-size: 14px;
@@ -234,32 +223,6 @@ sup {
 
 .submit-actions {
   margin-top: 1rem;
-}
-
-button {
-  font-family: inherit;
-}
-
-form button,
-.submit-actions button,
-.footer button {
-  background-color: #447ff5;
-  border-color: #447ff5;
-  color: white;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  line-height: 1.28571429em;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 2px;
-  padding-left: 12px;
-  padding-right: 12px;
-  font-weight: bold;
-  font-size: 1.214rem;
-}
-
-button[disabled] {
-  opacity: 0.5;
 }
 
 summary {

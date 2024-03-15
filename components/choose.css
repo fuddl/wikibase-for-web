@@ -54,6 +54,11 @@ template.choose__picker__pick {
 	pointer-events: none;
 }
 
+.choose__type {
+	padding: 0.357rem 0.5714rem;
+	line-height: 1.4285;
+}
+
 .choose__type:focus {
 	outline: none;
 }

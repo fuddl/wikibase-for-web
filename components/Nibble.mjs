@@ -61,7 +61,8 @@ class Nibble extends Component {
             case 'quantity':
               return html` <input
                   name="${name}[value]amount"
-                  value="${datavalue.value.amount}" />
+                  value="${datavalue.value.amount}"
+                  type="hidden" />
                 <${Type}
                   value=${datavalue.value.amount.replace(/^\+/, '')}
                   type="number"
@@ -102,7 +103,7 @@ class Nibble extends Component {
                   name="${name}[value]precision"
                   onValueChange=${onValueChange} />`;
             default:
-              return html`<span> ${`Unsupported datatype ${datatype}`} </span>`;
+              return html`<span>${`Unsupported datatype ${datatype}`}</span>`;
           }
         })()}
       </fieldset>

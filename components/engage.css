@@ -1,0 +1,23 @@
+.engage {
+  font-family: inherit;
+}
+
+.engage {
+  background-color: #447ff5;
+  border-color: #447ff5;
+  color: white;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  line-height: 1.28571429em;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-weight: bold;
+  font-size: 1.214rem;
+}
+
+.engage[disabled] {
+  opacity: 0.5;
+}

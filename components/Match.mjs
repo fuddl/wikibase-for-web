@@ -7,6 +7,7 @@ import { metaToEdits } from '../mapping/meta.mjs';
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
+import Engage from './Engage.mjs';
 
 const html = htm.bind(h);
 
@@ -118,11 +119,11 @@ const Match = ({ suggestions, manager }) => {
                   required="true" />
               </div>
               <div class="match__bottom">
-                <button class="match__send" disabled type="submit">
-                  ${browser.i18n.getMessage('send_to_instance', [
+                <${Engage}
+                  text=${browser.i18n.getMessage('send_to_instance', [
                     manager.wikibases[suggestion.instance].name,
                   ])}
-                </button>
+                  disabled=${true} />
               </div>
             </form>
           </details>

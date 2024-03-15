@@ -35,3 +35,34 @@
 	grid-area: value;
 	margin: 0;
 }
+
+.change__value {
+	display: grid;
+	grid-template-columns: 1fr auto;
+}
+
+.change__toggle {
+	margin-top: 0.5rem;
+	margin-bottom: auto;
+	cursor: pointer;
+	color: inherit;
+	background: transparent;
+	border: none;
+	font-family:
+		'icons',
+		-apple-system,
+		'BlinkMacSystemFont',
+		'Segoe UI',
+		'Roboto',
+		'Lato',
+		'Helvetica',
+		'Arial',
+		'pIqaD',
+		FairfaxHaxHD,
+		cc-icons,
+		sans-serif;
+}
+
+.change__toggle:hover {
+	color: var(--link);
+}

@@ -73,7 +73,7 @@ class Change extends Component {
 		const getValue = action => {
 			switch (action) {
 				case 'wbcreateclaim':
-					if (this.state.edit.value || this.state.edit.datavalue) {
+					if (this.state.edit.datavalue) {
 						return html`<${Snack}
 							mainsnak=${{
 								snaktype: this.state.edit.snaktype,
@@ -83,7 +83,9 @@ class Change extends Component {
 							}}
 							manager=${manager} />`;
 					} else if (edit.valueOptions) {
-						return html`<${Specify} options=${this.state.edit.valueOptions} />`;
+						return html`<${Specify}
+							options=${this.state.edit.valueOptions}
+							manager="${manager}" />`;
 					}
 				case 'wbsetaliases':
 					return html`<em>${this.state.edit.add}</em>`;
@@ -92,25 +94,36 @@ class Change extends Component {
 
 		return html`
 			<div class="change">
-				<button
-					title="${this.state.editMode ? 'Edit mode' : 'Preview mode'}"
-					onClick=${e => {
-						e.preventDefault();
-						this.setState({ editMode: !this.state.editMode });
-					}}>
-					${this.state.editMode ? '👁' : '✏'}
-				</button>
 				<dl class="change__preview">
 					<dt class="change__key">${getKey(this.state.edit.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
 						${getValue(this.state.edit.action)}
+						<button
+							title="${'Edit mode'}"
+							class="change__toggle"
+							onClick=${e => {
+								e.preventDefault();
+								this.setState({ editMode: true });
+							}}>
+							${'🖊︎'}
+						</button>
 					</dd>
 					<dd class="change__value" hidden=${!this.state.editMode}>
 						<${Nibble}
 							datatype=${this.state.edit.datatype}
 							datavalue=${this.state.edit.datavalue}
 							name=${`${this.name}[edit][datavalue]`}
-							onValueChange=${this.handleDataValueChange} />
+							onValueChange=${this.handleDataValueChange}
+							manager=${manager} />
+						<button
+							title="${'Accept'}"
+							class="change__toggle"
+							onClick=${e => {
+								e.preventDefault();
+								this.setState({ editMode: false });
+							}}>
+							${'✓'}
+						</button>
 					</dd>
 					<dd class="change__bool">
 						<input

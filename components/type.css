@@ -1,7 +1,7 @@
 .type {
   background-color: var(--input-paper);
   color: var(--ink);
-  padding: 5px 8px;
+  padding: 0.357rem 0.5714rem;
   font-size: inherit;
   font-family: inherit;
   line-height: 1.4285;
