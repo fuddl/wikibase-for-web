@@ -49,9 +49,42 @@ class Nibble extends Component {
                   onValueChange(newValue);
                 }} />`;
             case 'time':
-              return html`<${Tempus}
-                ...${datavalue.value}
-                manager=${manager} />`;
+              return html`
+                <input
+                  name="${name}[value]after"
+                  type="hidden"
+                  value=${datavalue.value.after} />
+                <input
+                  name="${name}[value]before"
+                  type="hidden"
+                  value=${datavalue.value.before} />
+                <input
+                  name="${name}[value]calendarmodel"
+                  type="hidden"
+                  value=${manager.urlFromId(datavalue.value.calendarmodel)} />
+                <input
+                  name="${name}[value]precision"
+                  type="hidden"
+                  value=${datavalue.value.precision} />
+                <input
+                  name="${name}[value]time"
+                  type="hidden"
+                  value=${datavalue.value.time} />
+                <input
+                  name="${name}[value]timezone"
+                  type="hidden"
+                  value=${datavalue.value.timezone} />
+                <${Type}
+                  value=${datavalue.value.time.match(
+                    /^[-\+](\d{4}-\d{2}-\d{2})/,
+                  )[1]}
+                  type="date"
+                  proxyName="${name}[value]time"
+                  onValueChange=${newValue => {
+                    newValue.value = `+${newValue.value}T00:00:00Z`;
+                    onValueChange(newValue);
+                  }} />
+              `;
             case 'url':
               return html`<${Type}
                 value=${datavalue.value}

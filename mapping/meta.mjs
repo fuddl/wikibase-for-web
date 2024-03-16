@@ -79,6 +79,11 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 			type: 'external-id',
 			process: processISBN,
 		},
+		{
+			name: 'book:release_date',
+			prop: 'publicationDate',
+			type: 'time',
+		},
 		// tags related to audiovisual works
 		{
 			name: 'music:duration',
@@ -285,6 +290,28 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 								},
 							});
 						}
+					}
+
+					break;
+				case 'time':
+					if (item.prop in wikibase?.props) {
+						newEdits.push({
+							action: 'wbcreateclaim',
+							property: `${wikibase.id}:${targetProperty}`,
+							snaktype: 'value',
+							datatype: item.type,
+							datavalue: {
+								type: 'time',
+								value: {
+									after: 0,
+									before: 0,
+									calendarmodel: 'wikidata:Q1985727',
+									precision: 11,
+									time: `+${tag.content}T00:00:00Z`,
+									timezone: 0,
+								},
+							},
+						});
 					}
 
 					break;
