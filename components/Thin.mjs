@@ -13,45 +13,43 @@ class Thin extends Component {
     const [short, setShort] = useState({});
     const elementRef = useRef(null);
 
-    let label = '';
-    let description = '';
     const href = manager.urlFromId(id);
 
-    if (!designator) {
-      useEffect(() => {
-        const observer = new IntersectionObserver(async entries => {
-          if (entries[0].isIntersecting) {
-            const newDesignators = await manager.fetchDesignators(id);
-            setDesignator(newDesignators);
+    useEffect(() => {
+      const observer = new IntersectionObserver(async entries => {
+        if (entries[0].isIntersecting) {
+          const newDesignators = await manager.fetchDesignators(id);
+          setDesignator(newDesignators);
+          if (newDesignators) {
             const [wikibase, localId] = id.split(':');
             const newShort = await manager.query(wikibase, query, {
               subject: localId,
             });
             setShort(getByUserLanguage(newShort));
           }
-        });
-
-        if (elementRef.current) {
-          observer.observe(elementRef.current);
         }
+      });
 
-        return () => observer.disconnect();
-      }, []);
-    } else {
-      label = getByUserLanguage(designator.labels);
-      description = getByUserLanguage(designator.descriptions);
-    }
+      if (elementRef.current) {
+        observer.observe(elementRef.current);
+      }
 
-    return html`
-      <a
-        class="thing"
-        href="${href}"
-        lang="${short?.language ?? label?.language ?? id}"
-        title="${description?.value ?? ''}"
-        ref=${elementRef}
-        >${short?.value ?? label?.value ?? id}</a
-      >
-    `;
+      return () => observer.disconnect();
+    }, [id, unit, manager, query]);
+
+    let label = designator ? getByUserLanguage(designator.labels) : '';
+    let description = designator
+      ? getByUserLanguage(designator.descriptions)
+      : '';
+
+    return html`<a
+      class="thin"
+      href="${href}"
+      lang="${short?.language ?? label?.language ?? id}"
+      title="${description?.value ?? ''}"
+      ref=${elementRef}
+      >${short?.value ?? label?.value ?? id}</a
+    >`;
   }
 }
 

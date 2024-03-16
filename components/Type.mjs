@@ -29,11 +29,13 @@ class Type extends Component {
       max,
       disabled,
       step,
+      size,
     } = this.props;
     return html`<input
       class="type"
       type=${type}
       name=${name}
+      size=${size}
       step=${step}
       min=${min}
       max=${max}

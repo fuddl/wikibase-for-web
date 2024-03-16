@@ -5,13 +5,14 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Amount from './Amount.mjs';
 import Annote from './Annote.mjs';
-import Type from './Type.mjs';
 import Map from './Map.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
 import Tempus from './Tempus.mjs';
+import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
 import Title from './Title.mjs';
+import Type from './Type.mjs';
 
 const html = htm.bind(h);
 
@@ -63,20 +64,47 @@ class Nibble extends Component {
             case 'commonsMedia':
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
             case 'monolingualtext':
-              return html`<${Title} ...${datavalue.value} />`;
+              return html`<div class="nibble__line">
+                <${Type}
+                  value=${datavalue.value.text}
+                  type="text"
+                  name="${name}[value]text"
+                  onValueChange=${onValueChange} />
+
+                ${/* @todo this should have autocomplete */ ''}
+                <${Type}
+                  value=${datavalue.value.language}
+                  type="text"
+                  size="2"
+                  name="${name}[value]language"
+                  onValueChange=${onValueChange} />
+              </div>`;
             case 'quantity':
-              return html` <input
+              return html`<div class="nibble__line">
+                  <${Type}
+                    value=${datavalue.value.amount.replace(/^\+/, '')}
+                    type="number"
+                    proxyName="${name}[value]amount"
+                    onValueChange=${newValue => {
+                      newValue.value = newValue.value.replace(/^(\d)/, '+$1');
+                      onValueChange(newValue);
+                    }} />
+                  ${datavalue.value.unit !== '1' &&
+                  html`<${Thin}
+                    id=${datavalue.value.unit}
+                    unit=${true}
+                    manager=${manager} />`}
+                </div>
+                <input
                   name="${name}[value]amount"
                   value="${datavalue.value.amount}"
                   type="hidden" />
+                ${/* @todo this should have autocomplete or select */ ''}
                 <${Type}
-                  value=${datavalue.value.amount.replace(/^\+/, '')}
-                  type="number"
-                  proxyName="${name}[value]amount"
-                  onValueChange=${newValue => {
-                    newValue.value = newValue.value.replace(/^(\d)/, '+$1');
-                    onValueChange(newValue);
-                  }} />`;
+                  value=${datavalue.value.unit.replace(/^\w+\:/, '')}
+                  type="hidden"
+                  name="${name}[value]unit"
+                  onValueChange=${onValueChange} />`;
             case 'globe-coordinate':
               return html`<div class="nibble__line">
                   <${Type}
