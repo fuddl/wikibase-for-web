@@ -38,9 +38,15 @@ class Nibble extends Component {
                 onValueChange=${onValueChange} />`;
             case 'wikibase-item':
             case 'wikibase-property':
-              return html`<${Thing}
-                ...${datavalue.value}
-                manager=${manager} />`;
+              return html` <${Type}
+                value=${datavalue.value.id.replace(/^\w+\:/, '')}
+                type="text"
+                name="${name}[value]id"
+                onValueChange=${newValue => {
+                  const prefix = datavalue.value.id.replace(/\:\w+$/, '');
+                  newValue.value = `${prefix}:${newValue.value}`;
+                  onValueChange(newValue);
+                }} />`;
             case 'time':
               return html`<${Tempus}
                 ...${datavalue.value}

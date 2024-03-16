@@ -185,7 +185,11 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
-							datavalue: { value: { id: `${wikibase.id}:${targetValue}` } },
+							datavalue: {
+								value: {
+									id: `${wikibase.id}:${targetValue}`,
+								},
+							},
 						});
 					} else if (URL.canParse(tag.content)) {
 						const result = await resolvers.resolve(tag.content, wikibase.id);

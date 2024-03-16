@@ -12,11 +12,8 @@ class Thing extends Component {
 
     const href = manager.urlFromId(id);
 
-    let label = '';
-    let description = '';
-
-    if (!designator) {
-      useEffect(() => {
+    useEffect(() => {
+      const setUpObserver = () => {
         const observer = new IntersectionObserver(async entries => {
           if (entries[0].isIntersecting) {
             const newDesignators = await manager.fetchDesignators(id);
@@ -29,22 +26,24 @@ class Thing extends Component {
         }
 
         return () => observer.disconnect();
-      }, []);
-    } else {
-      label = getByUserLanguage(designator.labels);
-      description = getByUserLanguage(designator.descriptions);
-    }
+      };
 
-    return html`
-      <a
-        class="thing"
-        href="${href}"
-        lang="${label?.language ?? id}"
-        title="${description?.value ?? ''}"
-        ref=${elementRef}
-        >${label?.value ?? id}</a
-      >
-    `;
+      return setUpObserver();
+    }, [id, manager]);
+
+    let label = designator ? getByUserLanguage(designator.labels) : '';
+    let description = designator
+      ? getByUserLanguage(designator.descriptions)
+      : '';
+
+    return html`<a
+      class="thing"
+      href="${href}"
+      lang="${label?.language ?? id}"
+      title="${description?.value ?? ''}"
+      ref=${elementRef}
+      >${label?.value ?? id}</a
+    >`;
   }
 }
 
