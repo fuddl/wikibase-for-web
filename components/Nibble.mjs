@@ -83,6 +83,7 @@ class Nibble extends Component {
                     value=${datavalue.value.latitude}
                     type="number"
                     name="${name}[value]latitude"
+                    step="0.00001"
                     min="-90"
                     max="+90"
                     onValueChange=${onValueChange} />
@@ -90,23 +91,26 @@ class Nibble extends Component {
                   <${Type}
                     value=${datavalue.value.longitude}
                     type="number"
+                    step="0.00001"
                     min="-180"
                     max="+180"
                     name="${name}[value]longitude"
                     onValueChange=${onValueChange} />
+                  ±
+                  <${Type}
+                    value=${datavalue.value.precision}
+                    type="number"
+                    size="1"
+                    min="2"
+                    max="10"
+                    name="${name}[value]precision"
+                    onValueChange=${onValueChange} />
                 </div>
                 <${Type}
                   value=${datavalue.value.globe}
-                  type="url"
+                  type="hidden"
                   name="${name}[value]globe"
                   disabled=${true}
-                  onValueChange=${onValueChange} />
-                <${Type}
-                  value=${datavalue.value.precision}
-                  type="number"
-                  min="2"
-                  max="10"
-                  name="${name}[value]precision"
                   onValueChange=${onValueChange} />`;
             default:
               return html`<span>${`Unsupported datatype ${datatype}`}</span>`;

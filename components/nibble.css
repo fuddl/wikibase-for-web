@@ -6,4 +6,5 @@
 
 .nibble__line {
 	display: flex;
+	align-items: center;
 }
