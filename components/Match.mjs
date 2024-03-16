@@ -2,6 +2,7 @@ import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
 import { useState, useEffect } from '../libraries/preact-hooks.js';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
+import { formDataToData } from '../modules/formDataToData.mjs';
 
 import { metaToEdits } from '../mapping/meta.mjs';
 
@@ -11,8 +12,34 @@ import Engage from './Engage.mjs';
 
 const html = htm.bind(h);
 
+const submit = e => {
+  e.preventDefault();
+  const formData = new FormData(e.target.form);
+  const data = formDataToData(formData);
+  const jobs = [];
+  for (const item of data.edits) {
+    if (!item.apply) {
+      continue;
+    }
+    if (item?.action === 'wbcreateclaim') {
+      jobs.push({
+        type: 'statement',
+        id: data.subjectId,
+        mainsnak: {
+          snaktype: 'value',
+          property: item.edit.property,
+          dataValue: item.edit.datavalue,
+          rank: 'normal',
+        },
+      });
+    }
+  }
+  console.debug(jobs);
+};
+
 const Match = ({ suggestions, manager }) => {
   const [open, setOpen] = useState(0);
+  const [subjectSelected, setSubjectSelected] = useState(false);
   const [metaData, setMetaData] = useState(
     new Array(suggestions.length).fill(null),
   );
@@ -107,7 +134,7 @@ const Match = ({ suggestions, manager }) => {
                       html` <${Change}
                         key=${editId}
                         edit=${edit}
-                        name=${`[${editId}]`}
+                        name=${`edits.${editId}`}
                         manager=${manager} />`,
                   )}
                 </div>
@@ -116,14 +143,22 @@ const Match = ({ suggestions, manager }) => {
                   manager=${manager}
                   wikibase=${suggestion.instance}
                   name="subjectId"
-                  required="true" />
+                  required="true"
+                  onSelected=${() => {
+                    setSubjectSelected(true);
+                  }} />
               </div>
               <div class="match__bottom">
+                <input
+                  name="instance"
+                  type="hidden"
+                  value=${suggestion.instance} />
                 <${Engage}
                   text=${browser.i18n.getMessage('send_to_instance', [
                     manager.wikibases[suggestion.instance].name,
                   ])}
-                  disabled=${true} />
+                  onClick=${submit}
+                  disabled=${!subjectSelected} />
               </div>
             </form>
           </details>

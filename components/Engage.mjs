@@ -10,7 +10,11 @@ class Engage extends Component {
   }
 
   render({ disabled, text, onClick }) {
-    return html`<button class="engage" disabled=${disabled} type="submit">
+    return html`<button
+      class="engage"
+      disabled=${disabled}
+      onClick=${onClick}
+      type="submit">
       ${text}
     </button>`;
   }

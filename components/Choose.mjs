@@ -12,6 +12,7 @@ const Choose = ({
   required = false,
   manager,
   wikibase,
+  onSelected,
 }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -28,6 +29,12 @@ const Choose = ({
   useEffect(() => {
     setInputValue(label);
   }, [label]);
+
+  useEffect(() => {
+    if (choosenId !== '') {
+      onSelected();
+    }
+  }, [choosenId]);
 
   useEffect(() => {
     const fetchSuggestions = async () => {

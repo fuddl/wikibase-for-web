@@ -23,10 +23,7 @@ class Change extends Component {
 	}
 
 	handleDataValueChange = ({ name, value }) => {
-		const parts = name
-			.slice(this.name.length)
-			.split(']')
-			.map(part => part.replace(/^\[/, ''));
+		const parts = name.replace(`${this.name}.`, '').split('.');
 
 		this.setState(prevState => {
 			let stateRef = prevState;
@@ -58,12 +55,17 @@ class Change extends Component {
 				case 'wbcreateclaim':
 					if (this.state.edit?.property) {
 						return html`<${Thing}
-							id=${this.state.edit.property}
-							manager=${manager} />`;
+								id=${this.state.edit.property}
+								manager="${manager}" />
+							<input
+								value=${this.state.edit.property.replace(/^\w+\:/, '')}
+								name=${`${this.name}.edit.property`}
+								type="hidden" /> `;
 					} else if (this.state.edit?.propertyOptions) {
 						return html`<${Specify}
 							options=${this.state.edit.propertyOptions}
-							manager="${manager}" />`;
+							manager="${manager}"
+							name=${`${this.name}.edit.property`} />`;
 					}
 				case 'wbsetaliases':
 					return browser.i18n.getMessage('set_alias');
@@ -112,7 +114,7 @@ class Change extends Component {
 						<${Nibble}
 							datatype=${this.state.edit.datatype}
 							datavalue=${this.state.edit.datavalue}
-							name=${`${this.name}[edit][datavalue]`}
+							name=${`${this.name}.edit.datavalue`}
 							onValueChange=${this.handleDataValueChange}
 							manager=${manager} />
 						<button
@@ -127,12 +129,17 @@ class Change extends Component {
 					</dd>
 					<dd class="change__bool">
 						<input
-							name=${`edit-${this.editId}`}
+							name=${`${this.name}.apply`}
+							value="yes"
 							type="checkbox"
-							value="edit-id"
 							checked />
 					</dd>
 				</dl>
+				<input
+					name=${`${this.name}.action`}
+					value="${this.state.edit.action}"
+					type="hidden"
+					checked />
 			</div>
 		`;
 	}

@@ -28,14 +28,16 @@ class Specify extends Component {
   }
 
   render() {
-    const { options } = this.props;
+    const { options, name } = this.props;
     const { labels } = this.state;
 
     return html`
-      <select class="specify">
+      <select class="specify" name=${name}>
         ${options.map(
           option =>
-            html` <option value=${option}>${labels[option] ?? option}</option>`,
+            html` <option value=${option.replace(/^\w+\:/, '')}>
+              ${labels[option] ?? option}
+            </option>`,
         )}
       </select>
     `;

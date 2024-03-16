@@ -107,7 +107,6 @@ export class WikibaseEditQueue {
     return params;
   }
 
-  // Simulate an edit operation
   async performEdit(job) {
     const endpoint = wikibases[job.instance].api.instance.apiEndpoint;
     job.token = await this.getEditToken(endpoint);
