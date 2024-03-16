@@ -52,7 +52,7 @@ class Change extends Component {
 
 		const getKey = action => {
 			switch (action) {
-				case 'wbcreateclaim':
+				case 'claim.create':
 					if (this.state.edit?.property) {
 						return html`<${Thing}
 								id=${this.state.edit.property}
@@ -74,7 +74,7 @@ class Change extends Component {
 
 		const getValue = action => {
 			switch (action) {
-				case 'wbcreateclaim':
+				case 'claim.create':
 					if (this.state.edit.datavalue) {
 						return html`<${Snack}
 							mainsnak=${{

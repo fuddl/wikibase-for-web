@@ -1,4 +1,5 @@
 import wikibases from '../wikibases.mjs';
+import WBEdit from '../importmap/wikibase-edit.mjs';
 
 export class WikibaseEditQueue {
   constructor() {
@@ -93,55 +94,45 @@ export class WikibaseEditQueue {
     return false;
   }
 
-  jobToParams(job) {
-    const params = new URLSearchParams();
-    Object.entries(job).forEach(([key, value]) => {
-      if (['instance', 'status'].includes(key)) {
-        return;
-      }
-      if (typeof value === 'object' && value !== null) {
-        value = JSON.stringify(value);
-      }
-      params.append(key, value);
-    });
-    return params;
-  }
-
   async performEdit(job) {
-    const endpoint = wikibases[job.instance].api.instance.apiEndpoint;
-    job.token = await this.getEditToken(endpoint);
-    job.tags = await this.getEditTag(endpoint);
-    job.format = 'json';
-    const params = this.jobToParams(job);
-    console.debug(params);
-
-    let response = await fetch(endpoint, {
-      method: 'post',
-      body: params,
+    const wbEdit = WBEdit({
+      instance: wikibases[job.instance].api.instance.root,
+      credentials: {
+        browserSession: true,
+      },
     });
 
-    let parsedResponse = JSON.parse(await response.text());
+    const [scope, action] = job.action.split('.');
 
-    if (parsedResponse?.success === 1) {
-      let updatedEntity = '';
-      switch (job.action) {
-        case 'wbcreateclaim':
-          updatedEntity = job.entity;
-          break;
-        case 'wbsetaliases':
-          updatedEntity = job.id;
-          break;
-      }
-      if (updatedEntity) {
-        browser.runtime
-          .sendMessage({
-            type: 'update_entity',
-            entity: `${job.instance}:${updatedEntity}`,
-          })
-          .then(response => {})
-          .catch(error => console.error('Message failed:', error));
-      }
-    }
+    const result = wbEdit[scope][action](job.edit);
+
+    // let response = await fetch(endpoint, {
+    //   method: 'post',
+    //   body: params,
+    // });
+
+    // let parsedResponse = JSON.parse(await response.text());
+
+    // if (parsedResponse?.success === 1) {
+    //   let updatedEntity = '';
+    //   switch (job.action) {
+    //     case 'wbcreateclaim':
+    //       updatedEntity = job.entity;
+    //       break;
+    //     case 'wbsetaliases':
+    //       updatedEntity = job.id;
+    //       break;
+    //   }
+    //   if (updatedEntity) {
+    //     browser.runtime
+    //       .sendMessage({
+    //         type: 'update_entity',
+    //         entity: `${job.instance}:${updatedEntity}`,
+    //       })
+    //       .then(response => {})
+    //       .catch(error => console.error('Message failed:', error));
+    //   }
+    // }
   }
 
   // Set a progress update callback

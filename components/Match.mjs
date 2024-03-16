@@ -12,32 +12,39 @@ import Engage from './Engage.mjs';
 
 const html = htm.bind(h);
 
-const submit = e => {
-  e.preventDefault();
-  const formData = new FormData(e.target.form);
-  const data = formDataToData(formData);
-  const jobs = [];
-  for (const item of data.edits) {
-    if (!item.apply) {
-      continue;
-    }
-    if (item?.action === 'wbcreateclaim') {
-      jobs.push({
-        type: 'statement',
-        id: data.subjectId,
-        mainsnak: {
-          snaktype: 'value',
-          property: item.edit.property,
-          dataValue: item.edit.datavalue,
-          rank: 'normal',
-        },
-      });
-    }
-  }
-  console.debug(jobs);
-};
-
 const Match = ({ suggestions, manager }) => {
+  const submit = e => {
+    e.preventDefault();
+    const formData = new FormData(e.target.form);
+    const data = formDataToData(formData);
+    const jobs = [];
+    for (const item of data.edits) {
+      if (!item.apply) {
+        continue;
+      }
+      if (item?.action === 'claim.create') {
+        jobs.push({
+          instance: data.instance,
+          action: item.action,
+          edit: {
+            id: data.subjectId,
+            property: item.edit.property,
+            value: item.edit.datavalue,
+          },
+        });
+      }
+    }
+
+    try {
+      browser.runtime.sendMessage(browser.runtime.id, {
+        type: 'add_to_edit_queue',
+        edits: jobs,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const [open, setOpen] = useState(0);
   const [subjectSelected, setSubjectSelected] = useState(false);
   const [metaData, setMetaData] = useState(
