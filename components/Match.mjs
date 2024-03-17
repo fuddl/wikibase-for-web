@@ -1,5 +1,5 @@
 import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
-import { useState, useEffect } from '../libraries/preact-hooks.js';
+import { useState, useEffect } from '../importmap/preact-hooks.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
@@ -15,25 +15,29 @@ const html = htm.bind(h);
 const Match = ({ suggestions, manager }) => {
   const submit = e => {
     e.preventDefault();
-    const formData = new FormData(e.target.form);
-    const data = formDataToData(formData);
+    const data = formDataToData(e.target.form);
     const jobs = [];
     for (const item of data.edits) {
       if (!item.apply) {
         continue;
       }
-      if (item?.action === 'claim.create') {
+      if (item?.action === 'wbcreateclaim') {
+        console.debug(item.edit);
         jobs.push({
           instance: data.instance,
           action: item.action,
-          edit: {
-            id: data.subjectId,
-            property: item.edit.property,
-            value: item.edit.datavalue,
-          },
+          entity: data.subjectId,
+          snaktype: 'value',
+          value:
+            item.edit.datavalue.type === 'string'
+              ? `"${item.edit.datavalue.value}"`
+              : item.edit.datavalue,
+          property: item.edit.property,
         });
       }
     }
+
+    console.debug(jobs);
 
     try {
       browser.runtime.sendMessage(browser.runtime.id, {

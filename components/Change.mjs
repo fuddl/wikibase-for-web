@@ -1,5 +1,5 @@
 import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
-import { useState, useEffect } from '../libraries/preact-hooks.js';
+import { useState, useEffect } from '../importmap/preact-hooks.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
@@ -52,7 +52,7 @@ class Change extends Component {
 
 		const getKey = action => {
 			switch (action) {
-				case 'claim.create':
+				case 'wbcreateclaim':
 					if (this.state.edit?.property) {
 						return html`<${Thing}
 								id=${this.state.edit.property}
@@ -74,7 +74,7 @@ class Change extends Component {
 
 		const getValue = action => {
 			switch (action) {
-				case 'claim.create':
+				case 'wbcreateclaim':
 					if (this.state.edit.datavalue) {
 						return html`<${Snack}
 							mainsnak=${{
@@ -114,7 +114,7 @@ class Change extends Component {
 						<${Nibble}
 							datatype=${this.state.edit.datatype}
 							datavalue=${this.state.edit.datavalue}
-							name=${`${this.name}.edit.datavalue`}
+							name=${`${this.name}.edit`}
 							onValueChange=${this.handleDataValueChange}
 							manager=${manager} />
 						<button

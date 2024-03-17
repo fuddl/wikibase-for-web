@@ -1,7 +1,51 @@
-export function formDataToData(formData) {
+function processFormWithTypes(form) {
+    const formData = {};
+    const elements = form.elements;
+
+    Array.from(elements).forEach(element => {
+        if (
+            element.hasAttribute('data-type') &&
+            element.type !== 'submit' &&
+            element.type !== 'button'
+        ) {
+            let value = element.value;
+            const dataType = element.getAttribute('data-type');
+
+            switch (dataType) {
+                case 'int':
+                    value = parseInt(value, 10);
+                    if (isNaN(value)) value = 0; // Handle invalid integers
+                    break;
+                case 'float':
+                    value = parseFloat(value);
+                    if (isNaN(value)) value = 0.0; // Handle invalid floats
+                    break;
+                case 'object':
+                    try {
+                        value = JSON.stringify(JSON.parse(value)); // Assuming the value is a JSON string
+                    } catch (error) {
+                        value = '{}';
+                    }
+                    break;
+            }
+
+            formData[element.name] = value;
+        } else {
+            if (element.name) {
+                formData[element.name] = element.value;
+            }
+        }
+    });
+
+    console.debug(formData);
+    return formData;
+}
+
+export function formDataToData(form) {
+    const formData = processFormWithTypes(form);
     const result = {};
 
-    formData.forEach((value, key) => {
+    Object.entries(formData).forEach(([key, value]) => {
         const keys = key.split(/[\[\].]+/).filter(k => k !== '');
         let current = result;
 
@@ -25,7 +69,6 @@ export function formDataToData(formData) {
 
         const keys = Object.keys(obj);
         if (keys.every(key => !isNaN(parseInt(key)))) {
-            // It's an "array-like" object, convert it to an actual array
             return keys.map(key => convertArrays(obj[key]));
         } else {
             keys.forEach(key => {

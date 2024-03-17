@@ -1,5 +1,5 @@
 import { h, Component } from '../node_modules/preact/dist/preact.mjs';
-import { useState, useEffect } from '../libraries/preact-hooks.js';
+import { useState, useEffect } from '../importmap/preact-hooks.mjs';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 

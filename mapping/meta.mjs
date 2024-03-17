@@ -169,7 +169,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 				case 'monolingualtext':
 					if (lang && tag) {
 						newEdits.push({
-							action: 'claim.create',
+							action: 'wbcreateclaim',
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
@@ -186,7 +186,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 					if (item?.options && item?.options[tag.content] in wikibase?.items) {
 						const targetValue = wikibase?.items[item.options[tag.content]];
 						newEdits.push({
-							action: 'claim.create',
+							action: 'wbcreateclaim',
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
@@ -208,7 +208,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							.flat();
 						if (options.length > 0) {
 							newEdits.push({
-								action: 'claim.create',
+								action: 'wbcreateclaim',
 								property: `${wikibase.id}:${targetProperty}`,
 								snaktype: 'value',
 								datatype: item.type,
@@ -232,7 +232,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 							: { amount: tag.content, unit: null };
 
 						newEdits.push({
-							action: 'claim.create',
+							action: 'wbcreateclaim',
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,
@@ -259,7 +259,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 						}
 
 						newEdits.push({
-							action: 'claim.create',
+							action: 'wbcreateclaim',
 							property: `${wikibase.id}:${prop}`,
 							snaktype: 'value',
 							datatype: item.type,
@@ -275,7 +275,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 
 						if (latlon.length === 2) {
 							newEdits.push({
-								action: 'claim.create',
+								action: 'wbcreateclaim',
 								property: `${wikibase.id}:${targetProperty}`,
 								snaktype: 'value',
 								datatype: item.type,
@@ -296,7 +296,7 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 				case 'time':
 					if (item.prop in wikibase?.props) {
 						newEdits.push({
-							action: 'claim.create',
+							action: 'wbcreateclaim',
 							property: `${wikibase.id}:${targetProperty}`,
 							snaktype: 'value',
 							datatype: item.type,

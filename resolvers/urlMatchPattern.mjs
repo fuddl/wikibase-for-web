@@ -32,7 +32,7 @@ export const urlMatchPattern = {
 			const proposeEdits = [];
 
 			proposeEdits.push({
-				action: 'claim.create',
+				action: 'wbcreateclaim',
 				property: `${wikibase.id}:${prop.property}`,
 				snaktype: 'value',
 				datatype: 'external-id',

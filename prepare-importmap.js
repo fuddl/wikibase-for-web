@@ -2,37 +2,81 @@ const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// Directly include the list of module paths you want to build.
-const modules = [
-  './node_modules/wikibase-edit/lib/index.js',
-  // './node_modules/another-module/path/to/file.js',
-  // Add more modules as needed.
-];
+const esbuilModules = {
+  'wikibase-edit': './node_modules/wikibase-edit/lib/index.js',
+};
 
-// Ensure the output directory exists
+const copyModules = {
+  isbn3: './node_modules/isbn3/isbn.js',
+  'preact-hooks': './node_modules/preact/hooks/dist/hooks.module.js',
+};
+
 const outputDir = path.join(__dirname, 'importmap');
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-modules.forEach(modulePath => {
-  // Extracts the module name from the path, assuming the module name is the first directory in the path.
-  const moduleName = modulePath.split('/')[2]; // Adjusted to capture the actual module name.
-  const outputPath = path.join(outputDir, `${moduleName}.mjs`);
-
-  // esbuild command, assuming esbuild is installed locally in the project.
-  const command = `./node_modules/.bin/esbuild ${modulePath} --bundle --outfile=${outputPath} --platform=browser --format=esm`;
-
-  // Execute the esbuild command
+const execute = (command, what) => {
   exec(command, { cwd: __dirname }, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Error building ${moduleName} with esbuild:`, error);
+      console.error(`Error executing setuo command`, error);
       return;
     }
     if (stderr) {
-      console.error(`esbuild stderr for ${moduleName}:`, stderr);
+      console.error(`esbuild stderr for ${what}:`, stderr);
       return;
     }
-    console.log(`Built ${moduleName}.mjs successfully with esbuild.`);
+    console.log(`Prepared ${what} successfully.`);
   });
+};
+
+function copyFileAndReplaceString(
+  srcPath,
+  destPath,
+  searchString,
+  replaceString,
+  callback,
+) {
+  fs.readFile(srcPath, 'utf8', (err, data) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    const result = data.replace(searchString, replaceString);
+
+    fs.writeFile(destPath, result, 'utf8', err => {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(null, 'The file has been copied and modified successfully.');
+    });
+  });
+}
+
+Object.keys(esbuilModules).forEach(moduleName => {
+  const outputPath = path.join(outputDir, `${moduleName}.mjs`);
+
+  const command = `./node_modules/.bin/esbuild ${esbuilModules[moduleName]} --bundle --outfile=${outputPath} --platform=browser --format=esm`;
+  execute(command, `${moduleName}.mjs`);
+});
+
+Object.keys(copyModules).forEach(moduleName => {
+  const outputPath = path.join(outputDir, `${moduleName}.mjs`);
+
+  copyFileAndReplaceString(
+    copyModules[moduleName],
+    outputPath,
+    '"preact"',
+    '"../node_modules/preact/dist/preact.mjs"',
+    (err, message) => {
+      if (err) {
+        console.error('Error:', err);
+      } else {
+        console.log(message);
+      }
+    },
+  );
 });

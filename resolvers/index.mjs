@@ -12,7 +12,7 @@ const resolvers = {
 
 const resolvedCache = {};
 
-resolvers.resolve = async function (url, allowedWikibases = null) {
+resolvers.resolve = async function (url, allowedWikibases = ['playground']) {
 	if (url in resolvedCache) {
 		return resolvedCache[url];
 	}

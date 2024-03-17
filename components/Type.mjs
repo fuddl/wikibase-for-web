@@ -30,6 +30,7 @@ class Type extends Component {
       disabled,
       step,
       size,
+      dataType,
     } = this.props;
     return html`<input
       class="type"
@@ -39,6 +40,7 @@ class Type extends Component {
       step=${step}
       min=${min}
       max=${max}
+      data-type=${dataType}
       disabled=${disabled}
       data-proxy-name=${proxyName}
       value=${value}
