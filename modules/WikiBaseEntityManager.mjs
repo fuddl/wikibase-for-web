@@ -13,6 +13,8 @@ class WikiBaseEntityManager {
 		for (const wikibase in this.wikibases) {
 			// @todo add babel languages from instance
 			this.wikibases[wikibase].languages = this.languages;
+
+			this.wikibases[wikibase].manager = this;
 		}
 	}
 	async add(id) {

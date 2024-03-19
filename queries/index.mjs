@@ -4,8 +4,12 @@ import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlProperties } from './urlProperties.mjs';
+import { equivalentClasses } from './equivalentClasses.mjs';
+import { equivalentProperties } from './equivalentProperties.mjs';
 
 const queries = {
+	equivalentClasses,
+	equivalentProperties,
 	itemByExternalId,
 	itemByUrl,
 	shortTitle,
@@ -23,7 +27,9 @@ class WikiBaseQueryManager {
 	queryCached(instance, queryObject, params) {
 		if (
 			queryObject?.requiredProps &&
-			!this.checkRequiredProps(instance, queryObject.requiredProps)
+			!this.checkRequiredProps(instance, queryObject.requiredProps) &&
+			queryObject?.requiredItems &&
+			!this.checkRequiredItems(instance, queryObject.requiredItems)
 		) {
 			return [];
 		}
@@ -46,7 +52,9 @@ class WikiBaseQueryManager {
 	async query(instance, queryObject, params) {
 		if (
 			queryObject?.requiredProps &&
-			!this.checkRequiredProps(instance, queryObject.requiredProps)
+			!this.checkRequiredProps(instance, queryObject.requiredProps) &&
+			queryObject?.requiredItems &&
+			!this.checkRequiredItems(instance, queryObject.requiredItems)
 		) {
 			return [];
 		}
@@ -77,6 +85,11 @@ class WikiBaseQueryManager {
 	checkRequiredProps(instance, requirements) {
 		return requirements.every(
 			requirement => requirement in (instance?.props ?? {}),
+		);
+	}
+	checkRequiredItems(instance, requirements) {
+		return requirements.every(
+			requirement => requirement in (instance?.items ?? {}),
 		);
 	}
 }

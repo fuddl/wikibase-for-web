@@ -7,12 +7,12 @@ import WikiBaseQueryManager from '../queries/index.mjs';
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [wikibase, urlMatchPattern, url],
+	list: [url, urlMatchPattern, wikibase],
 };
 
 const resolvedCache = {};
 
-resolvers.resolve = async function (url, allowedWikibases = ['playground']) {
+resolvers.resolve = async function (url, allowedWikibases = null) {
 	if (url in resolvedCache) {
 		return resolvedCache[url];
 	}

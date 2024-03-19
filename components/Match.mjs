@@ -5,6 +5,7 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 
 import { metaToEdits } from '../mapping/meta.mjs';
+import { ldToEdits } from '../mapping/ld.mjs';
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
@@ -95,11 +96,17 @@ const Match = ({ suggestions, manager }) => {
         }
       }
       if (metadata?.meta) {
-        const metaEdits = await metaToEdits({
+        let metaEdits = await metaToEdits({
           meta: metadata.meta,
           wikibase: manager.wikibases[suggestions[index].instance],
           lang: metadata?.lang,
           edits,
+        });
+        metaEdits = await ldToEdits({
+          ld: metadata.linkData,
+          wikibase: manager.wikibases[suggestions[index].instance],
+          lang: metadata?.lang,
+          metaEdits,
         });
         edits = metaEdits;
       }

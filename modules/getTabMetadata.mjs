@@ -44,6 +44,69 @@ export async function getTabMetadata(tabId) {
                 return canonicalLink ? canonicalLink.href : '';
             };
 
+            function makeUrlsAbsolute(obj, baseUrl) {
+                // Helper function to convert a relative URL to an absolute URL using an <a> element
+                function toAbsoluteUrl(relativeUrl) {
+                    const a = document.createElement('link');
+                    a.setAttribute('href', relativeUrl);
+
+                    return a.href;
+                }
+
+                if (Array.isArray(obj)) {
+                    obj.forEach((item, index) => {
+                        obj[index] = makeUrlsAbsolute(item, baseUrl);
+                    });
+                } else if (typeof obj === 'object' && obj !== null) {
+                    Object.keys(obj).forEach(key => {
+                        const value = obj[key];
+                        if (
+                            typeof value === 'string' &&
+                            (value.startsWith('/') ||
+                                value.startsWith('./') ||
+                                value.startsWith('../'))
+                        ) {
+                            // Convert relative URLs to absolute
+                            obj[key] = toAbsoluteUrl(value);
+                        } else if (key === '@context') {
+                            obj['@type'] =
+                                `${value.replace(/\/$/, '')}/${obj['@type']}`;
+                        } else if (typeof value === 'object') {
+                            // Recurse into nested objects and arrays
+                            makeUrlsAbsolute(value, baseUrl);
+                        }
+                        if (
+                            key === 'url' &&
+                            obj[key] === document.location.toString()
+                        ) {
+                            obj['@isSubjectOfPage'] = true;
+                            delete obj[key];
+                        }
+                    });
+                }
+                return obj;
+            }
+
+            const getLinkedData = () => {
+                const scripts = document.querySelectorAll(
+                    'script[type="application/ld+json"]',
+                );
+                const output = [];
+                for (const script of scripts) {
+                    try {
+                        const parsed = JSON.parse(script.innerText);
+                        const absolutised = makeUrlsAbsolute(parsed);
+                        output.push(absolutised);
+                    } catch (e) {
+                        console.warn(
+                            `Error parsing JSON on ${document.location}`,
+                        );
+                        //console.debug(e);
+                    }
+                }
+                return output;
+            };
+
             return {
                 title: document.title,
                 lang: document.documentElement.lang,
@@ -51,6 +114,7 @@ export async function getTabMetadata(tabId) {
                 keywords: getKeywords(),
                 canonicalURL: getCanonicalURL(),
                 meta: getMeta(),
+                linkData: getLinkedData(),
             };
         },
     });

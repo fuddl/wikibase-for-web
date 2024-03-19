@@ -16,17 +16,21 @@
             {
                 "@context": "http://schema.org",
                 "@type": "Book",
+                "url": "http://127.0.0.1:8080/book_linked_data.html",
                 "name": "The Hitchhiker's Guide to the Galaxy",
                 "author": {
                     "@type": "Person",
-                    "name": "Douglas Adams"
+                    "name": "Douglas Adams",
+                    "url": "/book_author_meta_tags.html",
+                    "sameAs": "https://www.imdb.com/name/nm0010930/"
                 },
-                "datePublished": "1979",
+                "datePublished": "1979-12-13",
                 "publisher": {
                     "@type": "Organization",
-                    "name": "Pan Books"
+                    "name": "Pan Books",
+                    "url": "https://www.wikidata.org/wiki/Q3892930"
                 },
-                "genre": "Science Fiction",
+                "genre": "https://playground.wikibase.cloud/wiki/Item:Q28",
                 "workExample": {
                     "@type": "BookFormatType",
                     "bookFormat": "http://schema.org/Paperback",
@@ -51,6 +55,50 @@
                     },
                     "reviewBody": "A whimsical journey through space that combines elements of comedy with deep existential questions. Douglas Adams' masterpiece not only entertains but also provides a unique perspective on life, the universe, and everything. Highly recommended for anyone looking for a thought-provoking yet hilarious adventure."
                 }
+            }
+        </script>
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "WebSite",
+                "name": "Bob's Boring Page",
+                "url": "http://www.bobsboringpage.com",
+                "description": "Bob's Boring Page is a website with virtually no interesting content. It features a plain white background with black text that reads 'This is a very uninteresting page.'",
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Bob's Boring Content Ltd.",
+                    "url": "http://www.bobsboringpage.com"
+                },
+                "potentialAction": {
+                    "@type": "ReadAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": "http://www.bobsboringpage.com"
+                    },
+                    "result": {
+                        "@type": "Thing",
+                        "name": "Read the most uninteresting content online."
+                    }
+                },
+                "dateCreated": "2023-01-01",
+                "inLanguage": "en"
+            }
+        </script>
+        <script type="application/ld+json">
+            {
+              @context: "http://schema.org"
+              "@type": "WebSite",
+              "name": "Deliberatly broken JSON",
+              "url": "http://www.brokenjson.com",
+              // This is an invalid comment in JSON
+              "audience": "General"
+              "dateCreated": "2020-01-01",
+              "description" "This is a description of an uninteresting broken website, missing various punctuation and misusing JSON syntax."
+              "contactPoint": {
+                "@type": "ContactPoint"
+                "contactType": "customer support",
+                "email": "contact@uninterestingwebsite.com"
+              }, // Comma should not be here if there are no following properties
             }
         </script>
     </body>

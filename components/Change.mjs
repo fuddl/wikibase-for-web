@@ -84,7 +84,7 @@ class Change extends Component {
 								datavalue: this.state.edit.datavalue,
 							}}
 							manager=${manager} />`;
-					} else if (edit.valueOptions) {
+					} else if (this.state.edit.valueOptions) {
 						return html`<${Specify}
 							options=${this.state.edit.valueOptions}
 							manager="${manager}" />`;
@@ -100,7 +100,8 @@ class Change extends Component {
 					<dt class="change__key">${getKey(this.state.edit.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
 						${getValue(this.state.edit.action)}
-						<button
+						${this.state.edit.datavalue &&
+						html`<button
 							title="${'Edit mode'}"
 							class="change__toggle"
 							onClick=${e => {
@@ -108,9 +109,10 @@ class Change extends Component {
 								this.setState({ editMode: true });
 							}}>
 							${'🖊︎'}
-						</button>
+						</button>`}
 					</dd>
-					<dd class="change__value" hidden=${!this.state.editMode}>
+					${this.state.edit.datavalue &&
+					html` <dd class="change__value" hidden=${!this.state.editMode}>
 						<${Nibble}
 							datatype=${this.state.edit.datatype}
 							datavalue=${this.state.edit.datavalue}
@@ -126,7 +128,7 @@ class Change extends Component {
 							}}>
 							${'✓'}
 						</button>
-					</dd>
+					</dd>`}
 					<dd class="change__bool">
 						<input
 							name=${`${this.name}.apply`}
