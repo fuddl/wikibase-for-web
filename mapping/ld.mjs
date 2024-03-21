@@ -1,4 +1,5 @@
 import { resolvers } from '../resolvers/index.mjs';
+import { extractUrls } from '../modules/extractUrls.mjs';
 
 async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 	const newEdits = [];
@@ -64,13 +65,11 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 				},
 			);
 
-			console.debug(equivalentProperties);
-
 			const timeProperties = equivalentProperties.filter(
 				p => p.type === 'Time',
 			);
 
-			if (timeProperties && typeof value === 'string') {
+			if (timeProperties.length > 0 && typeof value === 'string') {
 				// is it a valid ISO date
 				if (
 					value.match(
@@ -93,7 +92,7 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 						action: 'wbcreateclaim',
 						property:
 							timeProperties.length === 1
-								? `${wikibase.id}:${targetProperty}`
+								? `${wikibase.id}:${timeProperties[0].prop}`
 								: null,
 						propertyOptions:
 							timeProperties.length > 1
@@ -115,6 +114,65 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 							},
 						},
 					});
+				}
+			}
+			const wikibaseItemProperties = equivalentProperties.filter(
+				p => p.type === 'WikibaseItem',
+			);
+
+			if (
+				wikibaseItemProperties.length > 0 &&
+				(typeof value === 'string' || typeof value === 'object')
+			) {
+				const urls = extractUrls(value);
+				if (urls) {
+					const resolveAll = urls =>
+						Promise.all(
+							urls.map(async url => await resolvers.resolve(url, wikibase.id)),
+						);
+					let resolved = await resolveAll(urls);
+					let items = resolved
+						.flat()
+						.map(item => item.resolved)
+						.flat();
+
+					const specificities = items.map(item => parseInt(item.specificity));
+					const maxSpecific = Math.max(...specificities);
+
+					console.debug(wikibaseItemProperties);
+					items = items
+						.filter(item => item.specificity === maxSpecific)
+						.map(item => item.id)
+						// filter only items. we could filter this in the query, can't we?
+						.filter(id => id.startsWith(`${wikibase.id}:Q`));
+
+					if (items.length > 0) {
+						newEdits.push({
+							action: 'wbcreateclaim',
+							property: `${wikibase.id}:${wikibase.props.instanceOf}`,
+							snaktype: 'value',
+							datatype: 'wikibase-item',
+							valueOptions: items.length > 1 ? items : null,
+							datavalue:
+								items.length === 1
+									? {
+											value: {
+												id: items[0],
+											},
+										}
+									: null,
+							property:
+								wikibaseItemProperties.length === 1
+									? `${wikibase.id}:${wikibaseItemProperties[0].prop}`
+									: null,
+							propertyOptions:
+								wikibaseItemProperties.length > 1
+									? wikibaseItemProperties.map(
+											property => `${wikibase.id}:${property.prop}`,
+										)
+									: null,
+						});
+					}
 				}
 			}
 		}
