@@ -29,7 +29,7 @@ class Nibble extends Component {
         )
           ? html`<input
               value="${datavalue.type}"
-              name="${name}.datavalue.type"
+              name="${name}.value.type"
               type="hidden" />`
           : null}
         ${(() => {
@@ -38,14 +38,14 @@ class Nibble extends Component {
               return html`<${Type}
                 value=${datavalue.value}
                 type="text"
-                name="${name}.datavalue.value"
+                name="${name}.value"
                 onValueChange=${onValueChange} />`;
             case 'wikibase-item':
             case 'wikibase-property':
               return html` <${Type}
                 value=${datavalue.value.id.replace(/^\w+\:/, '')}
                 type="text"
-                name="${name}.datavalue.id"
+                name="${name}.value.id"
                 onValueChange=${newValue => {
                   const prefix = datavalue.value.id.replace(/\:\w+$/, '');
                   newValue.value = `${prefix}:${newValue.value}`;
@@ -54,30 +54,30 @@ class Nibble extends Component {
             case 'time':
               return html`
                 <input
-                  name="${name}.datavalue.after"
+                  name="${name}.value.after"
                   data-type="int"
                   type="hidden"
                   value=${datavalue.value.after} />
                 <input
-                  name="${name}.datavalue.before"
+                  name="${name}.value.before"
                   data-type="int"
                   type="hidden"
                   value=${datavalue.value.before} />
                 <input
-                  name="${name}.datavalue.calendarmodel"
+                  name="${name}.value.calendarmodel"
                   type="hidden"
                   value=${manager.urlFromId(datavalue.value.calendarmodel)} />
                 <input
-                  name="${name}.datavalue.precision"
+                  name="${name}.value.precision"
                   data-type="int"
                   type="hidden"
                   value=${datavalue.value.precision} />
                 <input
-                  name="${name}.datavalue.time"
+                  name="${name}.value.time"
                   type="hidden"
                   value=${datavalue.value.time} />
                 <input
-                  name="${name}.datavalue.timezone"
+                  name="${name}.value.timezone"
                   type="hidden"
                   data-type="int"
                   value=${datavalue.value.timezone} />
@@ -86,7 +86,7 @@ class Nibble extends Component {
                     /^[-\+](\d{4}-\d{2}-\d{2})/,
                   )[1]}
                   type="date"
-                  proxyName="${name}.datavalue.time"
+                  proxyName="${name}.value.time"
                   onValueChange=${newValue => {
                     newValue.value = `+${newValue.value}T00:00:00Z`;
                     onValueChange(newValue);
@@ -96,7 +96,7 @@ class Nibble extends Component {
               return html`<${Type}
                 value=${datavalue.value}
                 type="url"
-                name="${name}.datavalue"
+                name="${name}.value"
                 onValueChange=${onValueChange} />`;
             case 'string':
               return html`<span>${datavalue.value}</span>`;
@@ -108,7 +108,7 @@ class Nibble extends Component {
                 <${Type}
                   value=${datavalue.value.text}
                   type="text"
-                  name="${name}.datavalue.text"
+                  name="${name}.value.text"
                   onValueChange=${onValueChange} />
 
                 ${/* @todo this should have autocomplete */ ''}
@@ -116,7 +116,7 @@ class Nibble extends Component {
                   value=${datavalue.value.language}
                   type="text"
                   size="2"
-                  name="${name}.datavalue.language"
+                  name="${name}.value.language"
                   onValueChange=${onValueChange} />
               </div>`;
             case 'quantity':
@@ -124,7 +124,7 @@ class Nibble extends Component {
                   <${Type}
                     value=${datavalue.value.amount.replace(/^\+/, '')}
                     type="number"
-                    proxyName="${name}.datavalue.amount"
+                    proxyName="${name}.value.amount"
                     onValueChange=${newValue => {
                       newValue.value = newValue.value.replace(/^(\d)/, '+$1');
                       onValueChange(newValue);
@@ -136,21 +136,21 @@ class Nibble extends Component {
                     manager=${manager} />`}
                 </div>
                 <input
-                  name="${name}.datavalue.amount"
+                  name="${name}.value.amount"
                   value="${datavalue.value.amount}"
                   type="hidden" />
                 ${/* @todo this should have autocomplete or select */ ''}
                 <${Type}
                   value=${datavalue.value.unit.replace(/^\w+\:/, '')}
                   type="hidden"
-                  name="${name}.datavalue.unit"
+                  name="${name}.unit"
                   onValueChange=${onValueChange} />`;
             case 'globe-coordinate':
               return html`<div class="nibble__line">
                   <${Type}
                     value=${datavalue.value.latitude}
                     type="number"
-                    name="${name}.datavalue.latitude"
+                    name="${name}.latitude"
                     step="0.00001"
                     min="-90"
                     max="+90"
@@ -162,7 +162,7 @@ class Nibble extends Component {
                     step="0.00001"
                     min="-180"
                     max="+180"
-                    name="${name}.datavalue.longitude"
+                    name="${name}.longitude"
                     onValueChange=${onValueChange} />
                   ±
                   <${Type}
@@ -172,13 +172,13 @@ class Nibble extends Component {
                     size="1"
                     min="2"
                     max="10"
-                    name="${name}.datavalue.precision"
+                    name="${name}.precision"
                     onValueChange=${onValueChange} />
                 </div>
                 <${Type}
                   value=${datavalue.value.globe}
                   type="hidden"
-                  name="${name}.datavalue.globe"
+                  name="${name}.globe"
                   disabled=${true}
                   onValueChange=${onValueChange} />`;
             default:
