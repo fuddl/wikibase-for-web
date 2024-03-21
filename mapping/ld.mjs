@@ -184,7 +184,7 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 					property: `${wikibase.id}:${wikibase.props.instanceOf}`,
 					snaktype: 'value',
 					datatype: 'monolingualtext',
-					datavalue: { value: { text: value, language: 'en' } },
+					datavalue: { value: { text: value, language: lang } },
 					property:
 						monolingualtextProperties.length === 1
 							? `${wikibase.id}:${monolingualtextProperties[0].prop}`
