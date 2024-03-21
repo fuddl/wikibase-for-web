@@ -139,7 +139,6 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 					const specificities = items.map(item => parseInt(item.specificity));
 					const maxSpecific = Math.max(...specificities);
 
-					console.debug(wikibaseItemProperties);
 					items = items
 						.filter(item => item.specificity === maxSpecific)
 						.map(item => item.id)
@@ -174,6 +173,29 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 						});
 					}
 				}
+			}
+
+			const monolingualtextProperties = equivalentProperties.filter(
+				p => p.type === 'Monolingualtext',
+			);
+			if (monolingualtextProperties.length > 0) {
+				newEdits.push({
+					action: 'wbcreateclaim',
+					property: `${wikibase.id}:${wikibase.props.instanceOf}`,
+					snaktype: 'value',
+					datatype: 'monolingualtext',
+					datavalue: { value: { text: value, language: 'en' } },
+					property:
+						monolingualtextProperties.length === 1
+							? `${wikibase.id}:${monolingualtextProperties[0].prop}`
+							: null,
+					propertyOptions:
+						monolingualtextProperties.length > 1
+							? monolingualtextProperties.map(
+									property => `${wikibase.id}:${property.prop}`,
+								)
+							: null,
+				});
 			}
 		}
 	}

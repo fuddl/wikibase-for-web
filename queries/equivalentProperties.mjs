@@ -1,5 +1,4 @@
 function sortEntriesByDepth(entries) {
-	console.debug(entries);
 	// Build a map of entries for easy lookup
 	const entryMap = new Map(entries.map(e => [e.prop, e]));
 
