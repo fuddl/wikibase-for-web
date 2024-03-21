@@ -116,7 +116,7 @@ class Change extends Component {
 						<${Nibble}
 							datatype=${this.state.edit.datatype}
 							datavalue=${this.state.edit.datavalue}
-							name=${`${this.name}.edit`}
+							name=${`${this.name}.edit.datavalue`}
 							onValueChange=${this.handleDataValueChange}
 							manager=${manager} />
 						<button
