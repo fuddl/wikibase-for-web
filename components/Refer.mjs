@@ -31,7 +31,6 @@ class Refer extends Component {
                         ${snaks.map(
                           snak =>
                             html`<dd class="refer__snak">
-                              ${console.debug(snak)}
                               <${Snack} mainsnak=${snak} manager=${manager} />
                             </dd>`,
                         )}`,
