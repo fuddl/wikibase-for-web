@@ -69,6 +69,15 @@ async function resolveAndUpdateSidebar(url, tabId) {
 const tabs = {};
 
 browser.webNavigation.onCommitted.addListener(async function (details) {
+	if (
+		details.url.startsWith('about:') ||
+		details.url.startsWith('chrome:') ||
+		details.url.startsWith('moz-extension:') ||
+		details.frameId > 0
+	) {
+		// early escape internal urls and navigation that occours in frames
+		return;
+	}
 	const currentTab = await getCurrentTab();
 	if (details.tabId === currentTab.id) {
 		const results = await resolveAndUpdateSidebar(details.url, details.tabId);
