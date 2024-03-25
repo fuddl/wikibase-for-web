@@ -94,10 +94,11 @@ const Match = ({ suggestions, manager }) => {
           });
         }
       }
-      edits = await suggestedEdits(
+      const newSuggestedEdits = await suggestedEdits(
         metadata,
         manager.wikibases[suggestions[index].instance],
       );
+      edits = [...edits, ...newSuggestedEdits];
     }
     const newAdditionalEdits = [...additionalEdits];
     newAdditionalEdits[index] = edits;
