@@ -22,7 +22,6 @@ const Match = ({ suggestions, manager }) => {
         continue;
       }
       if (item?.action === 'wbcreateclaim') {
-        console.debug(item.edit);
         jobs.push({
           instance: data.instance,
           action: item.action,
@@ -36,8 +35,6 @@ const Match = ({ suggestions, manager }) => {
         });
       }
     }
-
-    console.debug(jobs);
 
     try {
       browser.runtime.sendMessage(browser.runtime.id, {
@@ -53,6 +50,10 @@ const Match = ({ suggestions, manager }) => {
   const [subjectSelected, setSubjectSelected] = useState(false);
   const [metaData, setMetaData] = useState(
     new Array(suggestions.length).fill(null),
+  );
+
+  const [searchTexts, setSeachTexts] = useState(
+    new Array(suggestions.length).fill(''),
   );
 
   const [additionalEdits, setAdditionalEdits] = useState(
@@ -81,13 +82,16 @@ const Match = ({ suggestions, manager }) => {
   };
 
   const updateAdditionalEdits = async (index, metadata) => {
+    let newSearchTitle = '';
     let edits = [...additionalEdits[index]];
     if (metadata?.title) {
+      newSearchTitle = metadata.title;
       if (suggestions[index]?.titleExtractPattern) {
         const matches = metadata.title.match(
           suggestions[index].titleExtractPattern,
         );
         if (matches?.[1]) {
+          newSearchTitle = matches[1];
           edits.push({
             action: 'wbsetaliases',
             add: matches[1],
@@ -103,6 +107,10 @@ const Match = ({ suggestions, manager }) => {
     const newAdditionalEdits = [...additionalEdits];
     newAdditionalEdits[index] = edits;
     setAdditionalEdits(newAdditionalEdits);
+
+    const newSearchtexts = [...searchTexts];
+    newSearchtexts[index] = newSearchTitle;
+    setSeachTexts(newSearchtexts);
   };
 
   useEffect(() => {
@@ -146,7 +154,7 @@ const Match = ({ suggestions, manager }) => {
                   )}
                 </div>
                 <${Choose}
-                  label=${metaData[key]?.title}
+                  label=${searchTexts[key]}
                   manager=${manager}
                   wikibase=${suggestion.instance}
                   name="subjectId"
