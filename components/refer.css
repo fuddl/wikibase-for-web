@@ -1,0 +1,22 @@
+.refer {
+	display: contents;
+	font-size: 0.75rem;
+}
+
+.refer__item {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-gap: 0.25rem;
+}
+
+.refer__snaks {
+	margin: 0;
+}
+
+.refer__snak {
+	margin: 0;
+}
+
+.refer a {
+	color: inherit;
+}

@@ -13,7 +13,7 @@ class Remark extends Component {
     requireStylesheet(browser.runtime.getURL('/components/remark.css'));
   }
 
-  render({ claim, manager }) {
+  render({ claim, manager, references }) {
     const objects = [];
     for (const object of claim) {
       objects.push(object);
@@ -31,6 +31,15 @@ class Remark extends Component {
               <div class="remark__object">
                 <div class="remark__object__main">
                   <${Snack} mainsnak=${object.mainsnak} manager=${manager} />
+                  ${object?.references &&
+                  html` <sup>
+                    ${object.references.map(
+                      (reference, index) =>
+                        html`<a href="#${reference.hash}"
+                            >${references[reference.hash].number}</a
+                          >${index < object.references.length - 1 ? '/' : ''}`,
+                    )}</sup
+                  >`}
                 </div>
                 ${object.qualifiers &&
                 html`

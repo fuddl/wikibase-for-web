@@ -6,6 +6,7 @@ import htm from '../node_modules/htm/dist/htm.mjs';
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
 import Register from './Register.mjs';
+import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
 
 const html = htm.bind(h);
@@ -72,6 +73,26 @@ class Entity extends Component {
       return claim[0].mainsnak.datatype === 'external-id';
     });
 
+    let counter = 1;
+    const references = {};
+    mainClaims
+      .map(claimSet => {
+        return claimSet.map(claim => {
+          if (claim.references) {
+            return claim.references.map(reference => {
+              if (!Object.keys(references).includes(reference.hash)) {
+                references[reference.hash] = {
+                  number: counter++,
+                  reference: reference,
+                };
+              }
+            });
+          }
+        });
+      })
+      .flat();
+    const numberOfReferences = Object.keys(references).length;
+
     return html`
       <section>
         ${labels && descriptions
@@ -88,6 +109,7 @@ class Entity extends Component {
           claim =>
             html`<${Remark}
               claim=${claim}
+              references=${references}
               manager=${manager}
               key=${claim[0].mainsnak.property} />`,
         )}
@@ -99,6 +121,19 @@ class Entity extends Component {
                 )}
               </h2>
               <${Register} claims=${urlClaims} manager=${manager} />
+            `
+          : null}
+        ${numberOfReferences > 0
+          ? html`
+              <h2 key="links">
+                ${browser.i18n.getMessage(
+                  numberOfReferences === 1 ? 'reference' : 'references',
+                )}
+              </h2>
+              <${Refer}
+                references=${references}
+                manager=${manager}
+                wikibase=${wikibase} />
             `
           : null}
         ${externalIdClaims.length > 0

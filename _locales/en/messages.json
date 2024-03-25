@@ -53,13 +53,21 @@
     "message": "External identifiers",
     "description": "Heading for a section containing external ids."
   },
-  "links": {
+  "link": {
     "message": "Links",
     "description": "Heading for a section containing a single link."
   },
-  "link": {
-    "message": "Link",
+  "links": {
+    "message": "Links",
     "description": "Heading for a section containing links."
+  },
+  "reference": {
+    "message": "Reference",
+    "description": "Heading for a section containing a single reference."
+  },
+  "references": {
+    "message": "References",
+    "description": "Heading for a section containing references."
   },
   "month_1": {
     "message": "January",
