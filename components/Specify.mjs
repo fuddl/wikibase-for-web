@@ -10,6 +10,7 @@ class Specify extends Component {
     super(props);
     this.state = {
       labels: {},
+      value: props.value,
     };
   }
 
@@ -35,7 +36,9 @@ class Specify extends Component {
       <select class="specify" name=${name}>
         ${options.map(
           option =>
-            html` <option value=${option.replace(/^\w+\:/, '')}>
+            html` <option
+              value=${option.replace(/^\w+\:/, '')}
+              selected=${option === this.state.value}>
               ${labels[option] ?? option}
             </option>`,
         )}

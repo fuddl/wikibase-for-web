@@ -53,7 +53,13 @@ class Change extends Component {
 		const getKey = action => {
 			switch (action) {
 				case 'wbcreateclaim':
-					if (this.state.edit?.property) {
+					if (this.state.edit?.propertyOptions) {
+						return html`<${Specify}
+							options=${this.state.edit.propertyOptions}
+							manager="${manager}"
+							name=${`${this.name}.edit.property`}
+							value=${this.state.edit?.property} />`;
+					} else if (this.state.edit?.property) {
 						return html`<${Thing}
 								id=${this.state.edit.property}
 								manager="${manager}" />
@@ -61,11 +67,6 @@ class Change extends Component {
 								value=${this.state.edit.property.replace(/^\w+\:/, '')}
 								name=${`${this.name}.edit.property`}
 								type="hidden" /> `;
-					} else if (this.state.edit?.propertyOptions) {
-						return html`<${Specify}
-							options=${this.state.edit.propertyOptions}
-							manager="${manager}"
-							name=${`${this.name}.edit.property`} />`;
 					}
 				case 'wbsetaliases':
 					return browser.i18n.getMessage('set_alias');

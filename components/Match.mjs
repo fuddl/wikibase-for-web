@@ -4,8 +4,7 @@ import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 
-import { metaToEdits } from '../mapping/meta.mjs';
-import { ldToEdits } from '../mapping/ld.mjs';
+import { suggestedEdits } from '../mapping/index.mjs';
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
@@ -95,21 +94,10 @@ const Match = ({ suggestions, manager }) => {
           });
         }
       }
-      if (metadata?.meta) {
-        let metaEdits = await metaToEdits({
-          meta: metadata.meta,
-          wikibase: manager.wikibases[suggestions[index].instance],
-          lang: metadata?.lang,
-          edits,
-        });
-        metaEdits = await ldToEdits({
-          ld: metadata.linkData,
-          wikibase: manager.wikibases[suggestions[index].instance],
-          lang: metadata?.lang,
-          metaEdits,
-        });
-        edits = metaEdits;
-      }
+      edits = await suggestedEdits(
+        metadata,
+        manager.wikibases[suggestions[index].instance],
+      );
     }
     const newAdditionalEdits = [...additionalEdits];
     newAdditionalEdits[index] = edits;
