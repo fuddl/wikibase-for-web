@@ -1,6 +1,14 @@
 import { resolvers } from '../resolvers/index.mjs';
+import {
+	ExternalIdClaim,
+	GlobeCoordinateClaim,
+	MonolingualTextClaim,
+	QuantityClaim,
+	TimeClaim,
+	WikibaseItemClaim,
+} from '../types/Claim.mjs';
 
-async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
+async function metaToEdits({ meta, wikibase, lang = '', references }) {
 	const processISBN = input => {
 		const isbnProperties = {
 			isbn13: {
@@ -169,16 +177,13 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 				case 'monolingualtext':
 					if (lang && tag) {
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${targetProperty}`,
-							snaktype: 'value',
-							datatype: item.type,
-							datavalue: {
-								value: {
-									text: tag.content,
-									language: lang,
-								},
-							},
+							action: 'claim:create',
+							claim: new MonolingualTextClaim({
+								property: `${wikibase.id}:${targetProperty}`,
+								text: tag.content,
+								language: lang,
+								references: references,
+							}),
 						});
 					}
 					break;
@@ -186,18 +191,15 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 					if (item?.options && item?.options[tag.content] in wikibase?.items) {
 						const targetValue = wikibase?.items[item.options[tag.content]];
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${targetProperty}`,
-							snaktype: 'value',
-							datatype: item.type,
-							datavalue: {
-								value: {
-									id: `${wikibase.id}:${targetValue}`,
-								},
-							},
+							action: 'claim:create',
+							claim: new WikibaseItemClaim({
+								property: `${wikibase.id}:${targetProperty}`,
+								value: `${wikibase.id}:${targetValue}`,
+								references: references,
+							}),
 						});
 					} else if (URL.canParse(tag.content)) {
-						const result = await resolvers.resolve(tag.content, wikibase.id);
+						const result = await resolvers.resolve(tag.content, [wikibase.id]);
 
 						const options = result
 							.map(suggestion => {
@@ -206,20 +208,15 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 								}
 							})
 							.flat();
+
 						if (options.length > 0) {
 							newEdits.push({
-								action: 'wbcreateclaim',
-								property: `${wikibase.id}:${targetProperty}`,
-								snaktype: 'value',
-								datatype: item.type,
-								datavalue:
-									options.length === 1 ? { value: { id: options[0] } } : null,
-								valueOptions:
-									options.length > 1
-										? options.map(option => {
-												return option;
-											})
-										: null,
+								action: 'claim:create',
+								claim: new WikibaseItemClaim({
+									property: `${wikibase.id}:${targetProperty}`,
+									value: options,
+									references: references,
+								}),
 							});
 						}
 					}
@@ -229,19 +226,16 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 					if (item.prop in wikibase?.props) {
 						const { amount, unit } = item?.hasTimeUnit
 							? getDurationUnit(tag.content)
-							: { amount: tag.content, unit: null };
+							: { amount: tag.content, unit: undefined };
 
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${targetProperty}`,
-							snaktype: 'value',
-							datatype: item.type,
-							datavalue: {
-								value: {
-									amount: `+${amount}`,
-									unit: unit ?? '1',
-								},
-							},
+							action: 'claim:create',
+							claim: new QuantityClaim({
+								property: `${wikibase.id}:${targetProperty}`,
+								amount: `+${amount}`,
+								unit: unit,
+								references: references,
+							}),
 						});
 					}
 
@@ -259,11 +253,12 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 						}
 
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${prop}`,
-							snaktype: 'value',
-							datatype: item.type,
-							datavalue: { type: 'string', value: id },
+							action: 'claim:create',
+							claim: new ExternalIdClaim({
+								property: `${wikibase.id}:${prop}`,
+								value: id,
+								references: references,
+							}),
 						});
 					}
 
@@ -275,19 +270,14 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 
 						if (latlon.length === 2) {
 							newEdits.push({
-								action: 'wbcreateclaim',
-								property: `${wikibase.id}:${targetProperty}`,
-								snaktype: 'value',
-								datatype: item.type,
-								datavalue: {
-									type: 'globecoordinate',
-									value: {
-										latitude: latlon[0],
-										longitude: latlon[1],
-										globe: 'http://www.wikidata.org/entity/Q2',
-										precision: 1,
-									},
-								},
+								action: 'claim:create',
+								claim: new GlobeCoordinateClaim({
+									property: `${wikibase.id}:${targetProperty}`,
+									latitude: latlon[0],
+									longitude: latlon[1],
+									precision: 1,
+								}),
+								references: references,
 							});
 						}
 					}
@@ -296,21 +286,13 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 				case 'time':
 					if (item.prop in wikibase?.props) {
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${targetProperty}`,
-							snaktype: 'value',
-							datatype: item.type,
-							datavalue: {
-								type: 'time',
-								value: {
-									after: 0,
-									before: 0,
-									calendarmodel: 'wikidata:Q1985727',
-									precision: 11,
-									time: `+${tag.content}T00:00:00Z`,
-									timezone: 0,
-								},
-							},
+							action: 'claim:create',
+							claim: new TimeClaim({
+								property: `${wikibase.id}:${targetProperty}`,
+								time: `+${tag.content}T00:00:00Z`,
+								precision: 11,
+								references: references,
+							}),
 						});
 					}
 
@@ -319,6 +301,6 @@ async function metaToEdits({ meta, wikibase, lang = '', edits = [] }) {
 		}
 	}
 
-	return [...edits, ...newEdits];
+	return newEdits;
 }
 export { metaToEdits };

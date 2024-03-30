@@ -1,3 +1,5 @@
+import { UrlClaim } from '../types/Claim.mjs';
+
 export const url = {
 	id: 'url',
 	applies: async function (location, { wikibase, queryManager, metadata }) {
@@ -16,11 +18,11 @@ export const url = {
 		const proposeEdits = [];
 
 		proposeEdits.push({
-			action: 'wbcreateclaim',
-			propertyOptions: urlProperties.map(option => `${wikibase.id}:${option}`),
-			snaktype: 'value',
-			datatype: 'url',
-			datavalue: { type: 'string', value: location },
+			action: 'claim:create',
+			claim: new UrlClaim({
+				property: urlProperties.map(option => `${wikibase.id}:${option}`),
+				value: location,
+			}),
 			status: 'required',
 		});
 

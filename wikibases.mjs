@@ -28,6 +28,7 @@ const wikibases = {
 			propertyScope: 'P5314',
 			publicationDate: 'P577',
 			referenceURL: 'P854',
+			retrieved: 'P813',
 			shortTitle: 'P1813',
 			subclassOf: 'P279',
 			subpropertyOf: 'P1647',

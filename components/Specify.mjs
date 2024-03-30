@@ -38,7 +38,8 @@ class Specify extends Component {
           option =>
             html` <option
               value=${option.replace(/^\w+\:/, '')}
-              selected=${option === this.state.value}>
+              selected=${option === this.state.value}
+              name=${this.props.name}>
               ${labels[option] ?? option}
             </option>`,
         )}

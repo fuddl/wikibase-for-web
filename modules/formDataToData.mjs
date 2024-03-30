@@ -37,7 +37,6 @@ function processFormWithTypes(form) {
         }
     });
 
-    console.debug(formData);
     return formData;
 }
 
@@ -46,7 +45,7 @@ export function formDataToData(form) {
     const result = {};
 
     Object.entries(formData).forEach(([key, value]) => {
-        const keys = key.split(/[\[\].]+/).filter(k => k !== '');
+        const keys = key.split('.').filter(k => k !== '');
         let current = result;
 
         keys.forEach((part, index) => {

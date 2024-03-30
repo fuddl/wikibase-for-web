@@ -5,10 +5,11 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
 
-import Thing from './Thing.mjs';
-import Snack from './Snack.mjs';
 import Nibble from './Nibble.mjs';
+import Snack from './Snack.mjs';
 import Specify from './Specify.mjs';
+import Thin from './Thin.mjs';
+import Thing from './Thing.mjs';
 
 class Change extends Component {
 	constructor(props) {
@@ -16,8 +17,10 @@ class Change extends Component {
 		this.manager = props.manager;
 		this.editId = props.editId;
 		this.name = props.name;
+		this.action = props.action;
 		this.state = {
-			edit: props.edit,
+			claim: props?.claim,
+			labels: props?.labels,
 			editMode: false,
 		};
 	}
@@ -52,56 +55,60 @@ class Change extends Component {
 
 		const getKey = action => {
 			switch (action) {
-				case 'wbcreateclaim':
-					if (this.state.edit?.propertyOptions) {
+				case 'claim:create':
+					if (this.state.claim?.mainsnak.propertyOptions) {
 						return html`<${Specify}
-							options=${this.state.edit.propertyOptions}
+							options=${this.state.claim.mainsnak.propertyOptions}
 							manager="${manager}"
-							name=${`${this.name}.edit.property`}
-							value=${this.state.edit?.property} />`;
-					} else if (this.state.edit?.property) {
+							name=${`${this.name}.claim.mainsnak.property`}
+							value=${this.state.claim?.mainsnak?.property} />`;
+					} else if (this.state.claim?.mainsnak.property) {
 						return html`<${Thing}
-								id=${this.state.edit.property}
+								id=${this.state.claim.mainsnak.property}
 								manager="${manager}" />
 							<input
-								value=${this.state.edit.property.replace(/^\w+\:/, '')}
-								name=${`${this.name}.edit.property`}
+								value=${this.state.claim.mainsnak.property.replace(
+									/^\w+\:/,
+									'',
+								)}
+								name=${`${this.name}.claim.mainsnak.property`}
 								type="hidden" /> `;
 					}
-				case 'wbsetaliases':
+					break;
+				case 'label:set':
 					return browser.i18n.getMessage('set_alias');
 			}
 		};
 
 		const getValue = action => {
 			switch (action) {
-				case 'wbcreateclaim':
-					if (this.state.edit.datavalue) {
+				case 'claim:create':
+					if (this.state.claim.mainsnak?.datavalue?.value) {
 						return html`<${Snack}
-							mainsnak=${{
-								snaktype: this.state.edit.snaktype,
-								datatype: this.state.edit.datatype,
-								property: this.state.edit.property,
-								datavalue: this.state.edit.datavalue,
-							}}
+							mainsnak=${this.state.claim.mainsnak}
 							manager=${manager} />`;
-					} else if (this.state.edit.valueOptions) {
+					} else if (this.state.claim.mainsnak.valueOptions) {
 						return html`<${Specify}
-							options=${this.state.edit.valueOptions}
-							manager="${manager}" />`;
+								options=${this.state.claim.mainsnak.valueOptions}
+								manager="${manager}"
+								name="${this.name}.claim.mainsnak.datavalue.value.id" />
+							<input
+								type="hidden"
+								name="${this.name}.claim.mainsnak.datatype"
+								value=${this.state.claim.mainsnak.datatype} />`;
 					}
-				case 'wbsetaliases':
-					return html`<em>${this.state.edit.add}</em>`;
+				case 'label:set':
+					return html`<em>${this.state?.labels}</em>`;
 			}
 		};
 
 		return html`
 			<div class="change">
 				<dl class="change__preview">
-					<dt class="change__key">${getKey(this.state.edit.action)}</dt>
+					<dt class="change__key">${getKey(this.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
-						${getValue(this.state.edit.action)}
-						${this.state.edit.datavalue &&
+						${getValue(this.action)}
+						${this.state.claim.mainsnak.datavalue &&
 						html`<button
 							title="${'Edit mode'}"
 							class="change__toggle"
@@ -112,14 +119,18 @@ class Change extends Component {
 							${'🖊︎'}
 						</button>`}
 					</dd>
-					${this.state.edit.datavalue &&
-					html` <dd class="change__value" hidden=${!this.state.editMode}>
+					${this.state.claim.mainsnak.datavalue &&
+					html`<dd class="change__value" hidden=${!this.state.editMode}>
 						<${Nibble}
-							datatype=${this.state.edit.datatype}
-							datavalue=${this.state.edit.datavalue}
-							name=${`${this.name}.edit.datavalue`}
+							datatype=${this.state.claim.mainsnak.datatype}
+							datavalue=${this.state.claim.mainsnak.datavalue}
+							name=${`${this.name}.claim.mainsnak`}
 							onValueChange=${this.handleDataValueChange}
 							manager=${manager} />
+						<input
+							name=${`${name}.claim.mainsnak.datatype`}
+							value=${this.state.claim.datatype}
+							type="hidden" />
 						<button
 							title="${'Accept'}"
 							class="change__toggle"
@@ -129,6 +140,14 @@ class Change extends Component {
 							}}>
 							${'✓'}
 						</button>
+						<input
+							type="hidden"
+							name=${`${this.name}.claim.type`}
+							value="statement" />
+						<input
+							type="hidden"
+							name=${`${this.name}.claim.rank`}
+							value="normal" />
 					</dd>`}
 					<dd class="change__bool">
 						<input
@@ -137,10 +156,48 @@ class Change extends Component {
 							type="checkbox"
 							checked />
 					</dd>
+					${this.state.claim.references &&
+					html`<dd class="change__references">
+						<details>
+							<summary>Reference</summary>
+							${this.state.claim.references.map(
+								reference =>
+									html` <div class="change__reference">
+										${Object.entries(reference.snaks).map(
+											([prop, statements]) =>
+												html`<dl>
+													<dt class="change__reference__prop">
+														<${Thin} id=${prop} manager=${manager} />
+													</dt>
+													${statements.map(
+														(statement, index) =>
+															html`<dd class="change__reference__snak">
+																<${Snack}
+																	mainsnak=${statement}
+																	manager=${manager} />
+																<div hidden>
+																	${
+																		/* maybe we can make this editable in the future 🤷 */ ''
+																	}
+																	<${Nibble}
+																		datatype=${statement.datatype}
+																		datavalue=${statement.datavalue}
+																		name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0`}
+																		onValueChange=${this.handleDataValueChange}
+																		manager=${manager} />
+																</div>
+															</dd>`,
+													)}
+												</dl>`,
+										)}
+									</div>`,
+							)}
+						</details>
+					</dd>`}
 				</dl>
 				<input
 					name=${`${this.name}.action`}
-					value="${this.state.edit.action}"
+					value="${this.action}"
 					type="hidden"
 					checked />
 			</div>

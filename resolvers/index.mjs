@@ -13,7 +13,7 @@ const resolvers = {
 const resolvedCache = {};
 
 resolvers.resolve = async function (url, allowedWikibases = null) {
-	if (url in resolvedCache) {
+	if (url in resolvedCache && allowedWikibases === null) {
 		return resolvedCache[url];
 	}
 

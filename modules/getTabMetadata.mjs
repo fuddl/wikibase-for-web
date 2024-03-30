@@ -115,6 +115,7 @@ export async function getTabMetadata(tabId) {
                 canonicalURL: getCanonicalURL(),
                 meta: getMeta(),
                 linkData: getLinkedData(),
+                location: document.location.toString(),
             };
         },
     });

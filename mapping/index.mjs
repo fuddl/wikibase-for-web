@@ -1,5 +1,6 @@
 import { metaToEdits } from './meta.mjs';
 import { ldToEdits } from './ld.mjs';
+import { urlReference } from './urlReference.mjs';
 
 // Utility function to find the intersection of two arrays
 const intersectArrays = (arr1, arr2) =>
@@ -98,15 +99,19 @@ function reconcileEditSets(editSet1, editSet2) {
 }
 
 export async function suggestedEdits(metadata, wikibase) {
+  const references = urlReference(metadata, wikibase);
+
   const metaEdits = await metaToEdits({
     meta: metadata.meta,
     wikibase: wikibase,
     lang: metadata?.lang,
+    references: references,
   });
   const linkedDataEdits = await ldToEdits({
     ld: metadata.linkData,
     wikibase: wikibase,
     lang: metadata?.lang,
+    references: references,
   });
 
   return reconcileEditSets(metaEdits, linkedDataEdits);

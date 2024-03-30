@@ -1,3 +1,5 @@
+import { ExternalIdClaim } from '../types/Claim.mjs';
+
 export const urlMatchPattern = {
 	id: 'urlMatchPattern',
 	applies: async function (location, { wikibase, queryManager, metadata }) {
@@ -32,30 +34,12 @@ export const urlMatchPattern = {
 			const proposeEdits = [];
 
 			proposeEdits.push({
-				action: 'wbcreateclaim',
-				property: `${wikibase.id}:${prop.property}`,
-				snaktype: 'value',
-				datatype: 'external-id',
-				datavalue: { type: 'string', value: id },
+				action: 'claim:create',
+				claim: new ExternalIdClaim({
+					property: `${wikibase.id}:${prop.property}`,
+					value: id,
+				}),
 				status: 'required',
-				references: wikibase.props.referenceURL
-					? [
-							{
-								snacks: {
-									[wikibase.props.referenceURL]: [
-										{
-											property: wikibase.props.referenceURL,
-											datatype: 'url',
-											datavalue: {
-												value: location,
-												type: 'string',
-											},
-										},
-									],
-								},
-							},
-						]
-					: [],
 			});
 
 			output.push({

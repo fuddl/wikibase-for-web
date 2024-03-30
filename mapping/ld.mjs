@@ -1,3 +1,11 @@
+import {
+	ExternalIdClaim,
+	GlobeCoordinateClaim,
+	MonolingualTextClaim,
+	QuantityClaim,
+	TimeClaim,
+	WikibaseItemClaim,
+} from '../types/Claim.mjs';
 import { resolvers } from '../resolvers/index.mjs';
 
 export function extractUrls(input) {
@@ -28,7 +36,7 @@ export function extractUrls(input) {
 	return [];
 }
 
-async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
+async function ldToEdits({ ld, wikibase, lang = '', references }) {
 	const newEdits = [];
 
 	for (const d of ld) {
@@ -45,28 +53,14 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 					class: d['@type'],
 				},
 			);
-			if (equivalentClasses.length === 1) {
-				const targetValue = wikibase?.items[item.options[tag.content]];
+			if (equivalentClasses.length > 0) {
 				newEdits.push({
-					action: 'wbcreateclaim',
-					property: `${wikibase.id}:${wikibase.props.instanceOf}`,
-					snaktype: 'value',
-					datatype: 'wikibase-item',
-					datavalue: {
-						value: {
-							id: `${wikibase.id}:${equivalentClasses[0]}`,
-						},
-					},
-				});
-			} else if (equivalentClasses.length > 1) {
-				newEdits.push({
-					action: 'wbcreateclaim',
-					property: `${wikibase.id}:${wikibase.props.instanceOf}`,
-					snaktype: 'value',
-					datatype: 'wikibase-item',
-					valueOptions: equivalentClasses.map(
-						option => `${wikibase.id}:${option}`,
-					),
+					action: 'claim:create',
+					claim: new WikibaseItemClaim({
+						property: `${wikibase.id}:${wikibase.props.instanceOf}`,
+						value: equivalentClasses.map(option => `${wikibase.id}:${option}`),
+						references: references,
+					}),
 				});
 			}
 		}
@@ -97,7 +91,7 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 			);
 
 			if (timeProperties.length > 0 && typeof value === 'string') {
-				// is it a valid ISO date
+				// is it a valid ISO date?
 				if (
 					value.match(
 						/^[\+-]?(\d{4})(-(\d{2})(-(\d{2})(T(\d{2}):?(\d{2})?(:?(\d{2})(.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?)?)?$/,
@@ -115,31 +109,14 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 					const precision = lengthToPrecision[normal.length];
 					const filled = value.split(/-|T|:/g);
 					const date = `+${filled[0] || '0000'}-${filled[1] || '00'}-${filled[2] || '00'}T${filled[3] || '00'}:${filled[4] || '00'}:${filled[5] || '00'}Z`;
+
 					newEdits.push({
-						action: 'wbcreateclaim',
-						property:
-							timeProperties.length === 1
-								? `${wikibase.id}:${timeProperties[0].prop}`
-								: null,
-						propertyOptions:
-							timeProperties.length > 1
-								? timeProperties.map(
-										property => `${wikibase.id}:${property.prop}`,
-									)
-								: null,
-						snaktype: 'value',
-						datatype: 'time',
-						datavalue: {
-							type: 'time',
-							value: {
-								after: 0,
-								before: 0,
-								calendarmodel: 'wikidata:Q1985727',
-								precision: precision,
-								time: date,
-								timezone: 0,
-							},
-						},
+						action: 'claim:create',
+						claim: new TimeClaim({
+							precision: precision,
+							time: date,
+							references: references,
+						}),
 					});
 				}
 			}
@@ -174,29 +151,14 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 
 					if (items.length > 0) {
 						newEdits.push({
-							action: 'wbcreateclaim',
-							property: `${wikibase.id}:${wikibase.props.instanceOf}`,
-							snaktype: 'value',
-							datatype: 'wikibase-item',
-							valueOptions: items.length > 1 ? items : null,
-							datavalue:
-								items.length === 1
-									? {
-											value: {
-												id: items[0],
-											},
-										}
-									: null,
-							property:
-								wikibaseItemProperties.length === 1
-									? `${wikibase.id}:${wikibaseItemProperties[0].prop}`
-									: null,
-							propertyOptions:
-								wikibaseItemProperties.length > 1
-									? wikibaseItemProperties.map(
-											property => `${wikibase.id}:${property.prop}`,
-										)
-									: null,
+							action: 'claim:create',
+							claim: new WikibaseItemClaim({
+								property: wikibaseItemProperties.map(
+									property => `${wikibase.id}:${property.prop}`,
+								),
+								value: items,
+								references: references,
+							}),
 						});
 					}
 				}
@@ -207,26 +169,20 @@ async function ldToEdits({ ld, wikibase, lang = '', edits = [] }) {
 			);
 			if (monolingualtextProperties.length > 0) {
 				newEdits.push({
-					action: 'wbcreateclaim',
-					property: `${wikibase.id}:${wikibase.props.instanceOf}`,
-					snaktype: 'value',
-					datatype: 'monolingualtext',
-					datavalue: { value: { text: value, language: lang } },
-					property:
-						monolingualtextProperties.length === 1
-							? `${wikibase.id}:${monolingualtextProperties[0].prop}`
-							: null,
-					propertyOptions:
-						monolingualtextProperties.length > 1
-							? monolingualtextProperties.map(
-									property => `${wikibase.id}:${property.prop}`,
-								)
-							: null,
+					action: 'claim:create',
+					claim: new MonolingualTextClaim({
+						property: monolingualtextProperties.map(
+							property => `${wikibase.id}:${property.prop}`,
+						),
+						text: value,
+						language: lang,
+						references: references,
+					}),
 				});
 			}
 		}
 	}
 
-	return [...edits, ...newEdits];
+	return newEdits;
 }
 export { ldToEdits };

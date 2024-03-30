@@ -21,7 +21,7 @@ class Remark extends Component {
     const verb = claim[0].mainsnak.property;
 
     return html`
-      <dl class="remark remark--inline" id="{{ verb }}">
+      <dl class="remark remark--inline">
         <dt class="remark__verb">
           <${Thin} id=${verb} manager=${manager} />
         </dt>

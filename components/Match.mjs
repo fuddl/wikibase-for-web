@@ -17,30 +17,23 @@ const Match = ({ suggestions, manager }) => {
     e.preventDefault();
     const data = formDataToData(e.target.form);
     const jobs = [];
-    for (const item of data.edits) {
-      if (!item.apply) {
+    for (const edit of data.edits) {
+      if (!edit.apply) {
         continue;
       }
-      if (item?.action === 'wbcreateclaim') {
-        jobs.push({
-          instance: data.instance,
-          action: item.action,
-          entity: data.subjectId,
-          snaktype: 'value',
-          value:
-            item.edit.datavalue.type === 'string'
-              ? `"${item.edit.datavalue.value}"`
-              : item.edit.datavalue,
-          property: item.edit.property,
-        });
+      if (edit?.action === 'claim:create') {
+        console.debug(edit.claim);
+        console.debug(
+          manager.wikibase.api.simplify.claim(edit.claim, { keepAll: true }),
+        );
       }
     }
 
     try {
-      browser.runtime.sendMessage(browser.runtime.id, {
-        type: 'add_to_edit_queue',
-        edits: jobs,
-      });
+      // browser.runtime.sendMessage(browser.runtime.id, {
+      //   type: 'add_to_edit_queue',
+      //   edits: jobs,
+      // });
     } catch (error) {
       console.error(error);
     }
@@ -78,7 +71,8 @@ const Match = ({ suggestions, manager }) => {
     const newMetaData = [...metaData];
     newMetaData[index] = requestedMetadata.response;
     setMetaData(newMetaData);
-    await updateAdditionalEdits(index, requestedMetadata.response);
+
+    await updateAdditionalEdits(index, newMetaData[index]);
   };
 
   const updateAdditionalEdits = async (index, metadata) => {
@@ -93,8 +87,8 @@ const Match = ({ suggestions, manager }) => {
         if (matches?.[1]) {
           newSearchTitle = matches[1];
           edits.push({
-            action: 'wbsetaliases',
-            add: matches[1],
+            action: 'labals:add',
+            labels: matches[1],
           });
         }
       }
@@ -146,9 +140,11 @@ const Match = ({ suggestions, manager }) => {
                 <div class="match__statements">
                   ${Object.entries(edits).map(
                     ([editId, edit]) =>
-                      html` <${Change}
+                      html`<${Change}
                         key=${editId}
-                        edit=${edit}
+                        claim=${edit?.claim}
+                        labels=${edit?.labels}
+                        action=${edit.action}
                         name=${`edits.${editId}`}
                         manager=${manager} />`,
                   )}
