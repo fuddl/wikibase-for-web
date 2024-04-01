@@ -142,3 +142,7 @@ browser.webRequest.onCompleted.addListener(
 		),
 	},
 );
+
+browser.browserAction.onClicked.addListener(async () => {
+	await browser.sidebarAction.toggle();
+});
