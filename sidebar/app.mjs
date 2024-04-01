@@ -55,6 +55,14 @@ class Sidebar extends Component {
 	render() {
 		const { entity, suggestions, otherEntities, selectable } = this.state;
 
+		if (!entity && !selectable && !suggestions && !otherEntities) {
+			(async () => {
+				await browser.runtime.sendMessage(browser.runtime.id, {
+					type: 'request_resolve',
+				});
+			})();
+		}
+
 		return html`<${Main}
 			entity=${entity}
 			selectable=${selectable}

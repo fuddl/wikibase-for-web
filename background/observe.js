@@ -95,7 +95,7 @@ browser.tabs.onActivated.addListener(function (activeInfo) {
 });
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-	if (message.type === 'request_entity') {
+	if (message.type === 'request_resolve') {
 		const currentTab = await getCurrentTab();
 		const results = await resolveAndUpdateSidebar(
 			currentTab.url,
