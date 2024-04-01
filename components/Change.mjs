@@ -108,7 +108,7 @@ class Change extends Component {
 					<dt class="change__key">${getKey(this.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
 						${getValue(this.action)}
-						${this.state.claim.mainsnak.datavalue &&
+						${this.state?.claim?.mainsnak.datavalue &&
 						html`<button
 							title="${'Edit mode'}"
 							class="change__toggle"
@@ -119,7 +119,7 @@ class Change extends Component {
 							${'🖊︎'}
 						</button>`}
 					</dd>
-					${this.state.claim.mainsnak.datavalue &&
+					${this.state?.claim?.mainsnak.datavalue &&
 					html`<dd class="change__value" hidden=${!this.state.editMode}>
 						<${Nibble}
 							datatype=${this.state.claim.mainsnak.datatype}
@@ -156,7 +156,7 @@ class Change extends Component {
 							type="checkbox"
 							checked />
 					</dd>
-					${this.state.claim.references &&
+					${this.state?.claim?.references &&
 					html`<dd class="change__references">
 						<details>
 							<summary>Reference</summary>

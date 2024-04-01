@@ -137,6 +137,15 @@ class WikiBaseEntityManager {
 		}
 		return browser.runtime.getURL('/icons/wikibase.svg');
 	}
+	updateSidebarAction(id) {
+		const [wikibase] = id.split(':');
+		browser.sidebarAction.setTitle({
+			title: this.wikibases[wikibase].name,
+		});
+		browser.sidebarAction.setIcon({
+			path: this.iconFromId(id),
+		});
+	}
 }
 
 export default WikiBaseEntityManager;

@@ -110,6 +110,7 @@ const Match = ({ suggestions, manager }) => {
   useEffect(() => {
     (async () => {
       await requestMetadata(open);
+      manager.updateSidebarAction(suggestions[open].instance);
     })();
   }, [open]);
 
@@ -117,7 +118,10 @@ const Match = ({ suggestions, manager }) => {
     <div class="match">
       <h1>Match</h1>
       ${suggestions.map((suggestion, key) => {
-        const edits = [...suggestion.proposeEdits, ...additionalEdits[key]];
+        let edits = suggestion.proposeEdits;
+        if (key in additionalEdits) {
+          edits = [...edits, ...additionalEdits[key]];
+        }
 
         manager.wikibase = manager.wikibases[suggestion.instance];
 

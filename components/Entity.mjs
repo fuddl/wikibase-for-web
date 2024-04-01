@@ -1,5 +1,5 @@
 import { h, Component } from '../node_modules/preact/dist/preact.mjs';
-import { useState, useEffect } from '../importmap/preact-hooks.mjs';
+import { useRef, useState, useEffect } from '../importmap/preact-hooks.mjs';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 
@@ -41,6 +41,36 @@ function applyPropOrder(claims, propOrder) {
 class Entity extends Component {
   render({ id, labels, descriptions, title, claims, manager }) {
     const [wikibase, localId] = id.split(':');
+    const sectionRef = useRef(null);
+    const [fillsViewport, setFillsViewport] = useState(false);
+
+    const checkVisibility = () => {
+      if (!sectionRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const isVisible = rect.top < 0 && rect.bottom > window.innerHeight;
+
+      setFillsViewport(isVisible);
+    };
+
+    useEffect(() => {
+      // Check initial visibility without waiting for scroll
+      checkVisibility();
+
+      // Add scroll event listener
+      window.addEventListener('scroll', checkVisibility, { passive: true });
+
+      // Cleanup function to remove the event listener
+      return () => {
+        window.removeEventListener('scroll', checkVisibility);
+      };
+    }, []);
+
+    useEffect(() => {
+      if (fillsViewport) {
+        manager.updateSidebarAction(wikibase);
+      }
+    }, [fillsViewport]);
 
     manager.wikibase = manager.wikibases[wikibase];
 
@@ -94,7 +124,7 @@ class Entity extends Component {
     const numberOfReferences = Object.keys(references).length;
 
     return html`
-      <section>
+      <section ref=${sectionRef}>
         ${labels && descriptions
           ? html`
               <${Ensign}
