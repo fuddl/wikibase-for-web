@@ -118,10 +118,22 @@ export class WikibaseEditQueue {
     }
   }
 
-  async performFetchRequest(instance, params) {
-    const token = await this.getEditToken(instance);
+  updateView(entity) {
+    browser.runtime
+      .sendMessage({
+        type: 'update_entity',
+        entity: entity,
+      })
+      .then(response => {})
+      .catch(error => console.error('Message failed:', error));
+  }
 
-    let response = await fetch(instance, {
+  async performFetchRequest(instance, params) {
+    const endpoint = wikibases[instance].api.instance.apiEndpoint;
+    const token = await this.getEditToken(endpoint);
+    const tag = await this.getEditTag(endpoint);
+
+    let response = await fetch(endpoint, {
       method: 'post',
       body: new URLSearchParams({
         token: token,
@@ -134,16 +146,11 @@ export class WikibaseEditQueue {
     if (parsedResponse.success === 1) {
       if (parsedResponse?.claim?.id) {
         this.lastClaim = parsedResponse.claim.id;
+        this.updateView(`${instance}:${this.lastClaim.replace(/\$.+/, '')}`);
       }
       if (parsedResponse?.entity?.id) {
         this.lastEntity = parsedResponse.entity.id;
-        browser.runtime
-          .sendMessage({
-            type: 'update_entity',
-            entity: `${instance}:${this.lastEntity}`,
-          })
-          .then(response => {})
-          .catch(error => console.error('Message failed:', error));
+        this.updateView(`${instance}:${this.lastEntity}`);
       }
     }
 
@@ -154,10 +161,6 @@ export class WikibaseEditQueue {
   }
 
   async performEdit(job) {
-    const instance = wikibases[job.instance].api.instance.apiEndpoint;
-    const token = await this.getEditToken(instance);
-    const tag = await this.getEditTag(instance);
-
     if (job?.statement === 'LAST' && this.lastClaim !== '') {
       job.statement = this.lastClaim;
     }
@@ -168,14 +171,14 @@ export class WikibaseEditQueue {
 
     switch (job.action) {
       case 'entity:create':
-        await this.performFetchRequest(instance, {
+        await this.performFetchRequest(job.instance, {
           action: 'wbeditentity',
           new: job.new,
           data: JSON.stringify(job.data),
         });
         break;
       case 'claim:create':
-        await this.performFetchRequest(instance, {
+        await this.performFetchRequest(job.instance, {
           action: 'wbcreateclaim',
           entity: job.entity,
           property: job.claim.mainsnak.property,
@@ -184,7 +187,7 @@ export class WikibaseEditQueue {
         });
         break;
       case 'reference:set':
-        await this.performFetchRequest(instance, {
+        await this.performFetchRequest(job.instance, {
           action: 'wbsetreference',
           statement: job.statement,
           snaks: JSON.stringify(job.snaks),

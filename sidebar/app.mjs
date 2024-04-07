@@ -50,9 +50,13 @@ class Sidebar extends Component {
 			});
 			return Promise.resolve('done');
 		} else if (message.type === 'update_entity') {
-			if (this.state.entity.id === message.entity) {
+			if (
+				this.state.entity === null ||
+				this.state.entity.id === message.entity
+			) {
 				this.setState({
 					entity: await manager.add(message.entity, false),
+					suggestions: null,
 				});
 			}
 			return Promise.resolve('done');
