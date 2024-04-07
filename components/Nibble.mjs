@@ -26,14 +26,21 @@ class Nibble extends Component {
       <fieldset class="nibble">
         <input name="${name}.datatype" value=${datatype} />
         <input name="${name}.snaktype" value="value" type="hidden" />
-        ${['external-id', 'commonsMedia', 'commonsMedia', 'string'].includes(
-          datatype,
-        )
+        ${[
+          'external-id',
+          'commonsMedia',
+          'commonsMedia',
+          'string',
+          'url',
+        ].includes(datatype)
           ? html`<input
               value="${datavalue.type}"
               name="${name}.datavalue.type"
               type="hidden" />`
-          : null}
+          : html`<input
+              value="${datatype}"
+              name="${name}.datavalue.type"
+              type="hidden" />`}
         ${(() => {
           switch (datatype) {
             case 'external-id':
@@ -68,7 +75,9 @@ class Nibble extends Component {
                 <input
                   name="${name}.datavalue.value.calendarmodel"
                   type="hidden"
-                  value=${manager.urlFromId(datavalue.value.calendarmodel)} />
+                  value=${manager.urlFromIdNonSecure(
+                    datavalue.value.calendarmodel,
+                  )} />
                 <input
                   name="${name}.datavalue.value.precision"
                   data-type="int"

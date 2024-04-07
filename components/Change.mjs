@@ -186,6 +186,11 @@ class Change extends Component {
 																		onValueChange=${this.handleDataValueChange}
 																		manager=${manager} />
 																</div>
+																<input
+																	type="hidden"
+																	name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0.property`}
+																	value=${prop.replace(/.+:/, '')} />
+																}
 															</dd>`,
 													)}
 												</dl>`,

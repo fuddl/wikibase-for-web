@@ -110,6 +110,8 @@ const wikibases = {
 			occupation: 'P43',
 			partOfTheSeries: 'P45',
 			publicationDate: 'P51',
+			referenceURL: 'P31',
+			retrieved: 'P54',
 			shortTitle: 'P37',
 			title: 'P42',
 			unitSymbol: 'P38',

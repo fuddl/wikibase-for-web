@@ -1,10 +1,12 @@
 import wikibases from '../wikibases.mjs';
+import WBEdit from '../importmap/wikibase-edit.mjs';
 
 export class WikibaseEditQueue {
   constructor() {
     this.queue = []; // Each job will be an object with a 'job' property and a 'done' flag
     this.isProcessing = false;
     this.onProgressUpdate = null; // Callback for progress updates
+    this.lastClaim = '';
   }
 
   // Add multiple jobs at once
@@ -107,42 +109,78 @@ export class WikibaseEditQueue {
     return params;
   }
 
-  // Simulate an edit operation
-  async performEdit(job) {
-    const endpoint = wikibases[job.instance].api.instance.apiEndpoint;
-    job.token = await this.getEditToken(endpoint);
-    job.tags = await this.getEditTag(endpoint);
-    job.format = 'json';
-    const params = this.jobToParams(job);
-
-    let response = await fetch(endpoint, {
-      method: 'post',
-      body: params,
-    });
-
-    let parsedResponse = JSON.parse(await response.text());
-    console.debug(parsedResponse);
-
-    if (parsedResponse?.success === 1) {
-      let updatedEntity = '';
-      switch (job.action) {
-        case 'wbcreateclaim':
-          updatedEntity = job.entity;
-          break;
-        case 'wbsetaliases':
-          updatedEntity = job.id;
-          break;
-      }
-      if (updatedEntity) {
-        browser.runtime
-          .sendMessage({
-            type: 'update_entity',
-            entity: `${job.instance}:${updatedEntity}`,
-          })
-          .then(response => {})
-          .catch(error => console.error('Message failed:', error));
-      }
+  serializeValue(datavalue) {
+    if (datavalue.type === 'string') {
+      return `"${datavalue.value}"`;
+    } else {
+      return JSON.stringify(datavalue.value);
     }
+  }
+
+  async performFetchRequest(instance, params) {
+    let response = await fetch(instance, {
+      method: 'post',
+      body: new URLSearchParams({ format: 'json', ...params }),
+    });
+    let parsedResponse = await response.json();
+    if (parsedResponse.success === 1 && parsedResponse?.claim?.id) {
+      this.lastClaim = parsedResponse.claim.id;
+    }
+    console.debug({ request: params });
+    console.debug({ response: parsedResponse });
+    return parsedResponse;
+  }
+
+  async performEdit(job) {
+    const instance = wikibases[job.instance].api.instance.apiEndpoint;
+    const token = await this.getEditToken(instance);
+    const tag = await this.getEditTag(instance);
+
+    if (job?.statement === 'LAST' && this.lastClaim !== '') {
+      job.statement = this.lastClaim;
+    }
+
+    switch (job.action) {
+      case 'claim:create':
+        await this.performFetchRequest(instance, {
+          action: 'wbcreateclaim',
+          entity: job.subject,
+          property: job.claim.mainsnak.property,
+          snaktype: job.claim.mainsnak.snaktype,
+          value: this.serializeValue(job.claim.mainsnak.datavalue),
+          token: token,
+        });
+        break;
+      case 'reference:set':
+        await this.performFetchRequest(instance, {
+          action: 'wbsetreference',
+          statement: job.statement,
+          snaks: JSON.stringify(job.snaks),
+          token: token,
+        });
+        break;
+    }
+
+    // if (parsedResponse?.success === 1) {
+    //   let updatedEntity = '';
+    //   switch (job.action) {
+    //     case 'wbcreateclaim':
+    //       updatedEntity = job.entity;
+    //       break;
+    //     case 'wbsetaliases':
+    //       updatedEntity = job.id;
+    //       break;
+    //   }
+    //   if (updatedEntity) {
+    //     browser.runtime
+    //       .sendMessage({
+    //         type: 'update_entity',
+    //         entity: `${job.instance}:${updatedEntity}`,
+    //       })
+    //       .then(response => {})
+    //       .catch(error => console.error('Message failed:', error));
+    //   }
+    // }
   }
 
   // Set a progress update callback

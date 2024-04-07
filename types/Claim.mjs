@@ -62,7 +62,7 @@ export class UrlClaim extends Claim {
 
 export class ExternalIdClaim extends Claim {
   constructor({ property, value, references }) {
-    super({ property, value });
+    super({ property, value, references });
     this.mainsnak.datavalue.value = value;
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'external-id';

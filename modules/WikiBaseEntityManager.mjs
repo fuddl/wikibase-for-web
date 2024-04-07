@@ -126,10 +126,15 @@ class WikiBaseEntityManager {
 		const id = url.match(/\/entity\/(\w(?:\d+\w)?\d+)$/)[1];
 		return `${instance}:${id}`;
 	}
+
 	urlFromId(id) {
 		const [wikibase, localId] = id.split(':');
 		return `${this.wikibases[wikibase].api.instance.root}/entity/${localId}`;
 	}
+	urlFromIdNonSecure(id) {
+		return this.urlFromId(id).replace(/^https/, 'http');
+	}
+
 	iconFromId(id) {
 		const [wikibase] = id.split(':');
 		if (this?.wikibases?.[wikibase]?.icon) {

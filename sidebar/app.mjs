@@ -35,7 +35,7 @@ class Sidebar extends Component {
 
 	handleMessage = async message => {
 		if (message.type === 'resolved') {
-			const organised = organiseView(message);
+			const organised = await organiseView(message);
 
 			const currentEntity = organised?.bestMatches?.[0]?.id
 				? await manager.add(organised.bestMatches[0].id)

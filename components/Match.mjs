@@ -22,18 +22,31 @@ const Match = ({ suggestions, manager }) => {
         continue;
       }
       if (edit?.action === 'claim:create') {
-        console.debug(edit.claim);
-        console.debug(
-          manager.wikibase.api.simplify.claim(edit.claim, { keepAll: true }),
-        );
+        jobs.push({
+          action: edit.action,
+          instance: data.instance,
+          subject: data.subjectId,
+          claim: edit.claim,
+        });
+
+        if (edit?.claim?.references) {
+          edit.claim.references.forEach(reference => {
+            jobs.push({
+              action: 'reference:set',
+              instance: data.instance,
+              statement: 'LAST',
+              snaks: reference.snaks,
+            });
+          });
+        }
       }
     }
 
     try {
-      // browser.runtime.sendMessage(browser.runtime.id, {
-      //   type: 'add_to_edit_queue',
-      //   edits: jobs,
-      // });
+      browser.runtime.sendMessage(browser.runtime.id, {
+        type: 'add_to_edit_queue',
+        edits: jobs,
+      });
     } catch (error) {
       console.error(error);
     }
