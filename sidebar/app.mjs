@@ -49,6 +49,13 @@ class Sidebar extends Component {
 				otherEntities: organised.otherMatches,
 			});
 			return Promise.resolve('done');
+		} else if (message.type === 'update_entity') {
+			if (this.state.entity.id === message.entity) {
+				this.setState({
+					entity: await manager.add(message.entity, false),
+				});
+			}
+			return Promise.resolve('done');
 		}
 	};
 

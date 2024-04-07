@@ -137,10 +137,19 @@ export class WikibaseEditQueue {
       }
       if (parsedResponse?.entity?.id) {
         this.lastEntity = parsedResponse.entity.id;
+        browser.runtime
+          .sendMessage({
+            type: 'update_entity',
+            entity: `${instance}:${this.lastEntity}`,
+          })
+          .then(response => {})
+          .catch(error => console.error('Message failed:', error));
       }
     }
+
     console.debug({ request: params });
     console.debug({ response: parsedResponse });
+
     return parsedResponse;
   }
 
@@ -182,27 +191,6 @@ export class WikibaseEditQueue {
         });
         break;
     }
-
-    // if (parsedResponse?.success === 1) {
-    //   let updatedEntity = '';
-    //   switch (job.action) {
-    //     case 'wbcreateclaim':
-    //       updatedEntity = job.entity;
-    //       break;
-    //     case 'wbsetaliases':
-    //       updatedEntity = job.id;
-    //       break;
-    //   }
-    //   if (updatedEntity) {
-    //     browser.runtime
-    //       .sendMessage({
-    //         type: 'update_entity',
-    //         entity: `${job.instance}:${updatedEntity}`,
-    //       })
-    //       .then(response => {})
-    //       .catch(error => console.error('Message failed:', error));
-    //   }
-    // }
   }
 
   // Set a progress update callback

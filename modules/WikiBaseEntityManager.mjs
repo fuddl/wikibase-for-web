@@ -17,8 +17,8 @@ class WikiBaseEntityManager {
 			this.wikibases[wikibase].manager = this;
 		}
 	}
-	async add(id) {
-		if (this.entities?.[id]) {
+	async add(id, useCache = true) {
+		if (this.entities?.[id] && useCache) {
 			return this.entities[id];
 		}
 		const [wikibase, entity] = id.split(':');
