@@ -105,7 +105,7 @@ export class MonolingualTextClaim extends Claim {
 
 export class QuantityClaim extends Claim {
   constructor({ property, amount, unit = '1', references }) {
-    super({ property, value: { amount: amount, unit: unit } });
+    super({ property, value: { amount: amount, unit: unit }, references });
 
     this.mainsnak.datavalue.type = 'quantity';
     this.mainsnak.datatype = 'quantity';
