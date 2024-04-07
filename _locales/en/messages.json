@@ -3,6 +3,18 @@
     "message": "Set alias",
     "description": "Title of an edit that sets an alias."
   },
+  "match_title": {
+    "message": "Match",
+    "description": "Title of an entity match form."
+  },
+  "create_new_entity": {
+    "message": "Create new entity",
+    "description": "Label of an option that will create a new entity."
+  },
+  "new_entity": {
+    "message": "New entity",
+    "description": "Label of a selected option that will create a new entity."
+  },
   "disambiguation_title": {
     "message": "Disambiguator",
     "description": "Title of the sidebar when it shows disambiguation screen."

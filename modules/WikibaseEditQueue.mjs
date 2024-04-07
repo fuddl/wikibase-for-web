@@ -7,6 +7,7 @@ export class WikibaseEditQueue {
     this.isProcessing = false;
     this.onProgressUpdate = null; // Callback for progress updates
     this.lastClaim = '';
+    this.lastEntity = '';
   }
 
   // Add multiple jobs at once
@@ -118,13 +119,25 @@ export class WikibaseEditQueue {
   }
 
   async performFetchRequest(instance, params) {
+    const token = await this.getEditToken(instance);
+
     let response = await fetch(instance, {
       method: 'post',
-      body: new URLSearchParams({ format: 'json', ...params }),
+      body: new URLSearchParams({
+        token: token,
+        format: 'json',
+        ...params,
+      }),
     });
     let parsedResponse = await response.json();
-    if (parsedResponse.success === 1 && parsedResponse?.claim?.id) {
-      this.lastClaim = parsedResponse.claim.id;
+
+    if (parsedResponse.success === 1) {
+      if (parsedResponse?.claim?.id) {
+        this.lastClaim = parsedResponse.claim.id;
+      }
+      if (parsedResponse?.entity?.id) {
+        this.lastEntity = parsedResponse.entity.id;
+      }
     }
     console.debug({ request: params });
     console.debug({ response: parsedResponse });
@@ -140,15 +153,25 @@ export class WikibaseEditQueue {
       job.statement = this.lastClaim;
     }
 
+    if (job?.entity === 'LAST' && this.lastEntity !== '') {
+      job.entity = this.lastEntity;
+    }
+
     switch (job.action) {
+      case 'entity:create':
+        await this.performFetchRequest(instance, {
+          action: 'wbeditentity',
+          new: job.new,
+          data: JSON.stringify(job.data),
+        });
+        break;
       case 'claim:create':
         await this.performFetchRequest(instance, {
           action: 'wbcreateclaim',
-          entity: job.subject,
+          entity: job.entity,
           property: job.claim.mainsnak.property,
           snaktype: job.claim.mainsnak.snaktype,
           value: this.serializeValue(job.claim.mainsnak.datavalue),
-          token: token,
         });
         break;
       case 'reference:set':
@@ -156,7 +179,6 @@ export class WikibaseEditQueue {
           action: 'wbsetreference',
           statement: job.statement,
           snaks: JSON.stringify(job.snaks),
-          token: token,
         });
         break;
     }

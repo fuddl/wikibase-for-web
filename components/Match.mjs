@@ -16,7 +16,25 @@ const Match = ({ suggestions, manager }) => {
   const submit = e => {
     e.preventDefault();
     const data = formDataToData(e.target.form);
+
     const jobs = [];
+
+    if (data.subjectId === 'CREATE') {
+      jobs.push({
+        action: 'entity:create',
+        instance: data.instance,
+        new: 'item',
+        data: {
+          labels: [
+            {
+              language: data.lang,
+              value: data.search,
+            },
+          ],
+        },
+      });
+    }
+
     for (const edit of data.edits) {
       if (!edit.apply) {
         continue;
@@ -25,7 +43,7 @@ const Match = ({ suggestions, manager }) => {
         jobs.push({
           action: edit.action,
           instance: data.instance,
-          subject: data.subjectId,
+          entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
           claim: edit.claim,
         });
 
@@ -53,6 +71,7 @@ const Match = ({ suggestions, manager }) => {
   };
 
   const [open, setOpen] = useState(0);
+  const [lang, setLang] = useState(navigator.language);
   const [subjectSelected, setSubjectSelected] = useState(false);
   const [metaData, setMetaData] = useState(
     new Array(suggestions.length).fill(null),
@@ -84,6 +103,10 @@ const Match = ({ suggestions, manager }) => {
     const newMetaData = [...metaData];
     newMetaData[index] = requestedMetadata.response;
     setMetaData(newMetaData);
+
+    if (requestedMetadata?.response?.lang) {
+      setLang(requestedMetadata.response.lang);
+    }
 
     await updateAdditionalEdits(index, newMetaData[index]);
   };
@@ -129,7 +152,7 @@ const Match = ({ suggestions, manager }) => {
 
   return html`
     <div class="match">
-      <h1>Match</h1>
+      <h1>${browser.i18n.getMessage('match_title')}</h1>
       ${suggestions.map((suggestion, key) => {
         let edits = suggestion.proposeEdits;
         if (key in additionalEdits) {
@@ -177,6 +200,7 @@ const Match = ({ suggestions, manager }) => {
                   }} />
               </div>
               <div class="match__bottom">
+                <input type="hidden" name="lang" value=${lang} />
                 <input
                   name="instance"
                   type="hidden"

@@ -43,6 +43,11 @@ const Choose = ({
       });
       const autocomplete = await fetch(searchUrl).then(res => res.json());
       if (autocomplete?.success) {
+        autocomplete.search.push({
+          label: autocomplete.searchinfo.search,
+          description: browser.i18n.getMessage('create_new_entity'),
+          id: 'CREATE',
+        });
         setSuggestions(autocomplete.search);
       }
     };
@@ -81,13 +86,18 @@ const Choose = ({
         <input
           class="choose__type"
           value=${inputValue}
+          name="search"
           type="search"
           onInput=${e => {
             setInputValue(e.target.value);
             setShouldFetch(true);
           }}
           onKeyDown=${handleKeyDown} />
-        <span class="choose__id">${choosenId}</span>
+        <span class="choose__id"
+          >${choosenId === 'CREATE'
+            ? browser.i18n.getMessage('new_entity')
+            : choosenId}</span
+        >
       </div>
       <div class="choose__picker">
         ${suggestions.map(
