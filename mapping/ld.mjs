@@ -8,6 +8,48 @@ import {
 } from '../types/Claim.mjs';
 import { resolvers } from '../resolvers/index.mjs';
 
+function durationToQuantity(data, wikibase) {
+	let h, m, s;
+	const hMatch = data.match(/(\d+)H/);
+	if (hMatch) {
+		h = parseInt(hMatch[1]);
+	}
+	const mMatch = data.match(/(\d+)M/);
+	if (mMatch) {
+		m = parseInt(mMatch[1]);
+	}
+	const sMatch = data.match(/(\d+)S/);
+	if (sMatch) {
+		s = parseInt(sMatch[1]);
+	}
+	if (s && 'second' in wikibase.items) {
+		if (m) {
+			s = s + m * 60;
+		}
+		if (h) {
+			s = s + h * 3600;
+		}
+		return {
+			amount: `+${s}`,
+			unit: `${wikibase.id}:${wikibase.items.second}`,
+		};
+	} else if (m && 'minute' in wikibase.items) {
+		if (h) {
+			m = m + h * 60;
+		}
+		return {
+			amount: `+${m}`,
+			unit: `${wikibase.id}:${wikibase.items.minute}`,
+		};
+	} else if (h && 'hour' in wikibase.items) {
+		return {
+			amount: `+${h}`,
+			unit: `${wikibase.id}:${wikibase.items.hour}`,
+		};
+	}
+	return false;
+}
+
 export function extractUrls(input) {
 	const isUrl = string => {
 		try {
@@ -188,6 +230,30 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 						references: references,
 					}),
 				});
+			}
+
+			const quantityProperties = equivalentProperties.filter(
+				p => p.type === 'Quantity',
+			);
+			if (quantityProperties.length > 0) {
+				if (
+					typeof value === 'string' &&
+					value.match(/^PT(\d+H)?(\d+M)?(\d+S)?$/)
+				) {
+					const parseValue = durationToQuantity(value, wikibase);
+					if (parseValue) {
+						newEdits.push({
+							action: 'claim:create',
+							claim: new QuantityClaim({
+								property: quantityProperties.map(
+									property => `${wikibase.id}:${property.prop}`,
+								),
+								...parseValue,
+								references: references,
+							}),
+						});
+					}
+				}
 			}
 		}
 	}
