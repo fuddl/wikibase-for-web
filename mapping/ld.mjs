@@ -128,38 +128,47 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 				wikibaseItemProperties.length > 0 &&
 				(typeof value === 'string' || typeof value === 'object')
 			) {
-				const urls = extractUrls(value);
-				if (urls) {
-					const resolveAll = urls =>
-						Promise.all(
-							urls.map(async url => await resolvers.resolve(url, wikibase.id)),
-						);
-					let resolved = await resolveAll(urls);
-					let items = resolved
-						.flat()
-						.map(item => item.resolved)
-						.flat();
-
-					const specificities = items.map(item => parseInt(item.specificity));
-					const maxSpecific = Math.max(...specificities);
-
-					items = items
-						.filter(item => item.specificity === maxSpecific)
-						.map(item => item.id)
-						// filter only items. we could filter this in the query, can't we?
-						.filter(id => id.startsWith(`${wikibase.id}:Q`));
-
-					if (items.length > 0) {
-						newEdits.push({
-							action: 'claim:create',
-							claim: new WikibaseItemClaim({
-								property: wikibaseItemProperties.map(
-									property => `${wikibase.id}:${property.prop}`,
+				for (let val of Array.isArray(value) ? value : [value]) {
+					const urls = extractUrls(val);
+					if (urls) {
+						const resolveAll = urls =>
+							Promise.all(
+								urls.map(
+									async url => await resolvers.resolve(url, wikibase.id),
 								),
-								value: items,
-								references: references,
-							}),
-						});
+							);
+						let resolved = await resolveAll(urls);
+						let items = resolved
+							.flat()
+							.map(item => item.resolved)
+							.flat();
+
+						const specificities = items.map(item => parseInt(item.specificity));
+						const maxSpecific = Math.max(...specificities);
+
+						// if the result is too unspecific, don't propose a statement.
+						if (maxSpecific === 0) {
+							continue;
+						}
+
+						items = items
+							.filter(item => item.specificity === maxSpecific)
+							.map(item => item.id)
+							// filter only items. we could filter this in the query, can't we?
+							.filter(id => id.startsWith(`${wikibase.id}:Q`));
+
+						if (items.length > 0) {
+							newEdits.push({
+								action: 'claim:create',
+								claim: new WikibaseItemClaim({
+									property: wikibaseItemProperties.map(
+										property => `${wikibase.id}:${property.prop}`,
+									),
+									value: items,
+									references: references,
+								}),
+							});
+						}
 					}
 				}
 			}

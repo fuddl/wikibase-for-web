@@ -75,7 +75,7 @@ class Change extends Component {
 								type="hidden" /> `;
 					}
 					break;
-				case 'label:set':
+				case 'labals:add':
 					return browser.i18n.getMessage('set_alias');
 			}
 		};
@@ -97,7 +97,7 @@ class Change extends Component {
 								name="${this.name}.claim.mainsnak.datatype"
 								value=${this.state.claim.mainsnak.datatype} />`;
 					}
-				case 'label:set':
+				case 'labals:add':
 					return html`<em>${this.state?.labels}</em>`;
 			}
 		};
@@ -190,7 +190,6 @@ class Change extends Component {
 																	type="hidden"
 																	name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0.property`}
 																	value=${prop.replace(/.+:/, '')} />
-																}
 															</dd>`,
 													)}
 												</dl>`,

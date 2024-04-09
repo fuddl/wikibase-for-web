@@ -85,7 +85,13 @@ export const url = {
 			const specificityBonus = obj.item.startsWith('P') ? 0 : 1;
 
 			// Calculate specificity based on the URL length and the bonus
-			const specificity = obj.url.length + specificityBonus;
+			let specificity = obj.url.length + specificityBonus;
+
+			// If the found URL is too different from the searched url. The
+			// result has a hight probability to be useless.
+			if (matchFromUrl.length - obj.url.length > 3) {
+				specificity = 0;
+			}
 
 			// Find if the item already exists in the result array
 			const existingIndex = found.findIndex(item => item.item === obj.item);
