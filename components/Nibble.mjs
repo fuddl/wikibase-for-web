@@ -24,7 +24,7 @@ class Nibble extends Component {
   render({ datavalue, datatype, manager, onValueChange, name }) {
     return html`
       <fieldset class="nibble">
-        <input name="${name}.datatype" value=${datatype} />
+        <input name="${name}.datatype" value=${datatype} type="hidden" />
         <input name="${name}.snaktype" value="value" type="hidden" />
         ${[
           'external-id',
