@@ -186,6 +186,15 @@ export class WikibaseEditQueue {
           value: this.serializeValue(job.claim.mainsnak.datavalue),
         });
         break;
+      case 'qualifier:set':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbsetqualifier',
+          claim: job.statement,
+          property: job.property,
+          value: this.serializeValue(job.value),
+          snaktype: job.snaktype,
+        });
+        break;
       case 'reference:set':
         await this.performFetchRequest(job.instance, {
           action: 'wbsetreference',

@@ -156,6 +156,39 @@ class Change extends Component {
 							type="checkbox"
 							checked />
 					</dd>
+					${this.state?.claim?.qualifiers &&
+					html`<dd class="change__qualifiers">
+						${this.state.claim.qualifiers.map(
+							(qualifier, index) =>
+								html`<dl>
+									<dt class="change__reference__prop">
+										<${Thin}
+											id=${qualifier.mainsnak.property}
+											manager=${manager} />
+										<input
+											type="hidden"
+											name=${`${this.name}.claim.qualifiers.${index}.property`}
+											value=${qualifier.mainsnak.property.replace(/.+:/, '')} />
+									</dt>
+									<dd class="change__reference__snak">
+										<${Snack}
+											mainsnak=${qualifier.mainsnak}
+											manager=${manager} />
+										<div hidden>
+											${
+												/* maybe we can make this editable in the future 🤷 */ ''
+											}
+											<${Nibble}
+												datatype=${qualifier.mainsnak.datatype}
+												datavalue=${qualifier.mainsnak.datavalue}
+												name=${`${this.name}.claim.qualifiers.${index}.snak`}
+												onValueChange=${this.handleDataValueChange}
+												manager=${manager} />
+										</div>
+									</dd>
+								</dl>`,
+						)}
+					</dd>`}
 					${this.state?.claim?.references &&
 					html`<dd class="change__references">
 						<details>

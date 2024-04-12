@@ -39,15 +39,27 @@ export class Claim {
     this.rank = 'normal'; // Default rank
   }
 
+  addQualifier(claim) {
+    if (!('qualifiers' in this)) {
+      this.qualifiers = [];
+    }
+    this.qualifiers.push(claim);
+  }
+
   // Override toJSON to control serialization
   toJSON() {
-    // This method is automatically used by JSON.stringify.
-    return {
+    const output = {
       mainsnak: this.mainsnak,
       type: this.type,
       rank: this.rank,
       references: this.references,
     };
+
+    if (this.qualifiers.length > 0) {
+      output.qualifiers = this.qualifiers;
+    }
+
+    return output;
   }
 }
 
@@ -66,6 +78,15 @@ export class ExternalIdClaim extends Claim {
     this.mainsnak.datavalue.value = value;
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'external-id';
+  }
+}
+
+export class StringClaim extends Claim {
+  constructor({ property, value, references }) {
+    super({ property, value, references });
+    this.mainsnak.datavalue.value = value;
+    this.mainsnak.datavalue.type = 'string';
+    this.mainsnak.datatype = 'string';
   }
 }
 

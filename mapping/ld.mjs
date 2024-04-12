@@ -3,6 +3,7 @@ import {
 	GlobeCoordinateClaim,
 	MonolingualTextClaim,
 	QuantityClaim,
+	StringClaim,
 	TimeClaim,
 	WikibaseItemClaim,
 } from '../types/Claim.mjs';
@@ -119,6 +120,51 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 
 			const value = d[property];
 
+			if (
+				property === 'aggregateRating' &&
+				wikibase.props.reviewScore &&
+				typeof value?.bestRating === 'number' &&
+				typeof value?.ratingValue === 'number'
+			) {
+				const best = value.bestRating ? parseFloat(value.bestRating) : 5;
+				const rating = parseFloat(value.ratingValue);
+				const ratingAction = {
+					action: 'claim:create',
+					claim: new StringClaim({
+						property: `${wikibase.id}:${wikibase.props.reviewScore}`,
+						value: `${rating}/${best}`,
+						references: references,
+					}),
+				};
+
+				if (
+					(value?.reviewCount || value?.ratingCount) &&
+					wikibase.props.numberOfReviewsRatings &&
+					wikibase.items.userReview
+				) {
+					ratingAction.claim.addQualifier(
+						new QuantityClaim({
+							property: `${wikibase.id}:${wikibase.props.numberOfReviewsRatings}`,
+							amount: `+${value?.reviewCount ?? value?.ratingCount}`,
+							unit: `${wikibase.id}:${wikibase.items.userReview}`,
+						}),
+					);
+				}
+				if (wikibase?.props?.pointInTime) {
+					let now = new Date();
+					ratingAction.claim.addQualifier(
+						new TimeClaim({
+							property: `${wikibase.id}:${wikibase.props.pointInTime}`,
+							time: `+${now.toISOString().substr(0, 10)}T00:00:00Z`,
+							precision: 11,
+						}),
+					);
+				}
+
+				newEdits.push(ratingAction);
+				continue;
+			}
+
 			const propertyUrl = `${d['@context']}/${property}`;
 			const equivalentProperties = await wikibase.manager.query(
 				wikibase.id,
@@ -155,6 +201,9 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 					newEdits.push({
 						action: 'claim:create',
 						claim: new TimeClaim({
+							property: timeProperties.map(
+								property => `${wikibase.id}:${property.prop}`,
+							),
 							precision: precision,
 							time: date,
 							references: references,

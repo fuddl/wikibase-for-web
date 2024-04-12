@@ -47,6 +47,19 @@ const Match = ({ suggestions, manager }) => {
           claim: edit.claim,
         });
 
+        if (edit?.claim?.qualifiers) {
+          edit.claim.qualifiers.forEach(qualifier => {
+            jobs.push({
+              action: 'qualifier:set',
+              instance: data.instance,
+              statement: 'LAST',
+              value: qualifier.snak.datavalue,
+              property: qualifier.property,
+              snaktype: qualifier.snak.snaktype,
+            });
+          });
+        }
+
         if (edit?.claim?.references) {
           edit.claim.references.forEach(reference => {
             jobs.push({

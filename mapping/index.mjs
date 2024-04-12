@@ -95,10 +95,7 @@ function reconcileEditSets(editSet1, editSet2) {
     }
   });
 
-  // Remove duplicate entries
-  return Array.from(
-    new Set(reconciledEdits.map(item => JSON.stringify(item))),
-  ).map(item => JSON.parse(item));
+  return reconciledEdits;
 }
 
 export async function suggestedEdits(metadata, wikibase) {

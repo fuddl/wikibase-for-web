@@ -110,7 +110,11 @@ class Nibble extends Component {
                 name="${name}.datavalue.value"
                 onValueChange=${onValueChange} />`;
             case 'string':
-              return html`<span>${datavalue.value}</span>`;
+              return html`<${Type}
+                value=${datavalue.value}
+                type="text"
+                name="${name}.datavalue.value"
+                onValueChange=${onValueChange} />`;
             case 'localMedia':
             case 'commonsMedia':
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
@@ -152,7 +156,7 @@ class Nibble extends Component {
                   type="hidden" />
                 ${/* @todo this should have autocomplete or select */ ''}
                 <${Type}
-                  value=${datavalue.value.unit.replace(/^\w+\:/, '')}
+                  value=${manager.urlFromId(datavalue.value.unit)}
                   type="hidden"
                   name="${name}.datavalue.value.unit"
                   onValueChange=${onValueChange} />`;
