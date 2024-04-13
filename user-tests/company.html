@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+
+		<title>Anjin</title>
+	</head>
+	<body>
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@graph": [
+					{
+						"@type": "Organization",
+						"@id": "https://www.trustpilot.com/#/schema/Organization/1",
+						"name": "Trustpilot",
+						"legalName": "Trustpilot A/S",
+						"url": "https://www.trustpilot.com",
+						"description": "Read reviews. Write reviews. Find companies.",
+						"sameAs": [
+							"https://en.wikipedia.org/wiki/Trustpilot",
+							"https://www.facebook.com/Trustpilot/",
+							"https://www.instagram.com/trustpilot/",
+							"https://www.linkedin.com/company/trustpilot",
+							"https://twitter.com/Trustpilot",
+							"https://www.youtube.com/c/trustpilotreviews"
+						],
+						"logo": {
+							"@id": "https://www.trustpilot.com/#/schema/ImageObject/Logo/1"
+						},
+						"email": "support@trustpilot.com",
+						"address": {
+							"@type": "PostalAddress",
+							"@id": "https://www.trustpilot.com/#/schema/PostalAddress/DK",
+							"streetAddress": "Pilestræde 58, 5th floor",
+							"addressLocality": "Copenhagen",
+							"addressCountry": "DK",
+							"postalCode": "1112 København"
+						}
+					},
+					{
+						"@type": "ImageObject",
+						"@id": "https://www.trustpilot.com/#/schema/ImageObject/Logo/1",
+						"url": "https://cdn.trustpilot.net/brand-assets/4.3.0/favicons/android-chrome-512x512.png",
+						"contentUrl": "https://cdn.trustpilot.net/brand-assets/4.3.0/favicons/android-chrome-512x512.png",
+						"width": {
+							"@type": "QuantitativeValue",
+							"value": 512,
+							"unitCode": "E37",
+							"unitText": "pixel"
+						},
+						"height": {
+							"@type": "QuantitativeValue",
+							"value": 512,
+							"unitCode": "E37",
+							"unitText": "pixel"
+						},
+						"caption": "Trustpilot Logo",
+						"name": "Trustpilot"
+					},
+					{
+						"@type": "WebSite",
+						"@id": "https://www.trustpilot.com/#/schema/WebSite/1",
+						"url": "https://www.trustpilot.com/",
+						"name": "Trustpilot (en-US)",
+						"description": "We're all about consumer reviews. Get the real inside story from shoppers like you. Read, write and share reviews on Trustpilot today.",
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"copyrightHolder": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"potentialAction": [
+							{
+								"@type": "SearchAction",
+								"target": {
+									"@type": "EntryPoint",
+									"urlTemplate": "https://www.trustpilot.com/search?query={search_term_string}"
+								},
+								"query-input": "required name=search_term_string"
+							}
+						],
+						"inLanguage": "en-US"
+					},
+					{
+						"@type": "WebPage",
+						"@id": "http://127.0.0.1:8080/company.html",
+						"url": "http://127.0.0.1:8080/company.html",
+						"name": "Carstub Reviews",
+						"description": "Carstub has 5 stars! Check out what 1,549 people have written so far, and share your own experience.",
+						"isPartOf": {
+							"@id": "https://www.trustpilot.com/#/schema/WebSite/1"
+						},
+						"inLanguage": "en-US",
+						"breadcrumb": {
+							"@id": "https://www.trustpilot.com/review/carstub.com/#/schema/BreadcrumbList/1"
+						},
+						"about": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"mainEntity": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"primaryImageOfPage": {
+							"@id": "https://www.trustpilot.com/#/schema/ImageObject/carstub.com"
+						},
+						"hasPart": {
+							"@id": "https://www.trustpilot.com/#/schema/DataSet/carstub.com/1"
+						}
+					},
+					{
+						"@type": "BreadcrumbList",
+						"@id": "https://www.trustpilot.com/review/carstub.com/#/schema/BreadcrumbList/1",
+						"itemListElement": [
+							{
+								"@type": "ListItem",
+								"position": 1,
+								"name": "Home",
+								"item": "https://www.trustpilot.com/",
+								"sameAs": "https://www.trustpilot.com/"
+							},
+							{
+								"@type": "ListItem",
+								"position": 2,
+								"name": "Vehicles & Transportation",
+								"item": "https://www.trustpilot.com/categories/vehicles_transportation",
+								"sameAs": "https://www.trustpilot.com/categories/vehicles_transportation"
+							},
+							{
+								"@type": "ListItem",
+								"position": 3,
+								"name": "Cars & Trucks",
+								"item": "https://www.trustpilot.com/categories/cars_trucks",
+								"sameAs": "https://www.trustpilot.com/categories/cars_trucks"
+							},
+							{
+								"@type": "ListItem",
+								"position": 4,
+								"name": "Car Dealer",
+								"item": "https://www.trustpilot.com/categories/car_dealer",
+								"sameAs": "https://www.trustpilot.com/categories/car_dealer"
+							},
+							{
+								"@type": "ListItem",
+								"position": 5,
+								"name": "Carstub Reviews",
+								"item": {
+									"@id": "https://www.trustpilot.com/review/carstub.com"
+								}
+							}
+						]
+					},
+					{
+						"@type": "ImageObject",
+						"@id": "https://www.trustpilot.com/#/schema/ImageObject/carstub.com",
+						"url": "https://s3-eu-west-1.amazonaws.com/tpd/logos/5eb158c5e172900001780d1c/0x0.png",
+						"contentUrl": "https://s3-eu-west-1.amazonaws.com/tpd/logos/5eb158c5e172900001780d1c/0x0.png"
+					},
+					{
+						"@type": "LocalBusiness",
+						"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com",
+						"url": "https://www.trustpilot.com/review/carstub.com",
+						"sameAs": "http://carstub.com",
+						"name": "Carstub",
+						"description": "We Buy Your Car, Truck, Van, or SUV For Top Dollar In Any Shape Right At Your Door, With No Hassles, And Pay You Right On The Spot.",
+						"email": "info@carstub.com",
+						"telephone": "800-870-1841",
+						"address": {
+							"@type": "PostalAddress",
+							"streetAddress": "2926 E. Miraloma Ave",
+							"addressLocality": "Anaheim",
+							"addressCountry": "US",
+							"postalCode": "92806"
+						},
+						"image": {
+							"@id": "https://www.trustpilot.com/#/schema/ImageObject/carstub.com"
+						},
+						"aggregateRating": {
+							"@type": "AggregateRating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "4.9",
+							"reviewCount": "1549"
+						},
+						"review": [
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6619bd4bf1e6b081151ab8b2"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661721489e353d2761c132e0"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661822f21af2777e40bd17f8"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66175e04af3287c48ec9a913"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661046728d86410be2b56e62"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661624dfc5df4e00ba57dd75"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6614bce970b759c046dfefc2"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6616f6cf96a26e86a1704df0"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6610573394df76f176500ae7"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/660ccdd37771f390cb1afe58"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6619cb7d1cd8e5b1207cb528"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661062f603cffa63b846a098"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66062b302194b7a1c39a39c0"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/660c7b87f15f051b9d348133"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6610b928592362c2fc73df27"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6612d06f2787feed937ce0ac"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/65fe5d53012777ac9874dd8b"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6615bc488a851c46e2692d90"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661204726fa26fc4add27dfb"
+							},
+							{
+								"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66074fa4bfcbeb8a73298da8"
+							}
+						]
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6619bd4bf1e6b081151ab8b2",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Albert",
+							"url": "https://www.trustpilot.com/users/6619bc84d0cd7a0012ae48d3/"
+						},
+						"datePublished": "2024-04-13T01:01:31.000Z",
+						"headline": "Carstub Experience",
+						"reviewBody": "The whole process went smoothly. Lorna was really polite and represented excellent customer service. Scott and Michael arrived quickly ahead of schedule and were clear and communicative the whole way. They were professional and highly knowledgeable when it came to all my questions. Really chill guys! Thank you!",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661721489e353d2761c132e0",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Tinli",
+							"url": "https://www.trustpilot.com/users/66172134eb9a71001263e07b/"
+						},
+						"datePublished": "2024-04-11T01:31:21.000Z",
+						"headline": "The BEST car selling experience ever, thank you!",
+						"reviewBody": "Adam and Natalie were so helpful and kind throughout the entire process! I felt so taken care of, and it was such a simple and easy procedure. I highly recommend Carstub to anyone that’s hoping to sell their car to trustworthy people with ease without worrying about all the paperwork.",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661822f21af2777e40bd17f8",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Kenneth Hooper",
+							"url": "https://www.trustpilot.com/users/58d931620000ff000a862286/"
+						},
+						"datePublished": "2024-04-11T19:50:43.000Z",
+						"headline": "Honest, fair, and professional ",
+						"reviewBody": "Quick, easy, and pain free.  Appraiser was on time and professional and I received what I was asking for the vehicle.  Would definitely use them again and highly recommend",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66175e04af3287c48ec9a913",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "June White",
+							"url": "https://www.trustpilot.com/users/606ce4e7ad1322001ab091dc/"
+						},
+						"datePublished": "2024-04-11T05:50:29.000Z",
+						"headline": "This was my first time using Carstub",
+						"reviewBody": "This was my first time using Carstub. I was very impressed with their service . Very professional,  and the process was very easy! They handled everything. I would definitely recommend Carstub to family and friends!",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661046728d86410be2b56e62",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Stacy Feinberg",
+							"url": "https://www.trustpilot.com/users/659c142c3bb9ce0012ee9699/"
+						},
+						"datePublished": "2024-04-05T20:44:03.000Z",
+						"headline": "We had an exceptional experience with…",
+						"reviewBody": "We had an exceptional experience with Adam from Carr Stub. He arrived promptly at our house and provided an outstanding service. Adam was personable, honest, and straightforward, which we truly appreciated. His offer for our car was fantastic, and I highly recommend him. If I could, I would give him 10 stars!I’m ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661624dfc5df4e00ba57dd75",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "olive murray",
+							"url": "https://www.trustpilot.com/users/65ce63294b0ef30012e98787/"
+						},
+						"datePublished": "2024-04-10T07:34:24.000Z",
+						"headline": "Great experience",
+						"reviewBody": "Great experience all around! Made the whole sale easy, from start to finish, Was very fair on price, Everything was upfront and I knew what was happening and what the results would be.",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6614bce970b759c046dfefc2",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Christopher",
+							"url": "https://www.trustpilot.com/users/6614bce851b19f00129e268b/"
+						},
+						"datePublished": "2024-04-09T05:58:34.000Z",
+						"headline": "Gave me a reasonable price and made it…",
+						"reviewBody": "Gave me a reasonable price and made it very easy to sell my truck. I needed it gone and you guys helped! Justin was very helpful and came out later in the evening than expected to make it happen. Will definitely recommend to others ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6616f6cf96a26e86a1704df0",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Elliott McKenzie",
+							"url": "https://www.trustpilot.com/users/61d27c6f0cbae00012dc6268/"
+						},
+						"datePublished": "2024-04-10T22:30:07.000Z",
+						"headline": "Justin Lopez was great! The offers weren't though…",
+						"reviewBody": "Justin Lopez did a great job at making the process feel comfortable, smooth, safe, and professional! His demeanor was very relaxed, communicative, and not that of a \"sales\" person. I appreciated him taking his time with the offers, negotiating, and even offering to give me the towing fee to help increase the final amount. He was a great employee and deserves recognition! The only issue I had was that the offers received were very low. The first offer was even lower than a local car dealership gave me yesterday! I came to Carstub because people and ads said the offers were BETTER. That turned out to be false. Please work to obtain buyers who only offer top dollar for our vehicles. Although they might see them as material objects to sell or flip, they have sentimental value to us. My Altima was the first car I ever paid off after being homeless. That car got me through many many years of life. Hearing that buyers only wanted to offer me $2,200 for a very well kept car with only some minor paint issues and an easily fixable AC was insulting. That car is worth at least $4K, minimum. It was $31K when it first sold in 2015. To think that depreciation literally was 90% on that price is disgusting (From $31K to $3.1K). .Props to Justin Lopez for making the experience feel great but......Carstub really needs to work on finding better buyers who will pay more for our vehicles. The greed is outrageous. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "4"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6610573394df76f176500ae7",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Jacobo Santamaria",
+							"url": "https://www.trustpilot.com/users/66105724fa77850012cc46b0/"
+						},
+						"datePublished": "2024-04-05T21:55:31.000Z",
+						"headline": "I recently sold my car to Carstub",
+						"reviewBody": "I recently sold my car to Carstub, and it was a fantastic experience! From the get-go, their team was professional, transparent, and genuinely friendly. They gave me a fair offer without any haggling, and the process was surprisingly quick and hassle-free. I appreciated how they handled all the paperwork and even picked up the car from my location. If you're looking to sell your car without any headaches, I highly recommend Carstub!",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/660ccdd37771f390cb1afe58",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Michael Beckley",
+							"url": "https://www.trustpilot.com/users/660ccdbbfa77850012ca1b60/"
+						},
+						"datePublished": "2024-04-03T05:32:35.000Z",
+						"headline": "Damon is an excellent appraiser!",
+						"reviewBody": "Damon is an excellent appraiser!! He called prior to his inspection, was on time, courteous and honest. This is the second time we’ve worked with Carstub and would definitely recommend them to others.",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6619cb7d1cd8e5b1207cb528",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Mary",
+							"url": "https://www.trustpilot.com/users/6619cb34fc6ed600122c3fde/"
+						},
+						"datePublished": "2024-04-13T02:02:06.000Z",
+						"headline": "Carstub made the whole process very easy",
+						"reviewBody": "Carstub made the whole process very easy and painless. They took care of all the details, all I had to do was sign the paper work. Thank you so much",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661062f603cffa63b846a098",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Olivia Robertson",
+							"url": "https://www.trustpilot.com/users/661062ec09e90d0012d13504/"
+						},
+						"datePublished": "2024-04-05T22:45:43.000Z",
+						"headline": "Adam was so helpful with my selling experience ",
+						"reviewBody": "Adam was so helpful! I am grateful to have chosen Carstub to sell my car to. This company truly cares about people and their livelihood after selling a car. And that should speak volumes to those trying to get a fair price, and excellent customer care. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66062b302194b7a1c39a39c0",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Steven Stearns",
+							"url": "https://www.trustpilot.com/users/66062b23fd25b10011356dd5/"
+						},
+						"datePublished": "2024-03-29T04:45:04.000Z",
+						"headline": "A quick and easy process",
+						"reviewBody": "This was such an easy process to sell my car, especially after the stress of having to do so. Anna and Justin were extremely helpful and made this a good experience during a hard time. They set up a same day appointment, got me the best offer (thank you Justin), and I got my check that evening after a quick inspection and test drive. If I ever have to do this again, I will absolutely use Carstub!",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/660c7b87f15f051b9d348133",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Narbeh Shirvanian",
+							"url": "https://www.trustpilot.com/users/660c7b7e016cb70012260109/"
+						},
+						"datePublished": "2024-04-02T23:41:27.000Z",
+						"headline": "Adam Palmer came to appraise my car…",
+						"reviewBody": "Adam Palmer came to appraise my car today. He’s the most professional person I’ve dealt with in a long time. Repeat customer of Carstub. Easy transaction and only way to use business.  ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6610b928592362c2fc73df27",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Delia",
+							"url": "https://www.trustpilot.com/users/6604f251e8e35a00138ceccb/"
+						},
+						"datePublished": "2024-04-06T04:53:29.000Z",
+						"headline": "The sales representative was very…",
+						"reviewBody": "The sales representative was very helpful and knowledgeable, and kind service.He was honest, and explained everything clearly, thank you. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6612d06f2787feed937ce0ac",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Karo",
+							"url": "https://www.trustpilot.com/users/6612d04d87fcdb00112d3737/"
+						},
+						"datePublished": "2024-04-07T18:57:19.000Z",
+						"headline": "Adam was great and knowledgeable",
+						"reviewBody": "Adam was great and knowledgeable. He was kind  and friendly and made the Transaction very simple and understandable. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/65fe5d53012777ac9874dd8b",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "T Gill",
+							"url": "https://www.trustpilot.com/users/64cdd2d44861160012603610/"
+						},
+						"datePublished": "2024-03-23T06:40:52.000Z",
+						"headline": "Competitive quote for my Ford . Excellent service",
+						"reviewBody": "Got a quote from Carstub competitive offer they followed up with a phone . They were able to send Michael and his colleague out in the afternoon. Easy process agreed the deal at home they wrote me a cheque . Very professional and helpful and stress free process . Very impressed with the service. Definitely recommend them .",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/6615bc488a851c46e2692d90",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Consumer",
+							"url": "https://www.trustpilot.com/users/6615bc3d800ba50012f5107b/"
+						},
+						"datePublished": "2024-04-10T00:08:09.000Z",
+						"headline": "Damon was amazing",
+						"reviewBody": "Damon was amazing! Great customer service! I would definitely be using them again ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/661204726fa26fc4add27dfb",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Susan Aguirre",
+							"url": "https://www.trustpilot.com/users/5dd2fb012316bcd27b98b67c/"
+						},
+						"datePublished": "2024-04-07T04:26:58.000Z",
+						"headline": "Adam was very professional",
+						"reviewBody": "Adam was very professional. On time and satisfied with offer to purchase my car. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "5"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					},
+					{
+						"@type": "Review",
+						"@id": "https://www.trustpilot.com/#/schema/Review/carstub.com/66074fa4bfcbeb8a73298da8",
+						"itemReviewed": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/carstub.com"
+						},
+						"author": {
+							"@type": "Person",
+							"name": "Charles",
+							"url": "https://www.trustpilot.com/users/66074f8917cfe20012d15517/"
+						},
+						"datePublished": "2024-03-30T01:32:53.000Z",
+						"headline": "Robert was very helpful in assisting…",
+						"reviewBody": "Robert was very helpful in assisting with my moms car that she didn’t want to keep any more. Would definitely consider for future sellers. ",
+						"reviewRating": {
+							"@type": "Rating",
+							"bestRating": "5",
+							"worstRating": "1",
+							"ratingValue": "4"
+						},
+						"publisher": {
+							"@id": "https://www.trustpilot.com/#/schema/Organization/1"
+						},
+						"inLanguage": "en"
+					}
+				]
+			}
+		</script>
+	</body>
+</html>

@@ -44,7 +44,7 @@ export async function getTabMetadata(tabId) {
                 return canonicalLink ? canonicalLink.href : '';
             };
 
-            function makeUrlsAbsolute(obj, baseUrl) {
+            function makeUrlsAbsolute(obj, baseUrl, parentContext = '') {
                 // Helper function to convert a relative URL to an absolute URL using an <a> element
                 function toAbsoluteUrl(relativeUrl) {
                     const a = document.createElement('link');
@@ -55,7 +55,11 @@ export async function getTabMetadata(tabId) {
 
                 if (Array.isArray(obj)) {
                     obj.forEach((item, index) => {
-                        obj[index] = makeUrlsAbsolute(item, baseUrl);
+                        obj[index] = makeUrlsAbsolute(
+                            item,
+                            baseUrl,
+                            obj?.['@context'] ?? parentContext,
+                        );
                     });
                 } else if (typeof obj === 'object' && obj !== null) {
                     Object.keys(obj).forEach(key => {
@@ -68,12 +72,27 @@ export async function getTabMetadata(tabId) {
                         ) {
                             // Convert relative URLs to absolute
                             obj[key] = toAbsoluteUrl(value);
-                        } else if (key === '@context') {
+                        } else if (
+                            key === '@context' &&
+                            obj?.['@type'] &&
+                            !URL.canParse(value)
+                        ) {
                             obj['@type'] =
                                 `${value.replace(/\/$/, '')}/${obj['@type']}`;
+                        } else if (
+                            key === '@type' &&
+                            parentContext &&
+                            !URL.canParse(value)
+                        ) {
+                            obj['@type'] =
+                                `${parentContext.replace(/\/$/, '')}/${obj['@type']}`;
                         } else if (typeof value === 'object') {
                             // Recurse into nested objects and arrays
-                            makeUrlsAbsolute(value, baseUrl);
+                            makeUrlsAbsolute(
+                                value,
+                                baseUrl,
+                                obj?.['@context'] ?? parentContext,
+                            );
                         }
                         if (
                             key === 'url' &&

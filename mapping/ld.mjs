@@ -9,6 +9,20 @@ import {
 } from '../types/Claim.mjs';
 import { resolvers } from '../resolvers/index.mjs';
 
+function isNumberOrNumericString(value) {
+	// Check if the type of value is 'number' and it is not NaN
+	if (typeof value === 'number' && !isNaN(value)) {
+		return true;
+	}
+
+	// Check if it's a string and contains only numeric characters (and possibly one decimal point)
+	if (typeof value === 'string' && value.trim() !== '') {
+		return /^-?\d*\.?\d+$/.test(value);
+	}
+
+	return false;
+}
+
 function durationToQuantity(data, wikibase) {
 	let h, m, s;
 	const hMatch = data.match(/(\d+)H/);
@@ -79,11 +93,24 @@ export function extractUrls(input) {
 	return [];
 }
 
-async function ldToEdits({ ld, wikibase, metadata, references }) {
-	const newEdits = [];
-
+async function ldToEdits({
+	ld,
+	wikibase,
+	metadata,
+	references,
+	newEdits = [],
+}) {
 	for (const d of ld) {
 		if (!d?.['@isSubjectOfPage']) {
+			if (d?.['@graph']) {
+				await ldToEdits({
+					ld: d['@graph'],
+					wikibase: wikibase,
+					metadata: metadata,
+					references: references,
+					newEdits: newEdits,
+				});
+			}
 			continue;
 		}
 
@@ -108,7 +135,7 @@ async function ldToEdits({ ld, wikibase, metadata, references }) {
 			}
 		}
 
-		if (!d?.['@context']) {
+		if (!d?.['@context'] && !d?.['@type']) {
 			continue;
 		}
 
@@ -123,8 +150,8 @@ async function ldToEdits({ ld, wikibase, metadata, references }) {
 			if (
 				property === 'aggregateRating' &&
 				wikibase.props.reviewScore &&
-				typeof value?.bestRating === 'number' &&
-				typeof value?.ratingValue === 'number'
+				isNumberOrNumericString(value?.bestRating) &&
+				isNumberOrNumericString(value?.ratingValue)
 			) {
 				const best = value.bestRating ? parseFloat(value.bestRating) : 5;
 				const rating = parseFloat(value.ratingValue);
