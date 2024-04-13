@@ -32,7 +32,11 @@ function processFormWithTypes(form) {
             formData[element.name] = value;
         } else {
             if (element.name) {
-                formData[element.name] = element.value;
+                if (element.type === 'checkbox') {
+                    formData[element.name] = element.checked;
+                } else {
+                    formData[element.name] = element.value;
+                }
             }
         }
     });
