@@ -95,7 +95,11 @@ class Change extends Component {
 							<input
 								type="hidden"
 								name="${this.name}.claim.mainsnak.datatype"
-								value=${this.state.claim.mainsnak.datatype} />`;
+								value=${this.state.claim.mainsnak.datatype} />
+							<input
+								type="hidden"
+								name="${this.name}.claim.mainsnak.snaktype"
+								value="value" />`;
 					}
 				case 'labals:add':
 					return html`<em>${this.state?.labels}</em>`;

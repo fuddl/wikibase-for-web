@@ -293,7 +293,7 @@ async function ldToEdits({ ld, wikibase, metadata, references }) {
 							property => `${wikibase.id}:${property.prop}`,
 						),
 						text: value,
-						language: metadata?.lang ?? 'und',
+						language: metadata?.lang ? metadata.lang.toLowerCase() : 'und',
 						references: references,
 					}),
 				});

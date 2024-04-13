@@ -181,7 +181,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 							claim: new MonolingualTextClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								text: tag.content,
-								language: lang,
+								language: lang.toLowerCase(),
 								references: references,
 							}),
 						});

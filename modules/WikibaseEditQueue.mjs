@@ -153,9 +153,10 @@ export class WikibaseEditQueue {
         this.updateView(`${instance}:${this.lastEntity}`);
       }
     }
-
-    console.debug({ request: params });
-    console.debug({ response: parsedResponse });
+    if (parsedResponse?.error) {
+      console.debug({ request: params });
+      console.debug({ response: parsedResponse });
+    }
 
     return parsedResponse;
   }
