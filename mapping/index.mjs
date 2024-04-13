@@ -2,6 +2,22 @@ import { metaToEdits } from './meta.mjs';
 import { ldToEdits } from './ld.mjs';
 import { urlReference } from './urlReference.mjs';
 
+function removeDuplicates(arr) {
+  const seen = new Set();
+  const uniqueObjects = [];
+
+  // Loop through the array and add JSON string of each object to the Set if not already present
+  for (const obj of arr) {
+    const jsonString = JSON.stringify(obj);
+    if (!seen.has(jsonString)) {
+      seen.add(jsonString);
+      uniqueObjects.push(obj);
+    }
+  }
+
+  return uniqueObjects;
+}
+
 // Utility function to find the intersection of two arrays
 const intersectArrays = (arr1, arr2) =>
   arr1.filter(item => arr2.includes(item));
@@ -92,7 +108,7 @@ function reconcileEditSets(editSet1, editSet2) {
     }
   });
 
-  return reconciledEdits;
+  return removeDuplicates(reconciledEdits);
 }
 
 export async function suggestedEdits(metadata, wikibase) {

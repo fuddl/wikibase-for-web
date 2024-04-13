@@ -55,7 +55,7 @@ export class Claim {
       references: this.references,
     };
 
-    if (this.qualifiers.length > 0) {
+    if ('qualifiers' in this) {
       output.qualifiers = this.qualifiers;
     }
 
