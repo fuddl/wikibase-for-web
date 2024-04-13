@@ -1,7 +1,7 @@
 import { h, Component } from '../node_modules/preact/dist/preact.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 
-import Thing from './Thing.mjs';
+import Thin from './Thin.mjs';
 
 const html = htm.bind(h);
 
@@ -92,8 +92,9 @@ class Tempus extends Component {
     return html`<time class="tempus" datetime="${'datetime'}">
       <span class="tempus__main">${localised}</span>
       ${calendarmodel &&
+      calendarmodel !== 'wikidata:Q1985727' &&
       html`<br /><small
-          ><${Thing} id=${calendarmodel} manager=${manager}
+          ><${Thin} id=${calendarmodel} manager=${manager}
         /></small>`}
     </time>`;
   }

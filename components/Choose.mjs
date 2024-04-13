@@ -88,6 +88,7 @@ const Choose = ({
           value=${inputValue}
           name="search"
           type="search"
+          autocomplete="off"
           onInput=${e => {
             setInputValue(e.target.value);
             setShouldFetch(true);
@@ -114,7 +115,9 @@ const Choose = ({
               onMouseMove=${() => {
                 setSelectedIndex(index);
               }}>
-              <div class="choose__picker__pick-title">${suggestion.label}</div>
+              <div class="choose__picker__pick-title">
+                ${suggestion.label ?? suggestion.id}
+              </div>
               <div class="choose__picker__pick-description">
                 ${suggestion.description}
               </div>

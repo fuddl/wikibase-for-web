@@ -161,6 +161,41 @@ export class WikibaseEditQueue {
     return parsedResponse;
   }
 
+  compareValues(A, B) {
+    // Iterate through each key in object A
+    for (const key in A) {
+      // Check if the key exists in object B and the values are the same
+      if (!(key in B) || A[key] !== B[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async getExistingClaim(instance, params) {
+    const api = wikibases[instance].api;
+    const url = api.getEntities({
+      ids: [params.entity],
+      props: ['claims'],
+      format: 'json',
+    });
+
+    const { entities } = await fetch(url).then(res => res.json());
+    if (entities?.[params.entity]?.claims?.[params.property]) {
+      const claims = entities[params.entity].claims[params.property];
+      for (const claim of claims) {
+        if (claim?.mainsnak?.datavalue?.value) {
+          const isIdentical = this.compareValues(
+            JSON.parse(params.value),
+            claim.mainsnak.datavalue.value,
+          );
+          return claim.id;
+        }
+      }
+    }
+    return false;
+  }
+
   async performEdit(job) {
     if (job?.statement === 'LAST' && this.lastClaim !== '') {
       job.statement = this.lastClaim;
@@ -179,13 +214,24 @@ export class WikibaseEditQueue {
         });
         break;
       case 'claim:create':
-        await this.performFetchRequest(job.instance, {
+        const claimCreation = {
           action: 'wbcreateclaim',
           entity: job.entity,
           property: job.claim.mainsnak.property,
           snaktype: job.claim.mainsnak.snaktype,
           value: this.serializeValue(job.claim.mainsnak.datavalue),
-        });
+        };
+
+        const existingclaim = await this.getExistingClaim(
+          job.instance,
+          claimCreation,
+        );
+        if (existingclaim) {
+          // skipping this edit
+          this.lastClaim = existingclaim;
+        } else {
+          await this.performFetchRequest(job.instance, claimCreation);
+        }
         break;
       case 'qualifier:set':
         await this.performFetchRequest(job.instance, {
