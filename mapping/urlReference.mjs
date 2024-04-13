@@ -21,7 +21,7 @@ export function urlReference(metadata, wikibase) {
 				new MonolingualTextClaim({
 					property: `${instance}:${props.title}`,
 					text: metadata.title,
-					language: metadata.lang ?? 'und',
+					language: metadata?.lang ? metadata.lang.toLowerCase() : 'und',
 				}).mainsnak,
 			];
 		}

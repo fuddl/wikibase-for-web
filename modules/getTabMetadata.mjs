@@ -77,7 +77,10 @@ export async function getTabMetadata(tabId) {
                         }
                         if (
                             key === 'url' &&
-                            obj[key] === document.location.toString()
+                            [
+                                document.location.toString(),
+                                getCanonicalURL(),
+                            ].includes(obj[key])
                         ) {
                             obj['@isSubjectOfPage'] = true;
                             delete obj[key];
