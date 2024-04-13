@@ -213,7 +213,10 @@ const Match = ({ suggestions, manager }) => {
                   }} />
               </div>
               <div class="match__bottom">
-                <input type="hidden" name="lang" value=${lang.toLowerCase()} />
+                <input
+                  type="hidden"
+                  name="lang"
+                  value=${navigator.language.toLowerCase()} />
                 <input
                   name="instance"
                   type="hidden"

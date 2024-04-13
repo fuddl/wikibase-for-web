@@ -162,6 +162,10 @@ export class WikibaseEditQueue {
   }
 
   compareValues(A, B) {
+    if (typeof A === 'string') {
+      return A === B;
+    }
+
     // Iterate through each key in object A
     for (const key in A) {
       // Check if the key exists in object B and the values are the same
@@ -189,7 +193,7 @@ export class WikibaseEditQueue {
             JSON.parse(params.value),
             claim.mainsnak.datavalue.value,
           );
-          return claim.id;
+          return isIdentical ? claim.id : false;
         }
       }
     }
