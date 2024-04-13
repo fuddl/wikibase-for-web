@@ -193,7 +193,9 @@ export class WikibaseEditQueue {
             JSON.parse(params.value),
             claim.mainsnak.datavalue.value,
           );
-          return isIdentical ? claim.id : false;
+          if (isIdentical) {
+            return claim.id;
+          }
         }
       }
     }
