@@ -59,9 +59,6 @@ function reconcileEditSets(editSet1, editSet2) {
         // Merge edits based on rules
         let mergedEdit = mergeEditsWithNonNullPreference(edit1, edit2);
 
-        console.debug(edit1);
-        console.debug(edit2);
-
         if (edit1.propertyOptions && edit2.propertyOptions) {
           mergedEdit.propertyOptions = intersectArrays(
             edit1.propertyOptions,
@@ -110,7 +107,7 @@ export async function suggestedEdits(metadata, wikibase) {
   const linkedDataEdits = await ldToEdits({
     ld: metadata.linkData,
     wikibase: wikibase,
-    lang: metadata?.lang,
+    metadata: metadata,
     references: references,
   });
 

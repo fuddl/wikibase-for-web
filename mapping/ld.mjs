@@ -79,7 +79,7 @@ export function extractUrls(input) {
 	return [];
 }
 
-async function ldToEdits({ ld, wikibase, lang = '', references }) {
+async function ldToEdits({ ld, wikibase, metadata, references }) {
 	const newEdits = [];
 
 	for (const d of ld) {
@@ -157,6 +157,24 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 							property: `${wikibase.id}:${wikibase.props.pointInTime}`,
 							time: `+${now.toISOString().substr(0, 10)}T00:00:00Z`,
 							precision: 11,
+						}),
+					);
+				}
+
+				const reviewHosts = await wikibase.manager.query(
+					wikibase.id,
+					'reviewScoreHostnames',
+					{
+						hostname: new URL(metadata.location).hostname,
+					},
+				);
+
+				if (reviewHosts.length > 0) {
+					ratingAction.claim.addQualifier(
+						new WikibaseItemClaim({
+							property: `${wikibase.id}:${wikibase.props.reviewScoreBy}`,
+							value: `${wikibase.id}:${reviewHosts[0]}`,
+							references: references,
 						}),
 					);
 				}
@@ -275,7 +293,7 @@ async function ldToEdits({ ld, wikibase, lang = '', references }) {
 							property => `${wikibase.id}:${property.prop}`,
 						),
 						text: value,
-						language: lang,
+						language: metadata?.lang ?? 'und',
 						references: references,
 					}),
 				});

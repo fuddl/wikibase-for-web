@@ -6,12 +6,14 @@ import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlProperties } from './urlProperties.mjs';
 import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
+import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 
 const queries = {
 	equivalentClasses,
 	equivalentProperties,
 	itemByExternalId,
 	itemByUrl,
+	reviewScoreHostnames,
 	shortTitle,
 	unitSymbol,
 	urlMatchPattern,
@@ -75,7 +77,7 @@ class WikiBaseQueryManager {
 		const queryUrl = instance.api.sparqlQuery(query);
 		const queryResult = await fetch(queryUrl).then(res => res.json());
 		const processedResult = queryObject?.postProcess
-			? queryObject.postProcess(queryResult)
+			? queryObject.postProcess(queryResult, params)
 			: queryResult;
 		this.cache[queryCacheTag] = processedResult;
 
