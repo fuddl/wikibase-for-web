@@ -2,13 +2,14 @@ export const urlProperties = {
 	id: 'url-properties',
 	requiredProps: [],
 	query: ({ instance, params }) => `
-		SELECT DISTINCT ?p WHERE {
+		SELECT DISTINCT ?prop WHERE {
 			?prop wikibase:propertyType wikibase:Url.
-  		BIND(REPLACE(STR(?prop), '^.*/(P[0-9]+)$', '$1') AS ?p)
   	}
 	`,
 	cacheTag: ({ instance, params }) => `wikibase-url:${instance.instance}`,
 	postProcess: ({ results }) => {
-		return results.bindings.map(result => result.p.value);
+		return results.bindings.map(result =>
+			result.prop.value.replace(/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/, '$1'),
+		);
 	},
 };

@@ -24,7 +24,7 @@ export const equivalentClasses = {
 		const processed = [];
 		results.bindings.forEach(bind => {
 			processed.push(
-				bind.i.value.replace(/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/, '$1'),
+				bind.item.value.replace(/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/, '$1'),
 			);
 		});
 		return processed;
