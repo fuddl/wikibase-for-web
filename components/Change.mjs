@@ -160,9 +160,9 @@ class Change extends Component {
 							type="checkbox"
 							checked />
 					</dd>
-					${this.state?.claim?.qualifiers &&
-					html`<dd class="change__qualifiers">
-						${this.state.claim.qualifiers.map(
+					<dd class="change__qualifiers">
+						${this.state?.claim?.qualifiers &&
+						this.state.claim.qualifiers.map(
 							(qualifier, index) =>
 								html`<dl>
 									<dt class="change__reference__prop">
@@ -192,49 +192,50 @@ class Change extends Component {
 									</dd>
 								</dl>`,
 						)}
-					</dd>`}
-					${this.state?.claim?.references &&
-					html`<dd class="change__references">
-						<details>
-							<summary>Reference</summary>
-							${this.state.claim.references.map(
-								reference =>
-									html` <div class="change__reference">
-										${Object.entries(reference.snaks).map(
-											([prop, statements]) =>
-												html`<dl>
-													<dt class="change__reference__prop">
-														<${Thin} id=${prop} manager=${manager} />
-													</dt>
-													${statements.map(
-														(statement, index) =>
-															html`<dd class="change__reference__snak">
-																<${Snack}
-																	mainsnak=${statement}
-																	manager=${manager} />
-																<div hidden>
-																	${
-																		/* maybe we can make this editable in the future 🤷 */ ''
-																	}
-																	<${Nibble}
-																		datatype=${statement.datatype}
-																		datavalue=${statement.datavalue}
-																		name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0`}
-																		onValueChange=${this.handleDataValueChange}
+						${this.state?.claim?.references &&
+						html`
+							<details>
+								<summary>Reference</summary>
+								${this.state.claim.references.map(
+									reference =>
+										html` <div class="change__reference">
+											${Object.entries(reference.snaks).map(
+												([prop, statements]) =>
+													html`<dl>
+														<dt class="change__reference__prop">
+															<${Thin} id=${prop} manager=${manager} />
+														</dt>
+														${statements.map(
+															(statement, index) =>
+																html`<dd class="change__reference__snak">
+																	<${Snack}
+																		mainsnak=${statement}
 																		manager=${manager} />
-																</div>
-																<input
-																	type="hidden"
-																	name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0.property`}
-																	value=${prop.replace(/.+:/, '')} />
-															</dd>`,
-													)}
-												</dl>`,
-										)}
-									</div>`,
-							)}
-						</details>
-					</dd>`}
+																	<div hidden>
+																		${
+																			/* maybe we can make this editable in the future 🤷 */ ''
+																		}
+																		<${Nibble}
+																			datatype=${statement.datatype}
+																			datavalue=${statement.datavalue}
+																			name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0`}
+																			onValueChange=${this
+																				.handleDataValueChange}
+																			manager=${manager} />
+																	</div>
+																	<input
+																		type="hidden"
+																		name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0.property`}
+																		value=${prop.replace(/.+:/, '')} />
+																</dd>`,
+														)}
+													</dl>`,
+											)}
+										</div>`,
+								)}
+							</details>
+						`}
+					</dd>
 				</dl>
 				<input
 					name=${`${this.name}.action`}

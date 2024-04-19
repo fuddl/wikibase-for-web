@@ -17,7 +17,7 @@
 	grid-template-areas:
 		'check key'
 		'check value'
-		'check references';
+		'check qualfiers';
 }
 
 .change__key {
@@ -37,9 +37,13 @@
 	margin: 0;
 }
 
+.change__qualifiers {
+	grid-area: qualfiers;
+	margin: 0;
+}
+
 .change__references {
 	font-size: 0.75rem;
-	grid-area: references;
 	margin: 0;
 }
 
