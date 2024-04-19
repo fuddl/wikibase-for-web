@@ -75,7 +75,12 @@ class WikiBaseQueryManager {
 
 		const query = queryObject.query({ params, instance });
 		const queryUrl = instance.api.sparqlQuery(query);
+
+		const startTime = performance.now();
 		const queryResult = await fetch(queryUrl).then(res => res.json());
+		const endTime = performance.now();
+		console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
+
 		const processedResult = queryObject?.postProcess
 			? queryObject.postProcess(queryResult, params)
 			: queryResult;

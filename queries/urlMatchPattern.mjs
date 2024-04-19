@@ -1,4 +1,5 @@
 export const urlMatchPattern = {
+	id: 'url-match-patterns',
 	requiredProps: [
 		'hasCharacteristic',
 		'instanceOf',

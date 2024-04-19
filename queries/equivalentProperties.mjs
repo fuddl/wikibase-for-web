@@ -37,6 +37,7 @@ function sortEntriesByDepth(entries) {
 }
 
 export const equivalentProperties = {
+	id: 'equivalent-properties',
 	requiredProps: [
 		'equivalentProperty',
 		'subpropertyOf',

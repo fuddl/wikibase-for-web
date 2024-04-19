@@ -1,35 +1,31 @@
 export const equivalentClasses = {
+	id: 'equivalent-class',
 	requiredProps: ['equivalentClass', 'subclassOf'],
 	query: ({ instance, params }) => {
 		const http = params.class.replace(/^https:/, 'http:');
 		const https = params.class.replace(/^http:/, 'https:');
 		return `
-			SELECT DISTINCT ?i WHERE {
+			SELECT DISTINCT ?item WHERE {
 				{
-					{
-						?item wdt:${instance.props.equivalentClass} <${http}>;
-					} UNION {
-						?item wdt:${instance.props.equivalentClass} <${https}>;
-					}
+					VALUES ?url { <${http}> <${https}> }
+					?item wdt:${instance.props.equivalentClass} ?url.
 				} UNION {
-					{
-						?parent wdt:${instance.props.equivalentClass} <${http}>;
-					} UNION {
-						?parent wdt:${instance.props.equivalentClass} <${https}>;
-					}
+					VALUES ?url { <${http}> <${https}> }
+          ?parent wdt:${instance.props.equivalentClass} ?url.
+
 					?item wdt:${instance.props.subclassOf} ?parent.
 				}
-				BIND(REPLACE(STR(?item), '^.*/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$', '$1') AS ?i).
-
 			}
 			LIMIT 20
 	`;
 	},
 	cacheTag: ({ instance, params }) => `equivalentClasses:${params.class}`,
-	postProcess: ({ results }) => {
+	postProcess: ({ results }, params) => {
 		const processed = [];
 		results.bindings.forEach(bind => {
-			processed.push(bind.i.value);
+			processed.push(
+				bind.i.value.replace(/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/, '$1'),
+			);
 		});
 		return processed;
 	},

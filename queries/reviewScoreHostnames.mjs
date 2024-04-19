@@ -1,4 +1,5 @@
 export const reviewScoreHostnames = {
+  id: 'review-score-by',
   requiredProps: ['reviewScoreBy', 'officialWebsite'],
   query: ({ instance, params }) => `
     SELECT DISTINCT ?hostname ?id WHERE {

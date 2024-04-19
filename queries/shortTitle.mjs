@@ -1,4 +1,5 @@
 export const shortTitle = {
+	id: 'short-title',
 	requiredProps: ['shortTitle'],
 	query: ({ instance, params }) => `
 		SELECT ?short WHERE {

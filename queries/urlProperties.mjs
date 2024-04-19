@@ -1,4 +1,5 @@
 export const urlProperties = {
+	id: 'url-properties',
 	requiredProps: [],
 	query: ({ instance, params }) => `
 		SELECT DISTINCT ?p WHERE {

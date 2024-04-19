@@ -1,4 +1,5 @@
 export const unitSymbol = {
+	id: 'unit-symbol',
 	requiredProps: ['unitSymbol'],
 	query: ({ instance, params }) => `
 		SELECT ?u WHERE {

@@ -1,4 +1,5 @@
 export const itemByExternalId = {
+	id: 'item-by-external-id',
 	query: ({ instance, params }) => `
 		SELECT ?item WHERE {
 			?item wdt:${params.property} ${params.case == 'insensitive' ? '?id' : `"${params.id.replace(/"/g, '\\"')}"`}.
