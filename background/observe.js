@@ -68,29 +68,37 @@ async function resolveAndUpdateSidebar(url, tabId) {
 
 const tabs = {};
 
-browser.webNavigation.onCommitted.addListener(async function (details) {
+async function resolveCurrentTab(tabId) {
+	const currentTab = await getCurrentTab();
 	if (
-		details.url.startsWith('about:') ||
-		details.url.startsWith('chrome:') ||
-		details.url.startsWith('moz-extension:') ||
-		details.frameId > 0
+		currentTab.url.startsWith('about:') ||
+		currentTab.url.startsWith('chrome:') ||
+		currentTab.url.startsWith('moz-extension:') ||
+		currentTab.frameId > 0
 	) {
 		// early escape internal urls and navigation that occours in frames
 		return;
 	}
-	const currentTab = await getCurrentTab();
-	if (details.tabId === currentTab.id) {
-		const results = await resolveAndUpdateSidebar(details.url, details.tabId);
-		tabs[details.tabId] = results;
+	if (tabId === currentTab.id) {
+		const results = await resolveAndUpdateSidebar(currentTab.url, tabId);
+		tabs[tabId] = results;
 	} else {
-		const results = await resolveUrl(details.url, details.tabId);
-		tabs[details.tabId] = results;
+		const results = await resolveUrl(currentTab.url, tabId);
+		tabs[tabId] = results;
 	}
+}
+
+browser.webNavigation.onCommitted.addListener(async function (details) {
+	await resolveCurrentTab(details.tabId);
 });
 
 browser.tabs.onActivated.addListener(function (activeInfo) {
 	if (tabs?.[activeInfo.tabId]) {
 		updateSidebar(tabs[activeInfo.tabId]);
+	} else {
+		(async () => {
+			await resolveCurrentTab(activeInfo.tabId);
+		})();
 	}
 });
 
