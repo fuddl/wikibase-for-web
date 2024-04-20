@@ -75,7 +75,7 @@ export async function getTabMetadata(tabId) {
                         } else if (
                             key === '@context' &&
                             obj?.['@type'] &&
-                            !URL.canParse(value)
+                            URL.canParse(value)
                         ) {
                             obj['@type'] =
                                 `${value.replace(/\/$/, '')}/${obj['@type']}`;
