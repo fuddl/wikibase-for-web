@@ -185,7 +185,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
 
 const Match = ({ suggestions, manager }) => {
   const [open, setOpen] = useState(0);
-  const [forceRefresh, setForceRefresh] = useState(0);
+  const [forceRefresh, setForceRefresh] = useState('');
 
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/match.css'));
@@ -198,7 +198,7 @@ const Match = ({ suggestions, manager }) => {
   }, [open]);
 
   useEffect(() => {
-    setForceRefresh(forceRefresh + 1);
+    setForceRefresh(JSON.stringify(suggestions));
   }, [suggestions]);
 
   return html`
