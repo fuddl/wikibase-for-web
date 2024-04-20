@@ -12,223 +12,217 @@ import Engage from './Engage.mjs';
 
 const html = htm.bind(h);
 
-const Match = ({ suggestions, manager }) => {
-  const submit = e => {
-    e.preventDefault();
-    const data = formDataToData(e.target.form);
+const submit = e => {
+  e.preventDefault();
+  const data = formDataToData(e.target.form);
+  const jobs = [];
 
-    const jobs = [];
+  if (data.subjectId === 'CREATE') {
+    jobs.push({
+      action: 'entity:create',
+      instance: data.instance,
+      new: 'item',
+      data: {
+        labels: [
+          {
+            language: data.lang,
+            value: data.search,
+          },
+        ],
+      },
+    });
+  }
 
-    if (data.subjectId === 'CREATE') {
+  for (const edit of data.edits) {
+    if (!edit.apply) {
+      continue;
+    }
+    if (edit?.action === 'claim:create') {
       jobs.push({
-        action: 'entity:create',
+        action: edit.action,
         instance: data.instance,
-        new: 'item',
-        data: {
-          labels: [
-            {
-              language: data.lang,
-              value: data.search,
-            },
-          ],
-        },
+        entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+        claim: edit.claim,
       });
-    }
 
-    for (const edit of data.edits) {
-      if (!edit.apply) {
-        continue;
-      }
-      if (edit?.action === 'claim:create') {
-        jobs.push({
-          action: edit.action,
-          instance: data.instance,
-          entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
-          claim: edit.claim,
+      if (edit?.claim?.qualifiers) {
+        edit.claim.qualifiers.forEach(qualifier => {
+          jobs.push({
+            action: 'qualifier:set',
+            instance: data.instance,
+            statement: 'LAST',
+            value: qualifier.snak.datavalue,
+            property: qualifier.property,
+            snaktype: qualifier.snak.snaktype,
+          });
         });
+      }
 
-        if (edit?.claim?.qualifiers) {
-          edit.claim.qualifiers.forEach(qualifier => {
-            jobs.push({
-              action: 'qualifier:set',
-              instance: data.instance,
-              statement: 'LAST',
-              value: qualifier.snak.datavalue,
-              property: qualifier.property,
-              snaktype: qualifier.snak.snaktype,
-            });
+      if (edit?.claim?.references) {
+        edit.claim.references.forEach(reference => {
+          jobs.push({
+            action: 'reference:set',
+            instance: data.instance,
+            statement: 'LAST',
+            snaks: reference.snaks,
           });
-        }
-
-        if (edit?.claim?.references) {
-          edit.claim.references.forEach(reference => {
-            jobs.push({
-              action: 'reference:set',
-              instance: data.instance,
-              statement: 'LAST',
-              snaks: reference.snaks,
-            });
-          });
-        }
+        });
       }
     }
+  }
 
-    try {
-      browser.runtime.sendMessage(browser.runtime.id, {
-        type: 'add_to_edit_queue',
-        edits: jobs,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    browser.runtime.sendMessage(browser.runtime.id, {
+      type: 'add_to_edit_queue',
+      edits: jobs,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-  const [open, setOpen] = useState(0);
-  const [lang, setLang] = useState(navigator.language);
+const MatchInstance = ({ suggestion, manager, edits }) => {
   const [subjectSelected, setSubjectSelected] = useState(false);
-  const [metaData, setMetaData] = useState(
-    new Array(suggestions.length).fill(null),
-  );
-
-  const [searchTexts, setSeachTexts] = useState(
-    new Array(suggestions.length).fill(''),
-  );
-
-  const [additionalEdits, setAdditionalEdits] = useState(
-    new Array(suggestions.length).fill([]),
-  );
+  const [searchText, setSeachText] = useState('');
+  const [allEdits, setAllEdits] = useState(edits);
+  const [metaData, setMetaData] = useState({});
+  const [lang, setLang] = useState(navigator.language);
 
   useEffect(() => {
-    requireStylesheet(browser.runtime.getURL('/components/match.css'));
-    (async () => {
-      await requestMetadata(open);
-    })();
+    setAllEdits(edits);
   }, []);
 
-  const requestMetadata = async index => {
-    if (additionalEdits[index].length > 0) {
-      return;
+  const updateAdditionalEdits = async metadata => {
+    let newSearchTitle = '';
+    let newEdits = [...edits];
+    if (metadata?.title) {
+      newSearchTitle = metadata.title;
+      if (suggestion?.titleExtractPattern) {
+        const matches = metadata.title.match(suggestion.titleExtractPattern);
+        if (matches?.[1]) {
+          newSearchTitle = matches[1];
+          newEdits.push({
+            action: 'labals:add',
+            labels: matches[1],
+          });
+        }
+      }
+      const additionalEdits = await suggestedEdits(
+        metadata,
+        manager.wikibases[suggestion.instance],
+      );
+      newEdits = [...newEdits, ...additionalEdits];
     }
+
+    setAllEdits(newEdits);
+    setSeachText(newSearchTitle);
+  };
+
+  const requestMetadata = async () => {
     const requestedMetadata = await browser.runtime.sendMessage({
       type: 'request_metadata',
-      url: suggestions[index].matchFromUrl,
+      url: suggestion.matchFromUrl,
     });
-    const newMetaData = [...metaData];
-    newMetaData[index] = requestedMetadata.response;
+
+    const newMetaData = requestedMetadata.response;
     setMetaData(newMetaData);
 
     if (requestedMetadata?.response?.lang) {
       setLang(requestedMetadata.response.lang);
     }
 
-    await updateAdditionalEdits(index, newMetaData[index]);
-  };
-
-  const updateAdditionalEdits = async (index, metadata) => {
-    let newSearchTitle = '';
-    let edits = [...additionalEdits[index]];
-    if (metadata?.title) {
-      newSearchTitle = metadata.title;
-      if (suggestions[index]?.titleExtractPattern) {
-        const matches = metadata.title.match(
-          suggestions[index].titleExtractPattern,
-        );
-        if (matches?.[1]) {
-          newSearchTitle = matches[1];
-          edits.push({
-            action: 'labals:add',
-            labels: matches[1],
-          });
-        }
-      }
-      const newSuggestedEdits = await suggestedEdits(
-        metadata,
-        manager.wikibases[suggestions[index].instance],
-      );
-      edits = [...edits, ...newSuggestedEdits];
-    }
-    const newAdditionalEdits = [...additionalEdits];
-    newAdditionalEdits[index] = edits;
-    setAdditionalEdits(newAdditionalEdits);
-
-    const newSearchtexts = [...searchTexts];
-    newSearchtexts[index] = newSearchTitle;
-    setSeachTexts(newSearchtexts);
+    await updateAdditionalEdits(newMetaData);
   };
 
   useEffect(() => {
     (async () => {
-      await requestMetadata(open);
+      await requestMetadata();
+    })();
+  }, []);
+
+  return html`
+    <form class="match__form">
+      <input type="hidden" value=${suggestion.instance} name="instance" />
+      <div class="match__item">
+        <div class="match__statements">
+          ${Object.entries(allEdits).map(
+            ([editId, edit]) =>
+              html`<${Change}
+                key=${editId}
+                claim=${edit?.claim}
+                labels=${edit?.labels}
+                action=${edit.action}
+                name=${`edits.${editId}`}
+                manager=${manager} />`,
+          )}
+        </div>
+        <${Choose}
+          label=${searchText}
+          manager=${manager}
+          wikibase=${suggestion.instance}
+          name="subjectId"
+          required="true"
+          onSelected=${() => {
+            setSubjectSelected(true);
+          }} />
+      </div>
+      <div class="match__bottom">
+        <input
+          type="hidden"
+          name="lang"
+          value=${navigator.language.toLowerCase()} />
+        <input name="instance" type="hidden" value=${suggestion.instance} />
+        <${Engage}
+          text=${browser.i18n.getMessage('send_to_instance', [
+            manager.wikibases[suggestion.instance].name,
+          ])}
+          onClick=${submit}
+          disabled=${!subjectSelected} />
+      </div>
+    </form>
+  `;
+};
+
+const Match = ({ suggestions, manager }) => {
+  const [open, setOpen] = useState(0);
+  const [forceRefresh, setForceRefresh] = useState(0);
+
+  useEffect(() => {
+    requireStylesheet(browser.runtime.getURL('/components/match.css'));
+  }, []);
+
+  useEffect(() => {
+    (async () => {
       manager.updateSidebarAction(suggestions[open].instance);
     })();
   }, [open]);
 
+  useEffect(() => {
+    setForceRefresh(forceRefresh + 1);
+  }, [suggestions]);
+
   return html`
     <div class="match">
       <h1>${browser.i18n.getMessage('match_title')}</h1>
-      ${suggestions.map((suggestion, key) => {
+      ${suggestions.map((suggestion, index) => {
         let edits = suggestion.proposeEdits;
-        if (key in additionalEdits) {
-          edits = [...edits, ...additionalEdits[key]];
-        }
-
         manager.wikibase = manager.wikibases[suggestion.instance];
-
         return html`
-          <details ...${{ open: key == open }} class="match__instance">
+          <details ...${{ open: index === open }} class="match__instance">
             <summary
               class="match__instance-name"
               onClick=${e => {
                 e.preventDefault();
-                setOpen(key);
+                setOpen(index);
               }}>
               ${manager.wikibases[suggestion.instance].name}
             </summary>
-            <form class="match__form">
-              <input
-                type="hidden"
-                value=${suggestions.instance}
-                name="instance" />
-              <div class="match__item" data-key=${key}>
-                <div class="match__statements">
-                  ${Object.entries(edits).map(
-                    ([editId, edit]) =>
-                      html`<${Change}
-                        key=${editId}
-                        claim=${edit?.claim}
-                        labels=${edit?.labels}
-                        action=${edit.action}
-                        name=${`edits.${editId}`}
-                        manager=${manager} />`,
-                  )}
-                </div>
-                <${Choose}
-                  label=${searchTexts[key]}
-                  manager=${manager}
-                  wikibase=${suggestion.instance}
-                  name="subjectId"
-                  required="true"
-                  onSelected=${() => {
-                    setSubjectSelected(true);
-                  }} />
-              </div>
-              <div class="match__bottom">
-                <input
-                  type="hidden"
-                  name="lang"
-                  value=${navigator.language.toLowerCase()} />
-                <input
-                  name="instance"
-                  type="hidden"
-                  value=${suggestion.instance} />
-                <${Engage}
-                  text=${browser.i18n.getMessage('send_to_instance', [
-                    manager.wikibases[suggestion.instance].name,
-                  ])}
-                  onClick=${submit}
-                  disabled=${!subjectSelected} />
-              </div>
-            </form>
+            ${index === open &&
+            html`<${MatchInstance}
+              suggestion=${suggestion}
+              manager=${manager}
+              key=${`${forceRefresh}-${index}`}
+              edits=${edits} />`}
           </details>
         `;
       })}
