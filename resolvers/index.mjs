@@ -49,4 +49,4 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 	return candidates;
 };
 
-export { resolvers };
+export { resolvers, resolvedCache };

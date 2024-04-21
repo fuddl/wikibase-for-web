@@ -71,6 +71,15 @@ const submit = e => {
     }
   }
 
+  if (data.matchUrl) {
+    jobs.push({
+      action: 'resolver:add',
+      entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+      instance: data.instance,
+      url: data.matchUrl,
+    });
+  }
+
   try {
     browser.runtime.sendMessage(browser.runtime.id, {
       type: 'add_to_edit_queue',
@@ -166,6 +175,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
             setSubjectSelected(true);
           }} />
       </div>
+      <input type="hidden" name="matchUrl" value=${suggestion.matchFromUrl} />
       <div class="match__bottom">
         <input
           type="hidden"

@@ -2,12 +2,13 @@ import wikibases from '../wikibases.mjs';
 import WBEdit from '../importmap/wikibase-edit.mjs';
 
 export class WikibaseEditQueue {
-  constructor() {
+  constructor({ resolvedCache }) {
     this.queue = []; // Each job will be an object with a 'job' property and a 'done' flag
     this.isProcessing = false;
     this.onProgressUpdate = null; // Callback for progress updates
     this.lastClaim = '';
     this.lastEntity = '';
+    this.resolvedCache = resolvedCache;
   }
 
   // Add multiple jobs at once
@@ -254,6 +255,20 @@ export class WikibaseEditQueue {
           statement: job.statement,
           snaks: JSON.stringify(job.snaks),
         });
+        break;
+      case 'resolver:add':
+        if (job.url in this.resolvedCache) {
+          this.resolvedCache[job.url].push({
+            directMatch: true,
+            instance: job.instance,
+            resolved: [
+              {
+                specificity: 1000,
+                id: `${job.instance}:${job.entity}`,
+              },
+            ],
+          });
+        }
         break;
     }
   }

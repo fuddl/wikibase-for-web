@@ -1,9 +1,11 @@
-import { resolvers } from '../resolvers/index.mjs';
+import { resolvers, resolvedCache } from '../resolvers/index.mjs';
 import { getTabMetadata } from '../modules/getTabMetadata.mjs';
 import { WikibaseEditQueue } from '../modules/WikibaseEditQueue.mjs';
 import wikibases from '../wikibases.mjs';
 
-const wikibaseEditQueue = new WikibaseEditQueue();
+const wikibaseEditQueue = new WikibaseEditQueue({
+	resolvedCache: resolvedCache,
+});
 
 wikibaseEditQueue.setProgressUpdateCallback(async queue => {
 	try {
