@@ -6,6 +6,7 @@ const wikibases = {
 		color: '#069',
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
+		autodesc: 'https://autodesc.toolforge.org',
 		icon: 'icons/wikidata.svg',
 		props: {
 			appliesIfRegularExpressionMatches: 'P8460',

@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from '../importmap/preact-hooks.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
+import AutoDesc from './AutoDesc.mjs';
+
 const html = htm.bind(h);
 
 const Choose = ({
@@ -73,6 +75,8 @@ const Choose = ({
     }
   };
 
+  const autoDescApi = manager.wikibases[wikibase]?.autodesc;
+
   return html`
     <div class="choose">
       <div class="choose__type-wrap">
@@ -119,7 +123,13 @@ const Choose = ({
                 ${suggestion.label ?? suggestion.id}
               </div>
               <div class="choose__picker__pick-description">
-                ${suggestion.description}
+                ${suggestion?.description
+                  ? suggestion.description
+                  : autoDescApi
+                    ? html`<${AutoDesc}
+                        id=${suggestion.id}
+                        api=${autoDescApi} />`
+                    : null}
               </div>
             </a>
           `,
