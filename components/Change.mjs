@@ -22,6 +22,7 @@ class Change extends Component {
 			claim: props?.claim,
 			labels: props?.labels,
 			editMode: false,
+			active: true,
 		};
 	}
 
@@ -158,7 +159,10 @@ class Change extends Component {
 							name=${`${this.name}.apply`}
 							value="yes"
 							type="checkbox"
-							checked />
+							onChange=${e => {
+								this.setState({ active: !this.state.active });
+							}}
+							checked=${this.state.active} />
 					</dd>
 					<dd class="change__qualifiers">
 						${this.state?.claim?.qualifiers &&
