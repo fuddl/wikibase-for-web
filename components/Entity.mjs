@@ -39,7 +39,7 @@ function applyPropOrder(claims, propOrder) {
 }
 
 class Entity extends Component {
-  render({ id, labels, descriptions, title, claims, manager }) {
+  render({ id, labels, descriptions, title, claims, modified, manager }) {
     const [wikibase, localId] = id.split(':');
     const sectionRef = useRef(null);
     const [fillsViewport, setFillsViewport] = useState(false);
@@ -132,7 +132,8 @@ class Entity extends Component {
                 descriptions=${descriptions}
                 title=${title}
                 id=${id}
-                manager=${manager} />
+                manager=${manager}
+                key=${modified} />
             `
           : null}
         ${mainClaims.map(
