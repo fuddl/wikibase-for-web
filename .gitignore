@@ -131,3 +131,4 @@ dist
 .pnp.*
 
 /importmap
+web-ext-artifacts
