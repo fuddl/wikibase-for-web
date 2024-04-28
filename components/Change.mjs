@@ -120,7 +120,10 @@ class Change extends Component {
 					value=${this.signature}
 					name=${`${this.name}.signature`}
 					type="hidden" />
-				<dl class="change__preview">
+				<dl
+					class="change__preview ${!this.state.active
+						? 'change__preview--disabled'
+						: ''}">
 					<dt class="change__key">${getKey(this.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
 						${getValue(this.action)}
@@ -128,6 +131,7 @@ class Change extends Component {
 						html`<button
 							title="${'Edit mode'}"
 							class="change__toggle"
+							hidden=${!this.state.active}
 							onClick=${e => {
 								e.preventDefault();
 								this.setState({ editMode: true });

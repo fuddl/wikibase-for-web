@@ -5,6 +5,7 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
 import OptionsHistoryAPI from '../modules/OptionsHistoryAPI.mjs';
+import { getPropertySubjectByConstraint } from '../modules/getPropertySubjectByConstraint.mjs';
 
 import { suggestedEdits } from '../mapping/index.mjs';
 
@@ -114,6 +115,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   const [allEdits, setAllEdits] = useState(edits);
   const [metaData, setMetaData] = useState({});
   const [lang, setLang] = useState(navigator.language);
+  const [subjectType, setSubjectType] = useState('item');
 
   useEffect(() => {
     setAllEdits(edits);
@@ -167,6 +169,15 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     })();
   }, []);
 
+  useEffect(async () => {
+    const requestedType = await getPropertySubjectByConstraint(
+      suggestion,
+      manager,
+    );
+
+    setSubjectType(requestedType);
+  }, []);
+
   return html`
     <form class="match__form">
       <input type="hidden" value=${suggestion.instance} name="instance" />
@@ -189,6 +200,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
           manager=${manager}
           wikibase=${suggestion.instance}
           name="subjectId"
+          type=${subjectType}
           required="true"
           onSelected=${() => {
             setSubjectSelected(true);

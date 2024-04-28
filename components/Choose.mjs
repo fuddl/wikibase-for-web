@@ -11,6 +11,7 @@ const Choose = ({
   value,
   label,
   name,
+  type,
   required = false,
   manager,
   wikibase,
@@ -42,14 +43,17 @@ const Choose = ({
     const fetchSuggestions = async () => {
       const searchUrl = manager.wikibases[wikibase].api.searchEntities({
         search: inputValue,
+        type: type ?? 'item',
       });
       const autocomplete = await fetch(searchUrl).then(res => res.json());
       if (autocomplete?.success) {
-        autocomplete.search.push({
-          label: autocomplete.searchinfo.search,
-          description: browser.i18n.getMessage('create_new_entity'),
-          id: 'CREATE',
-        });
+        if (type === 'item') {
+          autocomplete.search.push({
+            label: autocomplete.searchinfo.search,
+            description: browser.i18n.getMessage('create_new_entity'),
+            id: 'CREATE',
+          });
+        }
         setSuggestions(autocomplete.search);
       }
     };
@@ -57,7 +61,7 @@ const Choose = ({
     if (inputValue && shouldFetch) {
       fetchSuggestions();
     }
-  }, [inputValue]);
+  }, [inputValue, type]);
 
   const handleKeyDown = e => {
     if (e.key === 'ArrowDown') {

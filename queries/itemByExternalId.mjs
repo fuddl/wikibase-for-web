@@ -15,7 +15,7 @@ export const itemByExternalId = {
 		}
 		const processed = [];
 		results.bindings.forEach(bind => {
-			processed.push(bind.item.value.match(/\w\d+$/)[0]);
+			processed.push(bind.item.value.match(/\w\d+(?:-\w\d+)?$/)[0]);
 		});
 		return processed;
 	},

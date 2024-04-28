@@ -20,8 +20,15 @@
 		'check qualfiers';
 }
 
+.change__preview--disabled {
+	grid-template-columns: max-content 1fr 1fr;
+	grid-template-areas: 'check key value';
+	grid-template-rows: auto;
+}
+
 .change__key {
 	grid-area: key;
+	margin: auto 0;
 }
 .change__key a {
 	color: inherit;
@@ -34,7 +41,7 @@
 
 .change__value {
 	grid-area: value;
-	margin: 0;
+	margin: auto 0;
 }
 
 .change__qualifiers {
