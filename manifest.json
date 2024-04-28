@@ -31,6 +31,13 @@
   "background": {
     "page": "background/index.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_end",
+      "js": ["content/selection-observer.js"]
+    }
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "{8b348118-df28-4d6b-aa90-4e90049c7f19}",

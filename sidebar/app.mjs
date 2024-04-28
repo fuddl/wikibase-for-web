@@ -60,6 +60,15 @@ class Sidebar extends Component {
 				});
 			}
 			return Promise.resolve('done');
+		} else if (message.type === 'text_selected') {
+			if (
+				document.activeElement?.nodeName === 'INPUT' &&
+				['text', 'search'].includes(document.activeElement.type)
+			) {
+				document.activeElement.value = message.value;
+				document.activeElement.dispatchEvent(new Event('input'));
+			}
+			return Promise.resolve('done');
 		}
 	};
 

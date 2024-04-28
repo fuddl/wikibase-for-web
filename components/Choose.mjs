@@ -59,7 +59,10 @@ const Choose = ({
     };
 
     if (inputValue && shouldFetch) {
-      fetchSuggestions();
+      const debounce = setTimeout(() => {
+        fetchSuggestions();
+      }, 100);
+      return () => clearTimeout(debounce);
     }
   }, [inputValue, type]);
 
