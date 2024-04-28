@@ -100,6 +100,10 @@ async function ldToEdits({
 	references,
 	newEdits = [],
 }) {
+	const makeSignature = tag => {
+		return ['ld', new URL(metadata.location).hostname, `[${tag}]`].join(':');
+	};
+
 	for (const d of ld) {
 		if (!d?.['@isSubjectOfPage']) {
 			if (d?.['@graph']) {
@@ -126,6 +130,7 @@ async function ldToEdits({
 			if (equivalentClasses.length > 0) {
 				newEdits.push({
 					action: 'claim:create',
+					signature: makeSignature('ld:type'),
 					claim: new WikibaseItemClaim({
 						property: `${wikibase.id}:${wikibase.props.instanceOf}`,
 						value: equivalentClasses.map(option => `${wikibase.id}:${option}`),
@@ -157,6 +162,7 @@ async function ldToEdits({
 				const rating = parseFloat(value.ratingValue);
 				const ratingAction = {
 					action: 'claim:create',
+					signature: makeSignature('aggregateRating'),
 					claim: new StringClaim({
 						property: `${wikibase.id}:${wikibase.props.reviewScore}`,
 						value: `${rating}/${best}`,
@@ -245,6 +251,7 @@ async function ldToEdits({
 
 					newEdits.push({
 						action: 'claim:create',
+						signature: makeSignature(property),
 						claim: new TimeClaim({
 							property: timeProperties.map(
 								property => `${wikibase.id}:${property.prop}`,
@@ -296,6 +303,7 @@ async function ldToEdits({
 						if (items.length > 0) {
 							newEdits.push({
 								action: 'claim:create',
+								signature: makeSignature(property),
 								claim: new WikibaseItemClaim({
 									property: wikibaseItemProperties.map(
 										property => `${wikibase.id}:${property.prop}`,
@@ -315,6 +323,7 @@ async function ldToEdits({
 			if (monolingualtextProperties.length > 0) {
 				newEdits.push({
 					action: 'claim:create',
+					signature: makeSignature(property),
 					claim: new MonolingualTextClaim({
 						property: monolingualtextProperties.map(
 							property => `${wikibase.id}:${property.prop}`,
@@ -338,6 +347,7 @@ async function ldToEdits({
 					if (parseValue) {
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(property),
 							claim: new QuantityClaim({
 								property: quantityProperties.map(
 									property => `${wikibase.id}:${property.prop}`,

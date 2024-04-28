@@ -2,6 +2,7 @@ import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
 import { useState, useEffect } from '../importmap/preact-hooks.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
+import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
 
 const html = htm.bind(h);
 
@@ -14,15 +15,19 @@ import Thing from './Thing.mjs';
 class Change extends Component {
 	constructor(props) {
 		super(props);
+
+		const dismissed = new DismissedEditsAPI();
+
 		this.manager = props.manager;
 		this.editId = props.editId;
 		this.name = props.name;
 		this.action = props.action;
+		this.signature = props?.signature;
 		this.state = {
 			claim: props?.claim,
 			labels: props?.labels,
 			editMode: false,
-			active: true,
+			active: !dismissed.isEditDismissed(this.signature),
 		};
 	}
 
@@ -61,6 +66,7 @@ class Change extends Component {
 						return html`<${Specify}
 							options=${this.state.claim.mainsnak.propertyOptions}
 							manager="${manager}"
+							disabled=${!this.state.active}
 							name=${`${this.name}.claim.mainsnak.property`}
 							value=${this.state.claim?.mainsnak?.property} />`;
 					} else if (this.state.claim?.mainsnak.property) {
@@ -92,6 +98,7 @@ class Change extends Component {
 						return html`<${Specify}
 								options=${this.state.claim.mainsnak.valueOptions}
 								manager="${manager}"
+								disabled=${!this.state.active}
 								name="${this.name}.claim.mainsnak.datavalue.value.id" />
 							<input
 								type="hidden"
@@ -109,6 +116,10 @@ class Change extends Component {
 
 		return html`
 			<div class="change">
+				<input
+					value=${this.signature}
+					name=${`${this.name}.signature`}
+					type="hidden" />
 				<dl class="change__preview">
 					<dt class="change__key">${getKey(this.action)}</dt>
 					<dd class="change__value" hidden=${this.state.editMode}>
@@ -164,7 +175,7 @@ class Change extends Component {
 							}}
 							checked=${this.state.active} />
 					</dd>
-					<dd class="change__qualifiers">
+					<dd class="change__qualifiers" hidden=${!this.state.active}>
 						${this.state?.claim?.qualifiers &&
 						this.state.claim.qualifiers.map(
 							(qualifier, index) =>

@@ -8,7 +8,11 @@ import {
 	WikibaseItemClaim,
 } from '../types/Claim.mjs';
 
-async function metaToEdits({ meta, wikibase, lang = '', references }) {
+async function metaToEdits({ meta, wikibase, metadata, references }) {
+	const makeSignature = tag => {
+		return ['meta', new URL(metadata.location).hostname, `[${tag}]`].join(':');
+	};
+
 	const processISBN = input => {
 		const isbnProperties = {
 			isbn13: {
@@ -175,13 +179,14 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 			}
 			switch (item.type) {
 				case 'monolingualtext':
-					if (lang && tag) {
+					if (metadata?.lang && tag) {
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(tag.name),
 							claim: new MonolingualTextClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								text: tag.content,
-								language: lang.toLowerCase(),
+								language: metadata.lang.toLowerCase(),
 								references: references,
 							}),
 						});
@@ -192,6 +197,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 						const targetValue = wikibase?.items[item.options[tag.content]];
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(tag.name),
 							claim: new WikibaseItemClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								value: `${wikibase.id}:${targetValue}`,
@@ -212,6 +218,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 						if (options.length > 0) {
 							newEdits.push({
 								action: 'claim:create',
+								signature: makeSignature(tag.name),
 								claim: new WikibaseItemClaim({
 									property: `${wikibase.id}:${targetProperty}`,
 									value: options,
@@ -230,6 +237,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(tag.name),
 							claim: new QuantityClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								amount: `+${amount}`,
@@ -254,6 +262,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(tag.name),
 							claim: new ExternalIdClaim({
 								property: `${wikibase.id}:${prop}`,
 								value: id,
@@ -271,6 +280,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 						if (latlon.length === 2) {
 							newEdits.push({
 								action: 'claim:create',
+								signature: makeSignature(tag.name),
 								claim: new GlobeCoordinateClaim({
 									property: `${wikibase.id}:${targetProperty}`,
 									latitude: latlon[0],
@@ -287,6 +297,7 @@ async function metaToEdits({ meta, wikibase, lang = '', references }) {
 					if (item.prop in wikibase?.props) {
 						newEdits.push({
 							action: 'claim:create',
+							signature: makeSignature(tag.name),
 							claim: new TimeClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								time: `+${tag.content}T00:00:00Z`,

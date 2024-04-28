@@ -3,6 +3,8 @@ import { useState, useEffect } from '../importmap/preact-hooks.mjs';
 import htm from '../node_modules/htm/dist/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
+import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
+import OptionsHistoryAPI from '../modules/OptionsHistoryAPI.mjs';
 
 import { suggestedEdits } from '../mapping/index.mjs';
 
@@ -14,6 +16,17 @@ const html = htm.bind(h);
 
 const submit = e => {
   e.preventDefault();
+
+  for (const component of e.target.form) {
+    if (component.nodeName === 'SELECT' && component.disabled == false) {
+      const optionsHistoryAPI = new OptionsHistoryAPI();
+      optionsHistoryAPI.updateOptionPick(
+        Array.from(component.children).map(option => option.value),
+        component.value,
+      );
+    }
+  }
+
   const data = formDataToData(e.target.form);
   const jobs = [];
 
@@ -33,7 +46,12 @@ const submit = e => {
     });
   }
 
+  const dismissed = new DismissedEditsAPI();
+
   for (const edit of data.edits) {
+    if (edit.signature) {
+      dismissed.toggleDismissedEdit(edit.signature, !edit.apply);
+    }
     if (!edit.apply) {
       continue;
     }
@@ -161,6 +179,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
                 claim=${edit?.claim}
                 labels=${edit?.labels}
                 action=${edit.action}
+                signature=${edit?.signature}
                 name=${`edits.${editId}`}
                 manager=${manager} />`,
           )}

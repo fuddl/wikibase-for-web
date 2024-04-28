@@ -8,7 +8,10 @@ function removeDuplicates(arr) {
 
   // Loop through the array and add JSON string of each object to the Set if not already present
   for (const obj of arr) {
-    const jsonString = JSON.stringify(obj);
+    const normalizedObj = { ...obj };
+    normalizedObj.signature = '';
+
+    const jsonString = JSON.stringify(normalizedObj);
     if (!seen.has(jsonString)) {
       seen.add(jsonString);
       uniqueObjects.push(obj);
@@ -47,7 +50,7 @@ function mergeEditsWithNonNullPreference(edit1, edit2) {
     } else if (key === 'references' && edit1[key] && edit2[key]) {
       // Merge and deduplicate references arrays
       mergedEdit[key] = mergeAndDeduplicateArrays(edit1[key], edit2[key]);
-    } else {
+    } else if (!['signature'].includes(key)) {
       // For all other keys or non-null scenarios, prefer edit2's value
       mergedEdit[key] = edit2[key] !== undefined ? edit2[key] : edit1[key];
     }
@@ -66,9 +69,8 @@ function reconcileEditSets(editSet1, editSet2) {
 
     editSet2.forEach((edit2, index2) => {
       const identicalActions = edit1.action === edit2.action;
-      const identicalValues =
-        JSON.stringify(edit1.datavalue) === JSON.stringify(edit2.datavalue);
-      if (identicalActions && identicalValues) {
+
+      if (identicalActions) {
         foundMatch = true;
         processedIndices.add(index2);
 
@@ -87,6 +89,12 @@ function reconcileEditSets(editSet1, editSet2) {
             edit1.references,
             edit2.references,
           );
+        }
+
+        if (edit1.signature && edit2.signature) {
+          mergedEdit.signature = [edit1.signature, edit2.signature]
+            .sort()
+            .join('|');
         }
 
         // Add more reconciliation rules here
@@ -117,9 +125,10 @@ export async function suggestedEdits(metadata, wikibase) {
   const metaEdits = await metaToEdits({
     meta: metadata.meta,
     wikibase: wikibase,
-    lang: metadata?.lang,
+    metadata: metadata,
     references: references,
   });
+
   const linkedDataEdits = await ldToEdits({
     ld: metadata.linkData,
     wikibase: wikibase,
