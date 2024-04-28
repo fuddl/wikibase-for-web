@@ -79,7 +79,7 @@ class WikiBaseQueryManager {
 		const startTime = performance.now();
 		const queryResult = await fetch(queryUrl).then(res => res.json());
 		const endTime = performance.now();
-		console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
+		//console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
 
 		const processedResult = queryObject?.postProcess
 			? queryObject.postProcess(queryResult, params)

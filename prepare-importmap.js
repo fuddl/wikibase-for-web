@@ -2,10 +2,6 @@ const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const esbuilModules = {
-  'wikibase-edit': './node_modules/wikibase-edit/lib/index.js',
-};
-
 const copyModules = {
   isbn3: './node_modules/isbn3/isbn.js',
   'preact-hooks': './node_modules/preact/hooks/dist/hooks.module.js',
@@ -55,13 +51,6 @@ function copyFileAndReplaceString(
     });
   });
 }
-
-Object.keys(esbuilModules).forEach(moduleName => {
-  const outputPath = path.join(outputDir, `${moduleName}.mjs`);
-
-  const command = `./node_modules/.bin/esbuild ${esbuilModules[moduleName]} --bundle --outfile=${outputPath} --platform=browser --format=esm`;
-  execute(command, `${moduleName}.mjs`);
-});
 
 Object.keys(copyModules).forEach(moduleName => {
   const outputPath = path.join(outputDir, `${moduleName}.mjs`);

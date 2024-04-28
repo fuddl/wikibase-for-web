@@ -100,7 +100,8 @@
 
 .change__reference {
 	margin-left: 1em;
-	+ .change__reference {
-		margin-top: 1em;
-	}
+}
+
+.change__reference + .change__reference {
+	margin-top: 1em;
 }

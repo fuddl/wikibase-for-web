@@ -99,6 +99,8 @@ const submit = e => {
     });
   }
 
+  console.debug(jobs);
+
   try {
     browser.runtime.sendMessage(browser.runtime.id, {
       type: 'add_to_edit_queue',
