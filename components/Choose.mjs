@@ -97,6 +97,7 @@ const Choose = ({
           name="search"
           type="search"
           autocomplete="off"
+          placeholder=${browser.i18n.getMessage(`search_${type}_placeholder`)}
           onInput=${e => {
             setInputValue(e.target.value);
             setShouldFetch(true);

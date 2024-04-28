@@ -3,6 +3,18 @@
     "message": "Set alias",
     "description": "Title of an edit that sets an alias."
   },
+  "search_item_placeholder": {
+    "message": "Search items by label or alias.",
+    "description": "Placeholder of a field that searches for wikibase items."
+  },
+  "search_lexeme_placeholder": {
+    "message": "Search lexemes by lemma or form.",
+    "description": "Placeholder of a field that searches for wikibase lexemes."
+  },
+  "search_sense_placeholder": {
+    "message": "Search lexeme senses by lemma.",
+    "description": "Placeholder of a field that searches for wikibase senses."
+  },
   "load_autodesc": {
     "message": "Loading automatic description…",
     "description": "Message that informs the user that an automatic description is in the state of being loaded."
