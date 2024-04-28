@@ -1,5 +1,4 @@
 import wikibases from '../wikibases.mjs';
-import WBEdit from '../importmap/wikibase-edit.mjs';
 
 export class WikibaseEditQueue {
   constructor({ resolvedCache }) {
