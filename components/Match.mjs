@@ -99,13 +99,31 @@ const submit = e => {
     });
   }
 
-  console.debug(jobs);
+  // console.debug(jobs);
 
   try {
     browser.runtime.sendMessage({
       type: 'add_to_edit_queue',
       edits: jobs,
     });
+    if (data.subjectId !== 'CREATE') {
+      browser.runtime.sendMessage({
+        type: 'resolved',
+        candidates: [
+          {
+            instance: data.instance,
+            specificity: 1000,
+            matchFromUrl: data.matchUrl,
+            resolved: [
+              {
+                specificity: 1000,
+                id: `${data.instance}:${data.subjectId}`,
+              },
+            ],
+          },
+        ],
+      });
+    }
   } catch (error) {
     console.error(error);
   }
