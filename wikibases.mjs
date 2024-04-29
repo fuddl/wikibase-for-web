@@ -1,4 +1,4 @@
-import { WBK } from './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js';
+import { WBK } from './importmap/wikibase-sdk.mjs';
 
 const wikibases = {
 	wikidata: {

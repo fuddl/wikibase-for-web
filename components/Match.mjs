@@ -1,6 +1,6 @@
-import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
+import { h, render, Component } from '../importmap/preact.mjs';
 import { useState, useEffect } from '../importmap/preact-hooks.mjs';
-import htm from '../node_modules/htm/dist/htm.mjs';
+import htm from '../importmap/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
@@ -102,7 +102,7 @@ const submit = e => {
   console.debug(jobs);
 
   try {
-    browser.runtime.sendMessage(browser.runtime.id, {
+    browser.runtime.sendMessage({
       type: 'add_to_edit_queue',
       edits: jobs,
     });

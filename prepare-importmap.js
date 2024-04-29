@@ -3,8 +3,18 @@ const path = require('path');
 const fs = require('fs');
 
 const copyModules = {
-  isbn3: './node_modules/isbn3/isbn.js',
+  'binary-variations': './node_modules/binary-variations/index.js',
   'preact-hooks': './node_modules/preact/hooks/dist/hooks.module.js',
+  'wikibase-sdk': './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js',
+  htm: './importmap/htm.mjs',
+  isbn3: './node_modules/isbn3/isbn.js',
+  preact: './node_modules/preact/dist/preact.mjs',
+  leaflet: './node_modules/leaflet/dist/leaflet.js',
+};
+
+const copyStylesheets = {
+  normalize: './node_modules/normalize.css/normalize.css',
+  leaflet: './node_modules/leaflet/dist/leaflet.css',
 };
 
 const outputDir = path.join(__dirname, 'importmap');
@@ -59,7 +69,25 @@ Object.keys(copyModules).forEach(moduleName => {
     copyModules[moduleName],
     outputPath,
     '"preact"',
-    '"../node_modules/preact/dist/preact.mjs"',
+    '"./preact.mjs"',
+    (err, message) => {
+      if (err) {
+        console.error('Error:', err);
+      } else {
+        console.log(message);
+      }
+    },
+  );
+});
+
+Object.keys(copyStylesheets).forEach(moduleName => {
+  const outputPath = path.join(outputDir, `${moduleName}.css`);
+
+  copyFileAndReplaceString(
+    copyStylesheets[moduleName],
+    outputPath,
+    '',
+    '',
     (err, message) => {
       if (err) {
         console.error('Error:', err);

@@ -1,5 +1,5 @@
-import htm from '../node_modules/htm/dist/htm.mjs';
-import { h, render, Component } from '../node_modules/preact/dist/preact.mjs';
+import htm from '../importmap/htm.mjs';
+import { h, render, Component } from '../importmap/preact.mjs';
 import { requireStylesheet } from '../../modules/requireStylesheet.mjs';
 import { organiseView } from './organise-view.js';
 import Main from '../components/Main.mjs';
@@ -77,7 +77,7 @@ class Sidebar extends Component {
 
 		if (!entity && !selectable && !suggestions && !otherEntities) {
 			(async () => {
-				await browser.runtime.sendMessage(browser.runtime.id, {
+				await browser.runtime.sendMessage({
 					type: 'request_resolve',
 				});
 			})();

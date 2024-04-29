@@ -1,5 +1,5 @@
-import { h, Component } from '../node_modules/preact/dist/preact.mjs';
-import htm from '../node_modules/htm/dist/htm.mjs';
+import { h, Component } from '../importmap/preact.mjs';
+import htm from '../importmap/htm.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);

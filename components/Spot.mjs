@@ -1,7 +1,7 @@
 import { objectGetFirst } from '../modules/objectGetFirst.mjs';
-import { h, Component } from '../node_modules/preact/dist/preact.mjs';
+import { h, Component } from '../importmap/preact.mjs';
 import { useState, useEffect, useRef } from '../importmap/preact-hooks.mjs';
-import htm from '../node_modules/htm/dist/htm.mjs';
+import htm from '../importmap/htm.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
 

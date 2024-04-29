@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.500",
+  "version": "0.505",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
@@ -20,11 +20,12 @@
     "open_at_install": true
   },
   "permissions": [
-    "storage",
-    "webNavigation",
     "<all_urls>",
-    "search",
     "scripting",
+    "search",
+    "storage",
+    "tabs",
+    "webNavigation",
     "webRequest",
     "webRequestBlocking"
   ],

@@ -9,7 +9,7 @@ const wikibaseEditQueue = new WikibaseEditQueue({
 
 wikibaseEditQueue.setProgressUpdateCallback(async queue => {
 	try {
-		await browser.runtime.sendMessage(browser.runtime.id, {
+		await browser.runtime.sendMessage({
 			type: 'update_edit_queue_progress',
 			...queue,
 		});
@@ -50,7 +50,7 @@ async function findTabByUrl(url) {
 }
 
 async function updateSidebar(resolved) {
-	await browser.runtime.sendMessage(browser.runtime.id, {
+	await browser.runtime.sendMessage({
 		type: 'resolved',
 		candidates: resolved,
 	});
