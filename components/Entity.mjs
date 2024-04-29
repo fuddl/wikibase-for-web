@@ -39,7 +39,18 @@ function applyPropOrder(claims, propOrder) {
 }
 
 class Entity extends Component {
-  render({ id, labels, descriptions, title, claims, modified, manager }) {
+  render({
+    id,
+    labels,
+    lemmas,
+    lexicalCategory,
+    language,
+    descriptions,
+    title,
+    claims,
+    modified,
+    manager,
+  }) {
     const [wikibase, localId] = id.split(':');
     const sectionRef = useRef(null);
     const [fillsViewport, setFillsViewport] = useState(false);
@@ -125,14 +136,17 @@ class Entity extends Component {
 
     return html`
       <section ref=${sectionRef}>
-        ${labels && descriptions
+        ${(labels && descriptions) || lemmas
           ? html`
               <${Ensign}
                 labels=${labels}
-                descriptions=${descriptions}
-                title=${title}
+                lemmas=${lemmas}
                 id=${id}
+                descriptions=${descriptions}
+                lexicalCategory=${lexicalCategory}
+                language=${language}
                 manager=${manager}
+                title=${title}
                 key=${modified} />
             `
           : null}
