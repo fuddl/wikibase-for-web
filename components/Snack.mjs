@@ -10,6 +10,7 @@ import Spot from './Spot.mjs';
 import Tempus from './Tempus.mjs';
 import Thing from './Thing.mjs';
 import Title from './Title.mjs';
+import Word from './Word.mjs';
 
 const html = htm.bind(h);
 
@@ -25,6 +26,10 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
         case 'wikibase-item':
         case 'wikibase-property':
           return html`<${Thing}
+            ...${mainsnak.datavalue.value}
+            manager=${manager} />`;
+        case 'wikibase-lexeme':
+          return html`<${Word}
             ...${mainsnak.datavalue.value}
             manager=${manager} />`;
         case 'time':

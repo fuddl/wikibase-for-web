@@ -40,6 +40,12 @@ class WikiBaseEntityManager {
 	}
 	entityAddContext({ entity, wikibase }) {
 		entity.wikibase = wikibase;
+		if (entity.lexicalCategory) {
+			entity.lexicalCategory = `${wikibase}:${entity.lexicalCategory}`;
+		}
+		if (entity.language) {
+			entity.language = `${wikibase}:${entity.language}`;
+		}
 		const iterate = (item, prefix) => {
 			if (Array.isArray(item)) {
 				// If the item is an array, iterate over its elements
@@ -82,7 +88,10 @@ class WikiBaseEntityManager {
 
 		this.designators[id] = result.entities[entity];
 
-		return this.designators[id];
+		return this.entityAddContext({
+			entity: this.designators[id],
+			wikibase: wikibase,
+		});
 	}
 	async query(wikibase, queryId, params) {
 		const queryObject = this.queryManager.queries[queryId];

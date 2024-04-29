@@ -49,12 +49,8 @@ class Ensign extends Component {
               : autoDescApi
                 ? html`<${AutoDesc} id=${localId} api=${autoDescApi} />`
                 : null
-            : html`<${Thing}
-                  id=${`${wikibase}:${language}`}
-                  manager=${manager} />, ${' '}
-                <${Thing}
-                  id=${`${wikibase}:${lexicalCategory}`}
-                  manager=${manager} />`}
+            : html`<${Thing} id=${language} manager=${manager} />, ${' '}
+                <${Thing} id=${lexicalCategory} manager=${manager} />`}
         </p>
       </div>
     `;
