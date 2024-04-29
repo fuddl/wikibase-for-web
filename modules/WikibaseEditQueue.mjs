@@ -138,6 +138,7 @@ export class WikibaseEditQueue {
       body: new URLSearchParams({
         token: token,
         format: 'json',
+        tags: tag,
         ...params,
       }),
     });
