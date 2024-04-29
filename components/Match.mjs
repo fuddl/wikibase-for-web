@@ -16,8 +16,6 @@ import Engage from './Engage.mjs';
 const html = htm.bind(h);
 
 const submit = e => {
-  e.preventDefault();
-
   for (const component of e.target.form) {
     if (component.nodeName === 'SELECT' && component.disabled == false) {
       const optionsHistoryAPI = new OptionsHistoryAPI();
@@ -112,11 +110,11 @@ const submit = e => {
         candidates: [
           {
             instance: data.instance,
-            specificity: 1000,
+            specificity: 900,
             matchFromUrl: data.matchUrl,
             resolved: [
               {
-                specificity: 1000,
+                specificity: 900,
                 id: `${data.instance}:${data.subjectId}`,
               },
             ],
@@ -131,6 +129,7 @@ const submit = e => {
 
 const MatchInstance = ({ suggestion, manager, edits }) => {
   const [subjectSelected, setSubjectSelected] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [searchText, setSeachText] = useState('');
   const [allEdits, setAllEdits] = useState(edits);
   const [metaData, setMetaData] = useState({});
@@ -237,8 +236,11 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
           text=${browser.i18n.getMessage('send_to_instance', [
             manager.wikibases[suggestion.instance].name,
           ])}
-          onClick=${submit}
-          disabled=${!subjectSelected} />
+          onClick=${e => {
+            setSubmitted(true);
+            submit(e);
+          }}
+          disabled=${!subjectSelected || submitted} />
       </div>
     </form>
   `;
