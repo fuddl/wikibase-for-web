@@ -156,6 +156,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
         }
       }
       const additionalEdits = await suggestedEdits(
+        `${suggestion.instance}:${suggestion.matchProperty}`,
         metadata,
         manager.wikibases[suggestion.instance],
       );

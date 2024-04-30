@@ -1,16 +1,18 @@
+import { equivalentClasses } from './equivalentClasses.mjs';
+import { equivalentProperties } from './equivalentProperties.mjs';
+import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
+import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlProperties } from './urlProperties.mjs';
-import { equivalentClasses } from './equivalentClasses.mjs';
-import { equivalentProperties } from './equivalentProperties.mjs';
-import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 
 const queries = {
 	equivalentClasses,
 	equivalentProperties,
+	instancesOrSubclasses,
 	itemByExternalId,
 	itemByUrl,
 	reviewScoreHostnames,

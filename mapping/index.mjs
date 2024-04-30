@@ -1,6 +1,7 @@
 import { metaToEdits } from './meta.mjs';
 import { ldToEdits } from './ld.mjs';
 import { urlReference } from './urlReference.mjs';
+import { constraintsToEdits } from './constraints.mjs';
 
 function removeDuplicates(arr) {
   const seen = new Set();
@@ -69,8 +70,10 @@ function reconcileEditSets(editSet1, editSet2) {
 
     editSet2.forEach((edit2, index2) => {
       const identicalActions = edit1.action === edit2.action;
+      const identicalDatatypes =
+        edit1?.claim?.mainsnak?.datatype === edit2?.claim?.mainsnak?.datatype;
 
-      if (identicalActions) {
+      if (identicalActions && identicalDatatypes) {
         foundMatch = true;
         processedIndices.add(index2);
 
@@ -119,8 +122,10 @@ function reconcileEditSets(editSet1, editSet2) {
   return removeDuplicates(reconciledEdits);
 }
 
-export async function suggestedEdits(metadata, wikibase) {
+export async function suggestedEdits(property, metadata, wikibase) {
   const references = urlReference(metadata, wikibase);
+
+  const constraintEdits = await constraintsToEdits(property, wikibase);
 
   const metaEdits = await metaToEdits({
     meta: metadata.meta,
@@ -129,6 +134,8 @@ export async function suggestedEdits(metadata, wikibase) {
     references: references,
   });
 
+  const constraintAndMetaEdits = reconcileEditSets(constraintEdits, metaEdits);
+
   const linkedDataEdits = await ldToEdits({
     ld: metadata.linkData,
     wikibase: wikibase,
@@ -136,5 +143,5 @@ export async function suggestedEdits(metadata, wikibase) {
     references: references,
   });
 
-  return reconcileEditSets(metaEdits, linkedDataEdits);
+  return reconcileEditSets(constraintAndMetaEdits, linkedDataEdits);
 }

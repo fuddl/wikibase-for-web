@@ -70,7 +70,7 @@ class Change extends Component {
 							name=${`${this.name}.claim.mainsnak.property`}
 							value=${this.state.claim?.mainsnak?.property} />`;
 					} else if (this.state.claim?.mainsnak.property) {
-						return html`<${Thing}
+						return html`<${this.state.active ? Thing : Thin}
 								id=${this.state.claim.mainsnak.property}
 								manager="${manager}" />
 							<input
@@ -211,7 +211,7 @@ class Change extends Component {
 									</dd>
 								</dl>`,
 						)}
-						${this.state?.claim?.references &&
+						${this.state?.claim?.references?.length > 0 &&
 						html`
 							<details>
 								<summary>Reference</summary>
