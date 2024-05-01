@@ -198,12 +198,21 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     setSubjectType(requestedType);
   }, []);
 
+  const filteredEdits = [];
+  for (const edit of allEdits) {
+    // labels only apply to items, so lets filter that out
+    if (edit.action === 'labals:add' && subjectType !== 'item') {
+      continue;
+    }
+    filteredEdits.push(edit);
+  }
+
   return html`
     <form class="match__form">
       <input type="hidden" value=${suggestion.instance} name="instance" />
       <div class="match__item">
         <div class="match__statements">
-          ${Object.entries(allEdits).map(
+          ${Object.entries(filteredEdits).map(
             ([editId, edit]) =>
               html`<${Change}
                 key=${editId}
