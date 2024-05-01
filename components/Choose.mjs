@@ -100,6 +100,7 @@ const Choose = ({
           name="search"
           type="search"
           autocomplete="off"
+          data-focus="suggested"
           placeholder=${browser.i18n.getMessage(`search_${type}_placeholder`)}
           onInput=${e => {
             setInputValue(e.target.value);
