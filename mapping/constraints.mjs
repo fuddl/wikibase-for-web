@@ -47,18 +47,18 @@ export async function constraintsToEdits(id, wikibase) {
 						item => item?.datavalue?.value?.id,
 					);
 				}
-				cprops.forEach(cprop => {
-					citems.forEach(citem => {
+				if (citems.length > 0) {
+					cprops.forEach(cprop => {
 						newEdits.push({
 							action: 'claim:create',
 							signature: `constraint:${prop.id}`,
 							claim: new WikibaseItemClaim({
 								property: cprop,
-								value: citem,
+								value: citems,
 							}),
 						});
 					});
-				});
+				}
 				break;
 			case items?.subjectTypeConstraint:
 				let cclasses = [];
