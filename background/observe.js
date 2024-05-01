@@ -91,7 +91,12 @@ async function resolveCurrentTab(tabId) {
 }
 
 browser.webNavigation.onCommitted.addListener(async function (details) {
-	await resolveCurrentTab(details.tabId);
+	const currentTab = await getCurrentTab();
+	if (currentTab.id === details.tabId) {
+		await resolveCurrentTab(details.tabId);
+	} else {
+		await resolveUrl(details.url);
+	}
 });
 
 browser.tabs.onActivated.addListener(function (activeInfo) {
