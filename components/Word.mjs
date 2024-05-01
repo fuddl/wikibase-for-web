@@ -32,21 +32,39 @@ class Word extends Component {
       return setUpObserver();
     }, [id, manager]);
 
+    const lemmas =
+      designator?.lemmas || designator?.representations || designator?.glosses;
+
+    let appendix = [];
+    if (designator?.language) {
+      appendix.push(designator.language);
+    }
+    if (designator?.lexicalCategory) {
+      appendix.push(designator.lexicalCategory);
+    }
+    if (designator?.grammaticalFeatures?.length > 0) {
+      appendix = [...appendix, ...designator.grammaticalFeatures];
+    }
+
     return html`<a class="word" href="${href}" ref=${elementRef}
-        >${designator?.lemmas
-          ? (designator.lemmas
-              ? Object.entries(designator.lemmas).map(
-                  ([lang, lemma]) => lemma?.value,
-                )
+        >${lemmas
+          ? (lemmas
+              ? Object.entries(lemmas).map(([lang, lemma]) => lemma?.value)
               : ''
             ).join('/')
           : id}</a
       >
-      ${' '}
-      (${designator?.language &&
-      html`<${Thin} id=${designator.language} manager=${manager} />, `}
-      ${designator?.lexicalCategory &&
-      html`<${Thin} id=${designator.lexicalCategory} manager=${manager} />`})`;
+      ${appendix.length > 0
+        ? htm`${' '}
+  (${appendix.map(
+    (item, index) => html`
+      <${Thin} id=${item} manager=${manager} />${index < appendix.length - 1
+        ? ', '
+        : ''}
+    `,
+  )})
+`
+        : ''}`;
   }
 }
 

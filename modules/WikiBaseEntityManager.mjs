@@ -46,6 +46,12 @@ class WikiBaseEntityManager {
 		if (entity.language) {
 			entity.language = `${wikibase}:${entity.language}`;
 		}
+		if (entity?.grammaticalFeatures?.length > 0) {
+			entity.grammaticalFeatures = entity.grammaticalFeatures.map(
+				id => `${wikibase}:${id}`,
+			);
+		}
+
 		const iterate = (item, prefix) => {
 			if (Array.isArray(item)) {
 				// If the item is an array, iterate over its elements

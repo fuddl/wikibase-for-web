@@ -29,6 +29,8 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
             ...${mainsnak.datavalue.value}
             manager=${manager} />`;
         case 'wikibase-lexeme':
+        case 'wikibase-form':
+        case 'wikibase-sense':
           return html`<${Word}
             ...${mainsnak.datavalue.value}
             manager=${manager} />`;
