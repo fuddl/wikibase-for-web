@@ -1,0 +1,15 @@
+.inform {
+	padding: 0.1px 1rem;
+	background-color: #447ff5;
+	color: white;
+}
+
+.inform__inner {
+	margin: 1.5rem 0;
+}
+
+.inform :link,
+.inform :visited {
+	color: inherit;
+	text-decoration: underline;
+}
