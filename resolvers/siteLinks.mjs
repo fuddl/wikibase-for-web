@@ -22,41 +22,37 @@ export const siteLinks = {
           },
           status: "required",
         });
+        return [
+          {
+            specificity: 1000,
+            instance: wikibase.id,
+            proposeEdits: proposeEdits,
+            matchFromUrl: location,
+            matchSiteId: id,
+            matchSiteLink: matches[1],
+            directMatch: false,
+          },
+        ];
       }
     }
-    return [
-      {
-        specificity: 1000,
-        instance: wikibase.id,
-        proposeEdits: proposeEdits,
-        matchFromUrl: location,
-        directMatch: false,
-      },
-    ];
-  },
+    return []
+   },
   resolve: async function (
-    { proposeEdits, matchFromUrl, specificity },
+    { matchSiteLink, matchSiteId, specificity },
     { wikibase, wikibaseID },
   ) {
-  	if (proposeEdits.length < 1) {
-  		return [];
-  	}
-    const siteLink = proposeEdits[0].sitelink;
+
     const redirect = await fetch(
-      `${wikibase.instance}/wiki/Special:ItemByTitle/?site=${siteLink.site}&page=${siteLink.title}`,
-      { redirect: "follow" },
+      `${wikibase.instance}/wiki/Special:ItemByTitle/?site=${matchSiteId}&page=${matchSiteLink}`,
     );
+
     const wikibaseUrl = redirect.url;
     const match = wikibaseUrl.match(/Q\d+$/);
-    if (match) {
-      return [
-        {
-          id: `${wikibase.id}:${match[0]}`,
-          specificity: specificity,
-        },
-      ];
-    } else {
-    	return []
-    }
+    return [
+      {
+        id: `${wikibaseID}:${match[0]}`,
+        specificity: specificity,
+      },
+    ];
   },
 };

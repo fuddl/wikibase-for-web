@@ -61,6 +61,13 @@ export const url = {
 	resolve: async function ({ matchFromUrl }, { wikibase, queryManager }) {
 		const fuzzyPermutation = binaryVariations(Object.keys(this.urlFuzziness));
 
+		// including these urls will significantly slow down these queries
+		// we would resolve them with the siteLinks resolver anyway
+		const isPartOfUrls = [];
+		for (const [id, site] of Object.entries(wikibase.sites)) {
+			isPartOfUrls.push(`${new URL(site.pagePath).origin}/`)
+		}
+
 		const hrefs = [];
 		for (const fuzzy of fuzzyPermutation) {
 			let variation = matchFromUrl;
@@ -68,7 +75,9 @@ export const url = {
 				variation = this.urlFuzziness[fuzz](variation);
 			}
 			if (variation && !hrefs.includes(variation)) {
-				hrefs.push(variation);
+				if (!isPartOfUrls.includes(variation)) {
+					hrefs.push(variation);
+				}
 			}
 		}
 

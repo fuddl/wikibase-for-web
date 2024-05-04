@@ -3,7 +3,7 @@ import { WBK } from './importmap/wikibase-sdk.mjs';
 const wikibases = {
 	wikidata: {
 		name: 'Wikidata',
-		color: '#069',
+		//resolve: false,
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		autodesc: 'https://autodesc.toolforge.org',
@@ -84,6 +84,12 @@ const wikibases = {
 			writer: 'Q36180',
 			year: 'Q577',
 		},
+		sites: {
+			en: {
+				language: "en",
+				pagePath: "https://en.wikipedia.org/wiki/$1",
+			},
+		},
 		badResolvers: [
 			'https://wikidata-externalid-url.toolforge.org/',
 			'https://web.archive.org/web/',
@@ -108,6 +114,16 @@ const wikibases = {
 	// 	wgScriptPath: '/dt',
 	// 	icon: 'icons/datatrek.svg',
 	// 	props: { formatterURL: 'P5' },
+	// 	sites: {
+	// 		enma: {
+	// 			language: 'en',
+	// 			pagePath: 'https://memory-alpha.fandom.com/wiki/$1',
+	// 		},
+	// 		wikitrek: {
+	// 			language: 'it',
+	// 			pagePath: 'https://wikitrek.org/wiki/$1',
+	// 		}
+	// 	}
 	// },
 	// playground: {
 	// 	name: 'Playground',

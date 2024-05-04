@@ -158,7 +158,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
         if (matches?.[1]) {
           newSearchTitle = matches[1];
           newEdits.push({
-            action: 'labals:add',
+            action: 'labels:add',
             labels: matches[1],
           });
         }
