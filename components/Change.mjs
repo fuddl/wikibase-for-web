@@ -26,6 +26,7 @@ class Change extends Component {
 		this.state = {
 			claim: props?.claim,
 			labels: props?.labels,
+			sitelink: props?.sitelink,
 			editMode: false,
 			active: !dismissed.isEditDismissed(this.signature),
 		};
@@ -82,8 +83,10 @@ class Change extends Component {
 								type="hidden" /> `;
 					}
 					break;
-				case 'labals:add':
-					return browser.i18n.getMessage('set_alias');
+				case 'labels:add':
+					return browser.i18n.getMessage('set_alias');				
+				case 'sitelink:set':
+					return browser.i18n.getMessage('set_sitelink');
 			}
 		};
 
@@ -109,8 +112,23 @@ class Change extends Component {
 								name="${this.name}.claim.mainsnak.snaktype"
 								value="value" />`;
 					}
-				case 'labals:add':
+				case 'labels:add':
 					return html`<em>${this.state?.labels}</em>`;
+				case 'sitelink:set':
+					return html`<div>
+						<code>
+							<input
+								type="hidden"
+								name="${this.name}.sitelink.site"
+								value="${this.state?.sitelink.site}" />
+							<input
+								type="hidden"
+								name="${this.name}.sitelink.title"
+								value="${this.state?.sitelink.title}" />
+							${this.state?.sitelink.site}:
+						  <strong>${this.state?.sitelink.title}</strong>
+						</code>
+					</div>`;
 			}
 		};
 

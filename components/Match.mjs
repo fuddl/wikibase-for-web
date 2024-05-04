@@ -86,6 +86,14 @@ const submit = e => {
         });
       }
     }
+    if (edit?.action === 'sitelink:set') {
+      jobs.push({
+        action: edit.action,
+        instance: data.instance,
+        entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+        sitelink: edit.sitelink,
+      });
+    }
   }
 
   if (data.matchUrl) {
@@ -218,6 +226,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
                 key=${editId}
                 claim=${edit?.claim}
                 labels=${edit?.labels}
+                sitelink=${edit?.sitelink}
                 action=${edit.action}
                 signature=${edit?.signature}
                 name=${`edits.${editId}`}

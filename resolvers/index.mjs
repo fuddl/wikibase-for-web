@@ -1,13 +1,14 @@
-import { wikibase } from './wikibase.mjs';
-import { urlMatchPattern } from './urlMatchPattern.mjs';
+import { siteLinks } from './siteLinks.mjs';
 import { url } from './url.mjs';
+import { urlMatchPattern } from './urlMatchPattern.mjs';
+import { wikibase } from './wikibase.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [url, urlMatchPattern, wikibase],
+	list: [siteLinks, url, urlMatchPattern, wikibase],
 };
 
 const resolvedCache = {};
@@ -23,6 +24,9 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 			await Promise.all(
 				Object.keys(wikibases).map(async name => {
 					if (allowedWikibases && !allowedWikibases.includes(name)) {
+						return;
+					}
+					if (wikibases[name]?.resolve === false) {
 						return;
 					}
 					const context = {

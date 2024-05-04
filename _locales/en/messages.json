@@ -3,6 +3,10 @@
     "message": "Set alias",
     "description": "Title of an edit that sets an alias."
   },
+  "set_sitelink": {
+    "message": "Set sitelink",
+    "description": "Title of an edit that sets a sitelink."
+  },
   "dismiss_action": {
     "message": "Dismiss this message",
     "description": "Label of a button that dismisses a message."

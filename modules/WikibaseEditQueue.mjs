@@ -256,6 +256,14 @@ export class WikibaseEditQueue {
           snaks: JSON.stringify(job.snaks),
         });
         break;
+      case 'sitelink:set':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbsetsitelink',
+          linksite: job.sitelink.site,
+          linktitle: job.sitelink.title,
+          id: job.entity,
+        });
+        break;
       case 'resolver:add':
         if (job.url in this.resolvedCache) {
           this.resolvedCache[job.url].push({
