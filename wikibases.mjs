@@ -98,18 +98,15 @@ const wikibases = {
 	},
 	// testWikidata: {
 	// 	name: 'Wikidata Test',
-	// 	color: 'black',
 	// 	instance: 'https://test.wikidata.org',
 	// },
 	// osmWiki: {
 	// 	name: 'OpenStreetMap Wiki',
-	// 	color: '#ded',
 	// 	instance: 'https://wiki.openstreetmap.org',
 	// 	sparqlEndpoint: 'https://sophox.org/sparql',
 	// },
 	// datatrek: {
 	// 	name: 'DataTrek',
-	// 	color: '#00a300',
 	// 	instance: 'https://data.wikitrek.org',
 	// 	wgScriptPath: '/dt',
 	// 	icon: 'icons/datatrek.svg',
@@ -127,7 +124,6 @@ const wikibases = {
 	// },
 	// playground: {
 	// 	name: 'Playground',
-	// 	color: '#f0d722',
 	// 	instance: 'https://playground.wikibase.cloud',
 	// 	sparqlEndpoint: 'https://playground.wikibase.cloud/query/sparql',
 	// 	props: {
@@ -173,7 +169,6 @@ const wikibases = {
 	// },
 	// wikibaseWorld: {
 	// 	name: 'Wikibase World',
-	// 	color: '#394fa4',
 	// 	instance: 'https://wikibase.world',
 	// 	sparqlEndpoint: 'https://wikibase.world/query/sparql',
 	// 	icon: 'icons/wikibaseworld.svg',
@@ -181,7 +176,6 @@ const wikibases = {
 	// },
 	// commons: {
 	// 	name: 'Wikimedia Commons',
-	// 	color: '#36c',
 	// 	instance: 'https://commons.wikimedia.org',
 	// 	//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
 	// },
