@@ -1,4 +1,5 @@
 import { WBK } from './importmap/wikibase-sdk.mjs';
+import wikidataSites from './wikidataSites.mjs';
 
 const wikibases = {
 	wikidata: {
@@ -85,12 +86,7 @@ const wikibases = {
 			writer: 'Q36180',
 			year: 'Q577',
 		},
-		sites: {
-			en: {
-				language: "en",
-				pagePath: "https://en.wikipedia.org/wiki/$1",
-			},
-		},
+		sites: wikidataSites,
 		badResolvers: [
 			'https://wikidata-externalid-url.toolforge.org/',
 			'https://web.archive.org/web/',
