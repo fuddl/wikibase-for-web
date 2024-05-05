@@ -27,6 +27,9 @@ export const urlMatchPattern = {
 				case 'insensitive':
 					id = id.toLowerCase();
 					break;
+				case 'bigint':
+					id = String(BigInt(id, 16));
+					break;
 			}
 
 			// @todo handle isbn numbers?

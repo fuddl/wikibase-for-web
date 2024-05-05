@@ -54,6 +54,7 @@ const wikibases = {
 			allCaps: 'Q3960579',
 			allowedEntityTypesConstraint: 'Q52004125',
 			asMainValue: 'Q54828448',
+			bigInteger: 'Q84314203',
 			caseInsensitive: 'Q55121183',
 			day: 'Q573',
 			edition: 'Q3331189',

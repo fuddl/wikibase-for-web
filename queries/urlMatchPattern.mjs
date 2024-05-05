@@ -11,6 +11,7 @@ export const urlMatchPattern = {
 		'allCaps',
 		'caseInsensitive',
 		'lowercase',
+		'bigInteger',
 		'propertyLinkingToArticlesInMediaWikiWebsites',
 	],
 	query: ({ instance, params }) => `
@@ -21,7 +22,9 @@ export const urlMatchPattern = {
 			?prop p:${instance.props.urlMatchPattern} ?stat.
 			BIND(IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.allCaps}}, 'upper',
 				IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.lowercase}}, 'lower',
-					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive', '')
+					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive',
+						IF(EXISTS { ?stat pq:${instance.props.hasCharacteristic} wd:${instance.items.bigInteger}.}, 'bigint', '')
+					)
 				)
 			) AS ?c)
 			BIND(REPLACE(STR(?prop), '^.*/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$', '$1') AS ?p).
