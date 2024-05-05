@@ -14,19 +14,18 @@ export const siteLinks = {
       const regex = this.pagePathToRegex(site.pagePath);
       const matches = location.match(regex);
       if (matches && matches.length > 1) {
-        proposeEdits.push({
-          action: "sitelink:set",
-          sitelink: {
-            site: id,
-            title: matches[1],
-          },
-          status: "required",
-        });
         return [
           {
             specificity: 1000,
             instance: wikibase.id,
-            proposeEdits: proposeEdits,
+            proposeEdits: [{
+              action: "sitelink:set",
+              sitelink: {
+                site: id,
+                title: matches[1],
+              },
+              status: "required",
+            }],
             matchFromUrl: location,
             matchSiteId: id,
             matchSiteLink: matches[1],
@@ -35,6 +34,7 @@ export const siteLinks = {
         ];
       }
     }
+
     return []
    },
   resolve: async function (
@@ -48,11 +48,16 @@ export const siteLinks = {
 
     const wikibaseUrl = redirect.url;
     const match = wikibaseUrl.match(/Q\d+$/);
+    if (match === null) {
+      return []
+    }
+
     return [
       {
         id: `${wikibaseID}:${match[0]}`,
         specificity: specificity,
       },
     ];
+  
   },
 };
