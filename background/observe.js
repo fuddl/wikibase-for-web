@@ -99,6 +99,15 @@ browser.webNavigation.onCommitted.addListener(async function (details) {
 	}
 });
 
+browser.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
+	const currentTab = await getCurrentTab();
+	if (currentTab.id === details.tabId) {
+		await resolveCurrentTab(details.tabId);
+	} else {
+		await resolveUrl(details.url);
+	}
+});
+
 browser.tabs.onActivated.addListener(function (activeInfo) {
 	if (tabs?.[activeInfo.tabId]) {
 		updateSidebar(tabs[activeInfo.tabId]);
