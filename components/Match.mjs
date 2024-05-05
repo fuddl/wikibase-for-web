@@ -160,7 +160,18 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   const updateAdditionalEdits = async metadata => {
     let newSearchTitle = '';
     let newEdits = [...edits];
-    if (metadata?.title) {
+    
+    if (metadata?.mediawiki?.wgTitle) {
+      newSearchTitle = metadata.mediawiki.wgTitle;
+      newEdits.push({
+        action: 'labels:add',
+        signature: `mediawiki-title:${new URL(metadata.location).host}`,
+        labels: {
+          add: metadata.mediawiki.wgTitle,
+          language: metadata.mediawiki?.wgPageContentLanguage,
+        }
+      });
+    } else if (metadata?.title) {
       newSearchTitle = metadata.title;
       if (suggestion?.titleExtractPattern) {
         const matches = metadata.title.match(suggestion.titleExtractPattern);
@@ -176,28 +187,17 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
           });
         }
       }
-      const additionalEdits = await suggestedEdits(
-        `${suggestion.instance}:${suggestion.matchProperty}`,
-        metadata,
-        manager.wikibases[suggestion.instance],
-      );
-      newEdits = [...newEdits, ...additionalEdits];
     }
+
+    const additionalEdits = await suggestedEdits(
+      `${suggestion.instance}:${suggestion.matchProperty}`,
+      metadata,
+      manager.wikibases[suggestion.instance],
+    );
+    newEdits = [...newEdits, ...additionalEdits];
 
     setAllEdits(newEdits);
 
-    if (metadata?.mediawiki?.wgTitle) {
-      newSearchTitle = metadata.mediawiki.wgTitle;
-      console.debug(metadata.mediawiki)
-      newEdits.push({
-        action: 'labels:add',
-        signature: `mediawiki-title:${new URL(metadata.location).host}`,
-        labels: {
-          add: metadata.mediawiki.wgTitle,
-          language: metadata.mediawiki?.wgPageContentLanguage,
-        }
-      });
-    }
 
     setSeachText(newSearchTitle);
   };
