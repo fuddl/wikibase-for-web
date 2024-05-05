@@ -14,7 +14,9 @@ class Tempus extends Component {
 
     if (precision > 10) {
       const date = new Date(datetime);
-      localised = date.toLocaleDateString();
+      // display dates as iso for now
+      localised = date.toISOString().substring(0,10);
+      //localised = date.toLocaleDateString(Intl.DateTimeFormat());
     } else if (precision == 10) {
       const year = parseInt(time.substring(1, 6));
       const monthNumber = parseInt(time.substring(6, 8));
