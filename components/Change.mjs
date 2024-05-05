@@ -113,7 +113,17 @@ class Change extends Component {
 								value="value" />`;
 					}
 				case 'labels:add':
-					return html`<em>${this.state?.labels}</em>`;
+					return html`
+						<input
+							type="hidden"
+							name="${this.name}.add"
+							value="${this.state?.labels.add}" />
+						<input
+							type="hidden"
+							name="${this.name}.language"
+							value="${this.state?.labels.language}" />
+						<em lang=${this.state?.labels.language}>${this.state?.labels.add}</em>
+						`;
 				case 'sitelink:set':
 					return html`<div>
 						<code>

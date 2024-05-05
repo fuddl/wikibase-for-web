@@ -264,6 +264,14 @@ export class WikibaseEditQueue {
           id: job.entity,
         });
         break;
+      case 'labels:add':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbsetaliases',
+          add: job.add,
+          language: job.language,
+          id: job.entity,
+        });
+        break;
       case 'resolver:add':
         if (job.url in this.resolvedCache) {
           this.resolvedCache[job.url].push({

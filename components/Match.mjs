@@ -94,6 +94,15 @@ const submit = e => {
         sitelink: edit.sitelink,
       });
     }
+    if (edit?.action === 'labels:add') {
+      jobs.push({
+        action: edit.action,
+        instance: data.instance,
+        entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+        add: edit.add,
+        language: edit.language,
+      });
+    }
   }
 
   if (data.matchUrl) {
@@ -105,7 +114,7 @@ const submit = e => {
     });
   }
 
-  // console.debug(jobs);
+  //console.debug(jobs);
 
   try {
     browser.runtime.sendMessage({
@@ -159,7 +168,11 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
           newSearchTitle = matches[1];
           newEdits.push({
             action: 'labels:add',
-            labels: matches[1],
+            signature: `extracted-title:${suggestion.titleExtractPattern}`,
+            labels: {
+              add: matches[1],
+              language: metadata.lang,
+            }
           });
         }
       }
