@@ -137,8 +137,11 @@ export async function getTabMetadata(tabId) {
                         const match = /RLCONF\s*=\s*(\{[^;]*\})/.exec(script.textContent);
 
                         if (match) {
+                            const correctedJson = match[1].replace(/!0/g, 'true').replace(/!1/g, 'false');
+                            
                             try {
-                                const config = JSON.parse(match[1]);
+                                const config = JSON.parse(correctedJson);
+
 
                                 const extractedData = {
                                     wgTitle: config.wgTitle,
