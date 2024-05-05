@@ -185,6 +185,20 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     }
 
     setAllEdits(newEdits);
+
+    if (metadata?.mediawiki?.wgTitle) {
+      newSearchTitle = metadata.mediawiki.wgTitle;
+      console.debug(metadata.mediawiki)
+      newEdits.push({
+        action: 'labels:add',
+        signature: `mediawiki-title:${new URL(metadata.location).host}`,
+        labels: {
+          add: metadata.mediawiki.wgTitle,
+          language: metadata.mediawiki?.wgPageContentLanguage,
+        }
+      });
+    }
+
     setSeachText(newSearchTitle);
   };
 

@@ -129,12 +129,46 @@ export async function getTabMetadata(tabId) {
                 return output;
             };
 
+            const getMediaWikiGlobals = () => {
+                const scripts = document.getElementsByTagName('script');
+
+                for (let script of scripts) {
+                    if (script.textContent.includes('RLCONF')) {
+                        const match = /RLCONF\s*=\s*(\{[^;]*\})/.exec(script.textContent);
+
+                        if (match) {
+                            try {
+                                const config = JSON.parse(match[1]);
+
+                                const extractedData = {
+                                    wgTitle: config.wgTitle,
+                                    wgPageContentLanguage: config.wgPageContentLanguage,
+                                    wgArticleId: config.wgArticleId,
+                                    wgPageName: config.wgPageName,
+                                    wgCurRevisionId: config.wgCurRevisionId,
+                                    wgIsRedirect: config.wgIsRedirect,
+                                    wgRevisionId: config.wgRevisionId
+                                };
+
+                                return extractedData;
+                            } catch (e) {
+                                console.error('Error parsing JSON from script tag:', e);
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+
             return {
                 title: document.title,
                 lang: document.documentElement.lang,
                 description: getDescription(),
                 keywords: getKeywords(),
                 canonicalURL: getCanonicalURL(),
+                mediawiki: getMediaWikiGlobals(),
                 meta: getMeta(),
                 linkData: getLinkedData(),
                 location: document.location.toString(),

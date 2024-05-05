@@ -117,6 +117,10 @@ const wikibases = {
 	// 			language: 'en',
 	// 			pagePath: 'https://memory-alpha.fandom.com/wiki/$1',
 	// 		},
+	// 		enmb: {
+	// 			language: 'en',
+	// 			pagePath: 'https://memory-beta.fandom.com/wiki/$1',
+	// 		},
 	// 		wikitrek: {
 	// 			language: 'it',
 	// 			pagePath: 'https://wikitrek.org/wiki/$1',
