@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.524",
+  "version": "0.527",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
@@ -36,7 +36,7 @@
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "js": ["content/selection-observer.js"]
+      "js": ["content/selection-observer.js", "content/hash-change-observer.js"]
     }
   ],
   "browser_specific_settings": {

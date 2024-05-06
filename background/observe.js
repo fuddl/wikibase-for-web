@@ -34,7 +34,9 @@ function getCurrentTab() {
 
 async function findTabByUrl(url) {
 	try {
-		const tabs = await browser.tabs.query({ url: url.replace(/:\d+/, '') });
+		const tabs = await browser.tabs.query({
+			url: url.replace(/:\d+/, '').replace(/\#.+/, ''),
+		});
 
 		if (tabs.length > 0) {
 			const firstTab = tabs[0];
@@ -99,14 +101,16 @@ browser.webNavigation.onCommitted.addListener(async function (details) {
 	}
 });
 
-browser.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
-	const currentTab = await getCurrentTab();
-	if (currentTab.id === details.tabId) {
-		await resolveCurrentTab(details.tabId);
-	} else {
-		await resolveUrl(details.url);
-	}
-});
+browser.webNavigation.onHistoryStateUpdated.addListener(
+	async function (details) {
+		const currentTab = await getCurrentTab();
+		if (currentTab.id === details.tabId) {
+			await resolveCurrentTab(details.tabId);
+		} else {
+			await resolveUrl(details.url);
+		}
+	},
+);
 
 browser.tabs.onActivated.addListener(function (activeInfo) {
 	if (tabs?.[activeInfo.tabId]) {
@@ -134,6 +138,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		const tabId = await findTabByUrl(message.url);
 		const metadata = await getTabMetadata(tabId);
 		return Promise.resolve({ response: metadata });
+	} else if (message.type === 'hash_changed') {
+		const tabId = await findTabByUrl(message.url);
+		const results = await resolveAndUpdateSidebar(message.url, tabId);
 	}
 	return false;
 });
