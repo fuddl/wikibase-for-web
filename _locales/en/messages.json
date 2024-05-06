@@ -1,4 +1,34 @@
 {
+  "match_via_sitelink": {
+    "message": "Match to $INSTANCE$ via sitelink",
+    "description": "Header of a section that allows matching a url to a wikibase entity via sitelink.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_external_id": {
+    "message": "Match to $INSTANCE$ via id",
+    "description": "Header of a section that allows matching a url to a wikibase entity via an external id.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_url": {
+    "message": "Match to $INSTANCE$ via url",
+    "description": "Header of a section that allows matching a url to a wikibase entity.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
   "aquiring_metadata": {
     "message": "Aquiring metadata…",
     "description": "Message shown when when aquiring metadata."

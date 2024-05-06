@@ -30,6 +30,7 @@ export const url = {
 			{
 				specificity: location.length,
 				instance: wikibase.id,
+				proposeSummary: browser.i18n.getMessage('match_via_url', wikibase.name),
 				proposeEdits: proposeEdits,
 				matchProperties: urlProperties,
 				matchFromUrl: location,
@@ -65,7 +66,7 @@ export const url = {
 		// we would resolve them with the siteLinks resolver anyway
 		const isPartOfUrls = [];
 		for (const [id, site] of Object.entries(wikibase.sites)) {
-			isPartOfUrls.push(`${new URL(site.pagePath).origin}/`)
+			isPartOfUrls.push(`${new URL(site.pagePath).origin}/`);
 		}
 
 		const hrefs = [];

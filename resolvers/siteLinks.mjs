@@ -1,12 +1,12 @@
 export const siteLinks = {
-  id: "sitelinks",
+  id: 'sitelinks',
   pagePathToRegex(urlTemplate) {
-    const escapedUrl = urlTemplate.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    const regexPattern = escapedUrl.replace(/\\\$1/g, "([^/#?]+)");
+    const escapedUrl = urlTemplate.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const regexPattern = escapedUrl.replace(/\\\$1/g, '([^/#?]+)');
     return new RegExp(`^${regexPattern}$`);
   },
   applies: function (location, { wikibase }) {
-    if (!("sites" in wikibase)) {
+    if (!('sites' in wikibase)) {
       return [];
     }
     const proposeEdits = [];
@@ -18,14 +18,20 @@ export const siteLinks = {
           {
             specificity: 1000,
             instance: wikibase.id,
-            proposeEdits: [{
-              action: "sitelink:set",
-              sitelink: {
-                site: id,
-                title: matches[1],
+            proposeSummary: browser.i18n.getMessage(
+              'match_via_sitelink',
+              wikibase.name,
+            ),
+            proposeEdits: [
+              {
+                action: 'sitelink:set',
+                sitelink: {
+                  site: id,
+                  title: matches[1],
+                },
+                status: 'required',
               },
-              status: "required",
-            }],
+            ],
             matchFromUrl: location,
             matchSiteId: id,
             matchSiteLink: matches[1],
@@ -35,13 +41,12 @@ export const siteLinks = {
       }
     }
 
-    return []
-   },
+    return [];
+  },
   resolve: async function (
     { matchSiteLink, matchSiteId, specificity },
     { wikibase, wikibaseID },
   ) {
-
     const redirect = await fetch(
       `${wikibase.instance}/wiki/Special:ItemByTitle/?site=${matchSiteId}&page=${matchSiteLink}`,
     );
@@ -49,7 +54,7 @@ export const siteLinks = {
     const wikibaseUrl = redirect.url;
     const match = wikibaseUrl.match(/Q\d+$/);
     if (match === null) {
-      return []
+      return [];
     }
 
     return [
@@ -58,6 +63,5 @@ export const siteLinks = {
         specificity: specificity,
       },
     ];
-  
   },
 };

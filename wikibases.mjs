@@ -93,36 +93,15 @@ const wikibases = {
 			'https://resolve.eidr.org/',
 		],
 	},
-	// testWikidata: {
-	// 	name: 'Wikidata Test',
-	// 	instance: 'https://test.wikidata.org',
-	// },
-	// osmWiki: {
-	// 	name: 'OpenStreetMap Wiki',
-	// 	instance: 'https://wiki.openstreetmap.org',
-	// 	sparqlEndpoint: 'https://sophox.org/sparql',
-	// },
-	// datatrek: {
-	// 	name: 'DataTrek',
-	// 	instance: 'https://data.wikitrek.org',
-	// 	wgScriptPath: '/dt',
-	// 	icon: 'icons/datatrek.svg',
-	// 	props: { formatterURL: 'P5' },
-	// 	sites: {
-	// 		enma: {
-	// 			language: 'en',
-	// 			pagePath: 'https://memory-alpha.fandom.com/wiki/$1',
-	// 		},
-	// 		enmb: {
-	// 			language: 'en',
-	// 			pagePath: 'https://memory-beta.fandom.com/wiki/$1',
-	// 		},
-	// 		wikitrek: {
-	// 			language: 'it',
-	// 			pagePath: 'https://wikitrek.org/wiki/$1',
-	// 		}
-	// 	}
-	// },
+	commons: {
+		name: 'Wikimedia Commons',
+		instance: 'https://commons.wikimedia.org',
+		resolve: false,
+		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
+	},
+
+	// an instance for testing
+	//
 	// playground: {
 	// 	name: 'Playground',
 	// 	instance: 'https://playground.wikibase.cloud',
@@ -167,18 +146,6 @@ const wikibases = {
 	// 		userReview: 'Q52',
 	// 		writer: 'Q21',
 	// 	},
-	// },
-	// wikibaseWorld: {
-	// 	name: 'Wikibase World',
-	// 	instance: 'https://wikibase.world',
-	// 	sparqlEndpoint: 'https://wikibase.world/query/sparql',
-	// 	icon: 'icons/wikibaseworld.svg',
-	// 	props: { formatterURL: 'P16' },
-	// },
-	// commons: {
-	// 	name: 'Wikimedia Commons',
-	// 	instance: 'https://commons.wikimedia.org',
-	// 	//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
 	// },
 };
 

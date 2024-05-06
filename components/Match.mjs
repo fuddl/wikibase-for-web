@@ -330,7 +330,8 @@ const Match = ({ suggestions, manager }) => {
                 e.preventDefault();
                 setOpen(index);
               }}>
-              ${manager.wikibases[suggestion.instance].name}
+              ${suggestion?.proposeSummary ??
+              manager.wikibases[suggestion.instance].name}
             </summary>
             ${index === open &&
             html`<${MatchInstance}

@@ -48,6 +48,10 @@ export const urlMatchPattern = {
 			output.push({
 				directMatch: false,
 				instance: wikibase.id,
+				proposeSummary: browser.i18n.getMessage(
+					'match_via_external_id',
+					wikibase.name,
+				),
 				matchFromUrl: location,
 				matchProperty: prop.property,
 				matchValue: id,
