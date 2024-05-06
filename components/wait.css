@@ -1,0 +1,46 @@
+.wait {
+	padding: 2rem 0;
+}
+
+.wait__mover {
+	white-space: nowrap;
+	color: #72777d;
+	text-align: center;
+}
+.wait__mover > .wait__bounce,
+.wait__mover:before,
+.wait__mover:after {
+	content: '';
+	background-color: currentColor;
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 100%;
+	animation: bounce 1600ms ease-in-out -160ms infinite both;
+}
+.wait__mover:before {
+	margin-right: 4px;
+	animation-delay: -330ms;
+}
+.wait__mover:after {
+	margin-left: 4px;
+	animation-delay: 0s;
+}
+
+@keyframes bounce {
+	0%,
+	50%,
+	100% {
+		transform: scale(0.625);
+	}
+	20% {
+		opacity: 0.87;
+		transform: scale(1);
+	}
+}
+
+.wait__status {
+	margin-top: 1em;
+	white-space: normal;
+	text-align: center;
+}

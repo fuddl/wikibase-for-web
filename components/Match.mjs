@@ -12,6 +12,7 @@ import { suggestedEdits } from '../mapping/index.mjs';
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 import Engage from './Engage.mjs';
+import Wait from './Wait.mjs';
 
 const html = htm.bind(h);
 
@@ -150,6 +151,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   const [searchText, setSeachText] = useState('');
   const [allEdits, setAllEdits] = useState(edits);
   const [metaData, setMetaData] = useState({});
+  const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState(navigator.language);
   const [subjectType, setSubjectType] = useState('item');
 
@@ -160,7 +162,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   const updateAdditionalEdits = async metadata => {
     let newSearchTitle = '';
     let newEdits = [...edits];
-    
+
     if (metadata?.mediawiki?.wgTitle) {
       newSearchTitle = metadata.mediawiki.wgTitle;
       newEdits.push({
@@ -169,7 +171,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
         labels: {
           add: metadata.mediawiki.wgTitle,
           language: metadata.mediawiki?.wgPageContentLanguage,
-        }
+        },
       });
     } else if (metadata?.title) {
       newSearchTitle = metadata.title;
@@ -183,7 +185,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
             labels: {
               add: matches[1],
               language: metadata.lang,
-            }
+            },
           });
         }
       }
@@ -197,7 +199,6 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     newEdits = [...newEdits, ...additionalEdits];
 
     setAllEdits(newEdits);
-
 
     setSeachText(newSearchTitle);
   };
@@ -216,6 +217,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     }
 
     await updateAdditionalEdits(newMetaData);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -260,6 +262,10 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
                 manager=${manager} />`,
           )}
         </div>
+        ${loading
+          ? html`<${Wait}
+              status=${browser.i18n.getMessage('aquiring_metadata')} />`
+          : ''}
         <${Choose}
           label=${searchText}
           manager=${manager}

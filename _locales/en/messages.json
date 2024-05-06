@@ -1,4 +1,8 @@
 {
+  "aquiring_metadata": {
+    "message": "Aquiring metadata…",
+    "description": "Message shown when when aquiring metadata."
+  },
   "set_alias": {
     "message": "Set alias",
     "description": "Title of an edit that sets an alias."
