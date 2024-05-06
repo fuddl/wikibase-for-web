@@ -147,7 +147,9 @@ export class WikibaseEditQueue {
     if (parsedResponse.success === 1) {
       if (parsedResponse?.claim?.id) {
         this.lastClaim = parsedResponse.claim.id;
-        this.updateView(`${instance}:${this.lastClaim.replace(/\$.+/, '')}`);
+        this.updateView(
+          `${instance}:${this.lastClaim.replace(/(\$|\-).+/, '')}`,
+        );
       }
       if (parsedResponse?.entity?.id) {
         this.lastEntity = parsedResponse.entity.id;

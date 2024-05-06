@@ -238,7 +238,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   const filteredEdits = [];
   for (const edit of allEdits) {
     // labels only apply to items, so lets filter that out
-    if (edit.action === 'labals:add' && subjectType !== 'item') {
+    if (edit.action === 'labels:add' && subjectType !== 'item') {
       continue;
     }
     filteredEdits.push(edit);
