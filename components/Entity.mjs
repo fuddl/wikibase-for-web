@@ -1,7 +1,11 @@
-import { h, Component } from '../importmap/preact.mjs';
-import { useRef, useState, useEffect } from '../importmap/preact-hooks.mjs';
+import { h, Component } from '../importmap/preact/src/index.js';
+import {
+  useRef,
+  useState,
+  useEffect,
+} from '../importmap/preact/hooks/src/index.js';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
-import htm from '../importmap/htm.mjs';
+import htm from '../importmap/htm/src/index.mjs';
 
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';

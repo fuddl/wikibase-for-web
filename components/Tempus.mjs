@@ -1,5 +1,5 @@
-import { h, Component } from '../importmap/preact.mjs';
-import htm from '../importmap/htm.mjs';
+import { h, Component } from '../importmap/preact/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 
 import Thin from './Thin.mjs';
 
@@ -15,7 +15,7 @@ class Tempus extends Component {
     if (precision > 10) {
       const date = new Date(datetime);
       // display dates as iso for now
-      localised = date.toISOString().substring(0,10);
+      localised = date.toISOString().substring(0, 10);
       //localised = date.toLocaleDateString(Intl.DateTimeFormat());
     } else if (precision == 10) {
       const year = parseInt(time.substring(1, 6));

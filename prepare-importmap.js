@@ -1,99 +1,174 @@
-const { exec } = require('child_process');
+const fs = require('fs-extra');
 const path = require('path');
-const fs = require('fs');
+const { glob } = require('glob');
 
-const copyModules = {
-  'binary-variations': './node_modules/binary-variations/index.js',
-  'preact-hooks': './node_modules/preact/hooks/dist/hooks.module.js',
-  'wikibase-sdk': './node_modules/wikibase-sdk/dist/src/wikibase-sdk.js',
-  htm: './importmap/htm.mjs',
-  isbn3: './node_modules/isbn3/isbn.js',
-  preact: './node_modules/preact/dist/preact.mjs',
-  leaflet: './node_modules/leaflet/dist/leaflet.js',
-};
+// Define the source and destination directories
+const srcDir = path.join(__dirname, 'node_modules');
+const destDir = path.join(__dirname, 'importmap');
 
-const copyStylesheets = {
-  normalize: './node_modules/normalize.css/normalize.css',
-  leaflet: './node_modules/leaflet/dist/leaflet.css',
-};
+// List of modules to copy
+const modulesToCopy = [
+  'binary-variations',
+  'htm',
+  'normalize.css',
+  'isbn3',
+  'leaflet',
+  'preact',
+  'wikibase-sdk',
+];
 
-const outputDir = path.join(__dirname, 'importmap');
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+async function copySpecifiedModules() {
+  try {
+    // Ensure the destination directory exists
+    await fs.ensureDir(destDir);
+
+    // Copy each specified module if it exists in node_modules
+    for (let moduleName of modulesToCopy) {
+      const srcPath = path.join(srcDir, moduleName);
+      const destPath = path.join(destDir, moduleName);
+
+      // Check if the source path exists and is a directory
+      if (
+        (await fs.pathExists(srcPath)) &&
+        (await fs.stat(srcPath)).isDirectory()
+      ) {
+        // Copy the module directory to the destination
+        await fs.copy(srcPath, destPath);
+        console.log(`Copied '${moduleName}' to importmap directory.`);
+      } else {
+        console.log(
+          `Module '${moduleName}' does not exist or is not a directory.`,
+        );
+      }
+    }
+
+    console.log('Specified modules have been copied successfully.');
+  } catch (err) {
+    console.error('Error copying modules:', err);
+  }
 }
 
-const execute = (command, what) => {
-  exec(command, { cwd: __dirname }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing setuo command`, error);
-      return;
-    }
-    if (stderr) {
-      console.error(`esbuild stderr for ${what}:`, stderr);
-      return;
-    }
-    console.log(`Prepared ${what} successfully.`);
-  });
-};
+// Allowed file extensions
+const allowedExtensions = new Set([
+  '.css',
+  '.js',
+  '.mjs',
+  '.png',
+  '.svg',
+  '.json',
+  '.md',
+]);
 
-function copyFileAndReplaceString(
-  srcPath,
-  destPath,
-  searchString,
-  replaceString,
-  callback,
-) {
-  fs.readFile(srcPath, 'utf8', (err, data) => {
-    if (err) {
-      callback(err);
-      return;
-    }
+async function deleteDisallowedFiles(directory) {
+  try {
+    // Read all files and directories in the current directory
+    const items = await fs.readdir(directory);
 
-    const result = data.replace(searchString, replaceString);
+    for (let item of items) {
+      const itemPath = path.join(directory, item);
+      const itemStat = await fs.stat(itemPath);
 
-    fs.writeFile(destPath, result, 'utf8', err => {
-      if (err) {
-        callback(err);
-        return;
+      if (itemStat.isDirectory()) {
+        // If the item is a directory, recurse into it
+        await deleteDisallowedFiles(itemPath);
+      } else {
+        // If the item is a file, check the extension
+        const ext = path.extname(item);
+
+        if (!allowedExtensions.has(ext)) {
+          await fs.remove(itemPath);
+          console.log(`Deleted '${itemPath}' - disallowed extension.`);
+        }
       }
+    }
+  } catch (err) {
+    console.error('Error during cleanup:', err);
+  }
+}
 
-      callback(null, 'The file has been copied and modified successfully.');
+/**
+ * Opens a file, replaces specified content, and saves it back.
+ *
+ * @param {string} filePath - The path to the file.
+ * @param {RegExp} searchValue - The regular expression to match content to replace.
+ * @param {string} replaceValue - The string to replace the matched content with.
+ */
+function modifyFile(filePath, searchValue, replaceValue) {
+  // Read the file asynchronously
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+
+    // Replace the content
+    const modifiedData = data.replace(searchValue, replaceValue);
+
+    // Save the modified file back
+    fs.writeFile(filePath, modifiedData, 'utf8', err => {
+      if (err) {
+        console.error('Error writing file:', err);
+      } else {
+        console.log('File has been modified and saved successfully.');
+      }
     });
   });
 }
+async function fixImportExport(directory) {
+  try {
+    const pattern = '**/*.js'; // Pattern to match all JS files
+    const options = {
+      cwd: directory,
+      ignore: 'node_modules/**', // Ignoring node_modules directory
+    };
 
-Object.keys(copyModules).forEach(moduleName => {
-  const outputPath = path.join(outputDir, `${moduleName}.mjs`);
+    const files = await glob(pattern, options);
 
-  copyFileAndReplaceString(
-    copyModules[moduleName],
-    outputPath,
-    '"preact"',
-    '"./preact.mjs"',
-    (err, message) => {
-      if (err) {
-        console.error('Error:', err);
-      } else {
-        console.log(message);
+    for (let file of files) {
+      const fullPath = path.join(directory, file);
+      const data = await fs.readFile(fullPath, 'utf8');
+
+      // Regex to modify import and export paths that lack a '.js' extension, supporting `* as Alias` and multiline
+      const regex =
+        /(import\s+(?:\* as \S+,\s*)?(?:[\s\S]*?)from\s+|export\s+(?:\*|{[\s\S]*?})\s+from\s+)['"]([^'"\s]+?)['"];?/gm;
+      const fixedData = data.replace(regex, (match, prefix, filepath) => {
+        if (
+          !filepath.endsWith('.js') &&
+          !filepath.startsWith('http') &&
+          !filepath.includes('.json')
+        ) {
+          return `${prefix}'${filepath}.js';`;
+        }
+        return match;
+      });
+
+      if (data !== fixedData) {
+        await fs.writeFile(fullPath, fixedData, 'utf8');
+        console.log(`Updated imports/exports in file ${fullPath}`);
       }
-    },
-  );
-});
+    }
+  } catch (err) {
+    console.error('Error processing files:', err);
+  }
+}
 
-Object.keys(copyStylesheets).forEach(moduleName => {
-  const outputPath = path.join(outputDir, `${moduleName}.css`);
+(async () => {
+  // Run the copy operation
+  await copySpecifiedModules();
 
-  copyFileAndReplaceString(
-    copyStylesheets[moduleName],
-    outputPath,
-    '',
-    '',
-    (err, message) => {
-      if (err) {
-        console.error('Error:', err);
-      } else {
-        console.log(message);
-      }
-    },
+  // Run the cleanup function
+  await deleteDisallowedFiles(destDir);
+
+  modifyFile(
+    './importmap/preact/hooks/src/index.js',
+    "'preact'",
+    '"../../src/index.js"',
   );
-});
+  modifyFile(
+    './importmap/leaflet/src/Leaflet.js',
+    "import {version} from '../package.json';",
+    "const version = '1.9.4';",
+  );
+
+  await fixImportExport(path.join(__dirname, 'importmap'));
+})();

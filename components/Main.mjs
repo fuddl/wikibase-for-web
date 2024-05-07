@@ -1,5 +1,5 @@
-import { h, render, Component } from '../importmap/preact.mjs';
-import htm from '../importmap/htm.mjs';
+import { h, render, Component } from '../importmap/preact/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Entity from './Entity.mjs';

@@ -1,6 +1,6 @@
-import { h } from '../importmap/preact.mjs';
-import htm from '../importmap/htm.mjs';
-import { useState, useEffect } from '../importmap/preact-hooks.mjs';
+import { h } from '../importmap/preact/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
+import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
 import Engage from './Engage.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 

@@ -1,6 +1,10 @@
-import { h, Component } from '../importmap/preact.mjs';
-import { useState, useEffect, useRef } from '../importmap/preact-hooks.mjs';
-import htm from '../importmap/htm.mjs';
+import { h, Component } from '../importmap/preact/src/index.js';
+import {
+  useState,
+  useEffect,
+  useRef,
+} from '../importmap/preact/hooks/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 
 const html = htm.bind(h);

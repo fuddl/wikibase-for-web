@@ -1,5 +1,5 @@
-import { h, Component } from '../importmap/preact.mjs';
-import htm from '../importmap/htm.mjs';
+import { h, Component } from '../importmap/preact/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import AutoDesc from './AutoDesc.mjs';

@@ -1,6 +1,6 @@
-import { h, render, Component } from '../importmap/preact.mjs';
-import { useState, useEffect } from '../importmap/preact-hooks.mjs';
-import htm from '../importmap/htm.mjs';
+import { h, render, Component } from '../importmap/preact/src/index.js';
+import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
 
@@ -84,7 +84,7 @@ class Change extends Component {
 					}
 					break;
 				case 'labels:add':
-					return browser.i18n.getMessage('set_alias');				
+					return browser.i18n.getMessage('set_alias');
 				case 'sitelink:set':
 					return browser.i18n.getMessage('set_sitelink');
 			}
@@ -122,8 +122,10 @@ class Change extends Component {
 							type="hidden"
 							name="${this.name}.language"
 							value="${this.state?.labels.language}" />
-						<em lang=${this.state?.labels.language}>${this.state?.labels.add}</em>
-						`;
+						<em lang=${this.state?.labels.language}
+							>${this.state?.labels.add}</em
+						>
+					`;
 				case 'sitelink:set':
 					return html`<div>
 						<code>
@@ -136,7 +138,7 @@ class Change extends Component {
 								name="${this.name}.sitelink.title"
 								value="${this.state?.sitelink.title}" />
 							${this.state?.sitelink.site}:
-						  <strong>${this.state?.sitelink.title}</strong>
+							<strong>${this.state?.sitelink.title}</strong>
 						</code>
 					</div>`;
 			}

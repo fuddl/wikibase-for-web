@@ -1,5 +1,5 @@
-import { h } from '../importmap/preact.mjs';
-import htm from '../importmap/htm.mjs';
+import { h } from '../importmap/preact/src/index.js';
+import htm from '../importmap/htm/src/index.mjs';
 
 import Pic from './Pic.mjs';
 import Play from './Play.mjs';
