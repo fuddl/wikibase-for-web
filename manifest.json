@@ -1,20 +1,20 @@
 {
   "manifest_version": 2,
-  "name": "Wikidata",
+  "name": "Datatrek for web",
   "version": "0.529",
   "default_locale": "en",
-  "description": "Display information from wikidata.",
+  "description": "Display information from datatrek.",
   "icons": {
-    "48": "icons/wikidata.svg",
-    "96": "icons/wikidata.svg",
-    "128": "icons/wikidata.svg"
+    "48": "icons/datatrek.svg",
+    "96": "icons/datatrek.svg",
+    "128": "icons/datatrek.svg"
   },
   "browser_action": {
-    "default_icon": "icons/wikidata.svg",
-    "default_title": "Wikibase for Web"
+    "default_icon": "icons/datatrek.svg",
+    "default_title": "Datatrek for Web"
   },
   "sidebar_action": {
-    "default_icon": "icons/wikibase.svg",
+    "default_icon": "icons/datatrek.svg",
     "default_title": "Wikibase view",
     "default_panel": "sidebar/index.html",
     "open_at_install": true

@@ -4,7 +4,11 @@ import wikidataSites from './wikidataSites.mjs';
 const wikibases = {
 	wikidata: {
 		name: 'Wikidata',
-		//resolve: false,
+		// We don't want to resolve entities from wikidata but we still need some
+		// info about wikidata since some elements in wikibase are hardcoded to
+		// wikidata. `resolve: false` will prevent the extension from automatically
+		// resolving.
+		resolve: false,
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		autodesc: 'https://autodesc.toolforge.org',
@@ -98,6 +102,40 @@ const wikibases = {
 		instance: 'https://commons.wikimedia.org',
 		resolve: false,
 		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
+	},
+
+	// configuration for datatrek starts here
+	datatrek: {
+		name: 'DataTrek',
+		instance: 'https://data.wikitrek.org',
+		wgScriptPath: '/dt',
+		icon: 'icons/datatrek.svg',
+		// you might like to add your equivalents of `props` and `items` of
+		// wikidata `props` and `items` assuming they work *exactly the same*.
+		props: {
+			// the property references in formatterURL for instance will be used
+			// to generate links from external ids.
+			formatterURL: 'P5',
+		},
+		items: {
+			human: 'Q52',
+		},
+		// this will be used to resolve wiki articles to datatrek items and
+		// hopefully the other way around.
+		sites: {
+			enma: {
+				language: 'en',
+				pagePath: 'https://memory-alpha.fandom.com/wiki/$1',
+			},
+			enmb: {
+				language: 'en',
+				pagePath: 'https://memory-beta.fandom.com/wiki/$1',
+			},
+			wikitrek: {
+				language: 'it',
+				pagePath: 'https://wikitrek.org/wiki/$1',
+			},
+		},
 	},
 
 	// an instance for testing
