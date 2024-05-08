@@ -37,6 +37,10 @@
     "message": "Set alias",
     "description": "Title of an edit that sets an alias."
   },
+  "set_label_or_alias": {
+    "message": "Set label or alias",
+    "description": "Title of an edit that sets an label or an alias."
+  },
   "set_sitelink": {
     "message": "Set sitelink",
     "description": "Title of an edit that sets a sitelink."

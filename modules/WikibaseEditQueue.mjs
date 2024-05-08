@@ -179,6 +179,28 @@ export class WikibaseEditQueue {
     return true;
   }
 
+  async labelOrAliasExists(instance, entity, language, value) {
+    const api = wikibases[instance].api;
+    const url = api.getEntities({
+      ids: [entity],
+      props: ['labels', 'aliases'],
+      languages: [language],
+      format: 'json',
+    });
+
+    const { entities } = await fetch(url).then(res => res.json());
+
+    const { labels, aliases } = entities[entity];
+
+    return {
+      hasLabel: !!labels?.[language]?.hasOwnProperty('value'),
+      isLabel: labels?.[language]?.value.toLowerCase() == value.toLowerCase(),
+      aliasExists: aliases?.[language]?.some(
+        item => item.value.toLowerCase() == value.toLowerCase(),
+      ),
+    };
+  }
+
   async getExistingClaim(instance, params) {
     const api = wikibases[instance].api;
     const url = api.getEntities({
@@ -267,12 +289,31 @@ export class WikibaseEditQueue {
         });
         break;
       case 'labels:add':
-        await this.performFetchRequest(job.instance, {
-          action: 'wbsetaliases',
-          add: job.add,
-          language: job.language,
-          id: job.entity,
-        });
+        const { hasLabel, isLabel, aliasExists } =
+          await this.labelOrAliasExists(
+            job.instance,
+            job.entity,
+            job.language,
+            job.add,
+          );
+
+        if (hasLabel) {
+          if (!aliasExists && !isLabel) {
+            await this.performFetchRequest(job.instance, {
+              action: 'wbsetaliases',
+              add: job.add,
+              language: job.language,
+              id: job.entity,
+            });
+          }
+        } else {
+          await this.performFetchRequest(job.instance, {
+            action: 'wbsetlabel',
+            value: job.add,
+            language: job.language,
+            id: job.entity,
+          });
+        }
         break;
       case 'resolver:add':
         if (job.url in this.resolvedCache) {

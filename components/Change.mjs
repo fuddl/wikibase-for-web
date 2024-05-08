@@ -84,7 +84,7 @@ class Change extends Component {
 					}
 					break;
 				case 'labels:add':
-					return browser.i18n.getMessage('set_alias');
+					return browser.i18n.getMessage('set_label_or_alias');
 				case 'sitelink:set':
 					return browser.i18n.getMessage('set_sitelink');
 			}

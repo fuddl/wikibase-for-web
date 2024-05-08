@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Datatrek for web",
-  "version": "0.529",
+  "version": "0.532",
   "default_locale": "en",
   "description": "Display information from datatrek.",
   "icons": {

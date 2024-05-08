@@ -192,7 +192,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
     }
 
     const additionalEdits = await suggestedEdits(
-      `${suggestion.instance}:${suggestion.matchProperty}`,
+      suggestion,
       metadata,
       manager.wikibases[suggestion.instance],
     );
@@ -227,12 +227,14 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   }, []);
 
   useEffect(async () => {
-    const requestedType = await getPropertySubjectByConstraint(
-      suggestion,
-      manager,
-    );
+    if (suggestion.matchProperty) {
+      const requestedType = await getPropertySubjectByConstraint(
+        suggestion,
+        manager,
+      );
 
-    setSubjectType(requestedType);
+      setSubjectType(requestedType);
+    }
   }, []);
 
   const filteredEdits = [];
