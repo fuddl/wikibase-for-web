@@ -122,10 +122,16 @@ function reconcileEditSets(editSet1, editSet2) {
   return removeDuplicates(reconciledEdits);
 }
 
-export async function suggestedEdits(property, metadata, wikibase) {
+export async function suggestedEdits(suggestion, metadata, wikibase) {
   const references = urlReference(metadata, wikibase);
 
-  const constraintEdits = await constraintsToEdits(property, wikibase);
+  let constraintEdits = [];
+  if (suggestion?.matchProperty) {
+    constraintEdits = await constraintsToEdits(
+      `${suggestion.instance}:${suggestion.matchProperty}`,
+      wikibase,
+    );
+  }
 
   const metaEdits = await metaToEdits({
     meta: metadata.meta,
