@@ -45,11 +45,12 @@ class Title extends Component {
   }
   render({ text, language }) {
     const myLanguage = this.props.manager.languages[0].replace(/-.+/, '');
+    const languageName = this.state?.languages?.[language];
     return html`<span class="title">
       <i lang="${language}">${text}</i> ${language !== myLanguage
-        ? html`(${this.state.languages[language]
-            .replace('(', '[')
-            .replace(')', ']') ?? language})`
+        ? html`(${languageName
+            ? languageName.replace('(', '[').replace(')', ']')
+            : language})`
         : null}
     </span>`;
   }
