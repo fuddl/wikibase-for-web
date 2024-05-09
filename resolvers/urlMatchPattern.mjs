@@ -19,6 +19,13 @@ export const urlMatchPattern = {
 			}
 
 			let id = href.replace(prop.search, prop.replace);
+
+			// if the replace is faulty, and doesn't find anything
+			// we cannot help it.
+			if (!id) {
+				continue;
+			}
+
 			switch (prop.format) {
 				case 'upper':
 					id = id.toUpperCase();
