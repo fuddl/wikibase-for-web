@@ -46,7 +46,9 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
         case 'commonsMedia':
           return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
         case 'monolingualtext':
-          return html`<${Title} ...${mainsnak.datavalue.value} />`;
+          return html`<${Title}
+            ...${mainsnak.datavalue.value}
+            manager=${manager} />`;
         case 'quantity':
           return html`<${Amount}
             ...${mainsnak.datavalue.value}

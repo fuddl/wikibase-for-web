@@ -5,13 +5,13 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Amount from './Amount.mjs';
 import Annote from './Annote.mjs';
+import Decern from './Decern.mjs';
 import Map from './Map.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
 import Tempus from './Tempus.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
-import Title from './Title.mjs';
 import Type from './Type.mjs';
 
 const html = htm.bind(h);
@@ -125,14 +125,12 @@ class Nibble extends Component {
                   type="text"
                   name="${name}.datavalue.value.text"
                   onValueChange=${onValueChange} />
-
-                ${/* @todo this should have autocomplete */ ''}
-                <${Type}
+                <${Decern}
                   value=${datavalue.value.language}
-                  type="text"
-                  size="2"
+                  context="monolingualtext"
                   name="${name}.datavalue.value.language"
-                  onValueChange=${onValueChange} />
+                  onValueChange=${onValueChange}
+                  manager=${manager} />
               </div>`;
             case 'quantity':
               return html`<div class="nibble__line">
