@@ -52,7 +52,8 @@ class Sidebar extends Component {
 		} else if (message.type === 'update_entity') {
 			if (
 				this.state.entity === null ||
-				this.state.entity.id === message.entity
+				this.state.entity.id === message.entity ||
+				this.state.suggestions.length > 0
 			) {
 				this.setState({
 					entity: await manager.add(message.entity, false),
