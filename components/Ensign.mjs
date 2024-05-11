@@ -28,6 +28,14 @@ class Ensign extends Component {
     const [wikibase, localId] = id.split(':');
 
     const autoDescApi = manager.wikibases[wikibase]?.autodesc;
+    const selectId = e => {
+      e.preventDefault();
+      const range = document.createRange();
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      range.selectNodeContents(e.target);
+      selection.addRange(range);
+    };
 
     return html`
       <div class="ensign">
@@ -40,7 +48,9 @@ class Ensign extends Component {
         </h1>
         ${' '}
         <small class="ensign__id">
-          <a class="ensign__id__link" href=${canonical}>${localId}</a>
+          <a onClick=${selectId} class="ensign__id__link" href=${canonical}
+            >${localId}</a
+          >
         </small>
         <p class="ensign__description" lang=${description?.language}>
           ${!lexicalCategory && !language
