@@ -18,7 +18,20 @@ const Pick = ({ options, manager }) => {
     <p>${browser.i18n.getMessage('ambiguous_url_intro')}</p>
     ${options.map(
       option => html`
-        <a href=${manager.urlFromId(option.id)} class="pick__option">
+        <a
+          href=${manager.urlFromId(option.id)}
+          onClick=${async e => {
+            e.preventDefault();
+            try {
+              await browser.runtime.sendMessage({
+                type: 'request_navigate',
+                entity: option.id,
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+          class="pick__option">
           <div class="pick__option-label">
             <strong>
               <${Describe} id=${option.id} source="labels" manager=${manager} />

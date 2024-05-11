@@ -141,6 +141,16 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'hash_changed') {
 		const tabId = await findTabByUrl(message.url);
 		const results = await resolveAndUpdateSidebar(message.url, tabId);
+	} else if (message.type === 'request_navigate') {
+		try {
+			await browser.runtime.sendMessage({
+				type: 'navigate',
+				entity: message.entity,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+		return Promise.resolve('done');
 	}
 	return false;
 });

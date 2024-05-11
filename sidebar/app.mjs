@@ -75,6 +75,15 @@ class Sidebar extends Component {
 				});
 			}
 			return Promise.resolve('done');
+		} else if (message.type === 'navigate') {
+			document.documentElement.setAttribute('style', 'scroll-behavior: auto;');
+			await this.setState({
+				entity: await manager.add(message.entity, false),
+				suggestions: null,
+			});
+			window.scrollTo(0, 0);
+			document.documentElement.removeAttribute('style');
+			return Promise.resolve('done');
 		}
 	};
 

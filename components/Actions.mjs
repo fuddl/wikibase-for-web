@@ -22,6 +22,17 @@ class Actions extends Component {
                   <li key=${item?.id}>
                     <a
                       class="actions__action"
+                      onClick=${async e => {
+                        e.preventDefault();
+                        try {
+                          await browser.runtime.sendMessage({
+                            type: 'request_navigate',
+                            entity: item.id,
+                          });
+                        } catch (error) {
+                          console.error(error);
+                        }
+                      }}
                       href="${item.href ?? manager.urlFromId(item.id)}">
                       <img
                         class="actions__moji"
