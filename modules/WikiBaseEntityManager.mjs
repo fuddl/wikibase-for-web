@@ -109,6 +109,24 @@ class WikiBaseEntityManager {
 
 		return await this.queryManager.query(instance, queryObject, params);
 	}
+	async hasEditPermissions(instance) {
+		const endpoint = this.wikibases[instance].api.instance.apiEndpoint;
+		try {
+			const response = await fetch(
+				`${endpoint}?action=query&meta=userinfo&uiprop=rights&format=json`,
+			);
+			if (!response.ok) {
+				return false;
+			}
+
+			const data = await response.json();
+			const rights = data.query.userinfo.rights;
+
+			return rights.includes('writeapi') && rights.includes('edit');
+		} catch (error) {
+			reject(error);
+		}
+	}
 	async fetchPropOrder(wikibase) {
 		if (!('propOrder' in this.wikibases[wikibase])) {
 			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
