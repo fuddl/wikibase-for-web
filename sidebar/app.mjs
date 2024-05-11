@@ -69,7 +69,6 @@ class Sidebar extends Component {
 					: document.querySelectorAll('[data-focus="suggested"]');
 			if (focussedElements) {
 				focussedElements.forEach(element => {
-					console.debug(element);
 					element.value = message.value;
 					element.dispatchEvent(new Event('input'));
 				});
