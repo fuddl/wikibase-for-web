@@ -30,7 +30,7 @@ const Mediate = ({ datavalue, datatype, manager }) => {
       src: srcUrl,
       scaleable: true,
     };
-  } else if (fileName.match(/\.(jpe?g|png|gif|tiff?|stl)$/i)) {
+  } else if (fileName.match(/\.(jpe?g|png|webp|gif|tiff?|stl)$/i)) {
     image = {
       src: srcUrl,
       sources: [
