@@ -44,7 +44,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 			type: 'wikibase-item',
 			options: {
 				'books.author': 'human',
-				'books.book': 'edition',
+				'books.book': ['versionEditionOrTranslation', 'literaryWork'],
 				'music.album': 'album',
 				'music.playlist': 'playlist',
 				'music.radio_station': 'radioStation',
@@ -193,14 +193,26 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 					}
 					break;
 				case 'wikibase-item':
-					if (item?.options && item?.options[tag.content] in wikibase?.items) {
-						const targetValue = wikibase?.items[item.options[tag.content]];
+					if (
+						item?.options &&
+						(Array.isArray(item.options[tag.content])
+							? item.options[tag.content].some(
+									option => option in wikibase?.items,
+								)
+							: item.options[tag.content] in wikibase?.items)
+					) {
+						let targetValue = !Array.isArray(item?.options[tag.content])
+							? `${wikibase.id}:${wikibase?.items[item.options[tag.content]]}`
+							: item?.options[tag.content].map(
+									target => `${wikibase.id}:${wikibase?.items[target]}`,
+								);
+
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
 							claim: new WikibaseItemClaim({
 								property: `${wikibase.id}:${targetProperty}`,
-								value: `${wikibase.id}:${targetValue}`,
+								value: targetValue,
 								references: references,
 							}),
 						});

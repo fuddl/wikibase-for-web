@@ -1,71 +1,160 @@
 {
+  "match_via_sitelink": {
+    "message": "Zu $INSTANCE$ mittels Sitelink verbinden",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_external_id": {
+    "message": "Zu $INSTANCE$ mittels ID verbinden",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_url": {
+    "message": "Zu $INSTANCE$ mittels URL verbinden",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "aquiring_metadata": {
+    "message": "Metadaten werden abgerufen…"
+  },
+  "set_alias": {
+    "message": "Alias festlegen"
+  },
+  "set_label_or_alias": {
+    "message": "Bezeichnung oder Alias festlegen"
+  },
+  "set_sitelink": {
+    "message": "Interwikilink festlegen"
+  },
+  "dismiss_action": {
+    "message": "Diese Nachricht ausblenden"
+  },
+  "search_item_placeholder": {
+    "message": "Elemente über Bezeichnung oder Alternativnamen suchen."
+  },
+  "search_lexeme_placeholder": {
+    "message": "Lexeme über Lemma oder Form suchen."
+  },
+  "search_sense_placeholder": {
+    "message": "Sense von Lexemen über Lemma suchen."
+  },
+  "load_autodesc": {
+    "message": "Automatische Beschreibung wird geladen…"
+  },
+  "match_title": {
+    "message": "Abgleich"
+  },
+  "create_new_entity": {
+    "message": "Neue Entität erstellen"
+  },
+  "new_entity": {
+    "message": "Neue Entität"
+  },
+  "disambiguation_title": {
+    "message": "Disambiguierung"
+  },
+  "send_to_instance": {
+    "message": "An $INSTANCE$ senden",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "other_matches_title": {
+    "message": "Weitere Treffer"
+  },
+  "wb_set_alias": {
+    "message": "Alias festlegen"
+  },
+  "ambiguous_url_title": {
+    "message": "Mehrere Treffer gefunden"
+  },
+  "ambiguous_url_intro": {
+    "message": "Diese URL ist mit mehreren Wikibase-Entitäten verknüpft. Bitte wähle die gewünschte Entität aus."
+  },
   "unknown": {
-    "message": "unbekannt",
-    "description": "The snaktype unknown"
+    "message": "unbekannt"
   },
   "no_value": {
-    "message": "keine Angabe",
-    "description": "The snaktype no value"
+    "message": "kein Wert"
   },
   "media_info": {
-    "message": "Medieninformation",
-    "description": "Label of a link showing more information about a file."
+    "message": "Medieninformationen"
+  },
+  "external_id": {
+    "message": "Externe ID"
+  },
+  "external_ids": {
+    "message": "Externe Ids"
+  },
+  "link": {
+    "message": "Link"
+  },
+  "links": {
+    "message": "Links"
+  },
+  "reference": {
+    "message": "Referenz"
+  },
+  "references": {
+    "message": "Referenzen"
   },
   "month_1": {
-    "message": "Januar",
-    "description": "The name of the first month."
+    "message": "Januar"
   },
   "month_2": {
-    "message": "Februar",
-    "description": "The name of the second month."
+    "message": "Februar"
   },
   "month_3": {
-    "message": "März",
-    "description": "The name of the third month."
+    "message": "März"
   },
   "month_4": {
-    "message": "April",
-    "description": "The name of the fourth month."
+    "message": "April"
   },
   "month_5": {
-    "message": "Mai",
-    "description": "The name of the fifth month."
+    "message": "Mai"
   },
   "month_6": {
-    "message": "Juni",
-    "description": "The name of the sixth month."
+    "message": "Juni"
   },
   "month_7": {
-    "message": "Juli",
-    "description": "The name of the seventh month."
+    "message": "Juli"
   },
   "month_8": {
-    "message": "August",
-    "description": "The name of the eighth month."
+    "message": "August"
   },
   "month_9": {
-    "message": "September",
-    "description": "The name of the ninth month."
+    "message": "September"
   },
   "month_10": {
-    "message": "Oktober",
-    "description": "The name of the tenth month."
+    "message": "Oktober"
   },
   "month_11": {
-    "message": "November",
-    "description": "The name of the eleventh month."
+    "message": "November"
   },
   "month_12": {
-    "message": "Dezember",
-    "description": "The name of the twelfth month."
+    "message": "Dezember"
   },
   "date_month": {
     "message": "$MONTHNAME$ $YEAR$",
-    "description": "The name of a month.",
     "placeholders": {
       "monthname": {
         "content": "$1",
-        "example": "February"
+        "example": "Februar"
       },
       "monthnumber": {
         "content": "$2",
@@ -77,9 +166,17 @@
       }
     }
   },
+  "date_bce": {
+    "message": "$DATE$ v. Chr.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2032-12-34"
+      }
+    }
+  },
   "date_year": {
     "message": "$NUMBER$",
-    "description": "Der Name eines Jahres.",
     "placeholders": {
       "number": {
         "content": "$1",
@@ -89,7 +186,6 @@
   },
   "date_decade": {
     "message": "$NUMBER$er",
-    "description": "Der Name eines Jahrzehnts.",
     "placeholders": {
       "ordinal": {
         "content": "$1",
@@ -103,7 +199,6 @@
   },
   "date_cenury": {
     "message": "$ORDINAL$. Jahrhundert",
-    "description": "Der Name eines Jahrhunderts.",
     "placeholders": {
       "ordinal": {
         "content": "$1",
@@ -117,7 +212,6 @@
   },
   "date_millenium": {
     "message": "$ORDINAL$. Jahrtausend",
-    "description": "Der Name eines Jahrtausends.",
     "placeholders": {
       "ordinal": {
         "content": "$1",
@@ -126,6 +220,27 @@
       "number": {
         "content": "$2",
         "example": "2"
+      }
+    }
+  },
+  "date_year_range": {
+    "message": "$year$ ±$DELTA$ Jahre",
+    "placeholders": {
+      "year": {
+        "content": "$1",
+        "example": "1967"
+      },
+      "lower": {
+        "content": "$2",
+        "example": "1966"
+      },
+      "upper": {
+        "content": "$3",
+        "example": "1969"
+      },
+      "delta": {
+        "content": "$4",
+        "example": "5.000"
       }
     }
   }
