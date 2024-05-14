@@ -151,6 +151,16 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			console.error(error);
 		}
 		return Promise.resolve('done');
+	} else if (message.type === 'request_workbench') {
+		try {
+			await browser.runtime.sendMessage({
+				type: 'workbench',
+				workbench: message.workbench,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+		return Promise.resolve('done');
 	}
 	return false;
 });

@@ -18,6 +18,7 @@ class Sidebar extends Component {
 			entity: null,
 			selectable: null,
 			otherEntities: null,
+			workbench: null,
 		};
 		requireStylesheet(
 			browser.runtime.getURL('/node_modules/normalize.css/normalize.css'),
@@ -83,11 +84,17 @@ class Sidebar extends Component {
 			window.scrollTo(0, 0);
 			document.documentElement.removeAttribute('style');
 			return Promise.resolve('done');
+		} else if (message.type === 'workbench') {
+			await this.setState({
+				workbench: message.workbench,
+			});
+			return Promise.resolve('done');
 		}
 	};
 
 	render() {
-		const { entity, suggestions, otherEntities, selectable } = this.state;
+		const { entity, suggestions, otherEntities, selectable, workbench } =
+			this.state;
 
 		if (!entity && !selectable && !suggestions && !otherEntities) {
 			(async () => {
@@ -102,6 +109,7 @@ class Sidebar extends Component {
 			selectable=${selectable}
 			suggestions=${suggestions}
 			otherEntities=${otherEntities}
+			workbench=${workbench}
 			manager=${manager} />`;
 	}
 }

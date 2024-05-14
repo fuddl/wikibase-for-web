@@ -43,7 +43,7 @@ class Thing extends Component {
     return html`<a
       class="thing"
       href="${href}"
-      lang="${label?.language ?? id}"
+      lang="${label?.language ?? ''}"
       title="${description?.value ?? ''}"
       ref=${elementRef}
       >${label?.value ?? id}</a

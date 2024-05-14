@@ -27,48 +27,15 @@ function Decern({ name, value, onValueChange, context, manager }) {
 		requireStylesheet(browser.runtime.getURL('/components/decern.css'));
 	}, []);
 
-	useEffect(() => {
-		async function fetchLanguages() {
-			const url = new URL(manager.wikibase.api.instance.apiEndpoint);
-			url.search = new URLSearchParams({
-				action: 'query',
-				meta: 'wbcontentlanguages',
-				uselang: manager.languages[0].replace(/-.+/, ''),
-				wbclcontext: context,
-				wbclprop: 'code|name',
-				format: 'json',
-			});
+	useEffect(async () => {
+		const { languages: newLanguages, languageNames: newLanguageNames } =
+			await manager.fetchLanguages(manager.wikibase.id, context);
 
-			try {
-				const response = await fetch(url);
-				const data = await response.json();
-				const languagesData = data.query.wbcontentlanguages;
+		const sortedNewLanguages = optionsHistoryAPI.getSortedOptions(newLanguages);
 
-				const newLanguages = Object.keys(languagesData).map(
-					key => languagesData[key].code,
-				);
-
-				const newLanguageNames = Object.keys(languagesData).reduce(
-					(acc, key) => {
-						acc[languagesData[key].code] = languagesData[key].name;
-						return acc;
-					},
-					{},
-				);
-
-				const sortedNewLanguages =
-					optionsHistoryAPI.getSortedOptions(newLanguages);
-
-				setLanguages(sortedNewLanguages);
-				setLanguageNames(newLanguageNames);
-				setIsLoading(false);
-			} catch (error) {
-				console.error('Failed to fetch languages:', error);
-				setIsLoading(false);
-			}
-		}
-
-		fetchLanguages();
+		setLanguages(sortedNewLanguages);
+		setLanguageNames(newLanguageNames);
+		setIsLoading(false);
 	}, [context]);
 
 	return html`
