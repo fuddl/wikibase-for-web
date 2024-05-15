@@ -7,6 +7,7 @@ import {
 	TimeClaim,
 	WikibaseItemClaim,
 } from '../types/Claim.mjs';
+import ISBN from '../importmap/isbn3-es6/isbn.js';
 
 async function metaToEdits({ meta, wikibase, metadata, references }) {
 	const makeSignature = tag => {

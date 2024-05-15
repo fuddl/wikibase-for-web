@@ -154,7 +154,9 @@ class Nibble extends Component {
                   type="hidden" />
                 ${/* @todo this should have autocomplete or select */ ''}
                 <${Type}
-                  value=${manager.urlFromIdNonSecure(datavalue.value.unit)}
+                  value=${datavalue.value.unit === '1'
+                    ? datavalue.value.unit
+                    : manager.urlFromIdNonSecure(datavalue.value.unit)}
                   type="hidden"
                   name="${name}.datavalue.value.unit"
                   onValueChange=${onValueChange} />`;
