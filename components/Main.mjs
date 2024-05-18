@@ -7,6 +7,7 @@ import Actions from './Actions.mjs';
 import Match from './Match.mjs';
 import Pick from './Pick.mjs';
 import Inform from './Inform.mjs';
+import Peek from './Peek.mjs';
 
 const html = htm.bind(h);
 
@@ -15,7 +16,14 @@ class Main extends Component {
     requireStylesheet(browser.runtime.getURL('/components/main.css'));
   }
 
-  render({ entity, selectable, suggestions, otherEntities, manager }) {
+  render({
+    entity,
+    selectable,
+    suggestions,
+    workbench,
+    otherEntities,
+    manager,
+  }) {
     const actionGroups = [];
 
     if (otherEntities) {
@@ -54,6 +62,14 @@ class Main extends Component {
         ${
           actionGroups.length > 0
             ? html`<${Actions} groups=${actionGroups} manager=${manager} />`
+            : null
+        }
+        ${
+          workbench
+            ? html`<${Peek}
+                edits=${workbench.edits}
+                title=${workbench.title}
+                manager=${manager} />`
             : null
         }
       </div>

@@ -79,6 +79,37 @@ class WikiBaseEntityManager {
 		iterate(entity);
 		return entity;
 	}
+	async fetchLanguages(wikibase, context) {
+		const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
+		const url = new URL(endPoint);
+		url.search = new URLSearchParams({
+			action: 'query',
+			meta: 'wbcontentlanguages',
+			uselang: this.wikibases[wikibase].languages[0].replace(/-.+/, ''),
+			wbclcontext: context,
+			wbclprop: 'code|name',
+			format: 'json',
+		});
+
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+			const languagesData = data.query.wbcontentlanguages;
+
+			const languages = Object.keys(languagesData).map(
+				key => languagesData[key].code,
+			);
+
+			const languageNames = Object.keys(languagesData).reduce((acc, key) => {
+				acc[languagesData[key].code] = languagesData[key].name;
+				return acc;
+			}, {});
+
+			return { languages: languages, languageNames: languageNames };
+		} catch (error) {
+			console.error('Failed to fetch languages:', error);
+		}
+	}
 	async fetchDesignators(id) {
 		if (id in this.designators) {
 			return this.designators[id];

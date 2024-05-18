@@ -1,0 +1,27 @@
+.edit {
+	cursor: pointer;
+	color: inherit;
+	background: transparent;
+	border: none;
+	font-family:
+		'icons',
+		-apple-system,
+		'BlinkMacSystemFont',
+		'Segoe UI',
+		'Roboto',
+		'Lato',
+		'Helvetica',
+		'Arial',
+		'pIqaD',
+		FairfaxHaxHD,
+		cc-icons,
+		sans-serif;
+	transition: background 0.25s;
+	width: 44px;
+	line-height: 44px;
+	text-align: center;
+}
+
+.edit:hover {
+	background: rgba(0, 24, 73, 0.03);
+}

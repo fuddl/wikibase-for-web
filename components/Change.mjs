@@ -26,6 +26,7 @@ class Change extends Component {
 		this.state = {
 			claim: props?.claim,
 			labels: props?.labels,
+			description: props?.description,
 			sitelink: props?.sitelink,
 			editMode: false,
 			active: !dismissed.isEditDismissed(this.signature),
@@ -83,6 +84,8 @@ class Change extends Component {
 								type="hidden" /> `;
 					}
 					break;
+				case 'description:set':
+					return browser.i18n.getMessage('set_description');
 				case 'labels:add':
 					return browser.i18n.getMessage('set_label_or_alias');
 				case 'sitelink:set':
@@ -114,17 +117,28 @@ class Change extends Component {
 					}
 				case 'labels:add':
 					return html`
+						<input name="${this.name}.add" value="${this.state?.labels.add}" />
 						<input
 							type="hidden"
-							name="${this.name}.add"
-							value="${this.state?.labels.add}" />
-						<input
-							type="hidden"
+							lang=${this.state?.description.language}
 							name="${this.name}.language"
 							value="${this.state?.labels.language}" />
 						<em lang=${this.state?.labels.language}
 							>${this.state?.labels.add}</em
 						>
+					`;
+				case 'description:set':
+					return html`
+						<textarea
+							lang=${this.state?.description.language}
+							name="${this.name}.add">
+							${this.state?.description.value}
+						</textarea
+						>
+						<input
+							type="hidden"
+							name="${this.name}.language"
+							value="${this.state?.description.language}" />
 					`;
 				case 'sitelink:set':
 					return html`<div>
@@ -159,7 +173,7 @@ class Change extends Component {
 						${getValue(this.action)}
 						${this.state?.claim?.mainsnak.datavalue &&
 						html`<button
-							title="${'Edit mode'}"
+							title="${browser.i18n.getMessage('edit_button')}"
 							class="change__toggle"
 							hidden=${!this.state.active}
 							onClick=${e => {
