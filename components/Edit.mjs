@@ -5,14 +5,14 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
 
-function Edit({ title, action, icon }) {
+function Edit({ title, action, icon, compact = false }) {
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/edit.css'));
 	}, []);
 	return html`
 		<button
 			title=${title ?? browser.i18n.getMessage('edit_button')}
-			class="edit"
+			class="edit ${compact ? 'edit--compact' : ''}"
 			onClick=${action}>
 			${icon ?? '🖊︎'}
 		</button>

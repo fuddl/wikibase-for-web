@@ -1,4 +1,9 @@
-import { h, render, Component } from '../importmap/preact/src/index.js';
+import {
+	h,
+	render,
+	Component,
+	createRef,
+} from '../importmap/preact/src/index.js';
 import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
@@ -6,17 +11,21 @@ import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
 
 const html = htm.bind(h);
 
+import Distinguish from './Distinguish.mjs';
 import Nibble from './Nibble.mjs';
 import Snack from './Snack.mjs';
 import Specify from './Specify.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
+import Type from './Type.mjs';
 
 class Change extends Component {
 	constructor(props) {
 		super(props);
 
 		const dismissed = new DismissedEditsAPI();
+
+		this.ref = createRef(null);
 
 		this.manager = props.manager;
 		this.editId = props.editId;
@@ -30,10 +39,24 @@ class Change extends Component {
 			sitelink: props?.sitelink,
 			editMode: false,
 			active: !dismissed.isEditDismissed(this.signature),
+			invalid: false,
+			languageNames: {},
 		};
 	}
 
+	checkValidity() {
+		// Select all form elements within the fieldset
+		const elements = this.ref.current.querySelectorAll(
+			'input, select, textarea',
+		);
+
+		// Check if any element is invalid using the checkValidity() method
+		return Array.from(elements).some(element => !element.checkValidity());
+	}
+
 	handleDataValueChange = ({ name, value }) => {
+		const invalid = this.checkValidity();
+
 		const parts = name.replace(`${this.name}.`, '').split('.');
 
 		this.setState(prevState => {
@@ -50,12 +73,23 @@ class Change extends Component {
 				}
 			});
 
+			prevState.invalid = invalid;
+
 			return { ...prevState };
 		});
 	};
 
 	componentDidMount() {
 		requireStylesheet(browser.runtime.getURL('/components/change.css'));
+		if (['labels:add', 'description:set'].includes(this.action)) {
+			(async () => {
+				const languages = await this.manager.fetchLanguages(
+					this.manager.wikibase.id,
+					'term',
+				);
+				this.setState({ languageNames: languages.languageNames });
+			})();
+		}
 	}
 
 	render() {
@@ -85,9 +119,15 @@ class Change extends Component {
 					}
 					break;
 				case 'description:set':
-					return browser.i18n.getMessage('set_description');
+					return browser.i18n.getMessage('set_description', [
+						this.state.languageNames?.[this.state.description.language] ??
+							this.state.description.language,
+					]);
 				case 'labels:add':
-					return browser.i18n.getMessage('set_label_or_alias');
+					return browser.i18n.getMessage('set_label_or_alias', [
+						this.state.languageNames?.[this.state.labels.language] ??
+							this.state.labels.language,
+					]);
 				case 'sitelink:set':
 					return browser.i18n.getMessage('set_sitelink');
 			}
@@ -117,24 +157,26 @@ class Change extends Component {
 					}
 				case 'labels:add':
 					return html`
-						<input name="${this.name}.add" value="${this.state?.labels.add}" />
+						<${Type}
+							name="${this.name}.add"
+							value="${this.state?.labels.add}" />
 						<input
 							type="hidden"
-							lang=${this.state?.description.language}
+							lang=${this.state?.labels.language}
 							name="${this.name}.language"
 							value="${this.state?.labels.language}" />
-						<em lang=${this.state?.labels.language}
-							>${this.state?.labels.add}</em
-						>
 					`;
 				case 'description:set':
 					return html`
-						<textarea
+						<${Distinguish}
 							lang=${this.state?.description.language}
-							name="${this.name}.add">
-							${this.state?.description.value}
-						</textarea
-						>
+							name="${this.name}.add"
+							entity=${this.state?.description?.id}
+							required=${true}
+							lang=${this.state?.description.language}
+							onValueChange=${this.handleDataValueChange}
+							value=${this.state?.description.value}
+							manager=${manager} />
 						<input
 							type="hidden"
 							name="${this.name}.language"
@@ -159,7 +201,7 @@ class Change extends Component {
 		};
 
 		return html`
-			<div class="change">
+			<fieldset ref=${this.ref} class="change">
 				<input
 					value=${this.signature}
 					name=${`${this.name}.signature`}
@@ -221,6 +263,7 @@ class Change extends Component {
 							onChange=${e => {
 								this.setState({ active: !this.state.active });
 							}}
+							disabled=${this.state.invalid}
 							checked=${this.state.active} />
 					</dd>
 					<dd class="change__qualifiers" hidden=${!this.state.active}>
@@ -305,7 +348,7 @@ class Change extends Component {
 					value="${this.action}"
 					type="hidden"
 					checked />
-			</div>
+			</fieldset>
 		`;
 	}
 }

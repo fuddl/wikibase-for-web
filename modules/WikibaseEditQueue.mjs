@@ -315,6 +315,14 @@ export class WikibaseEditQueue {
           });
         }
         break;
+      case 'description:set':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbsetdescription',
+          value: job.value,
+          language: job.language,
+          id: job.entity,
+        });
+        break;
       case 'resolver:add':
         if (job.url in this.resolvedCache) {
           this.resolvedCache[job.url].push({

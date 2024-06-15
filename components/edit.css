@@ -25,3 +25,8 @@
 .edit:hover {
 	background: rgba(0, 24, 73, 0.03);
 }
+
+.edit--compact {
+	width: auto;
+	line-height: inherit;
+}

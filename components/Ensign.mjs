@@ -82,6 +82,7 @@ class Ensign extends Component {
         workbench: {
           title: browser.i18n.getMessage('edit_descriptions'),
           edits: edits,
+          subjectId: id,
         },
       });
     };

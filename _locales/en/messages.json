@@ -46,12 +46,24 @@
     "description": "Title of an edit that sets an alias."
   },
   "set_label_or_alias": {
-    "message": "Set label or alias",
-    "description": "Title of an edit that sets an label or an alias."
+    "message": "Set label or alias in $1",
+    "description": "Title of an edit that sets an label or an alias.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
   },
   "set_description": {
-    "message": "Set description",
-    "description": "Title of an edit that sets a description."
+    "message": "Set description for $1",
+    "description": "Title of an edit that sets a description.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
   },
   "set_sitelink": {
     "message": "Set sitelink",

@@ -1,6 +1,6 @@
 {
   "match_via_sitelink": {
-    "message": "Zu $INSTANCE$ mittels Sitelink verbinden",
+    "message": "Abgleich mit $INSTANCE$ anhand des Sitelinks",
     "placeholders": {
       "instance": {
         "content": "$1",
@@ -9,7 +9,7 @@
     }
   },
   "match_via_external_id": {
-    "message": "Zu $INSTANCE$ mittels ID verbinden",
+    "message": "Abgleich mit $INSTANCE$ anhand der ID",
     "placeholders": {
       "instance": {
         "content": "$1",
@@ -18,7 +18,7 @@
     }
   },
   "match_via_url": {
-    "message": "Zu $INSTANCE$ mittels URL verbinden",
+    "message": "Abgleich mit $INSTANCE$ anhand der URL",
     "placeholders": {
       "instance": {
         "content": "$1",
@@ -28,6 +28,20 @@
   },
   "aquiring_metadata": {
     "message": "Metadaten werden abgerufen…"
+  },
+  "set_description": {
+    "message": "Setze Beschreibung in $1",
+    "description": "Title of an edit that sets a description.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "edit_descriptions": {
+    "message": "Beschreibungen bearbeiten",
+    "description": "Title of a form where descriptions can be changed."
   },
   "set_alias": {
     "message": "Alias festlegen"
@@ -54,7 +68,7 @@
     "message": "Automatische Beschreibung wird geladen…"
   },
   "match_title": {
-    "message": "Abgleich"
+    "message": "Zuordnen"
   },
   "create_new_entity": {
     "message": "Neue Entität erstellen"

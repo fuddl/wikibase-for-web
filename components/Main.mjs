@@ -8,6 +8,7 @@ import Match from './Match.mjs';
 import Pick from './Pick.mjs';
 import Inform from './Inform.mjs';
 import Peek from './Peek.mjs';
+import Edit from './Edit.mjs';
 
 const html = htm.bind(h);
 
@@ -40,11 +41,10 @@ class Main extends Component {
 
     return html`
       <div class="main">
-        <${Inform} id="update">
-          <p>Hey there! I've just rolled out an update for the extension.</p>
-          <p>Some features are still missing. Don't worry, I plan to bring them all back! Please let me know which features you miss most <a href="https://www.wikidata.org/wiki/Wikidata_talk:Tools/Wikidata_for_Web">on the extensions talk page.</a></p>
-          <p>Found a bug? I'm sorry about that and would appreciate it if you could report it to me <a href="https://github.com/fuddl/wikibase-for-web/issues/new">on the issue tracker.</a></p>
-          <p>Sorry for any inconvenience, and thanks for your support!</p>
+        <${Inform} id="edit-descriptions">
+          <p>You can now <strong>update descriptions!</strong></p>
+          <p>Just click the <${Edit} compact=${true} /> next to an item's id.</p>
+          <p>Automatic descriptions are provided by <a href="https://autodesc.toolforge.org/">auto​desc.​tool​forge.org</a>.</p>
         </${Inform}>
         ${
           suggestions?.length > 0
@@ -69,6 +69,7 @@ class Main extends Component {
             ? html`<${Peek}
                 edits=${workbench.edits}
                 title=${workbench.title}
+                subjectId=${workbench.subjectId}
                 manager=${manager} />`
             : null
         }

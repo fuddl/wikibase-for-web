@@ -6,3 +6,18 @@
 	box-shadow: 0 -1em 1em var(--shadow);
 	border-top: 1px solid var(--contour);
 }
+
+.peek__footer {
+	margin-top: 1em;
+}
+
+.peek__head {
+	display: flex;
+	justify-content: space-between;
+}
+
+.peek__close {
+	font-family: 'icons', sans-serif;
+	background: transparent;
+	border: none;
+}
