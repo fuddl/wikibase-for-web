@@ -52,6 +52,7 @@ const submit = e => {
     browser.runtime.sendMessage({
       type: 'add_to_edit_queue',
       edits: jobs,
+      viewId: data.viewId,
     });
     if (data.subjectId !== 'CREATE') {
       browser.runtime.sendMessage({
@@ -76,7 +77,7 @@ const submit = e => {
   }
 };
 
-const MatchInstance = ({ suggestion, manager, edits }) => {
+const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
   const [subjectSelected, setSubjectSelected] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [searchText, setSeachText] = useState('');
@@ -210,6 +211,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
             setSubjectSelected(true);
           }} />
       </div>
+      <input type="hidden" name="viewId" value=${viewId} />
       <input type="hidden" name="matchUrl" value=${suggestion.matchFromUrl} />
       <div class="match__bottom">
         <input
@@ -231,7 +233,7 @@ const MatchInstance = ({ suggestion, manager, edits }) => {
   `;
 };
 
-const Match = ({ suggestions, manager }) => {
+const Match = ({ suggestions, manager, viewId }) => {
   const [open, setOpen] = useState(0);
   const [forceRefresh, setForceRefresh] = useState('');
 
@@ -271,7 +273,8 @@ const Match = ({ suggestions, manager }) => {
               suggestion=${suggestion}
               manager=${manager}
               key=${`${forceRefresh}-${index}`}
-              edits=${edits} />`}
+              edits=${edits}
+              viewId=${viewId} />`}
           </details>
         `;
       })}

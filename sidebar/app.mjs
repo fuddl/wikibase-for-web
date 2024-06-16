@@ -7,13 +7,14 @@ import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs';
 
 const html = htm.bind(h);
 const manager = new WikiBaseEntityManager({
-	languages: navigator.languages,
+	languages: navigator.languages.map(lang => lang.toLowerCase()),
 });
 
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			viewId: 0,
 			suggestions: null,
 			entity: null,
 			selectable: null,
@@ -36,12 +37,14 @@ class Sidebar extends Component {
 
 	handleMessage = async message => {
 		if (message.type === 'resolved') {
+			let viewId = Date.now();
 			const organised = await organiseView(message, manager);
 
 			const currentEntity = organised?.bestMatches?.[0]?.id
 				? await manager.add(organised.bestMatches[0].id)
 				: null;
 			this.setState({
+				viewId: viewId,
 				suggestions:
 					organised?.betterProps.length > 0 ? organised.betterProps : 0,
 				entity: organised.bestMatches.length === 1 ? currentEntity : null,
@@ -51,14 +54,16 @@ class Sidebar extends Component {
 			});
 			return Promise.resolve('done');
 		} else if (message.type === 'update_entity') {
-			if (
-				this.state.entity === null ||
-				this.state.entity.id === message.entity ||
-				this.state.suggestions.length > 0
-			) {
+			const updatedIsCurrent = this.state.entity?.id === message.entity;
+			const isCurrentJob = message?.jobId == this.state.viewId;
+
+			const shouldUpdate = isCurrentJob || updatedIsCurrent;
+
+			if (shouldUpdate) {
 				this.setState({
 					entity: await manager.add(message.entity, false),
 					suggestions: null,
+					viewId: Date.now(),
 				});
 			}
 			return Promise.resolve('done');
@@ -93,8 +98,14 @@ class Sidebar extends Component {
 	};
 
 	render() {
-		const { entity, suggestions, otherEntities, selectable, workbench } =
-			this.state;
+		const {
+			entity,
+			suggestions,
+			otherEntities,
+			selectable,
+			workbench,
+			viewId,
+		} = this.state;
 
 		if (!entity && !selectable && !suggestions && !otherEntities) {
 			(async () => {
@@ -105,6 +116,7 @@ class Sidebar extends Component {
 		}
 
 		return html`<${Main}
+			viewId=${viewId}
 			entity=${entity}
 			selectable=${selectable}
 			suggestions=${suggestions}

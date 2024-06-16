@@ -24,6 +24,7 @@ class Main extends Component {
     workbench,
     otherEntities,
     manager,
+    viewId,
   }) {
     const actionGroups = [];
 
@@ -48,7 +49,10 @@ class Main extends Component {
         </${Inform}>
         ${
           suggestions?.length > 0
-            ? html`<${Match} suggestions=${suggestions} manager=${manager} />`
+            ? html`<${Match}
+                suggestions=${suggestions}
+                manager=${manager}
+                viewId=${viewId} />`
             : null
         }
         ${

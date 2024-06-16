@@ -132,7 +132,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		tabs[currentTab.id] = results;
 		return Promise.resolve('done');
 	} else if (message.type === 'add_to_edit_queue') {
-		wikibaseEditQueue.addJobs(message.edits);
+		wikibaseEditQueue.addJobs(message.edits, message.viewId);
 		return Promise.resolve('done');
 	} else if (message.type === 'request_metadata') {
 		const tabId = await findTabByUrl(message.url);

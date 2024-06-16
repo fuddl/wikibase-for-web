@@ -8,10 +8,12 @@ export class WikibaseEditQueue {
     this.lastClaim = '';
     this.lastEntity = '';
     this.resolvedCache = resolvedCache;
+    this.jobId = '';
   }
 
   // Add multiple jobs at once
-  addJobs(jobs) {
+  addJobs(jobs, jobId) {
+    this.jobId = jobId;
     jobs.forEach(job => {
       this.queue.push({ job, done: false });
     });
@@ -123,6 +125,7 @@ export class WikibaseEditQueue {
       .sendMessage({
         type: 'update_entity',
         entity: entity,
+        jobId: this.jobId,
       })
       .then(response => {})
       .catch(error => console.error('Message failed:', error));
