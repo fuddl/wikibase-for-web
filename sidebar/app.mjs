@@ -38,13 +38,16 @@ class Sidebar extends Component {
 	handleMessage = async message => {
 		if (message.type === 'resolved') {
 			let viewId = Date.now();
+			this.setState({
+				viewId: viewId,
+			});
+
 			const organised = await organiseView(message, manager);
 
 			const currentEntity = organised?.bestMatches?.[0]?.id
 				? await manager.add(organised.bestMatches[0].id)
 				: null;
 			this.setState({
-				viewId: viewId,
 				suggestions:
 					organised?.betterProps.length > 0 ? organised.betterProps : 0,
 				entity: organised.bestMatches.length === 1 ? currentEntity : null,

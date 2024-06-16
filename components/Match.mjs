@@ -54,6 +54,7 @@ const submit = e => {
       edits: jobs,
       viewId: data.viewId,
     });
+    // todo: this should be done by the editqueue
     if (data.subjectId !== 'CREATE') {
       browser.runtime.sendMessage({
         type: 'resolved',
@@ -116,7 +117,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
             signature: `extracted-title:${suggestion.titleExtractPattern}`,
             labels: {
               add: matches[1],
-              language: metadata.lang,
+              language: metadata?.lang.toLowerCase(),
             },
           });
         }

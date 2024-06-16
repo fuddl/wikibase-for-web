@@ -134,36 +134,55 @@ export async function getTabMetadata(tabId) {
 
                 for (let script of scripts) {
                     if (script.textContent.includes('RLCONF')) {
-                        const match = /RLCONF\s*=\s*(\{[^;]*\})/.exec(script.textContent);
+                        const match = /RLCONF\s*=\s*(\{[^;]*\})/.exec(
+                            script.textContent,
+                        );
 
                         if (match) {
-                            const correctedJson = match[1].replace(/!0/g, 'true').replace(/!1/g, 'false');
-                            
-                            try {
-                                const config = JSON.parse(correctedJson);
+                            const correctedJson = match[1]
+                                .replace(/!0/g, 'true')
+                                .replace(/!1/g, 'false');
 
+                            try {
+                                // Extract values using regular expressions
+                                const extractValue = key => {
+                                    const regex = new RegExp(
+                                        `"${key}"\\s*:\\s*(".*?"|\\d+|true|false|null)`,
+                                        'i',
+                                    );
+                                    const valueMatch =
+                                        correctedJson.match(regex);
+                                    return valueMatch
+                                        ? JSON.parse(valueMatch[1])
+                                        : null;
+                                };
 
                                 const extractedData = {
-                                    wgTitle: config.wgTitle,
-                                    wgPageContentLanguage: config.wgPageContentLanguage,
-                                    wgArticleId: config.wgArticleId,
-                                    wgPageName: config.wgPageName,
-                                    wgCurRevisionId: config.wgCurRevisionId,
-                                    wgIsRedirect: config.wgIsRedirect,
-                                    wgRevisionId: config.wgRevisionId
+                                    wgTitle: extractValue('wgTitle'),
+                                    wgPageContentLanguage: extractValue(
+                                        'wgPageContentLanguage',
+                                    ),
+                                    wgArticleId: extractValue('wgArticleId'),
+                                    wgPageName: extractValue('wgPageName'),
+                                    wgCurRevisionId:
+                                        extractValue('wgCurRevisionId'),
+                                    wgIsRedirect: extractValue('wgIsRedirect'),
+                                    wgRevisionId: extractValue('wgRevisionId'),
                                 };
 
                                 return extractedData;
                             } catch (e) {
-                                console.error('Error parsing JSON from script tag:', e);
+                                console.error(
+                                    'Error extracting data from script tag:',
+                                    e,
+                                );
                             }
                         }
                     }
                 }
 
                 return null;
-            }
-
+            };
 
             return {
                 title: document.title,
