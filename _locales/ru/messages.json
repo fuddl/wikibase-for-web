@@ -1,0 +1,321 @@
+{
+  "match_via_sitelink": {
+    "message": "Совпадение с $INSTANCE$ через ссылку на сайт",
+    "description": "Заголовок раздела, позволяющего сопоставить URL с объектом wikibase через ссылку на сайт.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+
+  "match_via_external_id": {
+    "message": "Совпадение с $INSTANCE$ через идентификатор",
+    "description": "Заголовок раздела, позволяющего сопоставить URL с объектом wikibase через внешний идентификатор.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_url": {
+    "message": "Совпадение с $INSTANCE$ через URL",
+    "description": "Заголовок раздела, позволяющего сопоставить URL с объектом wikibase.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "edit_button": {
+    "message": "Редактировать",
+    "description": "Метка кнопки, которая позволяет редактировать что-либо."
+  },
+  "edit_descriptions": {
+    "message": "Редактировать описания",
+    "description": "Название формы, в которой можно изменить описания."
+  },
+  "aquiring_metadata": {
+    "message": "Получение метаданных…",
+    "description": "Сообщение, отображаемое при получении метаданных."
+  },
+  "set_alias": {
+    "message": "Установить псевдоним",
+    "description": "Название редактирования, которое устанавливает псевдоним."
+  },
+  "set_label_or_alias": {
+    "message": "Установить метку или псевдоним ($1)",
+    "description": "Название редактирования, которое устанавливает метку или псевдоним.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_description": {
+    "message": "Установить описание ($1)",
+    "description": "Название редактирования, которое устанавливает описание.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_sitelink": {
+    "message": "Установить ссылку на сайт",
+    "description": "Название редактирования, которое устанавливает ссылку на сайт."
+  },
+  "dismiss_action": {
+    "message": "Отклонить это сообщение",
+    "description": "Метка кнопки, которая отклоняет сообщение."
+  },
+  "search_item_placeholder": {
+    "message": "Искать элементы по метке или псевдониму.",
+    "description": "Заполнитель поля, которое ищет элементы wikibase."
+  },
+  "search_lexeme_placeholder": {
+    "message": "Искать лексемы по лемме или форме.",
+    "description": "Заполнитель поля, которое ищет лексемы wikibase."
+  },
+  "search_sense_placeholder": {
+    "message": "Искать значения лексемы по лемме.",
+    "description": "Заполнитель поля, которое ищет значения лексемы wikibase."
+  },
+  "load_autodesc": {
+    "message": "Загрузка автоматического описания…",
+    "description": "Сообщение, информирующее пользователя о том, что автоматическое описание загружается."
+  },
+  "match_title": {
+    "message": "Совпадение",
+    "description": "Название формы совпадения сущности."
+  },
+  "create_new_entity": {
+    "message": "Создать новый объект",
+    "description": "Метка опции, которая создаст новый объект."
+  },
+  "new_entity": {
+    "message": "Новый элемент",
+    "description": "Метка выбранной опции, которая создаст новый объект."
+  },
+  "disambiguation_title": {
+    "message": "Дезамбигуатор",
+    "description": "Заголовок боковой панели, когда она отображает экран дезамбигуации."
+  },
+  "send_to_instance": {
+    "message": "Отправить в $INSTANCE$",
+    "description": "Название кнопки, которая отправляет утверждения в конкретную инстанцию wikibase.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "other_matches_title": {
+    "message": "Другие совпадения",
+    "description": "Заголовок раздела, содержащего контекстные совпадения для конкретного веб-сайта."
+  },
+  "wb_set_alias": {
+    "message": "Установить псевдоним",
+    "description": "Название команды, которая устанавливает псевдонимы API wikibase."
+  },
+  "ambiguous_url_title": {
+    "message": "Найдено несколько совпадений",
+    "description": "Заголовок экрана дезамбигуации."
+  },
+  "ambiguous_url_intro": {
+    "message": "Этот URL был сопоставлен с несколькими объектами wikibase. Пожалуйста, выберите нужный объект.",
+    "description": "Сообщение, отображаемое при сопоставлении URL с несколькими объектами для выбора."
+  },
+  "unknown": {
+    "message": "неизвестно",
+    "description": "Тип snak неизвестен."
+  },
+  "no_value": {
+    "message": "нет значения",
+    "description": "Тип snak нет значения."
+  },
+  "media_info": {
+    "message": "Информация о медиафайле",
+    "description": "Метка ссылки, показывающая больше информации о файле."
+  },
+  "external_id": {
+    "message": "Внешний идентификатор",
+    "description": "Заголовок раздела, содержащего один внешний идентификатор."
+  },
+  "external_ids": {
+    "message": "Внешние идентификаторы",
+    "description": "Заголовок раздела, содержащего внешние идентификаторы."
+  },
+  "link": {
+    "message": "Ссылка",
+    "description": "Заголовок раздела, содержащего одну ссылку."
+  },
+  "links": {
+    "message": "Ссылки",
+    "description": "Заголовок раздела, содержащего ссылки."
+  },
+  "reference": {
+    "message": "Источник",
+    "description": "Заголовок раздела, содержащего одну ссылку."
+  },
+  "references": {
+    "message": "Источники",
+    "description": "Заголовок раздела, содержащего ссылки."
+  },
+  "month_1": {
+    "message": "Январь",
+    "description": "Название первого месяца."
+  },
+  "month_2": {
+    "message": "Февраль",
+    "description": "Название второго месяца."
+  },
+  "month_3": {
+    "message": "Март",
+    "description": "Название третьего месяца."
+  },
+  "month_4": {
+    "message": "Апрель",
+    "description": "Название четвертого месяца."
+  },
+  "month_5": {
+    "message": "Май",
+    "description": "Название пятого месяца."
+  },
+  "month_6": {
+    "message": "Июнь",
+    "description": "Название шестого месяца."
+  },
+  "month_7": {
+    "message": "Июль",
+    "description": "Название седьмого месяца."
+  },
+  "month_8": {
+    "message": "Август",
+    "description": "Название восьмого месяца."
+  },
+  "month_9": {
+    "message": "Сентябрь",
+    "description": "Название девятого месяца."
+  },
+  "month_10": {
+    "message": "Октябрь",
+    "description": "Название десятого месяца."
+  },
+  "month_11": {
+    "message": "Ноябрь",
+    "description": "Название одиннадцатого месяца."
+  },
+  "month_12": {
+    "message": "Декабрь",
+    "description": "Название двенадцатого месяца."
+  },
+  "date_month": {
+    "message": "$MONTHNAME$ $YEAR$",
+    "description": "Название месяца.",
+    "placeholders": {
+      "monthname": {
+        "content": "$1",
+        "example": "Февраль"
+      },
+      "monthnumber": {
+        "content": "$2",
+        "example": "2"
+      },
+      "year": {
+        "content": "$3",
+        "example": "2024"
+      }
+    }
+  },
+  "date_bce": {
+    "message": "$DATE$ до н.э.",
+    "description": "Дата до года 0.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2032-12-34"
+      }
+    }
+  },
+  "date_year": {
+    "message": "$NUMBER$",
+    "description": "Название года.",
+    "placeholders": {
+      "number": {
+        "content": "$1",
+        "example": "2024"
+      }
+    }
+  },
+  "date_decade": {
+    "message": "$NUMBER$-е",
+    "description": "Название десятилетия.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "202"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2010"
+      }
+    }
+  },
+  "date_cenury": {
+    "message": "$ORDINAL$-й век",
+    "description": "Название века.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "21"
+      },
+      "number": {
+        "content": "$2",
+        "example": "20"
+      }
+    }
+  },
+  "date_millenium": {
+    "message": "$ORDINAL$-е тысячелетие",
+    "description": "Название тысячелетия.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "1"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
+  },
+  "date_year_range": {
+    "message": "$year$ ±$DELTA$ лет",
+    "description": "Диапазон между годами.",
+    "placeholders": {
+      "year": {
+        "content": "$1",
+        "example": "1967"
+      },
+      "lower": {
+        "content": "$2",
+        "example": "1966"
+      },
+      "upper": {
+        "content": "$3",
+        "example": "1969"
+      },
+      "delta": {
+        "content": "$4",
+        "example": "5.000"
+      }
+    }
+  }
+}
