@@ -19,7 +19,7 @@ class Register extends Component {
         claim =>
           html`<li class="register__item">
             <strong class="register__label">
-              <${Thing} id=${claims[0][0].mainsnak.property} manager=${manager}
+              <${Thing} id=${claim[0].mainsnak.property} manager=${manager}
             /></strong>
             ${claim.map(
               object =>
