@@ -268,7 +268,7 @@
       }
     }
   },
-  "date_cenury": {
+  "date_century": {
     "message": "$ORDINAL$-й век",
     "description": "Название века.",
     "placeholders": {

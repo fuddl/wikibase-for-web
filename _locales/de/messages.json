@@ -211,7 +211,7 @@
       }
     }
   },
-  "date_cenury": {
+  "date_century": {
     "message": "$ORDINAL$. Jahrhundert",
     "placeholders": {
       "ordinal": {

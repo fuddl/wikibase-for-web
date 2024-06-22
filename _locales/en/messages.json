@@ -267,7 +267,7 @@
       }
     }
   },
-  "date_cenury": {
+  "date_century": {
     "message": "$ORDINAL$. century",
     "description": "The name of a century.",
     "placeholders": {

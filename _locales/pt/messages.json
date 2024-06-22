@@ -1,0 +1,324 @@
+{
+  "match_via_sitelink": {
+    "message": "Vincular a $INSTANCE$ via hiperligação do sítio eletrônico",
+    "description": "Cabeçalho de uma seção que permite vincular uma URL a uma entidade do Wikibase via hiperligação do sítio eletrônico.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_external_id": {
+    "message": "Vincular a $INSTANCE$ via identificador (id)",
+    "description": "Cabeçalho de uma seção que permite vincular uma URL a uma entidade do Wikibase via um identificador (id) externo.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_url": {
+    "message": "Vincular a $INSTANCE$ via URL",
+    "description": "Cabeçalho de uma seção que permite vincular uma URL a uma entidade do Wikibase.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "edit_button": {
+    "message": "Editar",
+    "description": "Rótulo de um botão que permite editar algo."
+  },
+  "edit_descriptions": {
+    "message": "Editar descrições",
+    "description": "Título de um formulário onde as descrições podem ser alteradas."
+  },
+  "aquiring_metadata": {
+    "message": "Adquirindo metadados…",
+    "description": "Mensagem mostrada ao adquirir metadados."
+  },
+  "set_alias": {
+    "message": "Definir nome(s) alternativo(s)",
+    "description": "Título de uma edição que define um nome alternativo."
+  },
+  "set_label_or_alias": {
+    "message": "Definir rótulo ou nome(s) alternativo(s) em $1",
+    "description": "Título de uma edição que define um rótulo ou um nome alternativo.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_description": {
+    "message": "Definir descrição para $1",
+    "description": "Título de uma edição que define uma descrição.",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_sitelink": {
+    "message": "Definir hiperligação do sítio eletrônico",
+    "description": "Título de uma edição que define uma hiperligação do sítio eletrônico."
+  },
+  "dismiss_action": {
+    "message": "Dispensar esta mensagem",
+    "description": "Rótulo de um botão que dispensa uma mensagem."
+  },
+  "search_item_placeholder": {
+    "message": "Buscar itens por rótulo ou nome(s) alternativo(s).",
+    "description": "Texto de um campo que busca itens do Wikibase."
+  },
+  "search_lexeme_placeholder": {
+    "message": "Buscar lexemas por lema ou forma.",
+    "description": "Texto de um campo que busca lexemas do Wikibase."
+  },
+  "search_sense_placeholder": {
+    "message": "Buscar sentidos de lexema por lema.",
+    "description": "Texto de um campo que busca sentidos de lexema do Wikibase."
+  },
+  "load_autodesc": {
+    "message": "Carregando descrição automática…",
+    "description": "Mensagem que informa ao usuário que uma descrição automática está sendo carregada."
+  },
+  "match_title": {
+    "message": "Vincular",
+    "description": "Título de um formulário de vinculação de entidade."
+  },
+  "create_new_entity": {
+    "message": "Criar nova entidade",
+    "description": "Rótulo de uma opção que criará uma nova entidade."
+  },
+  "new_entity": {
+    "message": "Nova entidade",
+    "description": "Rótulo de uma opção selecionada que criará uma nova entidade."
+  },
+  "disambiguation_title": {
+    "message": "Desambiguador",
+    "description": "Título da barra lateral quando mostra a tela de desambiguação."
+  },
+  "send_to_instance": {
+    "message": "Enviar para $INSTANCE$",
+    "description": "Título de um botão que envia afirmações para uma instância específica do Wikibase.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "other_matches_title": {
+    "message": "Outras associações",
+    "description": "Título de uma seção que contém correspondências contextuais para um sítio eletrônico específico."
+  },
+  "wb_set_alias": {
+    "message": "Definir nome(s) alternativo(s)",
+    "description": "Nome do comando que define nome(s) alternativo(s) na API do Wikibase."
+  },
+  "ambiguous_url_title": {
+    "message": "Múltiplas Associações Encontradas",
+    "description": "Título de uma tela de desambiguação."
+  },
+  "ambiguous_url_intro": {
+    "message": "Esta URL foi associada a múltiplas entidades do Wikibase. Por favor, selecione a entidade desejada.",
+    "description": "Mensagem mostrada quando uma URL foi associada a múltiplas entidades em uma seleção."
+  },
+  "unknown": {
+    "message": "desconhecido",
+    "description": "O snaktype tem valor desconhecido."
+  },
+  "no_value": {
+    "message": "nenhum valor",
+    "description": "O snaktype não tem nenhum valor."
+  },
+  "media_info": {
+    "message": "Informações da mídia",
+    "description": "Rótulo de uma hiperligação que mostra mais informações sobre um arquivo."
+  },
+  "external_id": {
+    "message": "Identificador externo",
+    "description": "Cabeçalho de uma seção que contém um único identificador (id) externo."
+  },
+  "external_ids": {
+    "message": "Identificadores externos",
+    "description": "Cabeçalho de uma seção que contém identificadores (id) externos."
+  },
+  "link": {
+    "message": "Hiperligação",
+    "description": "Cabeçalho de uma seção que contém uma única hiperligação."
+  },
+  "links": {
+    "message": "Hiperligações",
+    "description": "Cabeçalho de uma seção que contém hiperligações."
+  },
+  "reference": {
+    "message": "Referência",
+    "description": "Cabeçalho de uma seção que contém uma única referência."
+  },
+  "references": {
+    "message": "Referências",
+    "description": "Cabeçalho de uma seção que contém referências."
+  },
+  "month_1": {
+    "message": "Janeiro",
+    "description": "O nome do primeiro mês."
+  },
+  "month_2": {
+    "message": "Fevereiro",
+    "description": "O nome do segundo mês."
+  },
+  "month_3": {
+    "message": "Março",
+    "description": "O nome do terceiro mês."
+  },
+  "month_4": {
+    "message": "Abril",
+    "description": "O nome do quarto mês."
+  },
+  "month_5": {
+    "message": "Maio",
+    "description": "O nome do quinto mês."
+  },
+  "month_6": {
+    "message": "Junho",
+    "description": "O nome do sexto mês."
+  },
+  "month_7": {
+    "message": "Julho",
+    "description": "O nome do sétimo mês."
+  },
+  "month_8": {
+    "message": "Agosto",
+    "description": "O nome do oitavo mês."
+  },
+  "month_9": {
+    "message": "Setembro",
+    "description": "O nome do nono mês."
+  },
+  "month_10": {
+    "message": "Outubro",
+    "description": "O nome do décimo mês."
+  },
+  "month_11": {
+    "message": "Novembro",
+    "description": "O nome do décimo primeiro mês."
+  },
+  "month_12": {
+    "message": "Dezembro",
+    "description": "O nome do décimo segundo mês."
+  },
+  "date_month": {
+    "message": "$MONTHNAME$ $YEAR$",
+    "description": "O nome de um mês.",
+    "placeholders": {
+      "monthname": {
+        "content": "$1",
+        "example": "Fevereiro"
+      },
+      "monthnumber": {
+        "content": "$2",
+        "example": "2"
+      },
+      "year": {
+        "content": "$3",
+        "example": "2024"
+      }
+    }
+  },
+  "date_bce": {
+    "message": "$DATE$ antes da Era Comum (AEC) ou antes de Cristo (a.C.)",
+    "description": "Uma data antes do ano 0.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2032-12-34"
+      }
+    }
+  },
+  "date_year": {
+    "message": "$NUMBER$",
+    "description": "O nome de um ano.",
+    "placeholders": {
+      "number": {
+        "content": "$1",
+        "example": "2024"
+      }
+    }
+  },
+  "date_decade": {
+    "message": "Década de $NUMBER$",
+    "description": "O nome de uma década.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "202"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2010"
+      }
+    }
+  },
+  "date_century": {
+    "message": "Século $NUMBERROMAN$",
+    "description": "O nome de um século.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "21"
+      },
+      "number": {
+        "content": "$2",
+        "example": "20"
+      },
+      "numberroman": {
+        "content": "$3",
+        "example": "XXI"
+      }
+    }
+  },
+  "date_millenium": {
+    "message": "$ORDINAL$.º milênio",
+    "description": "O nome de um milênio.",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "1"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
+  },
+  "date_year_range": {
+    "message": "$year$ ±$DELTA$ anos",
+    "description": "Um intervalo entre dois anos.",
+    "placeholders": {
+      "year": {
+        "content": "$1",
+        "example": "1967"
+      },
+      "lower": {
+        "content": "$2",
+        "example": "1966"
+      },
+      "upper": {
+        "content": "$3",
+        "example": "1969"
+      },
+      "delta": {
+        "content": "$4",
+        "example": "5.000"
+      }
+    }
+  }
+}

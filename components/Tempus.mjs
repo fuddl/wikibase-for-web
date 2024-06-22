@@ -1,5 +1,6 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
+import { toRomanNumeral } from '../modules/romanNumeral.mjs';
 
 import Thin from './Thin.mjs';
 
@@ -54,9 +55,10 @@ class Tempus extends Component {
     } else if (precision == 7) {
       const century = parseInt(time.substring(1, 3));
       const centuryOrdinal = century + 1;
-      localised = browser.i18n.getMessage('date_cenury', [
+      localised = browser.i18n.getMessage('date_century', [
         centuryOrdinal,
         century,
+        toRomanNumeral(century),
       ]);
     } else if (precision == 6) {
       const millenia = parseInt(time.substring(1, 2));
