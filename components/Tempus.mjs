@@ -36,7 +36,7 @@ class Tempus extends Component {
         browser.i18n.getMessage('month_11'),
         browser.i18n.getMessage('month_12'),
       ];
-      const monthName = monthNames[monthNumber + 1];
+      const monthName = monthNames[monthNumber - 1];
       localised = browser.i18n.getMessage('date_month', [
         monthName,
         monthNumber,
