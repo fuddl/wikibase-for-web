@@ -38,7 +38,9 @@ class Change extends Component {
 			description: props?.description,
 			sitelink: props?.sitelink,
 			editMode: false,
-			active: !dismissed.isEditDismissed(this.signature),
+			active: props.disabledByDefault
+				? !props.disabledByDefault
+				: !dismissed.isEditDismissed(this.signature),
 			invalid: false,
 			languageNames: {},
 		};

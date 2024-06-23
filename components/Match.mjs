@@ -193,6 +193,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
                 sitelink=${edit?.sitelink}
                 action=${edit.action}
                 signature=${edit?.signature}
+                disabledByDefault=${edit?.disabledByDefault}
                 name=${`edits.${editId}`}
                 manager=${manager} />`,
           )}

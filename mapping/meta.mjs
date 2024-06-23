@@ -61,6 +61,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 			name: 'og:title',
 			prop: 'title',
 			type: 'monolingualtext',
+			disabledByDefault: true,
 		},
 		{
 			name: 'books:page_count',
@@ -184,6 +185,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
+							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new MonolingualTextClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								text: tag.content,
@@ -211,6 +213,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
+							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new WikibaseItemClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								value: targetValue,
@@ -232,6 +235,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 							newEdits.push({
 								action: 'claim:create',
 								signature: makeSignature(tag.name),
+								disabledByDefault: item?.disabledByDefault ?? false,
 								claim: new WikibaseItemClaim({
 									property: `${wikibase.id}:${targetProperty}`,
 									value: options,
@@ -251,6 +255,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
+							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new QuantityClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								amount: `+${amount}`,
@@ -276,6 +281,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
+							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new ExternalIdClaim({
 								property: `${wikibase.id}:${prop}`,
 								value: id,
@@ -294,6 +300,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 							newEdits.push({
 								action: 'claim:create',
 								signature: makeSignature(tag.name),
+								disabledByDefault: item?.disabledByDefault ?? false,
 								claim: new GlobeCoordinateClaim({
 									property: `${wikibase.id}:${targetProperty}`,
 									latitude: latlon[0],
@@ -311,6 +318,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 						newEdits.push({
 							action: 'claim:create',
 							signature: makeSignature(tag.name),
+							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new TimeClaim({
 								property: `${wikibase.id}:${targetProperty}`,
 								time: `+${tag.content}T00:00:00Z`,
