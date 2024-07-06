@@ -186,7 +186,11 @@ export async function getTabMetadata(tabId) {
 
             return {
                 title: document.title,
-                lang: document.documentElement.lang,
+                lang:
+                    document.documentElement.lang ||
+                    document.body.lang ||
+                    document.head.lang ||
+                    'und',
                 description: getDescription(),
                 keywords: getKeywords(),
                 canonicalURL: getCanonicalURL(),
