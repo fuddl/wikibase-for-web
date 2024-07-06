@@ -194,6 +194,12 @@ browser.webRequest.onCompleted.addListener(
 	},
 );
 
+browser.webNavigation.onBeforeNavigate.addListener(details => {
+	if (tabs?.[details.tabId]) {
+		delete tabs[details.tabId];
+	}
+});
+
 browser.browserAction.onClicked.addListener(async () => {
 	await browser.sidebarAction.toggle();
 });
