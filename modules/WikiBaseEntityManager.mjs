@@ -11,12 +11,102 @@ class WikiBaseEntityManager {
 		this.queryManager = new WikiBaseQueryManager();
 
 		for (const wikibase in this.wikibases) {
-			// @todo add babel languages from instance
+			this.wikibases[wikibase].manager = this;
 			this.wikibases[wikibase].languages = this.languages;
 
-			this.wikibases[wikibase].manager = this;
+			this.fetchBabelLanguages(wikibase)
+				.then(result => {
+					this.wikibases[wikibase].languages = Array.from(
+						new Set([...result, ...this.languages]),
+					);
+				})
+				.catch(error => {
+					console.error('Error fetching data:', error);
+				});
 		}
 	}
+
+	async getUsername(wikibase) {
+		try {
+			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
+			const url = new URL(endPoint);
+			url.search = new URLSearchParams({
+				action: 'query',
+				meta: 'userinfo',
+				uiprop: 'name',
+				format: 'json',
+			});
+
+			const response = await fetch(url.toString());
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			if (data.error) {
+				console.error(data.error);
+				return null;
+			}
+
+			const userInfo = data.query.userinfo;
+			if (!userInfo || !userInfo.name) {
+				return null;
+			}
+
+			return userInfo.name;
+		} catch (error) {
+			console.error('Failed to fetch username:', error);
+			return null;
+		}
+	}
+
+	async fetchBabelLanguages(wikibase) {
+		try {
+			const username = await this.getUsername(wikibase);
+			if (!username) {
+				return [];
+			}
+
+			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
+			const url = new URL(endPoint);
+			url.search = new URLSearchParams({
+				action: 'query',
+				meta: 'babel',
+				babuser: username,
+				format: 'json',
+			});
+
+			const response = await fetch(url.toString());
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			if (data.error) {
+				console.error(data.error);
+				return [];
+			}
+
+			const babelInfo = data.query.babel;
+			if (!babelInfo) {
+				return [];
+			}
+
+			const babelLanguages = [];
+
+			for (const [lang, proficiency] of Object.entries(babelInfo)) {
+				if (proficiency === 'N' || Number(proficiency) > 0) {
+					babelLanguages.push(lang.toLowerCase());
+				}
+			}
+
+			return babelLanguages;
+		} catch (error) {
+			console.error('Failed to fetch Babel languages:', error);
+			return [];
+		}
+	}
+
 	async add(id, useCache = true) {
 		if (this.entities?.[id] && useCache) {
 			return this.entities[id];
