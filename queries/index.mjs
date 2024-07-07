@@ -3,6 +3,7 @@ import { equivalentProperties } from './equivalentProperties.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
+import { labels } from './labels.mjs';
 import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
@@ -15,6 +16,7 @@ const queries = {
 	instancesOrSubclasses,
 	itemByExternalId,
 	itemByUrl,
+	labels,
 	reviewScoreHostnames,
 	shortTitle,
 	unitSymbol,

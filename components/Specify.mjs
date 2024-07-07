@@ -1,6 +1,5 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
-import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import OptionsHistoryAPI from '../modules/OptionsHistoryAPI.mjs';
 
@@ -27,9 +26,18 @@ class Specify extends Component {
     const { options, manager } = this.props;
     const labels = {};
 
+    const queriedLabels = await manager.queryManager.query(
+      manager.wikibase,
+      manager.queryManager.queries.labels,
+      {
+        items: options.map(i => i.replace(`${manager.wikibase.id}:`, '')),
+      },
+    );
+
     for (const option of options) {
-      const propertyDesignator = await manager.fetchDesignators(option);
-      const label = getByUserLanguage(propertyDesignator.labels).value;
+      const label =
+        queriedLabels?.[option.replace(`${manager.wikibase.id}:`, '')] ??
+        option;
       labels[option] = label;
     }
 
