@@ -17,7 +17,7 @@ class WikiBaseEntityManager {
 			this.fetchBabelLanguages(wikibase)
 				.then(result => {
 					this.wikibases[wikibase].languages = Array.from(
-						new Set([...result, ...this.languages]),
+						new Set([...this.languages, ...result]),
 					);
 				})
 				.catch(error => {
