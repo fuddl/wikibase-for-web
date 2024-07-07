@@ -108,6 +108,13 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
       });
     } else if (metadata?.title) {
       newSearchTitle = metadata.title;
+
+      const labelLanguage = await manager.validateLanguage(
+        metadata?.lang,
+        'term',
+        manager.wikibase,
+      );
+
       if (suggestion?.titleExtractPattern) {
         const matches = metadata.title.match(suggestion.titleExtractPattern);
         if (matches?.[1]) {
@@ -117,7 +124,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
             signature: `extracted-title:${suggestion.titleExtractPattern}`,
             labels: {
               add: matches[1],
-              language: metadata?.lang.toLowerCase(),
+              language: labelLanguage,
             },
           });
         }

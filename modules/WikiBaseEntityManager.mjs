@@ -110,6 +110,30 @@ class WikiBaseEntityManager {
 			console.error('Failed to fetch languages:', error);
 		}
 	}
+
+	async validateLanguage(code, context, wikibase) {
+		const lowerCaseCode = code.toLowerCase();
+
+		const { languages: validLanguages } = await this.fetchLanguages(
+			wikibase.id,
+			'term',
+		);
+
+		if (validLanguages.includes(lowerCaseCode)) {
+			return lowerCaseCode;
+		}
+
+		const parts = lowerCaseCode.split('-');
+		if (parts.length > 1) {
+			const primaryCode = parts[0];
+			if (validLanguages.includes(primaryCode)) {
+				return primaryCode;
+			}
+		}
+
+		return this.wikibases[wikibase.id]?.languages?.[0];
+	}
+
 	async fetchDesignators(id) {
 		if (id in this.designators) {
 			return this.designators[id];
