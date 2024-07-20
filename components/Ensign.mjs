@@ -4,6 +4,7 @@ import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import AutoDesc from './AutoDesc.mjs';
 import Thing from './Thing.mjs';
+import Lament from './Lament.mjs';
 import Edit from './Edit.mjs';
 import { descriptionsEdits } from '../mapping/description.mjs';
 
@@ -95,10 +96,7 @@ class Ensign extends Component {
         }}>
         <h1 class="ensign__title" lang=${label?.language}>
           ${label?.value ||
-          (lemmas
-            ? Object.entries(lemmas).map(([lang, lemma]) => lemma?.value)
-            : ''
-          ).join('/')}
+          (lemmas ? html`<${Lament} lemmas=${lemmas} />` : null)}
         </h1>
         ${' '}
         <small class="ensign__id">

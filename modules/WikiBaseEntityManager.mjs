@@ -49,7 +49,7 @@ class WikiBaseEntityManager {
 			}
 
 			const userInfo = data.query.userinfo;
-			if (!userInfo || !userInfo.name) {
+			if (!userInfo || !userInfo.name || userInfo?.id === 0) {
 				return null;
 			}
 

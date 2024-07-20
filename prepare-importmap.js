@@ -10,9 +10,9 @@ const destDir = path.join(__dirname, 'importmap');
 const modulesToCopy = [
   'binary-variations',
   'htm',
-  'normalize.css',
   'isbn3',
   'leaflet',
+  'normalize.css',
   'preact',
   'wikibase-sdk',
 ];
