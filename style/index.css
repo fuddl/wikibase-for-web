@@ -68,6 +68,21 @@ html {
   unicode-range: U+F1900-F19FF;
 }
 
+@font-face {
+  font-family: 'SuttonSignWritingLine';
+  src: url('res/SuttonSignWritingLine.woff2');
+}
+
+@font-face {
+  font-family: 'SuttonSignWritingFill';
+  src: url('res/SuttonSignWritingFill.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'SuttonSignWritingOneD';
+  src: url('res/SuttonSignWritingOneD.woff2') format('woff2');
+}
+
 :root {
   font-family: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Lato',
     'Helvetica', 'Arial', 'pIqaD', FairfaxHaxHD, cc-icons, sans-serif;

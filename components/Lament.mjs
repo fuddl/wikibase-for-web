@@ -2,6 +2,7 @@ import { h } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import Furigana from '../modules/furigana.mjs';
 import { sitelen } from '../importmap/ucsur-sitelen-pona/lib.mjs';
+import { fsw } from '../importmap/@sutton-signwriting/font-ttf/index.mjs';
 
 const fitKlingon = function (pIqaD, latin) {
   const trans = {
@@ -131,6 +132,19 @@ const html = htm.bind(h);
 function Lament(vars) {
   let fitted = [];
   let lemmas = structuredClone(vars.lemmas);
+  for (const lang of ['ase', 'bfi', 'gsg', 'bzs', 'pks']) {
+    if (lang in lemmas) {
+      fitted.push([
+        [
+          html`<span
+            dangerouslySetInnerHTML=${{
+              __html: fsw.signSvg(lemmas[lang].value),
+            }}></span>`,
+        ],
+      ]);
+      delete lemmas[lang];
+    }
+  }
   if ('ja' in lemmas && 'ja-hira' in lemmas) {
     const furi = new Furigana();
     fitted.push(furi.fit(lemmas.ja.value, lemmas['ja-hira'].value));

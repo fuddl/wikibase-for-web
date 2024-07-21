@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sutton-signwriting/font-ttf": "^1.5.2",
     "binary-variations": "^1.0.2",
     "esbuild": "^0.20.2",
     "glob": "^10.3.12",

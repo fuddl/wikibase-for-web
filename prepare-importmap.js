@@ -15,6 +15,7 @@ const modulesToCopy = [
   'normalize.css',
   'preact',
   'wikibase-sdk',
+  '@sutton-signwriting',
 ];
 
 async function copySpecifiedModules() {
