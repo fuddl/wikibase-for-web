@@ -25,6 +25,7 @@ const wikibases = {
 			location: 'P276',
 			mastodonAddress: 'P4033',
 			mobileFormatterURL: 'P7250',
+			nameInKana: 'P1814',
 			numberOfPages: 'P1104',
 			numberOfReviewsRatings: 'P7887',
 			occupation: 'P106',

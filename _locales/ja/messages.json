@@ -1,0 +1,320 @@
+{
+  "match_via_sitelink": {
+    "message": "サイトリンクを介して$INSTANCE$にマッチ",
+    "description": "サイトリンクを介してURLをウィキベースのエンティティにマッチさせるセクションのヘッダー。",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_external_id": {
+    "message": "IDを介して$INSTANCE$にマッチ",
+    "description": "外部IDを介してURLをウィキベースのエンティティにマッチさせるセクションのヘッダー。",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "match_via_url": {
+    "message": "URLを介して$INSTANCE$にマッチ",
+    "description": "URLをウィキベースのエンティティにマッチさせるセクションのヘッダー。",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "edit_button": {
+    "message": "編集",
+    "description": "何かを編集するためのボタンのラベル。"
+  },
+  "edit_descriptions": {
+    "message": "説明を編集",
+    "description": "説明を変更できるフォームのタイトル。"
+  },
+  "aquiring_metadata": {
+    "message": "メタデータを取得中…",
+    "description": "メタデータを取得中であることを示すメッセージ。"
+  },
+  "set_alias": {
+    "message": "別名を設定",
+    "description": "別名を設定する編集のタイトル。"
+  },
+  "set_label_or_alias": {
+    "message": "$1 のラベルまたは別名を設定",
+    "description": "ラベルまたは別名を設定する編集のタイトル。",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_description": {
+    "message": "$1の説明を設定",
+    "description": "説明を設定する編集のタイトル。",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "en"
+      }
+    }
+  },
+  "set_sitelink": {
+    "message": "サイトリンクを設定",
+    "description": "サイトリンクを設定する編集のタイトル。"
+  },
+  "dismiss_action": {
+    "message": "このメッセージを閉じる",
+    "description": "メッセージを閉じるボタンのラベル。"
+  },
+  "search_item_placeholder": {
+    "message": "ラベルや別名から項目を検索",
+    "description": "ウィキベース項目を検索するフィールドのプレースホルダー。"
+  },
+  "search_lexeme_placeholder": {
+    "message": "語形から語彙素を検索",
+    "description": "ウィキベースの語彙素を検索するフィールドのプレースホルダー。"
+  },
+  "search_sense_placeholder": {
+    "message": "見出し語から語義を検索",
+    "description": "ウィキベースの語義を検索するフィールドのプレースホルダー。"
+  },
+  "load_autodesc": {
+    "message": "自動生成の説明を読み込み中…",
+    "description": "自動説明が読み込み中であることをユーザーに知らせるメッセージ。"
+  },
+  "match_title": {
+    "message": "マッチ",
+    "description": "エンティティマッチフォームのタイトル。"
+  },
+  "create_new_entity": {
+    "message": "新しいエンティティを作成",
+    "description": "新しいエンティティを作成するオプションのラベル。"
+  },
+  "new_entity": {
+    "message": "新しいエンティティ",
+    "description": "選択されたオプションのラベル。"
+  },
+  "disambiguation_title": {
+    "message": "曖昧さ除去",
+    "description": "曖昧さ除去画面を表示するサイドバーのタイトル。"
+  },
+  "send_to_instance": {
+    "message": "$INSTANCE$に送信",
+    "description": "特定のウィキベースインスタンスに主張を送信するボタンのタイトル。",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
+  "other_matches_title": {
+    "message": "その他のマッチ",
+    "description": "特定のウェブサイトの文脈的なマッチを含むセクションのタイトル。"
+  },
+  "wb_set_alias": {
+    "message": "別名を設定",
+    "description": "ウィキベースAPIの別名を設定するコマンドの名前。"
+  },
+  "ambiguous_url_title": {
+    "message": "複数のマッチが見つかりました",
+    "description": "曖昧さ除去画面のタイトル。"
+  },
+  "ambiguous_url_intro": {
+    "message": "このURLは複数のウィキベースエンティティにマッチしました。望ましいエンティティを選択してください。",
+    "description": "URLが複数のエンティティにマッチした場合に表示されるメッセージ。"
+  },
+  "unknown": {
+    "message": "不明な値",
+    "description": "snaktype unknownの説明。"
+  },
+  "no_value": {
+    "message": "値なし",
+    "description": "snaktype no valueの説明。"
+  },
+  "media_info": {
+    "message": "メディア情報",
+    "description": "ファイルに関する詳細情報を示すリンクのラベル。"
+  },
+  "external_id": {
+    "message": "外部識別子",
+    "description": "単一の外部IDを含むセクションの見出し。"
+  },
+  "external_ids": {
+    "message": "外部識別子",
+    "description": "外部IDを含むセクションの見出し。"
+  },
+  "link": {
+    "message": "リンク",
+    "description": "単一のリンクを含むセクションの見出し。"
+  },
+  "links": {
+    "message": "リンク",
+    "description": "リンクを含むセクションの見出し。"
+  },
+  "reference": {
+    "message": "出典",
+    "description": "単一の出典を含むセクションの見出し。"
+  },
+  "references": {
+    "message": "出典",
+    "description": "出典を含むセクションの見出し。"
+  },
+  "month_1": {
+    "message": "1月",
+    "description": "最初の月の名前。"
+  },
+  "month_2": {
+    "message": "2月",
+    "description": "2番目の月の名前。"
+  },
+  "month_3": {
+    "message": "3月",
+    "description": "3番目の月の名前。"
+  },
+  "month_4": {
+    "message": "4月",
+    "description": "4番目の月の名前。"
+  },
+  "month_5": {
+    "message": "5月",
+    "description": "5番目の月の名前。"
+  },
+  "month_6": {
+    "message": "6月",
+    "description": "6番目の月の名前。"
+  },
+  "month_7": {
+    "message": "7月",
+    "description": "7番目の月の名前。"
+  },
+  "month_8": {
+    "message": "8月",
+    "description": "8番目の月の名前。"
+  },
+  "month_9": {
+    "message": "9月",
+    "description": "9番目の月の名前。"
+  },
+  "month_10": {
+    "message": "10月",
+    "description": "10番目の月の名前。"
+  },
+  "month_11": {
+    "message": "11月",
+    "description": "11番目の月の名前。"
+  },
+  "month_12": {
+    "message": "12月",
+    "description": "12番目の月の名前。"
+  },
+  "date_month": {
+    "message": "$YEAR$年$MONTHNAME$",
+    "description": "月の名前。",
+    "placeholders": {
+      "monthname": {
+        "content": "$1",
+        "example": "February"
+      },
+      "monthnumber": {
+        "content": "$2",
+        "example": "2"
+      },
+      "year": {
+        "content": "$3",
+        "example": "2024"
+      }
+    }
+  },
+  "date_bce": {
+    "message": "紀元前$DATE$",
+    "description": "紀元前0年より前の日付。",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2032-12-34"
+      }
+    }
+  },
+  "date_year": {
+    "message": "$NUMBER$年",
+    "description": "年の名前。",
+    "placeholders": {
+      "number": {
+        "content": "$1",
+        "example": "2024"
+      }
+    }
+  },
+  "date_decade": {
+    "message": "$NUMBER$年代",
+    "description": "10年間の名前。",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "202"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2010"
+      }
+    }
+  },
+  "date_century": {
+    "message": "$ORDINAL$世紀",
+    "description": "世紀の名前。",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "21"
+      },
+      "number": {
+        "content": "$2",
+        "example": "20"
+      }
+    }
+  },
+  "date_millenium": {
+    "message": "$ORDINAL$千年紀",
+    "description": "千年紀の名前。",
+    "placeholders": {
+      "ordinal": {
+        "content": "$1",
+        "example": "1"
+      },
+      "number": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
+  },
+  "date_year_range": {
+    "message": "$year$年±$DELTA$年",
+    "description": "2つの年間の範囲。",
+    "placeholders": {
+      "year": {
+        "content": "$1",
+        "example": "1967"
+      },
+      "lower": {
+        "content": "$2",
+        "example": "1966"
+      },
+      "upper": {
+        "content": "$3",
+        "example": "1969"
+      },
+      "delta": {
+        "content": "$4",
+        "example": "5.000"
+      }
+    }
+  }
+}

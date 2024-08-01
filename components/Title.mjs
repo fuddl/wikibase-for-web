@@ -1,6 +1,7 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
+import Lament from './Lament.mjs';
 
 const html = htm.bind(h);
 

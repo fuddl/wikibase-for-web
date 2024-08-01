@@ -183,8 +183,10 @@ function Lament(vars) {
     }
   }
 
+  console.debug(rubies);
+
   return html`<span
-    >${rubies}${rubies && Object.entries(lemmas).length ? '/' : null}
+    >${rubies}${rubies.length && Object.entries(lemmas).length ? '/' : null}
     ${lemmas
       ? Object.entries(lemmas)
           .map(([lang, lemma]) => lemma?.value)
