@@ -303,7 +303,7 @@ class Change extends Component {
 						${this.state?.claim?.references?.length > 0 &&
 						html`
 							<details>
-								<summary>Reference</summary>
+								<summary>${browser.i18n.getMessage('reference')}</summary>
 								${this.state.claim.references.map(
 									reference =>
 										html` <div class="change__reference">

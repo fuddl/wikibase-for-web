@@ -46,7 +46,7 @@
     "description": "別名を設定する編集のタイトル。"
   },
   "set_label_or_alias": {
-    "message": "$1 のラベルまたは別名を設定",
+    "message": "$1のラベルまたは別名を設定",
     "description": "ラベルまたは別名を設定する編集のタイトル。",
     "placeholders": {
       "language": {

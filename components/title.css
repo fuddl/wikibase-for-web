@@ -1,28 +1,5 @@
-.title:lang(ja),
-.title:lang(ko),
-.title:lang(zh) {
-	> i {
-		font-style: normal;
-	}
-	> i::before {
-		content: open-quote;
-	}
-	> i::after {
-		content: close-quote;
-	}
-}
-
-.title:lang(ja) {
-	> i {
-		quotes: '「' '」' '『' '』';
-		display: inline-block;
-		/* align the starting bracket with the table  */
-		margin-inline-start: -0.75em;
-	}
-}
-
-.title:lang(zh) {
-	> i {
-		quotes: '《' '》' '〈' '〉';
-	}
+.title__main:lang(ja),
+.title__main:lang(ko),
+.title__main:lang(zh) {
+	font-style: normal;
 }
