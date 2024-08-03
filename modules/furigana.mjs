@@ -191,6 +191,9 @@ class Furigana {
         return outputChunk;
       });
     }
+    if (plausableReadGroups.length === 0) {
+      return false;
+    }
 
     for (let i = 0; i < output.length; i++) {
       const group = output[i];

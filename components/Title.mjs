@@ -44,9 +44,18 @@ class Title extends Component {
 
     fetchLanguages();
   }
-  render({ text, language }) {
+  render({ text, language, representations }) {
     const myLanguage = this.props.manager.languages[0].replace(/-.+/, '');
     const languageName = this.state?.languages?.[language];
+
+    if (representations) {
+      let lemmas = {};
+      lemmas[language] = { value: text };
+      lemmas = { ...lemmas, ...representations };
+
+      text = html`<${Lament} lemmas=${lemmas} />`;
+    }
+
     return html`<span class="title">
       <i lang="${language}" class="title__main">${text}</i> ${language !==
       myLanguage

@@ -41,6 +41,7 @@ const wikibases = {
 			retrieved: 'P813',
 			reviewScore: 'P444',
 			reviewScoreBy: 'P447',
+			revisedHepburnRomanization: 'P2125',
 			shortTitle: 'P1813',
 			subclassOf: 'P279',
 			subpropertyOf: 'P1647',

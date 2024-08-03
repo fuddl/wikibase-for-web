@@ -145,11 +145,20 @@ function Lament(vars) {
       delete lemmas[lang];
     }
   }
-  if ('ja' in lemmas && 'ja-hira' in lemmas) {
+  if (
+    ('ja' in lemmas || 'ja-hani' in lemmas) &&
+    ('ja-hira' in lemmas || 'ja-kana' in lemmas)
+  ) {
     const furi = new Furigana();
-    fitted.push(furi.fit(lemmas.ja.value, lemmas['ja-hira'].value));
-    delete lemmas['ja'];
-    delete lemmas['ja-hira'];
+    const kanji = lemmas.ja ? 'ja' : 'ja-hani';
+    const kana = lemmas['ja-hira'] ? 'ja-hira' : 'ja-kana';
+
+    const fit = furi.fit(lemmas[kanji].value, lemmas[kana].value);
+    if (fit) {
+      fitted.push(fit);
+      delete lemmas[kanji];
+      delete lemmas[kana];
+    }
   }
   if ('tlh-piqd' in lemmas && 'tlh-latn' in lemmas) {
     const fittedKlingon = fitKlingon(

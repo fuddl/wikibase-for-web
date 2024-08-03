@@ -42,6 +42,36 @@ function applyPropOrder(claims, propOrder) {
   return orderedClaims;
 }
 
+function enrichMonolingualTextClaims(claims, props) {
+  return claims.map(claimGroup => {
+    for (const claim of claimGroup) {
+      if (claim?.mainsnak?.datatype === 'monolingualtext') {
+        if (
+          'qualifiers' in claim &&
+          'nameInKana' in props &&
+          props.nameInKana in claim.qualifiers
+        ) {
+          const qualifiers = claim.qualifiers[props.nameInKana];
+          for (let i = 0; i < qualifiers.length; i++) {
+            if (qualifiers[i]?.datavalue?.value) {
+              claim.mainsnak.datavalue.value.representations = {
+                'ja-hira': { value: qualifiers[i].datavalue.value },
+              };
+
+              // Remove the used qualifier from the array
+              qualifiers.splice(i, 1);
+
+              // Stop after the first valid value is found and used
+              break;
+            }
+          }
+        }
+      }
+    }
+    return claimGroup;
+  });
+}
+
 class Entity extends Component {
   render({
     id,
@@ -109,6 +139,11 @@ class Entity extends Component {
     });
 
     mainClaims = filterBadClaims(mainClaims);
+
+    mainClaims = enrichMonolingualTextClaims(
+      mainClaims,
+      manager.wikibases[wikibase].props,
+    );
 
     const urlClaims = Object.values(claims).filter(claim => {
       return claim[0].mainsnak.datatype === 'url';
