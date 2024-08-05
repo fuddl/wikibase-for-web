@@ -7,6 +7,7 @@ import {
 import htm from '../importmap/htm/src/index.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import Thin from './Thin.mjs';
+import Lament from './Lament.mjs';
 
 const html = htm.bind(h);
 
@@ -51,12 +52,7 @@ class Word extends Component {
     }
 
     return html`<a class="word" href="${href}" ref=${elementRef}
-        >${lemmas
-          ? (lemmas
-              ? Object.entries(lemmas).map(([lang, lemma]) => lemma?.value)
-              : ''
-            ).join('/')
-          : id}</a
+        >${lemmas ? html`<${Lament} lemmas=${lemmas} />` : null}</a
       >
       ${appendix.length > 0
         ? htm`${' '}

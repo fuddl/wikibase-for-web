@@ -55,7 +55,7 @@ class Spot extends Component {
 			}, []);
 		}
 
-		const href = formatters ? formatters[0].replace('$1', value) : false;
+		const href = formatters?.[0] ? formatters[0].replace('$1', value) : false;
 
 		return html`
 			<span class="spot" ref=${elementRef}>

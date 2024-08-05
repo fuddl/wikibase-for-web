@@ -192,8 +192,6 @@ function Lament(vars) {
     }
   }
 
-  console.debug(rubies);
-
   return html`<span
     >${rubies}${rubies.length && Object.entries(lemmas).length ? '/' : null}
     ${lemmas
