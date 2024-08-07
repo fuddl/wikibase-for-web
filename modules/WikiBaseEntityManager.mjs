@@ -267,7 +267,7 @@ class WikiBaseEntityManager {
 			const data = await response.json();
 			const rights = data.query.userinfo.rights;
 
-			return rights.includes('writeapi') && rights.includes('edit');
+			return rights.includes('edit');
 		} catch (error) {
 			reject(error);
 		}

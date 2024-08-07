@@ -1,0 +1,27 @@
+.grasp {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-gap: 0.5em;
+}
+
+.grasp__gloss {
+	margin: 0;
+}
+
+.grasp__id {
+	background: var(--border);
+	width: 2rem;
+	aspect-ratio: 1/1;
+	text-align: center;
+	line-height: 2rem;
+	border-radius: 1em;
+	font-family:
+		Linux Libertine,
+		Georgia,
+		Times,
+		serif;
+}
+
+.grasp__gloss {
+	margin: auto 0;
+}

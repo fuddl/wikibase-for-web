@@ -17,6 +17,9 @@ export const sortByUserLanguages = object => {
 			return indexA - indexB;
 		})
 		.reduce((acc, key) => {
+			if (typeof object[key] === 'object') {
+				object[key].preferred = normalizedUserLanguages.includes(key);
+			}
 			acc[key] = object[key];
 			return acc;
 		}, {});

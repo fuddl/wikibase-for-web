@@ -12,6 +12,7 @@ import Remark from './Remark.mjs';
 import Register from './Register.mjs';
 import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
+import Grasp from './Grasp.mjs';
 
 const html = htm.bind(h);
 
@@ -74,16 +75,17 @@ function enrichMonolingualTextClaims(claims, props) {
 
 class Entity extends Component {
   render({
+    claims,
+    descriptions,
     id,
     labels,
+    language,
     lemmas,
     lexicalCategory,
-    language,
-    descriptions,
-    title,
-    claims,
-    modified,
     manager,
+    modified,
+    senses,
+    title,
   }) {
     const [wikibase, localId] = id.split(':');
     const sectionRef = useRef(null);
@@ -173,6 +175,14 @@ class Entity extends Component {
       .flat();
     const numberOfReferences = Object.keys(references).length;
 
+    if (senses) {
+      let senseNumber = 1;
+      senses = senses.map(sense => {
+        sense.number = senseNumber++;
+        return sense;
+      });
+    }
+
     return html`
       <section ref=${sectionRef}>
         ${(labels && descriptions) || lemmas
@@ -185,9 +195,11 @@ class Entity extends Component {
                 lexicalCategory=${lexicalCategory}
                 language=${language}
                 manager=${manager}
-                title=${title}
-                key=${modified} />
+                title=${title} />
             `
+          : null}
+        ${senses
+          ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
         ${mainClaims.map(
           claim =>

@@ -21,6 +21,7 @@ const wikibases = {
 			instanceOf: 'P31',
 			isbn10: 'P957',
 			isbn13: 'P212',
+			itemForThisSense: 'P5137',
 			itemOfPropertyConstraint: 'P2305',
 			location: 'P276',
 			mastodonAddress: 'P4033',
