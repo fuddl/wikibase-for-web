@@ -27,7 +27,7 @@ export const siteLinks = {
                 action: 'sitelink:set',
                 sitelink: {
                   site: id,
-                  title: matches[1],
+                  title: decodeURIComponent(matches[1]),
                 },
                 status: 'required',
               },

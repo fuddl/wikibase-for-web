@@ -107,8 +107,6 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
         },
       });
     } else if (metadata?.title) {
-      newSearchTitle = metadata.title;
-
       const labelLanguage = await manager.validateLanguage(
         metadata?.lang,
         'term',
