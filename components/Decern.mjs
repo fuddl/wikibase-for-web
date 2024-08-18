@@ -58,13 +58,27 @@ function Decern({ name, value, onValueChange, context, manager }) {
 							html`<option disabled value="" selected>
 								${browser.i18n.getMessage('no_language_selected')}
 							</option>`}
-							${languages.map(
-								code => html`
-									<option value=${code} selected=${code === value}>
-										${languageNames[code] ?? code}
-									</option>
-								`,
-							)}
+
+							<optgroup label=${browser.i18n.getMessage('preferred_languages')}>
+								${manager.wikibase.languages.map(code => {
+									if (languages.includes(code)) {
+										return html`<option value=${code}>
+											${languageNames[code] ?? code}
+										</option>`;
+									}
+								})}
+							</optgroup>
+							<optgroup label=${browser.i18n.getMessage('other_languages')}>
+								${languages.map(code => {
+									if (!manager.wikibase.languages.includes(code)) {
+										return html`
+											<option value=${code} selected=${code === value}>
+												${languageNames[code] ?? code}
+											</option>
+										`;
+									}
+								})}
+							</optgroup>
 						</select>
 					`}
 		</div>

@@ -12,6 +12,7 @@ import Spot from './Spot.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
 import Type from './Type.mjs';
+import Choose from './Choose.mjs';
 
 const html = htm.bind(h);
 
@@ -51,10 +52,12 @@ class Nibble extends Component {
                 onValueChange=${onValueChange} />`;
             case 'wikibase-item':
             case 'wikibase-property':
-              return html`<${Type}
+              return html` <${Choose}
+                manager=${manager}
                 value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
-                type="text"
+                wikibase=${manager.wikibase.id}
                 name="${name}.datavalue.value.id"
+                type=${datatype == 'wikibase-item' ? 'item' : 'property'}
                 onValueChange=${newValue => {
                   const prefix = datavalue.value.id.replace(/\:\w+$/, '');
                   newValue.value = `${prefix}:${newValue.value}`;

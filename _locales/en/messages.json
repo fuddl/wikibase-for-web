@@ -7,6 +7,14 @@
     "message": "No language selected",
     "description": "The option label of a select where currently no language is selected."
   },
+  "preferred_languages": {
+    "message": "Preferred languages",
+    "description": "Label seen above a list of languages known to be preferred by the user."
+  },
+  "other_languages": {
+    "message": "Other languages",
+    "description": "Label seen above a list of languages not known to be preferred by the user."
+  },
   "match_via_sitelink": {
     "message": "Match to $INSTANCE$ via sitelink",
     "description": "Header of a section that allows matching a url to a wikibase entity via sitelink.",

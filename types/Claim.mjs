@@ -68,7 +68,7 @@ export class Claim {
 export class UrlClaim extends Claim {
   constructor({ property, value, references }) {
     super({ property, value, references });
-    this.mainsnak.datavalue.value = value ?? 'https://example.com/';
+    this.mainsnak.datavalue.value = value ?? '';
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'url';
   }
@@ -144,10 +144,17 @@ export class MonolingualTextClaim extends Claim {
 
 export class QuantityClaim extends Claim {
   constructor({ property, amount, unit = '1', references }) {
-    super({ property, value: { amount: amount, unit: unit }, references });
+    super({
+      property,
+      value: { amount: amount ?? '', unit: unit },
+      references,
+    });
 
     this.mainsnak.datavalue.type = 'quantity';
     this.mainsnak.datatype = 'quantity';
+  }
+  hasValue() {
+    return this.mainsnak?.datavalue?.value?.amount !== '';
   }
 }
 

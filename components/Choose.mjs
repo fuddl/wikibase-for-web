@@ -51,12 +51,13 @@ const Choose = ({
 	manager,
 	wikibase,
 	onSelected,
+	onValueChange,
 }) => {
 	const [suggestions, setSuggestions] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 	const [inputValue, setInputValue] = useState('');
 	const [shouldFetch, setShouldFetch] = useState(true);
-	const [choosenId, setChoosenId] = useState('');
+	const [choosenId, setChoosenId] = useState(value);
 
 	const inputRef = useRef(null);
 
@@ -69,8 +70,14 @@ const Choose = ({
 	}, [label]);
 
 	useEffect(() => {
-		if (choosenId !== '') {
+		if (onSelected && choosenId !== '') {
 			onSelected(choosenId);
+		}
+		if (onValueChange && choosenId !== '') {
+			onValueChange({
+				name: name,
+				value: `${wikibase}:${choosenId}`,
+			});
 		}
 	}, [choosenId]);
 
@@ -108,6 +115,26 @@ const Choose = ({
 			return () => clearTimeout(debounce);
 		}
 	}, [inputValue, type]);
+
+	useEffect(() => {
+		// Only perform the fetch if choosenId is present and inputValue is empty
+		if (choosenId && !inputValue) {
+			(async () => {
+				console.debug(choosenId);
+				const designators = await manager.fetchDesignators(
+					`${wikibase}:${choosenId}`,
+				);
+				if (designators) {
+					console.debug(designators);
+					const label = getByUserLanguage(designators.labels);
+					console.debug(label);
+					if (label?.value) {
+						setInputValue(label.value);
+					}
+				}
+			})();
+		}
+	}, [choosenId, inputValue]);
 
 	const handleKeyDown = e => {
 		if (e.key === 'ArrowDown') {
