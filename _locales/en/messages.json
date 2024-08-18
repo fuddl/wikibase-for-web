@@ -1,4 +1,12 @@
 {
+  "add_claims": {
+    "message": "Add claims",
+    "description": "Title of a form where claims can be added."
+  },
+  "no_language_selected": {
+    "message": "No language selected",
+    "description": "The option label of a select where currently no language is selected."
+  },
   "match_via_sitelink": {
     "message": "Match to $INSTANCE$ via sitelink",
     "description": "Header of a section that allows matching a url to a wikibase entity via sitelink.",
@@ -83,6 +91,10 @@
   },
   "search_sense_placeholder": {
     "message": "Search lexeme senses by lemma.",
+    "description": "Placeholder of a field that searches for wikibase senses."
+  },
+  "search_property_placeholder": {
+    "message": "Search property label or alias.",
     "description": "Placeholder of a field that searches for wikibase senses."
   },
   "load_autodesc": {

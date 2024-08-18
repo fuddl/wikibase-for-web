@@ -8,6 +8,9 @@ const html = htm.bind(h);
 
 class Tempus extends Component {
   render({ time, precision, calendarmodel, manager }) {
+    if (!time) {
+      return html`<em>Invalid date</em>`;
+    }
     const datetime = time.replace(/^(\+|\-)/, '');
 
     let localised = '';

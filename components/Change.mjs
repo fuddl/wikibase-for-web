@@ -32,16 +32,22 @@ class Change extends Component {
 		this.name = props.name;
 		this.action = props.action;
 		this.signature = props?.signature;
+
+		const empty =
+			props.action == 'claim:create' &&
+			!props.claim?.hasValue() &&
+			!('valueOptions' in props.claim.mainsnak);
+
 		this.state = {
 			claim: props?.claim,
 			labels: props?.labels,
 			description: props?.description,
 			sitelink: props?.sitelink,
-			editMode: false,
+			editMode: empty,
 			active: props.disabledByDefault
 				? !props.disabledByDefault
 				: !dismissed.isEditDismissed(this.signature),
-			invalid: false,
+			invalid: empty,
 			languageNames: {},
 		};
 	}
@@ -65,12 +71,14 @@ class Change extends Component {
 			let stateRef = prevState;
 
 			parts.forEach((part, index) => {
-				// Check if we're at the last part of the path
 				if (index === parts.length - 1) {
-					// Update the value
+					// Update the value at the last part of the path
 					stateRef[part] = value;
 				} else {
-					// Navigate deeper into the state
+					// Initialize stateRef[part] as an object if undefined before navigating deeper
+					if (stateRef[part] === undefined) {
+						stateRef[part] = {}; // Initialize as empty object
+					}
 					stateRef = stateRef[part];
 				}
 			});
@@ -157,6 +165,7 @@ class Change extends Component {
 								name="${this.name}.claim.mainsnak.snaktype"
 								value="value" />`;
 					}
+					break;
 				case 'labels:add':
 					return html`
 						<${Type}
@@ -242,11 +251,12 @@ class Change extends Component {
 						<button
 							title="${'Accept'}"
 							class="change__toggle"
+							disabled=${this.state.invalid}
 							onClick=${e => {
 								e.preventDefault();
 								this.setState({ editMode: false });
 							}}>
-							${'✓'}
+							${this.state.invalid ? '✗' : '✓'}
 						</button>
 						<input
 							type="hidden"

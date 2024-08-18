@@ -9,6 +9,10 @@
     "96": "icons/wikidata.svg",
     "128": "icons/wikidata.svg"
   },
+  "options_ui": {
+    "page": "options/index.html",
+    "browser_style": true
+  },
   "browser_action": {
     "default_icon": "icons/wikidata.svg",
     "default_title": "Wikibase for Web"

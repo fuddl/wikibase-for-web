@@ -6,6 +6,7 @@ import {
 } from '../importmap/preact/hooks/src/index.js';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
 import htm from '../importmap/htm/src/index.mjs';
+import Edit from './Edit.mjs';
 
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
@@ -90,6 +91,7 @@ class Entity extends Component {
     const [wikibase, localId] = id.split(':');
     const sectionRef = useRef(null);
     const [fillsViewport, setFillsViewport] = useState(false);
+    const [experimental, setExperimental] = useState(false);
 
     const checkVisibility = () => {
       if (!sectionRef.current) return;
@@ -99,6 +101,12 @@ class Entity extends Component {
 
       setFillsViewport(isVisible);
     };
+
+    useEffect(async () => {
+      const { enableExperimental } =
+        await browser.storage.sync.get('enableExperimental');
+      setExperimental(enableExperimental);
+    }, []);
 
     useEffect(() => {
       // Check initial visibility without waiting for scroll
@@ -183,6 +191,17 @@ class Entity extends Component {
       });
     }
 
+    const addClaims = async () => {
+      await browser.runtime.sendMessage({
+        type: 'request_workbench',
+        workbench: {
+          title: browser.i18n.getMessage('add_claims'),
+          edits: [],
+          subjectId: id,
+        },
+      });
+    };
+
     return html`
       <section ref=${sectionRef}>
         ${(labels && descriptions) || lemmas
@@ -201,6 +220,7 @@ class Entity extends Component {
         ${senses
           ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
+        ${experimental && html`<${Edit} icon=${'+'} action=${addClaims} />`}
         ${mainClaims.map(
           claim =>
             html`<${Remark}

@@ -9,7 +9,6 @@ import Decern from './Decern.mjs';
 import Map from './Map.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
-import Tempus from './Tempus.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
 import Type from './Type.mjs';
@@ -47,12 +46,13 @@ class Nibble extends Component {
               return html`<${Type}
                 value=${datavalue.value}
                 type="text"
+                required
                 name="${name}.datavalue.value"
                 onValueChange=${onValueChange} />`;
             case 'wikibase-item':
             case 'wikibase-property':
               return html`<${Type}
-                value=${datavalue.value.id.replace(/^\w+\:/, '')}
+                value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
                 type="text"
                 name="${name}.datavalue.value.id"
                 onValueChange=${newValue => {
@@ -66,12 +66,12 @@ class Nibble extends Component {
                   name="${name}.datavalue.value.after"
                   data-type="int"
                   type="hidden"
-                  value=${datavalue.value.after} />
+                  value=${datavalue.value.after ?? 0} />
                 <input
                   name="${name}.datavalue.value.before"
                   data-type="int"
                   type="hidden"
-                  value=${datavalue.value.before} />
+                  value=${datavalue.value.before ?? 0} />
                 <input
                   name="${name}.datavalue.value.calendarmodel"
                   type="hidden"
@@ -93,9 +93,9 @@ class Nibble extends Component {
                   data-type="int"
                   value=${datavalue.value.timezone} />
                 <${Type}
-                  value=${datavalue.value.time.match(
-                    /^[-\+](\d{4}-\d{2}-\d{2})/,
-                  )[1]}
+                  value=${datavalue.value.time
+                    ? datavalue.value.time.match(/^[-\+](\d{4}-\d{2}-\d{2})/)[1]
+                    : ''}
                   type="date"
                   proxyName="${name}.datavalue.value.time"
                   onValueChange=${newValue => {
@@ -121,12 +121,13 @@ class Nibble extends Component {
             case 'monolingualtext':
               return html`<div class="nibble__line">
                 <${Type}
-                  value=${datavalue.value.text}
+                  value=${datavalue?.value?.text ?? ''}
                   type="text"
+                  required=${true}
                   name="${name}.datavalue.value.text"
                   onValueChange=${onValueChange} />
                 <${Decern}
-                  value=${datavalue.value.language}
+                  value=${datavalue?.value?.language ?? ''}
                   context="monolingualtext"
                   name="${name}.datavalue.value.language"
                   onValueChange=${onValueChange}

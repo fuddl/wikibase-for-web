@@ -9,9 +9,7 @@ export class Claim {
       this.mainsnak.datatype = datatype;
     }
 
-    if (value) {
-      this.mainsnak.datavalue = {};
-    }
+    this.mainsnak.datavalue = {};
 
     if (references) {
       this.references = references;
@@ -61,12 +59,16 @@ export class Claim {
 
     return output;
   }
+
+  hasValue() {
+    return false;
+  }
 }
 
 export class UrlClaim extends Claim {
   constructor({ property, value, references }) {
     super({ property, value, references });
-    this.mainsnak.datavalue.value = value;
+    this.mainsnak.datavalue.value = value ?? 'https://example.com/';
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'url';
   }
@@ -78,6 +80,9 @@ export class ExternalIdClaim extends Claim {
     this.mainsnak.datavalue.value = value;
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'external-id';
+  }
+  hasValue() {
+    return this.mainsnak?.datavalue?.value !== '';
   }
 }
 
@@ -113,14 +118,27 @@ export class WikibaseItemClaim extends Claim {
 
     this.mainsnak.datatype = 'wikibase-item';
   }
+  hasValue() {
+    return this.mainsnak?.datavalue?.value?.id !== '';
+  }
 }
 
 export class MonolingualTextClaim extends Claim {
   constructor({ property, text, language, references }) {
-    super({ property, value: { text: text, language: language }, references });
+    super({
+      property,
+      value: { text: text ?? '', language: language ?? '' },
+      references,
+    });
 
     this.mainsnak.datavalue.type = 'monolingualtext';
     this.mainsnak.datatype = 'monolingualtext';
+  }
+  hasValue() {
+    return (
+      this.mainsnak?.datavalue?.value?.text !== '' &&
+      this.mainsnak?.datavalue?.value?.language !== ''
+    );
   }
 }
 
@@ -136,10 +154,10 @@ export class QuantityClaim extends Claim {
 export class TimeClaim extends Claim {
   constructor({
     property,
-    time,
+    time = null,
     after = 0,
     before = 0,
-    precision,
+    precision = 11,
     calendarmodel = 'wikidata:Q1985727',
     timezone = 0,
     references,
@@ -159,6 +177,9 @@ export class TimeClaim extends Claim {
 
     this.mainsnak.datavalue.type = 'time';
     this.mainsnak.datatype = 'time';
+  }
+  hasValue() {
+    return this.mainsnak.datavalue.value.time !== null;
   }
 }
 
@@ -187,4 +208,50 @@ export class GlobeCoordinateClaim extends Claim {
     this.mainsnak.datavalue.type = 'globecoordinate';
     this.mainsnak.datatype = 'globe-coordinate';
   }
+}
+
+export const claimTypeMap = {
+  'external-id': ExternalIdClaim,
+  'globe-coordinate': GlobeCoordinateClaim,
+  'wikibase-item': WikibaseItemClaim,
+  monolingualtext: MonolingualTextClaim,
+  quantity: QuantityClaim,
+  string: StringClaim,
+  time: TimeClaim,
+  url: UrlClaim,
+};
+
+export function reconstructClaim(serializedClaim) {
+  if (
+    !serializedClaim ||
+    !serializedClaim.mainsnak ||
+    !serializedClaim.mainsnak.datatype
+  ) {
+    throw new Error('Invalid serialized claim data');
+  }
+
+  const datatype = serializedClaim.mainsnak.datatype;
+  const ClaimClass = claimTypeMap[datatype];
+
+  if (!ClaimClass) {
+    throw new Error(`Unknown claim type: ${datatype}`);
+  }
+
+  // Create a new instance of the corresponding class
+  // You might need to adjust the parameters based on your class constructors
+  const instance = new ClaimClass({
+    property: serializedClaim.mainsnak.property,
+    value: serializedClaim.mainsnak.datavalue.value, // Adjust if your structure requires
+    references: serializedClaim.references,
+    // Add more fields if your constructors require them
+  });
+
+  // If there were qualifiers, add them back
+  if (serializedClaim.qualifiers) {
+    serializedClaim.qualifiers.forEach(qualifier => {
+      instance.addQualifier(reconstructClaim(qualifier)); // Recursively reconstruct qualifiers
+    });
+  }
+
+  return instance;
 }

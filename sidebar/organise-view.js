@@ -1,5 +1,7 @@
 import wikibases from '../wikibases.mjs';
 
+import { reconstructClaim } from '../types/Claim.mjs';
+
 async function filterEditPermissions(unmatched, manager) {
 	return (
 		await Promise.all(
@@ -11,6 +13,18 @@ async function filterEditPermissions(unmatched, manager) {
 }
 
 async function organiseView({ candidates }, manager) {
+	for (const candidate of candidates) {
+		if (!('proposeEdits' in candidate)) {
+			continue;
+		}
+		for (const edit of candidate.proposeEdits) {
+			if (!('claim' in edit)) {
+				continue;
+			}
+			edit.claim = reconstructClaim(edit.claim);
+		}
+	}
+
 	const directMatches = candidates
 		.filter(item => item?.resolved.length > 0)
 		.map(item => item.resolved)

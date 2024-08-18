@@ -5,8 +5,11 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 import { processEdits } from '../modules/processEdits.js';
 
+import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 import Engage from './Engage.mjs';
+
+import { claimTypeMap } from '../types/Claim.mjs';
 
 const html = htm.bind(h);
 
@@ -37,8 +40,9 @@ const submit = e => {
 	}
 };
 
-function Peek({ title, edits, subjectId, manager }) {
+function Peek({ title, edits: initialEdits, subjectId, manager }) {
 	const [open, setOpen] = useState(false);
+	const [edits, setEdits] = useState(initialEdits);
 
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/peek.css'));
@@ -68,8 +72,28 @@ function Peek({ title, edits, subjectId, manager }) {
 						name=${`edits.${editId}`}
 						manager=${manager} />`,
 			)}
+			${edits.length === 0 &&
+			html` <${Choose}
+				manager=${manager}
+				wikibase=${manager.wikibase.id}
+				name="propertyId"
+				type="property"
+				required="true"
+				onSelected=${async id => {
+					const chosenProp = [manager.wikibase.id, id].join(':');
+					const property = await manager.add(chosenProp);
+					setEdits([
+						{
+							action: 'claim:create',
+							claim: new claimTypeMap[property.datatype]({
+								property: chosenProp,
+							}),
+						},
+					]);
+				}} />`}
 			<footer class="peek__footer">
 				<${Engage}
+					disabled=${edits.length === 0}
 					text=${browser.i18n.getMessage('send_to_instance', [
 						manager.wikibase.name,
 					])}

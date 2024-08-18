@@ -70,7 +70,7 @@ const Choose = ({
 
 	useEffect(() => {
 		if (choosenId !== '') {
-			onSelected();
+			onSelected(choosenId);
 		}
 	}, [choosenId]);
 

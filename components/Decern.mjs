@@ -41,17 +41,23 @@ function Decern({ name, value, onValueChange, context, manager }) {
 	return html`
 		<div class="decern">
 			${isLoading
-				? html` <${Type}
+				? html`<${Type}
 						value=${value}
 						type="text"
 						value=${value}
 						name="${name}"
+						required
 						onValueChange=${handleChange} />`
 				: html`
 						<select
 							class="decern__select"
 							name=${name}
+							required
 							onChange=${handleChange}>
+							${!value &&
+							html`<option disabled value="" selected>
+								${browser.i18n.getMessage('no_language_selected')}
+							</option>`}
 							${languages.map(
 								code => html`
 									<option value=${code} selected=${code === value}>

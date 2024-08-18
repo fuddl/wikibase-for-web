@@ -21,16 +21,17 @@ class Type extends Component {
 
   render() {
     const {
-      value,
-      type = 'text',
+      dataType,
+      disabled,
+      max,
+      min,
       name,
       proxyName,
-      min,
-      max,
-      disabled,
-      step,
+      required,
       size,
-      dataType,
+      step,
+      type = 'text',
+      value,
     } = this.props;
     return html`<input
       class="type"
@@ -40,6 +41,7 @@ class Type extends Component {
       step=${step}
       min=${min}
       max=${max}
+      required=${required}
       data-type=${dataType}
       disabled=${disabled}
       data-proxy-name=${proxyName}
