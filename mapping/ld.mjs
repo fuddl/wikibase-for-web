@@ -248,7 +248,7 @@ async function ldToEdits({
 
 					const precision =
 						normal.length < 21 ? lengthToPrecision[normal.length] : 20;
-					const filled = value.split(/-|T|:/g);
+					const filled = value.split(/-|T|:|Z/g);
 					const date = `+${filled[0] || '0000'}-${filled[1] || '00'}-${filled[2] || '00'}T${filled[3] || '00'}:${filled[4] || '00'}:${filled[5] || '00'}Z`;
 
 					newEdits.push({

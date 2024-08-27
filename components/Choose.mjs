@@ -120,14 +120,11 @@ const Choose = ({
 		// Only perform the fetch if choosenId is present and inputValue is empty
 		if (choosenId && !inputValue) {
 			(async () => {
-				console.debug(choosenId);
 				const designators = await manager.fetchDesignators(
 					`${wikibase}:${choosenId}`,
 				);
 				if (designators) {
-					console.debug(designators);
 					const label = getByUserLanguage(designators.labels);
-					console.debug(label);
 					if (label?.value) {
 						setInputValue(label.value);
 					}

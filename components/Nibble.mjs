@@ -52,6 +52,9 @@ class Nibble extends Component {
                 onValueChange=${onValueChange} />`;
             case 'wikibase-item':
             case 'wikibase-property':
+              if (!('value' in datavalue)) {
+                break;
+              }
               return html` <${Choose}
                 manager=${manager}
                 value=${datavalue?.value?.id.replace(/^\w+\:/, '')}

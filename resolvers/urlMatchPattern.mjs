@@ -63,7 +63,7 @@ export const urlMatchPattern = {
 				matchProperty: prop.property,
 				matchValue: id,
 				proposeEdits: proposeEdits,
-				specificity: prop.search.toString().length,
+				specificity: 500 + prop.search.toString().length,
 				titleExtractPattern: prop.title,
 			});
 		}
