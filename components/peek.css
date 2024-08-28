@@ -5,6 +5,8 @@
 	border: none;
 	box-shadow: 0 -1em 1em var(--shadow);
 	border-top: 1px solid var(--contour);
+	height: 50vh;
+	overflow: auto;
 }
 
 .peek__footer {

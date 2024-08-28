@@ -119,7 +119,10 @@ export class WikibaseItemClaim extends Claim {
     this.mainsnak.datatype = 'wikibase-item';
   }
   hasValue() {
-    return this.mainsnak?.datavalue?.value?.id !== '';
+    return (
+      this.mainsnak?.datavalue?.value?.id &&
+      this.mainsnak.datavalue.value.id !== ''
+    );
   }
 }
 

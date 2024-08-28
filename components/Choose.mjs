@@ -73,7 +73,7 @@ const Choose = ({
 		if (onSelected && choosenId !== '') {
 			onSelected(choosenId);
 		}
-		if (onValueChange && choosenId !== '') {
+		if (onValueChange && choosenId && choosenId !== '') {
 			onValueChange({
 				name: name,
 				value: `${wikibase}:${choosenId}`,
