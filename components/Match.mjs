@@ -96,7 +96,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
     let newSearchTitle = '';
     let newEdits = [...edits];
 
-    if (metadata?.mediawiki?.wgTitle) {
+    if (metadata?.mediawiki?.wgTitle && subjectType === 'item') {
       newSearchTitle = metadata.mediawiki.wgTitle;
       newEdits.push({
         action: 'labels:add',
@@ -106,7 +106,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
           language: metadata.mediawiki?.wgPageContentLanguage,
         },
       });
-    } else if (metadata?.title) {
+    } else if (metadata?.title && subjectType === 'item') {
       const labelLanguage = await manager.validateLanguage(
         metadata?.lang,
         'term',

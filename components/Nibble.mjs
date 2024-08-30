@@ -167,18 +167,18 @@ class Nibble extends Component {
                   <${Type}
                     value=${datavalue.value.latitude}
                     type="number"
-                    name="${name}.value.latitude"
-                    step="0.00001"
+                    name="${name}.datavalue.value.latitude"
+                    step="any"
                     min="-90"
-                    max="+90"
+                    max="90"
                     onValueChange=${onValueChange} />
                   /
                   <${Type}
                     value=${datavalue.value.longitude}
                     type="number"
-                    step="0.00001"
+                    step="any"
                     min="-180"
-                    max="+180"
+                    max="180"
                     name="${name}.datavalue.value.longitude"
                     onValueChange=${onValueChange} />
                   ±
@@ -187,7 +187,7 @@ class Nibble extends Component {
                     type="number"
                     dataType="float"
                     size="1"
-                    min="2"
+                    min="1"
                     max="10"
                     name="${name}.datavalue.value.precision"
                     onValueChange=${onValueChange} />

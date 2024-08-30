@@ -72,6 +72,14 @@ export class UrlClaim extends Claim {
     this.mainsnak.datavalue.type = 'string';
     this.mainsnak.datatype = 'url';
   }
+  hasValue() {
+    try {
+      new URL(this?.mainsnak?.datavalue?.value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 export class ExternalIdClaim extends Claim {
@@ -217,6 +225,23 @@ export class GlobeCoordinateClaim extends Claim {
 
     this.mainsnak.datavalue.type = 'globecoordinate';
     this.mainsnak.datatype = 'globe-coordinate';
+  }
+  hasValue() {
+    if (this?.mainsnak?.datavalue?.value) {
+      const value = this.mainsnak.datavalue.value;
+      console.debug(value);
+      if (
+        this.isFloat(value?.latitude ?? '') &&
+        this.isFloat(value?.longitude ?? '') &&
+        value?.precision > 0
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+  isFloat(str) {
+    return !isNaN(str) && parseFloat(str) == str;
   }
 }
 
