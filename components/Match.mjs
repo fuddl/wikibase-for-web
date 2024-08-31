@@ -214,6 +214,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
           name="subjectId"
           type=${subjectType}
           required="true"
+          shouldFocus=${true}
           onSelected=${() => {
             setSubjectSelected(true);
           }} />

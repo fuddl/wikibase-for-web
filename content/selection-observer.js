@@ -1,6 +1,29 @@
+function selectionGetLang(selection) {
+  if (!selection || selection.rangeCount === 0) {
+    return null; // No selection or empty selection
+  }
+
+  const selectedNode = selection.anchorNode;
+  if (!selectedNode) {
+    return null; // No selected node
+  }
+
+  // Get the element associated with the selected node
+  const element =
+    selectedNode.nodeType === Node.TEXT_NODE
+      ? selectedNode.parentElement
+      : selectedNode;
+
+  // Use closest to find the nearest ancestor with a lang attribute
+  const langElement = element.closest('[lang]');
+  return langElement ? langElement.lang : null;
+}
+
 const submitSelection = e => {
   (async () => {
-    let text = document.getSelection().toString().trim();
+    const selection = document.getSelection();
+    let lang = selectionGetLang(selection);
+    let text = selection.toString().trim();
     if (e.target.type === 'textarea') {
       text = e.target.value
         .substring(e.target.selectionStart, e.target.selectionEnd)
@@ -10,6 +33,7 @@ const submitSelection = e => {
       await browser.runtime.sendMessage({
         type: 'text_selected',
         value: text,
+        lang: lang,
       });
     }
   })();

@@ -28,19 +28,26 @@ class Type extends Component {
       name,
       proxyName,
       required,
+      onFocus,
+      onBlur,
       size,
+      ref,
       step,
       type = 'text',
       value,
+      isFocused,
     } = this.props;
     return html`<input
-      class="type"
+      class="type ${isFocused ? 'type--focus' : ''}"
       type=${type}
       name=${name}
       size=${size}
       step=${step}
+      onFocus=${onFocus}
+      onBlur=${onBlur}
       min=${min}
       max=${max}
+      ref=${ref}
       required=${required}
       data-type=${dataType}
       disabled=${disabled}

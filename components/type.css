@@ -28,6 +28,13 @@
   -moz-appearance: textfield;
 }
 
+.type--focus,
+.type:focus {
+  border-color: var(--border-color-progressive--focus, #36c);
+  box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c);
+  outline: 1px solid transparent;
+}
+
 .type:user-invalid {
   border-color: red;
 }

@@ -8,6 +8,8 @@ import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 
+import useExtraFocus from '../modules/focusExtra.mjs';
+
 import AutoDesc from './AutoDesc.mjs';
 
 const html = htm.bind(h);
@@ -52,6 +54,7 @@ const Choose = ({
 	wikibase,
 	onSelected,
 	onValueChange,
+	shouldFocus = false,
 }) => {
 	const [suggestions, setSuggestions] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -60,6 +63,16 @@ const Choose = ({
 	const [choosenId, setChoosenId] = useState(value);
 
 	const inputRef = useRef(null);
+
+	const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
+		shouldFocus,
+		message => {
+			if (message.type === 'text_selected') {
+				setShouldFetch(true);
+				setInputValue(message.value);
+			}
+		},
+	);
 
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/choose.css'));
@@ -152,18 +165,20 @@ const Choose = ({
 	const autoDescApi = manager.wikibases[wikibase]?.autodesc;
 
 	return html`
-		<div class="choose">
+		<div class="choose ${isFocused && 'choose--focus'}">
 			<div class="choose__type-wrap">
 				<input
 					class="choose__value"
 					type="text"
 					value=${choosenId}
 					required=${required}
-					name=${name}
-					ref=${inputRef} />
+					name=${name} />
 				<input
 					class="choose__type"
 					value=${inputValue}
+					onFocus=${handleFocus}
+					onBlur=${handleBlur}
+					ref=${elementRef}
 					name="search"
 					type="search"
 					autocomplete="off"

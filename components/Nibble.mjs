@@ -14,6 +14,8 @@ import Thing from './Thing.mjs';
 import Type from './Type.mjs';
 import Choose from './Choose.mjs';
 
+import Designate from './Designate.mjs';
+
 const html = htm.bind(h);
 
 class Nibble extends Component {
@@ -121,16 +123,12 @@ class Nibble extends Component {
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
             case 'monolingualtext':
               return html`<div class="nibble__line">
-                <${Type}
-                  value=${datavalue?.value?.text ?? ''}
-                  type="text"
+                <${Designate}
+                  textValue=${datavalue?.value?.text}
+                  textName="${name}.datavalue.value.text"
+                  languageValue=${datavalue?.value?.language}
+                  languageName="${name}.datavalue.value.language"
                   required=${true}
-                  name="${name}.datavalue.value.text"
-                  onValueChange=${onValueChange} />
-                <${Decern}
-                  value=${datavalue?.value?.language ?? ''}
-                  context="monolingualtext"
-                  name="${name}.datavalue.value.language"
                   onValueChange=${onValueChange}
                   manager=${manager} />
               </div>`;

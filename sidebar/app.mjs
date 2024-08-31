@@ -70,19 +70,6 @@ class Sidebar extends Component {
 				});
 			}
 			return Promise.resolve('done');
-		} else if (message.type === 'text_selected') {
-			const focussedElements =
-				document.activeElement?.nodeName === 'INPUT' &&
-				['text', 'search'].includes(document.activeElement.type)
-					? [document.activeElement]
-					: document.querySelectorAll('[data-focus="suggested"]');
-			if (focussedElements) {
-				focussedElements.forEach(element => {
-					element.value = message.value;
-					element.dispatchEvent(new Event('input'));
-				});
-			}
-			return Promise.resolve('done');
 		} else if (message.type === 'navigate') {
 			document.documentElement.setAttribute('style', 'scroll-behavior: auto;');
 			await this.setState({

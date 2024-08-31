@@ -9,7 +9,15 @@ const optionsHistoryAPI = new OptionsHistoryAPI();
 
 const html = htm.bind(h);
 
-function Decern({ name, value, onValueChange, context, manager }) {
+function Decern({
+	name,
+	value,
+	onValueChange,
+	context,
+	manager,
+	onFocus,
+	onBlur,
+}) {
 	const [languages, setLanguages] = useState([]);
 	const [languageNames, setLanguageNames] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +54,8 @@ function Decern({ name, value, onValueChange, context, manager }) {
 						type="text"
 						value=${value}
 						name="${name}"
+						onFocus=${onFocus}
+						onBlur=${onBlur}
 						required
 						onValueChange=${handleChange} />`
 				: html`
@@ -53,6 +63,8 @@ function Decern({ name, value, onValueChange, context, manager }) {
 							class="decern__select"
 							name=${name}
 							required
+							onFocus=${onFocus}
+							onBlur=${onBlur}
 							onChange=${handleChange}>
 							${!value &&
 							html`<option disabled value="" selected>
