@@ -35,7 +35,10 @@ const useExtraFocus = (shouldFocus, handleMessage) => {
   };
 
   const handleClickOutside = event => {
-    if (elementRef.current && elementRef.current != event.target) {
+    if (
+      elementRef?.current?.contains &&
+      !elementRef.current.contains(event.target)
+    ) {
       setIsFocused(false);
     }
   };

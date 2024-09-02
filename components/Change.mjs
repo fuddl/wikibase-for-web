@@ -76,8 +76,9 @@ class Change extends Component {
 					stateRef[part] = value;
 				} else {
 					// Initialize stateRef[part] as an object if undefined before navigating deeper
+					// but preserve the array structure if stateRef[part] is an array
 					if (stateRef[part] === undefined) {
-						stateRef[part] = {}; // Initialize as empty object
+						stateRef[part] = isNaN(parts[index + 1]) ? {} : [];
 					}
 					stateRef = stateRef[part];
 				}
@@ -319,7 +320,7 @@ class Change extends Component {
 										html` <div class="change__reference">
 											${Object.entries(reference.snaks).map(
 												([prop, statements]) =>
-													html`<dl>
+													html` <dl>
 														<dt class="change__reference__prop">
 															<${Thin} id=${prop} manager=${manager} />
 														</dt>
@@ -336,14 +337,14 @@ class Change extends Component {
 																		<${Nibble}
 																			datatype=${statement.datatype}
 																			datavalue=${statement.datavalue}
-																			name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0`}
+																			name=${`${this.name}.claim.references.${index}.snaks.${prop}.0`}
 																			onValueChange=${this
 																				.handleDataValueChange}
 																			manager=${manager} />
 																	</div>
 																	<input
 																		type="hidden"
-																		name=${`${this.name}.claim.references.${index}.snaks.${prop.replace(/.+:/, '')}.0.property`}
+																		name=${`${this.name}.claim.references.${index}.snaks.${prop}.0.property`}
 																		value=${prop.replace(/.+:/, '')} />
 																</dd>`,
 														)}

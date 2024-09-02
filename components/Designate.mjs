@@ -1,6 +1,8 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
-import { useState } from '../importmap/preact/hooks/src/index.js';
+import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
+
+import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Decern from './Decern.mjs';
 import Type from './Type.mjs';
@@ -18,12 +20,30 @@ class Designate extends Component {
     onValueChange,
     manager,
     required,
+    shouldFocus,
   }) {
     const [textValue, setTextValue] = useState(initialTextValue ?? '');
     const [languageValue, setLanguageValue] = useState(
       initialLanguageValue ?? '',
     );
-    const shouldFocus = true;
+
+    useEffect(() => {
+      if (onValueChange) {
+        onValueChange({
+          name: textName,
+          value: textValue,
+        });
+        onValueChange({
+          name: languageName,
+          value: languageValue,
+        });
+      }
+    }, [textValue, languageValue]);
+
+    useEffect(() => {
+      requireStylesheet(browser.runtime.getURL('/components/designate.css'));
+    }, []);
+
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
       shouldFocus,
       message => {
@@ -36,34 +56,35 @@ class Designate extends Component {
       },
     );
 
-    return html`<${Type}
+    return html`<div
+      class="designate ${isFocused ? 'designate--focus' : ''}"
+      ref=${elementRef}>
+      <div class="designate__rendered">${textValue ?? ''}</div>
+      <textarea
         value=${textValue ?? ''}
-        type="text"
-        isFocused=${isFocused}
+        class="designate__text"
         required=${required}
         name="${textName}"
-        ref=${elementRef}
         onFocus=${handleFocus}
         onBlur=${handleBlur}
-        onValueChange=${newValue => {
-          setTextValue(newValue.value);
-          if (onValueChange) {
-            onValueChange(newValue);
-          }
-        }} />
-      <${Decern}
-        value=${languageValue ?? ''}
-        context="monolingualtext"
-        name="${languageName}"
-        onFocus=${handleFocus}
-        onBlur=${handleBlur}
-        onValueChange=${newValue => {
-          setLanguageValue(newValue.value);
-          if (onValueChange) {
-            onValueChange(newValue);
-          }
-        }}
-        manager=${manager} />`;
+        lang=${languageValue}
+        rows="1"
+        onInput=${e => {
+          setTextValue(e.currentTarget.value);
+        }}></textarea>
+      <div class="designate__lang">
+        <${Decern}
+          value=${languageValue ?? ''}
+          context="monolingualtext"
+          name="${languageName}"
+          onFocus=${handleFocus}
+          onBlur=${handleBlur}
+          onValueChange=${newValue => {
+            setLanguageValue(newValue.value);
+          }}
+          manager=${manager} />
+      </div>
+    </div>`;
   }
 }
 

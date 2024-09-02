@@ -165,7 +165,7 @@ const Choose = ({
 	const autoDescApi = manager.wikibases[wikibase]?.autodesc;
 
 	return html`
-		<div class="choose ${isFocused && 'choose--focus'}">
+		<div class="choose ${isFocused && 'choose--focus'}" ref=${elementRef}>
 			<div class="choose__type-wrap">
 				<input
 					class="choose__value"
@@ -178,7 +178,6 @@ const Choose = ({
 					value=${inputValue}
 					onFocus=${handleFocus}
 					onBlur=${handleBlur}
-					ref=${elementRef}
 					name="search"
 					type="search"
 					autocomplete="off"
@@ -200,7 +199,7 @@ const Choose = ({
 					(suggestion, index) => html`
 						<a
 							class=${`choose__picker__pick ${index === selectedIndex ? 'choose__picker__pick--active' : ''}`}
-							onMouseDown=${() => {
+							onMouseUp=${() => {
 								setShouldFetch(false);
 								setInputValue(suggestion.label);
 								setSuggestions([]);

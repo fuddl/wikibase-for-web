@@ -5,7 +5,6 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Amount from './Amount.mjs';
 import Annote from './Annote.mjs';
-import Decern from './Decern.mjs';
 import Map from './Map.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
@@ -122,16 +121,14 @@ class Nibble extends Component {
             case 'commonsMedia':
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
             case 'monolingualtext':
-              return html`<div class="nibble__line">
-                <${Designate}
-                  textValue=${datavalue?.value?.text}
-                  textName="${name}.datavalue.value.text"
-                  languageValue=${datavalue?.value?.language}
-                  languageName="${name}.datavalue.value.language"
-                  required=${true}
-                  onValueChange=${onValueChange}
-                  manager=${manager} />
-              </div>`;
+              return html`<${Designate}
+                textValue=${datavalue?.value?.text}
+                textName="${name}.datavalue.value.text"
+                languageValue=${datavalue?.value?.language}
+                languageName="${name}.datavalue.value.language"
+                required=${true}
+                onValueChange=${onValueChange}
+                manager=${manager} />`;
             case 'quantity':
               return html`<div class="nibble__line">
                   <${Type}

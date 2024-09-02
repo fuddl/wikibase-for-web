@@ -53,7 +53,7 @@ class Type extends Component {
       disabled=${disabled}
       data-proxy-name=${proxyName}
       value=${value}
-      onInput=${this.handleChange} /> `;
+      onInput=${this.handleChange} />`;
   }
 }
 

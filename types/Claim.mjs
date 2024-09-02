@@ -229,7 +229,6 @@ export class GlobeCoordinateClaim extends Claim {
   hasValue() {
     if (this?.mainsnak?.datavalue?.value) {
       const value = this.mainsnak.datavalue.value;
-      console.debug(value);
       if (
         this.isFloat(value?.latitude ?? '') &&
         this.isFloat(value?.longitude ?? '') &&
