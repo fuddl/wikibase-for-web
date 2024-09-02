@@ -16,6 +16,12 @@
 	font-weight: 400;
 }
 
+.designate--focus {
+	border-color: #36c;
+	outline: 1px solid transparent;
+	box-shadow: inset 0 0 0 1px #36c;
+}
+
 .designate__text,
 .designate__rendered {
 	border: none;
