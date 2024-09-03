@@ -43,6 +43,7 @@ const wikibases = {
 			reviewScore: 'P444',
 			reviewScoreBy: 'P447',
 			revisedHepburnRomanization: 'P2125',
+			sectionVerseParagraphOrClause: 'P958',
 			shortTitle: 'P1813',
 			subclassOf: 'P279',
 			subpropertyOf: 'P1647',

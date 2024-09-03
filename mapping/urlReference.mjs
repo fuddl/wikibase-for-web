@@ -1,4 +1,9 @@
-import { MonolingualTextClaim, TimeClaim, UrlClaim } from '../types/Claim.mjs';
+import {
+	MonolingualTextClaim,
+	TimeClaim,
+	UrlClaim,
+	StringClaim,
+} from '../types/Claim.mjs';
 
 export function urlReference(metadata, wikibase) {
 	const instance = wikibase.instance;
@@ -22,6 +27,14 @@ export function urlReference(metadata, wikibase) {
 					property: `${instance}:${props.title}`,
 					text: metadata.title,
 					language: metadata?.lang ? metadata.lang.toLowerCase() : 'und',
+				}).mainsnak,
+			];
+		}
+		if (props?.sectionVerseParagraphOrClause && metadata?.section) {
+			reference.snaks[`${id}:${props.sectionVerseParagraphOrClause}`] = [
+				new StringClaim({
+					property: `${instance}:${props.sectionVerseParagraphOrClause}`,
+					value: metadata.section,
 				}).mainsnak,
 			];
 		}

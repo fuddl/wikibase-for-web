@@ -8,6 +8,7 @@ import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import DismissedEditsAPI from '../modules/DismissedEditsAPI.mjs';
+import { urlReference } from '../mapping/urlReference.mjs';
 
 const html = htm.bind(h);
 
@@ -90,6 +91,21 @@ class Change extends Component {
 		});
 	};
 
+	onUpdateReference = source => {
+		this.setState(prevState => {
+			// Add this new reference to the existing references array
+			const updatedReferences = urlReference(source, this.manager.wikibase);
+
+			// Return a new state object with the updated references
+			return {
+				...prevState,
+				claim: {
+					...prevState.claim,
+					references: updatedReferences,
+				},
+			};
+		});
+	};
 	componentDidMount() {
 		requireStylesheet(browser.runtime.getURL('/components/change.css'));
 		if (['labels:add', 'description:set'].includes(this.action)) {
@@ -211,7 +227,6 @@ class Change extends Component {
 					</div>`;
 			}
 		};
-
 		return html`
 			<fieldset ref=${this.ref} class="change">
 				<input
@@ -244,6 +259,7 @@ class Change extends Component {
 							datavalue=${this.state.claim.mainsnak.datavalue}
 							name=${`${this.name}.claim.mainsnak`}
 							onValueChange=${this.handleDataValueChange}
+							onUpdateReference=${this.onUpdateReference}
 							manager=${manager} />
 						<input
 							name=${`${name}.claim.mainsnak.datatype`}

@@ -21,6 +21,7 @@ class Designate extends Component {
     manager,
     required,
     shouldFocus,
+    onUpdateReference,
   }) {
     const [textValue, setTextValue] = useState(initialTextValue ?? '');
     const [languageValue, setLanguageValue] = useState(
@@ -51,6 +52,9 @@ class Designate extends Component {
           setTextValue(message.value);
           if (message.lang) {
             setLanguageValue(message.lang);
+          }
+          if (message.source && onUpdateReference) {
+            onUpdateReference(message.source);
           }
         }
       },

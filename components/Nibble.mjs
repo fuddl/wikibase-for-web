@@ -22,7 +22,14 @@ class Nibble extends Component {
     requireStylesheet(browser.runtime.getURL('/components/nibble.css'));
   }
 
-  render({ datavalue, datatype, manager, onValueChange, name }) {
+  render({
+    datavalue,
+    datatype,
+    manager,
+    onValueChange,
+    name,
+    onUpdateReference,
+  }) {
     return html`
       <fieldset class="nibble">
         <input name="${name}.datatype" value=${datatype} type="hidden" />
@@ -128,6 +135,7 @@ class Nibble extends Component {
                 languageName="${name}.datavalue.value.language"
                 required=${true}
                 onValueChange=${onValueChange}
+                onUpdateReference=${onUpdateReference}
                 manager=${manager} />`;
             case 'quantity':
               return html`<div class="nibble__line">
