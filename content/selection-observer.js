@@ -137,6 +137,7 @@ const submitSelection = e => {
     const selection = document.getSelection();
     let lang = selectionGetLang(selection);
     let text = selection.toString().trim();
+    let closestHeadline = getClosestHeadlineText(selection.focusNode);
     if (e.target.type === 'textarea') {
       text = e.target.value
         .substring(e.target.selectionStart, e.target.selectionEnd)
@@ -150,7 +151,10 @@ const submitSelection = e => {
         lang: lang,
         source: {
           location: `${window.location.toString()}${section ? `#${section}` : ''}`,
-          section: getClosestHeadlineText(selection.focusNode),
+          section:
+            closestHeadline && document.title.includes(closestHeadline)
+              ? null
+              : closestHeadline,
           title: document.title,
           lang: document.documentElement.lang ?? 'und',
         },
