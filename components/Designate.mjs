@@ -51,7 +51,7 @@ class Designate extends Component {
         if (message.type === 'text_selected') {
           setTextValue(message.value);
           if (message.lang) {
-            setLanguageValue(message.lang);
+            setLanguageValue(message.lang.toLowerCase().replace('_', '-'));
           }
           if (message.source && onUpdateReference) {
             onUpdateReference(message.source);

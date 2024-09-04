@@ -31,6 +31,23 @@ function Decern({
 		}
 	};
 
+	// Utility function to find the closest match for the value
+	const getClosestLanguageValue = value => {
+		// If exact match exists, return it
+		if (languageNames[value]) {
+			return value;
+		}
+
+		// Try to find the base language (e.g., 'de' from 'de-de')
+		const baseValue = value.split('-')[0];
+		if (languageNames[baseValue]) {
+			return baseValue;
+		}
+
+		// If no match is found, return the original value
+		return value;
+	};
+
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/decern.css'));
 	}, []);
@@ -45,6 +62,8 @@ function Decern({
 		setLanguageNames(newLanguageNames);
 		setIsLoading(false);
 	}, [context]);
+
+	const closestValue = getClosestLanguageValue(value);
 
 	return html`
 		<div class="decern">
@@ -74,7 +93,10 @@ function Decern({
 							<optgroup label=${browser.i18n.getMessage('preferred_languages')}>
 								${manager.wikibase.languages.map(code => {
 									if (languages.includes(code)) {
-										return html`<option value=${code}>
+										return html`<option
+											key=${code}
+											value=${code}
+											selected=${code === closestValue}>
 											${languageNames[code] ?? code}
 										</option>`;
 									}
@@ -84,7 +106,10 @@ function Decern({
 								${languages.map(code => {
 									if (!manager.wikibase.languages.includes(code)) {
 										return html`
-											<option value=${code} selected=${code === value}>
+											<option
+												key=${code}
+												value=${code}
+												selected=${code === closestValue}>
 												${languageNames[code] ?? code}
 											</option>
 										`;
