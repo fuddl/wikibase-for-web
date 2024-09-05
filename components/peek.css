@@ -7,6 +7,8 @@
 	border-top: 1px solid var(--contour);
 	height: 50vh;
 	overflow: auto;
+	background: var(--paper);
+	color: var(--pen);
 }
 
 .peek__footer {
@@ -22,4 +24,5 @@
 	font-family: 'icons', sans-serif;
 	background: transparent;
 	border: none;
+	color: inherit;
 }

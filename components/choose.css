@@ -46,6 +46,8 @@ template.choose__picker__pick {
 .choose__type {
 	grid-area: stack;
 	border: none;
+	background: var(--input-paper);
+	color: var(--input-pen);
 }
 
 .choose__value {
