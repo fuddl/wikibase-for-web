@@ -44,6 +44,8 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 	const [open, setOpen] = useState(false);
 	const [edits, setEdits] = useState(initialEdits);
 
+	const localSubjectId = subjectId.replace(/.+:/, '');
+
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/peek.css'));
 		setOpen(true);
@@ -55,10 +57,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 		</header>
 		<form>
 			<input type="hidden" name="instance" value=${manager.wikibase.id} />
-			<input
-				type="hidden"
-				name="subjectId"
-				value=${subjectId.replace(/.+:/, '')} />
+			<input type="hidden" name="subjectId" value=${localSubjectId} />
 			${Object.entries(edits).map(
 				([editId, edit]) =>
 					html`<${Change}
@@ -68,6 +67,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 						description=${edit?.description}
 						sitelink=${edit?.sitelink}
 						action=${edit.action}
+						subject=${subjectId}
 						signature=${edit?.signature}
 						name=${`edits.${editId}`}
 						manager=${manager} />`,

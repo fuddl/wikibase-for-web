@@ -1,0 +1,24 @@
+.link-visual {
+	position: absolute;
+	background: none;
+	border: none;
+}
+
+.link-visual::before {
+	content: '';
+	position: absolute;
+	inset: -10px;
+	pointer-events: all;
+	cursor: pointer;
+	border: 2px solid #447ff5;
+	border-radius: 5px;
+	box-shadow:
+		0 0 3px rgba(0, 0, 0, 0.25),
+		0 0 3px rgba(0, 0, 0, 0.25) inset;
+	transition: inset 0.25s;
+}
+
+.link-visual:hover::before,
+.link-visual--hovered::before {
+	inset: -20px;
+}

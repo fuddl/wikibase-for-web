@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.573",
+  "version": "0.575",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
@@ -40,9 +40,14 @@
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "js": ["content/selection-observer.js", "content/hash-change-observer.js"]
+      "js": [
+        "content/selection-observer.js",
+        "content/hash-change-observer.js",
+        "content/link-resolver.js"
+      ]
     }
   ],
+  "web_accessible_resources": ["/content/link-resolver.css"],
   "browser_specific_settings": {
     "gecko": {
       "id": "{8b348118-df28-4d6b-aa90-4e90049c7f19}",

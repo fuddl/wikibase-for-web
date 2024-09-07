@@ -25,6 +25,7 @@ class Nibble extends Component {
   render({
     datavalue,
     datatype,
+    subject,
     manager,
     onValueChange,
     name,
@@ -65,10 +66,12 @@ class Nibble extends Component {
                 value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
                 wikibase=${manager.wikibase.id}
                 name="${name}.datavalue.value.id"
+                subject=${subject}
                 type=${datatype == 'wikibase-item' ? 'item' : 'property'}
-                onValueChange=${newValue => {
+                onValueChange="${newValue => {
                   onValueChange(newValue);
-                }} />`;
+                }}"
+                onUpdateReference=${onUpdateReference} />`;
             case 'time':
               return html`
                 <input

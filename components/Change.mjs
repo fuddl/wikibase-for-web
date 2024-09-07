@@ -33,6 +33,7 @@ class Change extends Component {
 		this.name = props.name;
 		this.action = props.action;
 		this.signature = props?.signature;
+		this.subject = props?.subject;
 
 		const empty =
 			props.action == 'claim:create' &&
@@ -258,6 +259,7 @@ class Change extends Component {
 							datatype=${this.state.claim.mainsnak.datatype}
 							datavalue=${this.state.claim.mainsnak.datavalue}
 							name=${`${this.name}.claim.mainsnak`}
+							subject=${this.subject}
 							onValueChange=${this.handleDataValueChange}
 							onUpdateReference=${this.onUpdateReference}
 							manager=${manager} />

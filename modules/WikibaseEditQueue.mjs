@@ -158,6 +158,14 @@ export class WikibaseEditQueue {
         this.lastEntity = parsedResponse.entity.id;
         this.updateView(`${instance}:${this.lastEntity}`);
       }
+      if (
+        params.action === 'wbsetreference' &&
+        params?.statement.match(/^\w\d+(?:-\w\d+)?\$/)
+      ) {
+        this.updateView(
+          `${instance}:${params.statement.replace(/^(\w\d+(?:-\w\d+)?)\$.+$/, '$1')}`,
+        );
+      }
     }
     if (parsedResponse?.error) {
       console.debug({ request: params });

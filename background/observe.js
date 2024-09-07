@@ -62,8 +62,8 @@ async function resolveUrl(url) {
 	return await resolvers.resolve(url);
 }
 
-async function resolveAndUpdateSidebar(url, tabId) {
-	const results = await resolveUrl(url, tabId);
+async function resolveAndUpdateSidebar(url) {
+	const results = await resolveUrl(url);
 	if (results) {
 		await updateSidebar(results);
 		return results;
@@ -112,25 +112,48 @@ browser.webNavigation.onHistoryStateUpdated.addListener(
 	},
 );
 
-browser.tabs.onActivated.addListener(function (activeInfo) {
-	if (tabs?.[activeInfo.tabId]) {
-		updateSidebar(tabs[activeInfo.tabId]);
+let shouldHightlightLinks = false;
+
+browser.tabs.onActivated.addListener(async activeInfo => {
+	const { tabId } = activeInfo;
+
+	if (tabs?.[tabId]) {
+		updateSidebar(tabs[tabId]);
 	} else {
-		(async () => {
-			await resolveCurrentTab(activeInfo.tabId);
-		})();
+		await resolveCurrentTab(tabId);
+	}
+
+	if (shouldHightlightLinks) {
+		await highlightLinksForCurrentTab();
 	}
 });
 
+async function highlightLinksForCurrentTab() {
+	const currentTab = await getCurrentTab();
+
+	if (currentTab && currentTab.id) {
+		// Send 'highlight_links' to the current active tab
+		await browser.tabs.sendMessage(currentTab.id, {
+			type: 'highlight_links',
+			restrictors: shouldHightlightLinks,
+		});
+	}
+}
+
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
-		const currentTab = await getCurrentTab();
-		const results = await resolveAndUpdateSidebar(
-			currentTab.url,
-			currentTab.id,
-		);
-		tabs[currentTab.id] = results;
-		return Promise.resolve('done');
+		if (!message.url) {
+			const currentTab = await getCurrentTab();
+			const results = await resolveAndUpdateSidebar(
+				currentTab.url,
+				currentTab.id,
+			);
+			tabs[currentTab.id] = results;
+			return Promise.resolve('done');
+		} else {
+			const results = await resolveUrl(message.url);
+			return results;
+		}
 	} else if (message.type === 'add_to_edit_queue') {
 		wikibaseEditQueue.addJobs(message.edits, message.viewId);
 		return Promise.resolve('done');
@@ -161,6 +184,20 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			console.error(error);
 		}
 		return Promise.resolve('done');
+	} else if (message.type === 'highlight_links') {
+		// Forward 'highlight_links' to the active tab
+		shouldHightlightLinks = message.restrictors ?? true;
+		await highlightLinksForCurrentTab();
+
+		return true; // Indicates that sendResponse will be called asynchronously
+	} else if (message.type === 'unhighlight_links') {
+		// Forward 'unhighlight_links' to all open tabs
+		for (const tab of await browser.tabs.query({})) {
+			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_links' });
+		}
+		shouldHightlightLinks = false;
+
+		return true; // Indicates that sendResponse will be called asynchronously
 	}
 	return false;
 });

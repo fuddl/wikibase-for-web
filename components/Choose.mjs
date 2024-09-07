@@ -51,10 +51,12 @@ const Choose = ({
 	type,
 	required = false,
 	manager,
+	subject,
 	wikibase,
 	onSelected,
 	onValueChange,
 	shouldFocus = false,
+	onUpdateReference,
 }) => {
 	const [suggestions, setSuggestions] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -71,11 +73,44 @@ const Choose = ({
 				setShouldFetch(true);
 				setInputValue(message.value);
 			}
+			if (message.type === 'resolve_selected') {
+				if (message?.candidates?.[0]?.resolved?.[0]?.id) {
+					if (message.source && onUpdateReference) {
+						onUpdateReference(message.source);
+					}
+					setInputValue('');
+					setChoosenId(
+						message.candidates[0].resolved[0].id.replace(/.+\:/, ''),
+					);
+					setShouldFetch(false);
+				}
+			}
 		},
 	);
 
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/choose.css'));
+	}, []);
+
+	useEffect(async () => {
+		if (subject) {
+			await browser.runtime.sendMessage({
+				type: isFocused ? 'highlight_links' : 'unhighlight_links',
+				restrictors: {
+					blacklist: [subject],
+					types: [type],
+				},
+			});
+		}
+	}, [isFocused]);
+	useEffect(() => {
+		return async () => {
+			if (subject) {
+				await browser.runtime.sendMessage({
+					type: 'unhighlight_links',
+				});
+			}
+		};
 	}, []);
 
 	useEffect(() => {
