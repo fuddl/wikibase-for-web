@@ -72,6 +72,13 @@ class LinkResolver {
 		this.movementObserver = null; // Movement observer for links
 		this.linkGroupMap = new Map(); // To map links to their groups
 		this.restrictors = restrictors;
+		this.typePatternMap = {
+			item: /Q\d+$/,
+			lexeme: /L\d+$/,
+			sense: /L\d+-S\d+$/,
+			form: /L\d+-F\d+$/,
+			property: /P\d+$/,
+		};
 	}
 
 	// Group links by their URL
@@ -141,11 +148,27 @@ class LinkResolver {
 				group.resolved = candidates.filter(
 					candidate =>
 						candidate.resolved.filter(resolved => {
-							if (!this?.restrictors?.blacklist) {
+							// If neither blacklist nor types are set, allow all
+							if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
 								return true;
-							} else {
-								return !this.restrictors.blacklist.includes(resolved.id);
 							}
+
+							// If there's a blacklist, exclude blacklisted items
+							if (this?.restrictors?.blacklist?.includes(resolved.id)) {
+								return false;
+							}
+
+							// If types are specified, check if the resolved ID matches any allowed type patterns
+							if (this?.restrictors?.types) {
+								// Check if the resolved ID matches any of the allowed types' patterns
+								return this.restrictors.types.some(type => {
+									const pattern = this.typePatternMap[type];
+									return pattern && pattern.test(resolved.id);
+								});
+							}
+
+							// If no types or blacklist conditions apply, allow by default
+							return true;
 						}).length > 0,
 				);
 			}

@@ -34,6 +34,7 @@ class Change extends Component {
 		this.action = props.action;
 		this.signature = props?.signature;
 		this.subject = props?.subject;
+		this.onAddJobs = props?.onAddJobs;
 
 		const empty =
 			props.action == 'claim:create' &&
@@ -92,17 +93,14 @@ class Change extends Component {
 		});
 	};
 
-	onUpdateReference = source => {
+	onUpdateReference = references => {
 		this.setState(prevState => {
-			// Add this new reference to the existing references array
-			const updatedReferences = urlReference(source, this.manager.wikibase);
-
 			// Return a new state object with the updated references
 			return {
 				...prevState,
 				claim: {
 					...prevState.claim,
-					references: updatedReferences,
+					references: references,
 				},
 			};
 		});
@@ -262,6 +260,12 @@ class Change extends Component {
 							subject=${this.subject}
 							onValueChange=${this.handleDataValueChange}
 							onUpdateReference=${this.onUpdateReference}
+							onAddJobs=${job => {
+								if (this.onAddJobs && this.state.claim.mainsnak.property) {
+									job.claim.setProperty(this.state.claim.mainsnak.property);
+									this.onAddJobs(job);
+								}
+							}}
 							manager=${manager} />
 						<input
 							name=${`${name}.claim.mainsnak.datatype`}

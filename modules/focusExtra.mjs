@@ -5,7 +5,7 @@ import {
 } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 
-const useExtraFocus = (shouldFocus, handleMessage) => {
+const useExtraFocus = (shouldFocus, handleMessage, states = []) => {
   const [isFocused, setIsFocused] = useState(false);
   const elementRef = useRef(null);
 
@@ -22,7 +22,7 @@ const useExtraFocus = (shouldFocus, handleMessage) => {
       // Clean up the message listener on component unmount or when isFocused changes
       browser.runtime.onMessage.removeListener(handleMessage);
     };
-  }, [isFocused]);
+  }, [isFocused, ...states]);
 
   const handleFocus = () => {
     setIsFocused(true);

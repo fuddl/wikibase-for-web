@@ -46,6 +46,37 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 
 	const localSubjectId = subjectId.replace(/.+:/, '');
 
+	const handleAddJobs = ({ signature, claim }) => {
+		setEdits(currentEdits => {
+			const index = currentEdits.findIndex(
+				edit => edit.signature === signature,
+			);
+
+			if (index !== -1) {
+				if (currentEdits.length === 1) {
+					return [
+						{
+							...currentEdits[index],
+							claim: { ...currentEdits[index].claim, value: undefined },
+						},
+					];
+				} else {
+					const newEdits = currentEdits.filter((_, idx) => idx !== index);
+					return newEdits;
+				}
+			} else {
+				return [
+					...currentEdits,
+					{
+						action: 'claim:create',
+						claim: claim,
+						signature: signature,
+					},
+				];
+			}
+		});
+	};
+
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/peek.css'));
 		setOpen(true);
@@ -61,7 +92,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 			${Object.entries(edits).map(
 				([editId, edit]) =>
 					html`<${Change}
-						key=${editId}
+						key=${edit?.signature ?? editId}
 						claim=${edit?.claim}
 						labels=${edit?.labels}
 						description=${edit?.description}
@@ -69,6 +100,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 						action=${edit.action}
 						subject=${subjectId}
 						signature=${edit?.signature}
+						onAddJobs=${handleAddJobs}
 						name=${`edits.${editId}`}
 						manager=${manager} />`,
 			)}
@@ -85,6 +117,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 					setEdits([
 						{
 							action: 'claim:create',
+							signature: 'user_created',
 							claim: new claimTypeMap[property.datatype]({
 								property: chosenProp,
 							}),

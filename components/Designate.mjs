@@ -1,6 +1,7 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
+import { urlReference } from '../mapping/urlReference.mjs';
 
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
@@ -19,6 +20,7 @@ class Designate extends Component {
     languageName,
     onValueChange,
     manager,
+    wikibase,
     required,
     shouldFocus,
     onUpdateReference,
@@ -54,7 +56,11 @@ class Designate extends Component {
             setLanguageValue(message.lang.toLowerCase().replace('_', '-'));
           }
           if (message.source && onUpdateReference) {
-            onUpdateReference(message.source);
+            const reference = urlReference(
+              message.source,
+              manager.wikibases[wikibase],
+            );
+            onUpdateReference(reference);
           }
         }
       },

@@ -44,6 +44,10 @@ export class Claim {
     this.qualifiers.push(claim);
   }
 
+  setProperty(property) {
+    this.mainsnak.property = property;
+  }
+
   // Override toJSON to control serialization
   toJSON() {
     const output = {
@@ -131,6 +135,13 @@ export class WikibaseItemClaim extends Claim {
       this.mainsnak?.datavalue?.value?.id &&
       this.mainsnak.datavalue.value.id !== ''
     );
+  }
+}
+
+export class WikibaseLexemeClaim extends WikibaseItemClaim {
+  constructor({ property, value, references }) {
+    super({ property, references });
+    this.mainsnak.datatype = 'wikibase-lexeme';
   }
 }
 
@@ -248,6 +259,7 @@ export const claimTypeMap = {
   'external-id': ExternalIdClaim,
   'globe-coordinate': GlobeCoordinateClaim,
   'wikibase-item': WikibaseItemClaim,
+  'wikibase-lexeme': WikibaseLexemeClaim,
   monolingualtext: MonolingualTextClaim,
   quantity: QuantityClaim,
   string: StringClaim,

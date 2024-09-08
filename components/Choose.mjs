@@ -7,6 +7,9 @@ import {
 import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
+import { urlReference } from '../mapping/urlReference.mjs';
+
+import { WikibaseItemClaim } from '../types/Claim.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
 
@@ -54,6 +57,7 @@ const Choose = ({
 	subject,
 	wikibase,
 	onSelected,
+	onAddJobs,
 	onValueChange,
 	shouldFocus = false,
 	onUpdateReference,
@@ -63,6 +67,7 @@ const Choose = ({
 	const [inputValue, setInputValue] = useState('');
 	const [shouldFetch, setShouldFetch] = useState(true);
 	const [choosenId, setChoosenId] = useState(value);
+	const [prevIsFocused, setPrevIsFocused] = useState(false);
 
 	const inputRef = useRef(null);
 
@@ -75,37 +80,61 @@ const Choose = ({
 			}
 			if (message.type === 'resolve_selected') {
 				if (message?.candidates?.[0]?.resolved?.[0]?.id) {
-					if (message.source && onUpdateReference) {
-						onUpdateReference(message.source);
-					}
-					setInputValue('');
-					setChoosenId(
-						message.candidates[0].resolved[0].id.replace(/.+\:/, ''),
+					const reference = urlReference(
+						message.source,
+						manager.wikibases[wikibase],
 					);
-					setShouldFetch(false);
+
+					if (!choosenId) {
+						if (message.source && onUpdateReference) {
+							onUpdateReference(reference);
+						}
+						setInputValue('');
+						setChoosenId(
+							message.candidates[0].resolved[0].id.replace(/.+\:/, ''),
+						);
+						setShouldFetch(false);
+					} else if (onAddJobs) {
+						onAddJobs({
+							signature: `user_selected:${message.candidates[0].resolved[0].id}:${JSON.stringify(message.source)}`,
+							claim: new WikibaseItemClaim({
+								value: message.candidates[0].resolved[0].id,
+								references: reference,
+							}),
+						});
+					}
 				}
 			}
 		},
+		[choosenId],
 	);
 
 	useEffect(() => {
 		requireStylesheet(browser.runtime.getURL('/components/choose.css'));
 	}, []);
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (subject) {
-			await browser.runtime.sendMessage({
-				type: isFocused ? 'highlight_links' : 'unhighlight_links',
-				restrictors: {
-					blacklist: [subject],
-					types: [type],
-				},
-			});
+			if (isFocused) {
+				browser.runtime.sendMessage({
+					type: 'highlight_links',
+					restrictors: {
+						blacklist: [subject],
+						types: [type],
+					},
+				});
+			} else if (prevIsFocused) {
+				browser.runtime.sendMessage({
+					type: 'unhighlight_links',
+				});
+			}
+			setPrevIsFocused(isFocused);
 		}
-	}, [isFocused]);
+	}, [isFocused, subject]);
+
 	useEffect(() => {
 		return async () => {
-			if (subject) {
+			if (subject && prevIsFocused) {
 				await browser.runtime.sendMessage({
 					type: 'unhighlight_links',
 				});

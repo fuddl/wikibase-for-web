@@ -30,6 +30,7 @@ class Nibble extends Component {
     onValueChange,
     name,
     onUpdateReference,
+    onAddJobs,
   }) {
     return html`
       <fieldset class="nibble">
@@ -59,18 +60,32 @@ class Nibble extends Component {
                 required
                 name="${name}.datavalue.value"
                 onValueChange=${onValueChange} />`;
+            case 'wikibase-form':
             case 'wikibase-item':
+            case 'wikibase-lexeme':
             case 'wikibase-property':
+            case 'wikibase-sense':
               return html` <${Choose}
                 manager=${manager}
                 value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
                 wikibase=${manager.wikibase.id}
                 name="${name}.datavalue.value.id"
                 subject=${subject}
-                type=${datatype == 'wikibase-item' ? 'item' : 'property'}
+                type=${{
+                  'wikibase-item': 'item',
+                  'wikibase-item': 'property',
+                  'wikibase-lexeme': 'lexeme',
+                  'wikibase-sense': 'sense',
+                  'wikibase-form': 'form',
+                }[datatype]}
                 onValueChange="${newValue => {
                   onValueChange(newValue);
                 }}"
+                onAddJobs=${value => {
+                  if (onAddJobs) {
+                    onAddJobs(value);
+                  }
+                }}
                 onUpdateReference=${onUpdateReference} />`;
             case 'time':
               return html`
@@ -136,6 +151,7 @@ class Nibble extends Component {
                 textName="${name}.datavalue.value.text"
                 languageValue=${datavalue?.value?.language}
                 languageName="${name}.datavalue.value.language"
+                wikibase=${manager.wikibase.id}
                 required=${true}
                 onValueChange=${onValueChange}
                 onUpdateReference=${onUpdateReference}
