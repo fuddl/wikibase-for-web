@@ -163,7 +163,7 @@ class LinkResolver {
 								// Check if the resolved ID matches any of the allowed types' patterns
 								return this.restrictors.types.some(type => {
 									const pattern = this.typePatternMap[type];
-									return pattern && pattern.test(resolved.id);
+									return pattern.test(resolved.id);
 								});
 							}
 

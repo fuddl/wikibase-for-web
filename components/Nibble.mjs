@@ -73,7 +73,7 @@ class Nibble extends Component {
                 subject=${subject}
                 type=${{
                   'wikibase-item': 'item',
-                  'wikibase-item': 'property',
+                  'wikibase-property': 'property',
                   'wikibase-lexeme': 'lexeme',
                   'wikibase-sense': 'sense',
                   'wikibase-form': 'form',
