@@ -112,7 +112,7 @@ browser.webNavigation.onHistoryStateUpdated.addListener(
 	},
 );
 
-let shouldHightlightLinks = false;
+let shouldHighlightLinks = false;
 
 browser.tabs.onActivated.addListener(async activeInfo => {
 	const { tabId } = activeInfo;
@@ -123,7 +123,7 @@ browser.tabs.onActivated.addListener(async activeInfo => {
 		await resolveCurrentTab(tabId);
 	}
 
-	if (shouldHightlightLinks) {
+	if (shouldHighlightLinks) {
 		await highlightLinksForCurrentTab();
 	}
 });
@@ -135,7 +135,7 @@ async function highlightLinksForCurrentTab() {
 		// Send 'highlight_links' to the current active tab
 		await browser.tabs.sendMessage(currentTab.id, {
 			type: 'highlight_links',
-			restrictors: shouldHightlightLinks,
+			restrictors: shouldHighlightLinks,
 		});
 	}
 }
@@ -186,8 +186,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		return Promise.resolve('done');
 	} else if (message.type === 'highlight_links') {
 		// Forward 'highlight_links' to the active tab
-		shouldHightlightLinks = message.restrictors ?? true;
+		shouldHighlightLinks = message.restrictors ?? true;
 		await highlightLinksForCurrentTab();
+		await checkSidebarToUnhighlight(true);
 
 		return true; // Indicates that sendResponse will be called asynchronously
 	} else if (message.type === 'unhighlight_links') {
@@ -195,12 +196,47 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		for (const tab of await browser.tabs.query({})) {
 			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_links' });
 		}
-		shouldHightlightLinks = false;
+		shouldHighlightLinks = false;
+		await checkSidebarToUnhighlight(false);
 
 		return true; // Indicates that sendResponse will be called asynchronously
 	}
 	return false;
 });
+
+let sidebarCheckInterval = null;
+
+// Function to check if the sidebar is open, to unhighlight links when the
+// user chooses to close thie sidebar. we need this since there is no event
+// listener for that. nor does the sidebar window have a onbeforunload event
+async function checkSidebarToUnhighlight(active) {
+	if (active && !sidebarCheckInterval) {
+		// Start the interval if it's not already running
+
+		sidebarCheckInterval = setInterval(async () => {
+			console.debug('checking');
+			const sidebarPanel = await browser.sidebarAction.isOpen({});
+			if (!sidebarPanel) {
+				// If the sidebar is closed, send 'unhighlight_links' to all tabs
+				for (const tab of await browser.tabs.query({})) {
+					await browser.tabs.sendMessage(tab.id, {
+						type: 'unhighlight_links',
+					});
+				}
+				shouldHighlightLinks = false;
+
+				// Stop the sidebar check once it's closed
+				checkSidebarToUnhighlight(false);
+			}
+		}, 1000); // Check every second
+	} else {
+		// Stop the interval if it's running
+		if (sidebarCheckInterval) {
+			clearInterval(sidebarCheckInterval);
+			sidebarCheckInterval = null;
+		}
+	}
+}
 
 browser.webRequest.onCompleted.addListener(
 	function (details) {
