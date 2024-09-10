@@ -62,16 +62,36 @@ class MovementObserver {
 }
 
 class LinkResolver {
-	constructor({ restrictors }) {
+	constructor() {
 		this.groupedLinks = this.groupLinksByUrl();
 		this.observer = null;
-		this.visualizer = null; // For the link visualizer
 		this.shadowRoot = null; // To store the shadow DOM
 		this.linksRoot = null;
 		this.linkRectsMap = new Map(); // To track link and its visual representation
 		this.movementObserver = null; // Movement observer for links
 		this.linkGroupMap = new Map(); // To map links to their groups
-		this.restrictors = restrictors;
+		this.visualizer = document.createElement('div');
+		this.visualizer.style.position = 'absolute';
+		this.visualizer.style.top = '0';
+		this.visualizer.style.left = '0';
+		this.visualizer.style.width = '100%';
+		this.visualizer.style.height = '100%';
+		this.visualizer.style.pointerEvents = 'none';
+		this.visualizer.style.zIndex = '9999'; // Ensure it's on top of the page content
+
+		this.shadowRoot = this.visualizer.attachShadow({ mode: 'open' });
+
+		// Inject a stylesheet into the shadow DOM
+		const style = document.createElement('link');
+		style.rel = 'stylesheet';
+		style.href = browser.runtime.getURL('content/link-resolver.css');
+		this.shadowRoot.appendChild(style); // Add the stylesheet to the shadow DOM
+
+		// Initialize the linksRoot after attaching shadowRoot
+		this.linksRoot = document.createElement('div');
+		this.shadowRoot.appendChild(this.linksRoot);
+		this.active = false;
+
 		this.typePatternMap = {
 			item: /Q\d+$/,
 			lexeme: /L\d+$/,
@@ -136,74 +156,56 @@ class LinkResolver {
 		});
 	}
 
-	// Callback function to handle group visibility
-	async handleGroupVisibility(group) {
-		for (const link of group.elements) {
-			const candidates = await browser.runtime.sendMessage({
-				type: 'request_resolve',
-				url: group.url,
-			});
+	async handleGroupVisibility(group, retryCount = 3, delay = 1000) {
+		const candidates = await browser.runtime.sendMessage({
+			type: 'request_resolve',
+			url: group.url,
+		});
 
-			if (candidates) {
-				group.resolved = candidates.filter(
-					candidate =>
-						candidate.resolved.filter(resolved => {
-							// If neither blacklist nor types are set, allow all
-							if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
-								return true;
-							}
-
-							// If there's a blacklist, exclude blacklisted items
-							if (this?.restrictors?.blacklist?.includes(resolved.id)) {
-								return false;
-							}
-
-							// If types are specified, check if the resolved ID matches any allowed type patterns
-							if (this?.restrictors?.types) {
-								// Check if the resolved ID matches any of the allowed types' patterns
-								return this.restrictors.types.some(type => {
-									const pattern = this.typePatternMap[type];
-									return pattern.test(resolved.id);
-								});
-							}
-
-							// If no types or blacklist conditions apply, allow by default
+		if (candidates) {
+			group.resolved = candidates.filter(
+				candidate =>
+					candidate.resolved.filter(resolved => {
+						if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
 							return true;
-						}).length > 0,
-				);
-			}
+						}
+
+						if (this?.restrictors?.blacklist?.includes(resolved.id)) {
+							return false;
+						}
+
+						if (this?.restrictors?.types) {
+							const pattern = this.typePatternMap[this.restrictors.types];
+							return pattern.test(resolved.id);
+						}
+
+						return true;
+					}).length > 0,
+			);
 		}
 
-		// After the group is resolved, rebuild the visualizer
-		this.rebuildVisualizer();
+		// If no candidates were resolved and we haven't exhausted retries, retry after a delay
+		if (group.resolved.length === 0 && retryCount > 0) {
+			if (this.active) {
+				setTimeout(() => {
+					this.handleGroupVisibility(group, retryCount - 1, delay);
+				}, delay);
+			}
+		} else {
+			// Rebuild the visualizer once done or if retries are exhausted
+			this.rebuildVisualizer();
+		}
+	}
+
+	isVisible() {
+		return this.visualizer.parentNode;
 	}
 
 	// Rebuild the link visualizer
 	rebuildVisualizer() {
 		// Check if the visualizer exists, if not, create and initialize it
-		if (!this.visualizer) {
-			// Set up the visualizer and shadow DOM for the first time
-			this.visualizer = document.createElement('div');
-			this.visualizer.style.position = 'absolute';
-			this.visualizer.style.top = '0';
-			this.visualizer.style.left = '0';
-			this.visualizer.style.width = '100%';
-			this.visualizer.style.height = '100%';
-			this.visualizer.style.pointerEvents = 'none';
-			this.visualizer.style.zIndex = '9999'; // Ensure it's on top of the page content
-
+		if (!this.isVisible()) {
 			// Attach the shadow DOM
-			this.shadowRoot = this.visualizer.attachShadow({ mode: 'open' });
-
-			// Inject a stylesheet into the shadow DOM
-			const style = document.createElement('link');
-			style.rel = 'stylesheet';
-			style.href = browser.runtime.getURL('content/link-resolver.css');
-			this.shadowRoot.appendChild(style); // Add the stylesheet to the shadow DOM
-
-			// Initialize the linksRoot after attaching shadowRoot
-			this.linksRoot = document.createElement('div');
-			this.shadowRoot.appendChild(this.linksRoot);
 
 			// Append the visualizer to the body
 			document.body.appendChild(this.visualizer);
@@ -328,75 +330,31 @@ class LinkResolver {
 	}
 
 	// Initialize the observer and pass the callback for group visibility
-	init() {
+	init({ restrictors }) {
+		this.restrictors = restrictors;
 		this.observeLinkVisibility(group => this.handleGroupVisibility(group));
+		this.active = true;
 	}
 
 	// Destroy the LinkResolver
-	destroy() {
-		// Stop observing all links in the IntersectionObserver
-		if (this.observer) {
-			this.groupedLinks.forEach(group => {
-				group.elements.forEach(link => {
-					this.observer.unobserve(link);
-				});
-			});
-			this.observer.disconnect(); // Disconnect observer
-		}
-
-		// Stop observing movements of links
-		if (this.movementObserver) {
-			this.groupedLinks.forEach(group => {
-				group.elements.forEach(link => {
-					this.movementObserver.unobserve(link);
-				});
-			});
-			this.movementObserver.disconnect();
-		}
-
-		// Remove all visual elements from the DOM
-		if (this.linksRoot) {
-			this.linksRoot.innerHTML = ''; // Clear all visual link elements
-		}
-
-		// Clear maps
-		this.linkRectsMap.clear();
-		this.linkGroupMap.clear();
-		this.groupedLinks = [];
-
-		// Remove the visualizer
-		if (this.visualizer && this.visualizer.parentNode) {
-			this.visualizer.parentNode.removeChild(this.visualizer);
-		}
-
-		// Clear internal states
-		this.observer = null;
-		this.movementObserver = null;
-		this.visualizer = null;
-		this.linksRoot = null;
-		this.linkRectsMap = null;
-		this.linkGroupMap = null;
+	clear() {
+		this.visualizer.remove();
+		this.active = false;
 	}
 }
 
-let linkResolver = null;
+let linkResolver = new LinkResolver();
 
 browser.runtime.onMessage.addListener((data, sender) => {
 	if (data.type === 'highlight_links') {
-		if (!linkResolver) {
-			linkResolver = new LinkResolver({
-				restrictors: data?.restrictors,
-			});
-			linkResolver.init(); // Initialize the LinkResolver
-		}
+		linkResolver.init({
+			restrictors: data?.restrictors,
+		}); // Initialize the LinkResolver
 		return Promise.resolve('done');
 	}
 
 	if (data.type === 'unhighlight_links') {
-		if (linkResolver) {
-			linkResolver.destroy(); // Destroy the LinkResolver
-			linkResolver = null; // Reset the reference
-		}
+		linkResolver.clear(); // Destroy the LinkResolver
 		return Promise.resolve('done');
 	}
 
