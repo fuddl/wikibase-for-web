@@ -180,10 +180,8 @@ class LinkResolver {
 
 	// Rebuild the link visualizer
 	rebuildVisualizer() {
-		// Clear the current visualizer if it exists
-		if (this.visualizer && this.linksRoot) {
-			this.linksRoot.innerHTML = ''; // Clear previous content
-		} else {
+		// Check if the visualizer exists, if not, create and initialize it
+		if (!this.visualizer) {
 			// Set up the visualizer and shadow DOM for the first time
 			this.visualizer = document.createElement('div');
 			this.visualizer.style.position = 'absolute';
@@ -202,11 +200,16 @@ class LinkResolver {
 			style.rel = 'stylesheet';
 			style.href = browser.runtime.getURL('content/link-resolver.css');
 			this.shadowRoot.appendChild(style); // Add the stylesheet to the shadow DOM
+
+			// Initialize the linksRoot after attaching shadowRoot
 			this.linksRoot = document.createElement('div');
 			this.shadowRoot.appendChild(this.linksRoot);
 
 			// Append the visualizer to the body
 			document.body.appendChild(this.visualizer);
+		} else if (this.linksRoot) {
+			// Clear previous content if the visualizer exists
+			this.linksRoot.innerHTML = '';
 		}
 
 		// Create a movement observer to track changes to link size/position

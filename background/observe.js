@@ -214,7 +214,6 @@ async function checkSidebarToUnhighlight(active) {
 		// Start the interval if it's not already running
 
 		sidebarCheckInterval = setInterval(async () => {
-			console.debug('checking');
 			const sidebarPanel = await browser.sidebarAction.isOpen({});
 			if (!sidebarPanel) {
 				// If the sidebar is closed, send 'unhighlight_links' to all tabs
