@@ -322,7 +322,7 @@ async function ldToEdits({
 			const monolingualtextProperties = equivalentProperties.filter(
 				p => p.type === 'Monolingualtext',
 			);
-			if (monolingualtextProperties.length > 0) {
+			if (monolingualtextProperties.length > 0 && value instanceof String) {
 				newEdits.push({
 					action: 'claim:create',
 					signature: makeSignature(property),
