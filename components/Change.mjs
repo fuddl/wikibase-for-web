@@ -35,6 +35,7 @@ class Change extends Component {
 		this.signature = props?.signature;
 		this.subject = props?.subject;
 		this.onAddJobs = props?.onAddJobs;
+		this.onChange = props?.onChange;
 
 		const empty =
 			props.action == 'claim:create' &&
@@ -88,6 +89,10 @@ class Change extends Component {
 			});
 
 			prevState.invalid = invalid;
+
+			if (this.onChange) {
+				this.onChange();
+			}
 
 			return { ...prevState };
 		});

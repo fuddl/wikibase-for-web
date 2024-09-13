@@ -18,6 +18,10 @@
 	transition: inset 0.25s;
 }
 
+.link-visual--active::before {
+	border-color: #4da679;
+}
+
 .link-visual:hover::before,
 .link-visual--hovered::before {
 	inset: -20px;

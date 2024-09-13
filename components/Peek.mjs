@@ -1,6 +1,10 @@
 import { h } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
-import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
+import {
+	useState,
+	useEffect,
+	useRef,
+} from '../importmap/preact/hooks/src/index.js';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 import { processEdits } from '../modules/processEdits.js';
@@ -43,6 +47,7 @@ const submit = e => {
 function Peek({ title, edits: initialEdits, subjectId, manager }) {
 	const [open, setOpen] = useState(false);
 	const [edits, setEdits] = useState(initialEdits);
+	const formRef = useRef(null);
 
 	const localSubjectId = subjectId.replace(/.+:/, '');
 
@@ -81,12 +86,26 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 		requireStylesheet(browser.runtime.getURL('/components/peek.css'));
 		setOpen(true);
 	}, []);
+
+	const highlightJobs = async () => {
+		const data = formDataToData(formRef.current);
+
+		await browser.runtime.sendMessage({
+			type: 'highlight_jobs',
+			edits: edits,
+		});
+	};
+
+	useEffect(async () => {
+		await highlightJobs();
+	}, [edits]);
+
 	return html`<dialog class="peek" open=${open}>
 		<header class="peek__head">
 			<h1 class="peek__title">${title}</h1>
 			<button class="peek__close" onClick=${e => close()}>${'❌︎'}</button>
 		</header>
-		<form>
+		<form ref=${formRef}>
 			<input type="hidden" name="instance" value=${manager.wikibase.id} />
 			<input type="hidden" name="subjectId" value=${localSubjectId} />
 			${Object.entries(edits).map(
@@ -99,6 +118,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 						sitelink=${edit?.sitelink}
 						action=${edit.action}
 						subject=${subjectId}
+						onChange=${highlightJobs}
 						signature=${edit?.signature}
 						onAddJobs=${handleAddJobs}
 						name=${`edits.${editId}`}

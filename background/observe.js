@@ -199,7 +199,14 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		shouldHighlightLinks = false;
 		await checkSidebarToUnhighlight(false);
 
-		return true; // Indicates that sendResponse will be called asynchronously
+		return true;
+	} else if (message.type === 'highlight_jobs') {
+		// Forward 'highlight_jobs' to all open tabs
+		for (const tab of await browser.tabs.query({})) {
+			await browser.tabs.sendMessage(tab.id, message);
+		}
+
+		return true;
 	}
 	return false;
 });

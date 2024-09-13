@@ -63,6 +63,7 @@ class MovementObserver {
 
 class LinkResolver {
 	constructor() {
+		this.currentEdits = [];
 		this.groupedLinks = this.groupLinksByUrl();
 		this.observer = null;
 		this.shadowRoot = null; // To store the shadow DOM
@@ -99,6 +100,13 @@ class LinkResolver {
 			form: /L\d+-F\d+$/,
 			property: /P\d+$/,
 		};
+	}
+
+	setJobs(edits) {
+		this.currentEdits = edits;
+		if (this.isVisible()) {
+			this.rebuildVisualizer();
+		}
 	}
 
 	// Group links by their URL
@@ -162,26 +170,28 @@ class LinkResolver {
 			url: group.url,
 		});
 
-		if (candidates) {
-			group.resolved = candidates.filter(
-				candidate =>
-					candidate.resolved.filter(resolved => {
-						if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
-							return true;
-						}
+		if (candidates && candidates.length > 0) {
+			const firstCandidate = candidates[0];
 
-						if (this?.restrictors?.blacklist?.includes(resolved.id)) {
-							return false;
-						}
-
-						if (this?.restrictors?.types) {
-							const pattern = this.typePatternMap[this.restrictors.types];
-							return pattern.test(resolved.id);
-						}
-
+			group.resolved =
+				firstCandidate.resolved.filter(resolved => {
+					if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
 						return true;
-					}).length > 0,
-			);
+					}
+
+					if (this?.restrictors?.blacklist?.includes(resolved.id)) {
+						return false;
+					}
+
+					if (this?.restrictors?.types) {
+						const pattern = this.typePatternMap[this.restrictors.types];
+						return pattern.test(resolved.id);
+					}
+
+					return true;
+				}).length > 0
+					? [firstCandidate]
+					: [];
 		}
 
 		// If no candidates were resolved and we haven't exhausted retries, retry after a delay
@@ -198,7 +208,7 @@ class LinkResolver {
 	}
 
 	isVisible() {
-		return this.visualizer.parentNode;
+		return this.visualizer.parentElement;
 	}
 
 	// Rebuild the link visualizer
@@ -238,6 +248,17 @@ class LinkResolver {
 		});
 	}
 
+	isIdInJobs(jobs, resolve) {
+		// Extract the resolved id from the resolve object
+		const resolvedId = resolve[0]?.resolved[0]?.id;
+
+		// Check if the resolvedId exists in any of the job claims
+		return jobs.some(job => {
+			// Check if the job has a claim and the appropriate value
+			return job.claim?.mainsnak?.datavalue?.value?.id === resolvedId;
+		});
+	}
+
 	// Update the visual representation of the link (handles line breaks)
 	updateLinkVisual(link) {
 		// Remove existing highlights for this link
@@ -257,6 +278,12 @@ class LinkResolver {
 
 			// Get the group from the linkGroupMap
 			const group = this.linkGroupMap.get(link);
+
+			const active = this.isIdInJobs(this.currentEdits, group.resolved);
+
+			if (active) {
+				linkElement.classList.add('link-visual--active');
+			}
 
 			// Add hover event to add class to all links in the same group
 			linkElement.addEventListener('mouseover', () => {
@@ -343,6 +370,7 @@ class LinkResolver {
 	}
 }
 
+let highlightedJobs = null;
 let linkResolver = new LinkResolver();
 
 browser.runtime.onMessage.addListener((data, sender) => {
@@ -355,6 +383,11 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
 	if (data.type === 'unhighlight_links') {
 		linkResolver.clear(); // Destroy the LinkResolver
+		return Promise.resolve('done');
+	}
+
+	if (data.type === 'highlight_jobs') {
+		linkResolver.setJobs(data.edits);
 		return Promise.resolve('done');
 	}
 
