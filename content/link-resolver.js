@@ -215,21 +215,21 @@ class LinkResolver {
 	rebuildVisualizer() {
 		// Check if the visualizer exists, if not, create and initialize it
 		if (!this.isVisible()) {
-			// Attach the shadow DOM
-
 			// Append the visualizer to the body
 			document.body.appendChild(this.visualizer);
-		} else if (this.linksRoot) {
-			// Clear previous content if the visualizer exists
-			this.linksRoot.innerHTML = '';
 		}
 
 		// Create a movement observer to track changes to link size/position
-		this.movementObserver = new MovementObserver(entries => {
-			entries.forEach(entry => {
-				this.updateLinkVisual(entry.target); // Group will be fetched from the map
+		if (!this.movementObserver) {
+			this.movementObserver = new MovementObserver(entries => {
+				entries.forEach(entry => {
+					this.updateLinkVisual(entry.target); // Group will be fetched from the map
+				});
 			});
-		});
+		}
+
+		// Set of links that need visuals
+		const linksToVisualize = new Set();
 
 		// Add a visual representation for each link in groups with resolved items
 		this.groupedLinks.forEach(group => {
@@ -241,11 +241,22 @@ class LinkResolver {
 					// Map the link to its group
 					this.linkGroupMap.set(link, group);
 
-					// Initial setup of the visual rectangles
+					// Update or create the visual rectangles
 					this.updateLinkVisual(link);
+
+					// Add link to the set
+					linksToVisualize.add(link);
 				});
 			}
 		});
+
+		// Remove visuals for links that no longer need them
+		for (const link of this.linkRectsMap.keys()) {
+			if (!linksToVisualize.has(link)) {
+				this.removeLinkVisuals(link);
+				this.linkGroupMap.delete(link);
+			}
+		}
 	}
 
 	isIdInJobs(jobs, resolve) {
@@ -261,86 +272,100 @@ class LinkResolver {
 
 	// Update the visual representation of the link (handles line breaks)
 	updateLinkVisual(link) {
-		// Remove existing highlights for this link
-		this.removeLinkVisuals(link);
-
+		// Get the existing visuals for the link, if any
+		let visuals = this.linkRectsMap.get(link) || [];
 		// Get all the client rectangles (to handle line breaks)
 		const rects = link.getClientRects();
 
-		for (const rect of rects) {
-			const linkElement = document.createElement('button');
-			linkElement.classList.add('link-visual');
+		// If the number of rects is different from the number of visuals
+		if (rects.length !== visuals.length) {
+			// Remove existing visuals
+			visuals.forEach(visual => {
+				if (visual.parentNode) {
+					visual.parentNode.removeChild(visual);
+				}
+			});
+			visuals = [];
+
+			// Create new visuals for each rect
+			for (let i = 0; i < rects.length; i++) {
+				const linkElement = document.createElement('button');
+				linkElement.classList.add('link-visual');
+
+				// Add event listeners
+				this.addLinkVisualEventListeners(linkElement, link);
+
+				// Append this visual element to the shadow DOM
+				this.linksRoot.appendChild(linkElement);
+
+				visuals.push(linkElement);
+			}
+			// Update the map
+			this.linkRectsMap.set(link, visuals);
+		}
+
+		// Now update the position and styles of the visuals
+		for (let i = 0; i < rects.length; i++) {
+			const rect = rects[i];
+			const linkElement = visuals[i];
 
 			linkElement.style.top = `${rect.top + window.scrollY}px`;
 			linkElement.style.left = `${rect.left + window.scrollX}px`;
 			linkElement.style.width = `${rect.width}px`;
 			linkElement.style.height = `${rect.height}px`;
+		}
 
-			// Get the group from the linkGroupMap
-			const group = this.linkGroupMap.get(link);
+		// Update classes based on active status
+		const group = this.linkGroupMap.get(link);
+		const active = this.isIdInJobs(this.currentEdits, group.resolved);
 
-			const active = this.isIdInJobs(this.currentEdits, group.resolved);
-
+		visuals.forEach(linkElement => {
 			if (active) {
 				linkElement.classList.add('link-visual--active');
+			} else {
+				linkElement.classList.remove('link-visual--active');
 			}
+		});
+	}
 
-			// Add hover event to add class to all links in the same group
-			linkElement.addEventListener('mouseover', () => {
-				group.elements.forEach(otherLink => {
-					// Get the associated visual elements for each link in the group
-					const visuals = this.linkRectsMap.get(otherLink);
-					if (visuals) {
-						visuals.forEach(visual =>
-							visual.classList.add('link-visual--hovered'),
-						);
-					}
-				});
+	// Add event listeners to the link visual
+	addLinkVisualEventListeners(linkElement, link) {
+		const group = this.linkGroupMap.get(link);
+
+		// Add hover event to add class to all links in the same group
+		linkElement.addEventListener('mouseover', () => {
+			group.elements.forEach(otherLink => {
+				// Get the associated visual elements for each link in the group
+				const visuals = this.linkRectsMap.get(otherLink);
+				if (visuals) {
+					visuals.forEach(visual =>
+						visual.classList.add('link-visual--hovered'),
+					);
+				}
 			});
+		});
 
-			// Remove class when mouse leaves
-			linkElement.addEventListener('mouseleave', () => {
-				group.elements.forEach(otherLink => {
-					// Get the associated visual elements for each link in the group
-					const visuals = this.linkRectsMap.get(otherLink);
-					if (visuals) {
-						visuals.forEach(visual =>
-							visual.classList.remove('link-visual--hovered'),
-						);
-					}
-				});
+		// Remove class when mouse leaves
+		linkElement.addEventListener('mouseleave', () => {
+			group.elements.forEach(otherLink => {
+				// Get the associated visual elements for each link in the group
+				const visuals = this.linkRectsMap.get(otherLink);
+				if (visuals) {
+					visuals.forEach(visual =>
+						visual.classList.remove('link-visual--hovered'),
+					);
+				}
 			});
+		});
 
-			// Pass the group to the event listener for clicks
-			linkElement.addEventListener('click', async () => {
-				const section = getClosestIdentifier(link);
-				let closestHeadline = getClosestHeadlineText(link);
-
-				await browser.runtime.sendMessage({
-					type: 'resolve_selected',
-					candidates: group.resolved,
-					source: {
-						location: `${window.location.toString()}${section ? `#${section}` : ''}`,
-						section:
-							closestHeadline && document.title.includes(closestHeadline)
-								? null
-								: closestHeadline,
-						title: document.title,
-						lang: document.documentElement.lang ?? 'und',
-					},
-				});
+		// Pass the group to the event listener for clicks
+		linkElement.addEventListener('click', async () => {
+			await browser.runtime.sendMessage({
+				type: 'resolve_selected',
+				candidates: group.resolved,
+				source: createUrlReference(link),
 			});
-
-			// Append this visual element to the shadow DOM
-			this.linksRoot.appendChild(linkElement);
-
-			// Keep track of the visuals for this link
-			if (!this.linkRectsMap.has(link)) {
-				this.linkRectsMap.set(link, []);
-			}
-
-			this.linkRectsMap.get(link).push(linkElement);
-		}
+		});
 	}
 
 	// Remove the visual elements for a link when the link is updated

@@ -1,8 +1,9 @@
 import {
+	ExternalIdClaim,
 	MonolingualTextClaim,
+	StringClaim,
 	TimeClaim,
 	UrlClaim,
-	StringClaim,
 } from '../types/Claim.mjs';
 
 export function urlReference(metadata, wikibase) {
@@ -21,6 +22,14 @@ export function urlReference(metadata, wikibase) {
 				value: metadata.location,
 			}).mainsnak,
 		];
+		if (props?.mediaWikiPageId && metadata?.wgArticleId) {
+			let now = new Date();
+			reference.snaks[`${id}:${props.mediaWikiPageId}`] = [
+				new ExternalIdClaim({
+					value: metadata.wgArticleId,
+				}).mainsnak,
+			];
+		}
 		if (props?.title && metadata?.title) {
 			reference.snaks[`${id}:${props.title}`] = [
 				new MonolingualTextClaim({

@@ -29,6 +29,7 @@ const wikibases = {
 			nameInKana: 'P1814',
 			numberOfPages: 'P1104',
 			numberOfReviewsRatings: 'P7887',
+			mediaWikiPageId: 'P9675',
 			occupation: 'P106',
 			officialWebsite: 'P856',
 			partOfTheSeries: 'P179',
