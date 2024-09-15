@@ -45,7 +45,7 @@
         "content/movementObserver.js",
         "content/selection-observer.js",
         "content/hash-change-observer.js",
-        "content/link-resolver.js"
+        "content/element-highlighter.js"
       ]
     }
   ],
