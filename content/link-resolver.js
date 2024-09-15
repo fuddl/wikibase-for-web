@@ -1,76 +1,12 @@
-class MovementObserver {
-	constructor(callback) {
-		this.callback = callback;
-		this.observedElements = new Map(); // Store observed elements and their previous locations
-		this.checkPosition = this.checkPosition.bind(this);
-	}
-
-	observe(element) {
-		if (this.observedElements.has(element)) return; // If already observing, skip
-		const rect = element.getBoundingClientRect();
-		this.observedElements.set(element, rect);
-
-		// Start tracking using `requestAnimationFrame`
-		if (this.observedElements.size === 1) {
-			this.startTracking();
-		}
-	}
-
-	unobserve(element) {
-		this.observedElements.delete(element);
-
-		// If there are no elements left to track, stop the tracking
-		if (this.observedElements.size === 0) {
-			this.stopTracking();
-		}
-	}
-
-	disconnect() {
-		this.observedElements.clear();
-		this.stopTracking();
-	}
-
-	startTracking() {
-		this.tracking = true;
-		this.checkPosition();
-	}
-
-	stopTracking() {
-		this.tracking = false;
-	}
-
-	checkPosition() {
-		if (!this.tracking) return;
-
-		this.observedElements.forEach((prevRect, element) => {
-			const currentRect = element.getBoundingClientRect();
-
-			if (
-				prevRect.top !== currentRect.top ||
-				prevRect.left !== currentRect.left ||
-				prevRect.width !== currentRect.width ||
-				prevRect.height !== currentRect.height
-			) {
-				this.callback([{ target: element, prevRect, currentRect }]);
-				this.observedElements.set(element, currentRect); // Update with new position
-			}
-		});
-
-		// Use `requestAnimationFrame` for continuous checking
-		requestAnimationFrame(this.checkPosition);
-	}
-}
-
-class LinkResolver {
+class ElementHighlighter {
 	constructor() {
 		this.currentEdits = [];
-		this.groupedLinks = this.groupLinksByUrl();
 		this.observer = null;
 		this.shadowRoot = null; // To store the shadow DOM
-		this.linksRoot = null;
-		this.linkRectsMap = new Map(); // To track link and its visual representation
-		this.movementObserver = null; // Movement observer for links
-		this.linkGroupMap = new Map(); // To map links to their groups
+		this.elementsRoot = null;
+		this.elementRectsMap = new Map(); // To track elements and their visual representation
+		this.movementObserver = null; // Movement observer for elements
+		this.elementGroupMap = new Map(); // To map elements to their modes
 		this.visualizer = document.createElement('div');
 		this.visualizer.style.position = 'absolute';
 		this.visualizer.style.top = '0';
@@ -85,14 +21,17 @@ class LinkResolver {
 		// Inject a stylesheet into the shadow DOM
 		const style = document.createElement('link');
 		style.rel = 'stylesheet';
-		style.href = browser.runtime.getURL('content/link-resolver.css');
+		style.href = browser.runtime.getURL('content/element-highlighter.css');
 		this.shadowRoot.appendChild(style); // Add the stylesheet to the shadow DOM
 
-		// Initialize the linksRoot after attaching shadowRoot
-		this.linksRoot = document.createElement('div');
-		this.shadowRoot.appendChild(this.linksRoot);
+		// Initialize the elementsRoot after attaching shadowRoot
+		this.elementsRoot = document.createElement('div');
+		this.shadowRoot.appendChild(this.elementsRoot);
 		this.active = false;
 
+		this.modes = []; // Active modes
+
+		// Patterns for different modes
 		this.typePatternMap = {
 			item: /Q\d+$/,
 			lexeme: /L\d+$/,
@@ -100,6 +39,26 @@ class LinkResolver {
 			form: /L\d+-F\d+$/,
 			property: /P\d+$/,
 		};
+
+		// Selectors or functions for different modes
+		this.modeSelectors = {
+			time: {
+				selector: 'time[datetime]:not([datetime^="P"])', // Exclude durations
+				customMatcher: this.findDateNodes.bind(this), // Custom function to find date nodes
+			},
+			quantity: 'time[datetime^="P"]',
+			url: 'a[href]',
+			globeCoordinate: '[data-latitude][data-longitude], [lat][lon]',
+			email: 'a[href^="mailto:"]',
+			item: 'a[href]',
+			lexeme: 'a[href]',
+			sense: 'a[href]',
+			form: 'a[href]',
+			property: 'a[href]',
+		};
+
+		// Regular expression to match dates in YYYY-MM-DD format
+		this.dateRegex = /\b\d{4}-\d{2}-\d{2}\b/;
 	}
 
 	setJobs(edits) {
@@ -109,100 +68,156 @@ class LinkResolver {
 		}
 	}
 
-	// Group links by their URL
-	groupLinksByUrl() {
-		const linksArray = Array.from(document.links); // Convert document.links to an array
-		const linkMap = new Map(); // To store unique URLs and corresponding elements
+	// Collect elements based on active modes
+	collectElementsByMode() {
+		const elementsMap = new Map(); // To store unique elements and corresponding modes
 
-		linksArray.forEach(link => {
-			const url = link.href; // Get the URL of the link
-			if (!linkMap.has(url)) {
-				linkMap.set(url, []); // Initialize an array for this URL if not already present
+		this.modes.forEach(mode => {
+			const modeConfig = this.modeSelectors[mode];
+			let elements = [];
+
+			if (typeof modeConfig === 'string') {
+				// It's a CSS selector
+				elements = Array.from(document.querySelectorAll(modeConfig));
+			} else if (typeof modeConfig === 'object') {
+				// It may have a selector and/or custom matcher
+				if (modeConfig.selector) {
+					elements = elements.concat(
+						Array.from(document.querySelectorAll(modeConfig.selector)),
+					);
+				}
+				if (modeConfig.customMatcher) {
+					elements = elements.concat(modeConfig.customMatcher());
+				}
+			} else if (typeof modeConfig === 'function') {
+				// It's a custom function
+				elements = elements.concat(modeConfig());
 			}
-			linkMap.get(url).push(link); // Add the element to the array for this URL
+
+			elements.forEach(element => {
+				if (!elementsMap.has(element)) {
+					elementsMap.set(element, new Set());
+				}
+				elementsMap.get(element).add(mode);
+			});
 		});
 
-		// Convert the Map to an array of objects
-		return Array.from(linkMap.entries()).map(([url, elements]) => ({
-			url,
-			elements,
-			resolved: [], // Add a resolved property to track resolved items
-		}));
+		return elementsMap;
 	}
 
-	// Observe visibility of links and execute the callback when triggered
-	observeLinkVisibility(callback) {
+	// Custom function to find date nodes not covered by CSS selectors
+	findDateNodes() {
+		const elements = [];
+		const walker = document.createTreeWalker(
+			document.body,
+			NodeFilter.SHOW_TEXT,
+			{
+				acceptNode: node => {
+					if (this.dateRegex.test(node.textContent)) {
+						return NodeFilter.FILTER_ACCEPT;
+					}
+					return NodeFilter.FILTER_REJECT;
+				},
+			},
+			false,
+		);
+
+		let node;
+		while ((node = walker.nextNode())) {
+			elements.push(node);
+		}
+
+		return elements;
+	}
+
+	// Observe elements and execute the callback when triggered
+	observeElementVisibility(callback) {
 		this.observer = new IntersectionObserver(
 			entries => {
 				entries.forEach(entry => {
 					if (entry.isIntersecting) {
-						const link = entry.target;
-						// Find which group the link belongs to
-						const group = this.groupedLinks.find(group =>
-							group.elements.includes(link),
-						);
-
-						if (group && !group._hasTriggered) {
-							group._hasTriggered = true; // Mark the group as triggered
-							callback(group); // Execute the callback for the group
+						const element = entry.target;
+						if (!element._hasTriggered) {
+							element._hasTriggered = true; // Mark the element as triggered
+							callback(element); // Execute the callback for the element
 						}
 					}
 				});
 			},
 			{
 				root: null, // Use the browser viewport as the container
-				threshold: 0.1, // Trigger when at least 10% of the link is visible
+				threshold: 0.1, // Trigger when at least 10% of the element is visible
 			},
 		);
 
-		// Observe each link in all groups
-		this.groupedLinks.forEach(group => {
-			group._hasTriggered = false; // Track whether the group has been triggered
-			group.elements.forEach(link => {
-				this.observer.observe(link); // Start observing each link element
-			});
-		});
+		// Observe each element
+		for (const element of this.elementsMap.keys()) {
+			// For text nodes, observe their parent element
+			const target =
+				element.nodeType === Node.TEXT_NODE ? element.parentNode : element;
+			if (target) {
+				target._hasTriggered = false; // Track whether the element has been triggered
+				this.observer.observe(target); // Start observing each element
+			}
+		}
 	}
 
-	async handleGroupVisibility(group, retryCount = 3, delay = 1000) {
-		const candidates = await browser.runtime.sendMessage({
-			type: 'request_resolve',
-			url: group.url,
-		});
+	async handleElementVisibility(element, retryCount = 3, delay = 1000) {
+		const modes = this.elementsMap.get(element);
 
-		if (candidates && candidates.length > 0) {
-			const firstCandidate = candidates[0];
+		if (
+			modes.has('item') ||
+			modes.has('lexeme') ||
+			modes.has('sense') ||
+			modes.has('form') ||
+			modes.has('property')
+		) {
+			// Handle as link that needs to be resolved
+			const url = element.href;
+			const candidates = await browser.runtime.sendMessage({
+				type: 'request_resolve',
+				url: url,
+			});
 
-			group.resolved =
-				firstCandidate.resolved.filter(resolved => {
-					if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
+			let resolvedCandidates = [];
+			if (candidates && candidates.length > 0) {
+				const firstCandidate = candidates[0];
+				resolvedCandidates =
+					firstCandidate.resolved.filter(resolved => {
+						if (!this?.restrictors?.blacklist && !this?.restrictors?.types) {
+							return true;
+						}
+
+						if (this?.restrictors?.blacklist?.includes(resolved.id)) {
+							return false;
+						}
+
+						if (this?.restrictors?.types) {
+							const pattern = this.typePatternMap[this.restrictors.types];
+							return pattern.test(resolved.id);
+						}
+
 						return true;
-					}
+					}).length > 0
+						? [firstCandidate]
+						: [];
+			}
 
-					if (this?.restrictors?.blacklist?.includes(resolved.id)) {
-						return false;
-					}
-
-					if (this?.restrictors?.types) {
-						const pattern = this.typePatternMap[this.restrictors.types];
-						return pattern.test(resolved.id);
-					}
-
-					return true;
-				}).length > 0
-					? [firstCandidate]
-					: [];
-		}
-
-		// If no candidates were resolved and we haven't exhausted retries, retry after a delay
-		if (group.resolved.length === 0 && retryCount > 0) {
-			if (this.active) {
-				setTimeout(() => {
-					this.handleGroupVisibility(group, retryCount - 1, delay);
-				}, delay);
+			// If no candidates were resolved and we haven't exhausted retries, retry after a delay
+			if (resolvedCandidates.length === 0 && retryCount > 0) {
+				if (this.active) {
+					setTimeout(() => {
+						this.handleElementVisibility(element, retryCount - 1, delay);
+					}, delay);
+				}
+			} else {
+				// Associate resolved candidates with the element
+				element.resolved = resolvedCandidates;
+				// Rebuild the visualizer once done or if retries are exhausted
+				this.rebuildVisualizer();
 			}
 		} else {
-			// Rebuild the visualizer once done or if retries are exhausted
+			// For other modes, we can immediately rebuild the visualizer
 			this.rebuildVisualizer();
 		}
 	}
@@ -211,7 +226,7 @@ class LinkResolver {
 		return this.visualizer.parentElement;
 	}
 
-	// Rebuild the link visualizer
+	// Rebuild the element visualizer
 	rebuildVisualizer() {
 		// Check if the visualizer exists, if not, create and initialize it
 		if (!this.isVisible()) {
@@ -219,63 +234,78 @@ class LinkResolver {
 			document.body.appendChild(this.visualizer);
 		}
 
-		// Create a movement observer to track changes to link size/position
+		// Create a movement observer to track changes to element size/position
 		if (!this.movementObserver) {
-			this.movementObserver = new MovementObserver(entries => {
-				entries.forEach(entry => {
-					this.updateLinkVisual(entry.target); // Group will be fetched from the map
+			this.movementObserver = new MutationObserver(mutations => {
+				mutations.forEach(mutation => {
+					if (mutation.type === 'characterData') {
+						this.updateElementVisual(mutation.target);
+					}
 				});
 			});
 		}
 
-		// Set of links that need visuals
-		const linksToVisualize = new Set();
+		// Set of elements that need visuals
+		const elementsToVisualize = new Set();
 
-		// Add a visual representation for each link in groups with resolved items
-		this.groupedLinks.forEach(group => {
-			if (group?.resolved?.length > 0) {
-				group.elements.forEach(link => {
-					// Track the link for movement observation
-					this.movementObserver.observe(link);
+		// Add a visual representation for each element
+		for (const [element, modes] of this.elementsMap.entries()) {
+			// For text nodes, observe their parent element
+			const target =
+				element.nodeType === Node.TEXT_NODE ? element.parentNode : element;
 
-					// Map the link to its group
-					this.linkGroupMap.set(link, group);
-
-					// Update or create the visual rectangles
-					this.updateLinkVisual(link);
-
-					// Add link to the set
-					linksToVisualize.add(link);
+			// Track the element for mutations
+			if (target && this.movementObserver) {
+				this.movementObserver.observe(target, {
+					childList: true,
+					subtree: true,
+					characterData: true,
 				});
 			}
-		});
 
-		// Remove visuals for links that no longer need them
-		for (const link of this.linkRectsMap.keys()) {
-			if (!linksToVisualize.has(link)) {
-				this.removeLinkVisuals(link);
-				this.linkGroupMap.delete(link);
+			// Map the element to its modes
+			this.elementGroupMap.set(element, modes);
+
+			// Update or create the visual rectangles
+			this.updateElementVisual(element);
+
+			// Add element to the set
+			if (
+				modes.has('item') ||
+				modes.has('lexeme') ||
+				modes.has('sense') ||
+				modes.has('form') ||
+				modes.has('property')
+			) {
+				if (element?.resolved?.length > 0) {
+					elementsToVisualize.add(element);
+				}
+			} else {
+				elementsToVisualize.add(element);
+			}
+		}
+
+		// Remove visuals for elements that no longer need them
+		for (const element of this.elementRectsMap.keys()) {
+			if (!elementsToVisualize.has(element)) {
+				this.removeElementVisuals(element);
+				this.elementGroupMap.delete(element);
 			}
 		}
 	}
 
-	isIdInJobs(jobs, resolve) {
-		// Extract the resolved id from the resolve object
-		const resolvedId = resolve[0]?.resolved[0]?.id;
-
-		// Check if the resolvedId exists in any of the job claims
-		return jobs.some(job => {
-			// Check if the job has a claim and the appropriate value
-			return job.claim?.mainsnak?.datavalue?.value?.id === resolvedId;
-		});
-	}
-
-	// Update the visual representation of the link (handles line breaks)
-	updateLinkVisual(link) {
-		// Get the existing visuals for the link, if any
-		let visuals = this.linkRectsMap.get(link) || [];
+	// Update the visual representation of the element
+	updateElementVisual(element) {
+		// Get the existing visuals for the element, if any
+		let visuals = this.elementRectsMap.get(element) || [];
 		// Get all the client rectangles (to handle line breaks)
-		const rects = link.getClientRects();
+
+		let rects;
+		if (element.nodeType === Node.TEXT_NODE) {
+			rects = this.getTextNodeRects(element);
+		} else {
+			rects = element.getClientRects();
+		}
 
 		// If the number of rects is different from the number of visuals
 		if (rects.length !== visuals.length) {
@@ -289,130 +319,202 @@ class LinkResolver {
 
 			// Create new visuals for each rect
 			for (let i = 0; i < rects.length; i++) {
-				const linkElement = document.createElement('button');
-				linkElement.classList.add('link-visual');
+				const elementVisual = document.createElement('button');
+				elementVisual.classList.add('element-visual');
 
 				// Add event listeners
-				this.addLinkVisualEventListeners(linkElement, link);
+				this.addElementVisualEventListeners(elementVisual, element);
 
 				// Append this visual element to the shadow DOM
-				this.linksRoot.appendChild(linkElement);
+				this.elementsRoot.appendChild(elementVisual);
 
-				visuals.push(linkElement);
+				visuals.push(elementVisual);
 			}
 			// Update the map
-			this.linkRectsMap.set(link, visuals);
+			this.elementRectsMap.set(element, visuals);
 		}
+		const modes = this.elementGroupMap.get(element);
 
 		// Now update the position and styles of the visuals
 		for (let i = 0; i < rects.length; i++) {
 			const rect = rects[i];
-			const linkElement = visuals[i];
+			const elementVisual = visuals[i];
 
-			linkElement.style.top = `${rect.top + window.scrollY}px`;
-			linkElement.style.left = `${rect.left + window.scrollX}px`;
-			linkElement.style.width = `${rect.width}px`;
-			linkElement.style.height = `${rect.height}px`;
+			elementVisual.style.top = `${rect.top + window.scrollY}px`;
+			elementVisual.style.left = `${rect.left + window.scrollX}px`;
+			elementVisual.style.width = `${rect.width}px`;
+			elementVisual.style.height = `${rect.height}px`;
 		}
 
-		// Update classes based on active status
-		const group = this.linkGroupMap.get(link);
-		const active = this.isIdInJobs(this.currentEdits, group.resolved);
+		// Update classes based on modes
 
-		visuals.forEach(linkElement => {
-			if (active) {
-				linkElement.classList.add('link-visual--active');
-			} else {
-				linkElement.classList.remove('link-visual--active');
+		visuals.forEach(elementVisual => {
+			elementVisual.className = 'element-visual'; // Reset classes
+
+			modes.forEach(mode => {
+				elementVisual.classList.add(`element-visual--mode_${mode}`);
+			});
+
+			if (this.isActiveElement(element)) {
+				elementVisual.classList.add('element-visual--active');
 			}
 		});
 	}
 
-	// Add event listeners to the link visual
-	addLinkVisualEventListeners(linkElement, link) {
-		const group = this.linkGroupMap.get(link);
+	// Helper function to get bounding rects of text nodes
+	getTextNodeRects(textNode) {
+		const range = document.createRange();
+		range.selectNodeContents(textNode);
+		return range.getClientRects();
+	}
 
-		// Add hover event to add class to all links in the same group
-		linkElement.addEventListener('mouseover', () => {
-			group.elements.forEach(otherLink => {
-				// Get the associated visual elements for each link in the group
-				const visuals = this.linkRectsMap.get(otherLink);
-				if (visuals) {
-					visuals.forEach(visual =>
-						visual.classList.add('link-visual--hovered'),
-					);
-				}
-			});
-		});
+	// Determine if the element is active based on current edits
+	isActiveElement(element) {
+		if (!element.resolved || element.resolved.length === 0) return false;
 
-		// Remove class when mouse leaves
-		linkElement.addEventListener('mouseleave', () => {
-			group.elements.forEach(otherLink => {
-				// Get the associated visual elements for each link in the group
-				const visuals = this.linkRectsMap.get(otherLink);
-				if (visuals) {
-					visuals.forEach(visual =>
-						visual.classList.remove('link-visual--hovered'),
-					);
-				}
-			});
-		});
+		const resolvedId = element.resolved[0]?.resolved[0]?.id;
 
-		// Pass the group to the event listener for clicks
-		linkElement.addEventListener('click', async () => {
-			await browser.runtime.sendMessage({
-				type: 'resolve_selected',
-				candidates: group.resolved,
-				source: createUrlReference(link),
-			});
+		// Check if the resolvedId exists in any of the job claims
+		return this.currentEdits.some(job => {
+			// Check if the job has a claim and the appropriate value
+			return job.claim?.mainsnak?.datavalue?.value?.id === resolvedId;
 		});
 	}
 
-	// Remove the visual elements for a link when the link is updated
-	removeLinkVisuals(link) {
-		if (this.linkRectsMap.has(link)) {
-			const visuals = this.linkRectsMap.get(link);
+	// Add event listeners to the element visual
+	addElementVisualEventListeners(elementVisual, element) {
+		const modes = this.elementGroupMap.get(element);
+
+		// Add hover event to add class to all visuals of the same element
+		elementVisual.addEventListener('mouseover', () => {
+			const visuals = this.elementRectsMap.get(element);
+			if (visuals) {
+				visuals.forEach(visual =>
+					visual.classList.add('element-visual--hovered'),
+				);
+			}
+		});
+
+		// Remove class when mouse leaves
+		elementVisual.addEventListener('mouseleave', () => {
+			const visuals = this.elementRectsMap.get(element);
+			if (visuals) {
+				visuals.forEach(visual =>
+					visual.classList.remove('element-visual--hovered'),
+				);
+			}
+		});
+
+		// Handle click events based on modes
+		elementVisual.addEventListener('click', async () => {
+			if (modes.has('email')) {
+				// Handle email click
+				await browser.runtime.sendMessage({
+					type: 'email_selected',
+					email: element.href.replace('mailto:', ''),
+				});
+			} else if (modes.has('time')) {
+				// Handle time click
+				let datetime;
+				if (element.nodeType === Node.TEXT_NODE) {
+					datetime = element.textContent.match(this.dateRegex)[0];
+				} else {
+					datetime = element.getAttribute('datetime');
+				}
+				await browser.runtime.sendMessage({
+					type: 'time_selected',
+					datetime: datetime,
+				});
+			} else if (modes.has('quantity')) {
+				// Handle quantity click
+				await browser.runtime.sendMessage({
+					type: 'quantity_selected',
+					duration: element.getAttribute('datetime'),
+				});
+			} else if (modes.has('globecoordinate')) {
+				// Handle globe coordinate click
+				const latitude =
+					element.dataset.latitude || element.getAttribute('lat');
+				const longitude =
+					element.dataset.longitude || element.getAttribute('lon');
+				await browser.runtime.sendMessage({
+					type: 'coordinate_selected',
+					latitude,
+					longitude,
+				});
+			} else if (modes.has('url')) {
+				// Handle URL click
+				await browser.runtime.sendMessage({
+					type: 'url_selected',
+					url: element.href,
+				});
+			} else if (
+				modes.has('item') ||
+				modes.has('lexeme') ||
+				modes.has('sense') ||
+				modes.has('form') ||
+				modes.has('property')
+			) {
+				// Handle resolved link click
+				await browser.runtime.sendMessage({
+					type: 'resolve_selected',
+					candidates: element.resolved,
+					source: createUrlReference(element),
+				});
+			}
+		});
+	}
+
+	// Remove the visual elements for an element when it's updated
+	removeElementVisuals(element) {
+		if (this.elementRectsMap.has(element)) {
+			const visuals = this.elementRectsMap.get(element);
 			visuals.forEach(visual => {
 				if (visual.parentNode) {
 					visual.parentNode.removeChild(visual);
 				}
 			});
-			this.linkRectsMap.delete(link); // Remove from map
+			this.elementRectsMap.delete(element); // Remove from map
 		}
 	}
 
-	// Initialize the observer and pass the callback for group visibility
-	init({ restrictors }) {
+	// Initialize the observer and pass the callback for element visibility
+	init({ restrictors, modes }) {
 		this.restrictors = restrictors;
-		this.observeLinkVisibility(group => this.handleGroupVisibility(group));
+		this.modes = modes;
+
+		this.elementsMap = this.collectElementsByMode();
+		this.observeElementVisibility(element =>
+			this.handleElementVisibility(element),
+		);
 		this.active = true;
 	}
 
-	// Destroy the LinkResolver
+	// Destroy the ElementHighlighter
 	clear() {
 		this.visualizer.remove();
 		this.active = false;
 	}
 }
 
-let highlightedJobs = null;
-let linkResolver = new LinkResolver();
+let elementHighlighter = new ElementHighlighter();
 
 browser.runtime.onMessage.addListener((data, sender) => {
-	if (data.type === 'highlight_links') {
-		linkResolver.init({
+	if (data.type === 'highlight_elements') {
+		elementHighlighter.init({
 			restrictors: data?.restrictors,
-		}); // Initialize the LinkResolver
+			modes: data?.modes, // Array of modes to activate
+		});
 		return Promise.resolve('done');
 	}
 
-	if (data.type === 'unhighlight_links') {
-		linkResolver.clear(); // Destroy the LinkResolver
+	if (data.type === 'unhighlight_elements') {
+		elementHighlighter.clear();
 		return Promise.resolve('done');
 	}
 
 	if (data.type === 'highlight_jobs') {
-		linkResolver.setJobs(data.edits);
+		elementHighlighter.setJobs(data.edits);
 		return Promise.resolve('done');
 	}
 

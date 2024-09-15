@@ -117,15 +117,15 @@ const Choose = ({
 		if (subject) {
 			if (isFocused) {
 				browser.runtime.sendMessage({
-					type: 'highlight_links',
+					type: 'highlight_elements',
+					modes: [type],
 					restrictors: {
 						blacklist: [subject],
-						types: [type],
 					},
 				});
 			} else if (prevIsFocused) {
 				browser.runtime.sendMessage({
-					type: 'unhighlight_links',
+					type: 'unhighlight_elements',
 				});
 			}
 			setPrevIsFocused(isFocused);
@@ -134,11 +134,9 @@ const Choose = ({
 
 	useEffect(() => {
 		return async () => {
-			if (subject && prevIsFocused) {
-				await browser.runtime.sendMessage({
-					type: 'unhighlight_links',
-				});
-			}
+			await browser.runtime.sendMessage({
+				type: 'unhighlight_elements',
+			});
 		};
 	}, []);
 

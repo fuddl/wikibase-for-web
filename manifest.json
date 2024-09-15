@@ -42,13 +42,14 @@
       "run_at": "document_end",
       "js": [
         "content/url-reference.js",
+        "content/movementObserver.js",
         "content/selection-observer.js",
         "content/hash-change-observer.js",
         "content/link-resolver.js"
       ]
     }
   ],
-  "web_accessible_resources": ["/content/link-resolver.css"],
+  "web_accessible_resources": ["/content/element-highlighter.css"],
   "browser_specific_settings": {
     "gecko": {
       "id": "{8b348118-df28-4d6b-aa90-4e90049c7f19}",

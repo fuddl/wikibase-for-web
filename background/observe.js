@@ -124,19 +124,16 @@ browser.tabs.onActivated.addListener(async activeInfo => {
 	}
 
 	if (shouldHighlightLinks) {
-		await highlightLinksForCurrentTab();
+		await highlightLinksForCurrentTab(shouldHighlightLinks);
 	}
 });
 
-async function highlightLinksForCurrentTab() {
+async function highlightLinksForCurrentTab(message) {
 	const currentTab = await getCurrentTab();
 
 	if (currentTab && currentTab.id) {
 		// Send 'highlight_links' to the current active tab
-		await browser.tabs.sendMessage(currentTab.id, {
-			type: 'highlight_links',
-			restrictors: shouldHighlightLinks,
-		});
+		await browser.tabs.sendMessage(currentTab.id, message);
 	}
 }
 
@@ -184,17 +181,17 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			console.error(error);
 		}
 		return Promise.resolve('done');
-	} else if (message.type === 'highlight_links') {
+	} else if (message.type === 'highlight_elements') {
 		// Forward 'highlight_links' to the active tab
-		shouldHighlightLinks = message.restrictors ?? true;
-		await highlightLinksForCurrentTab();
+		shouldHighlightLinks = message ?? true;
+		await highlightLinksForCurrentTab(message);
 		await checkSidebarToUnhighlight(true);
 
-		return true; // Indicates that sendResponse will be called asynchronously
-	} else if (message.type === 'unhighlight_links') {
+		return true;
+	} else if (message.type === 'unhighlight_elements') {
 		// Forward 'unhighlight_links' to all open tabs
 		for (const tab of await browser.tabs.query({})) {
-			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_links' });
+			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_elements' });
 		}
 		shouldHighlightLinks = false;
 		await checkSidebarToUnhighlight(false);
@@ -226,7 +223,7 @@ async function checkSidebarToUnhighlight(active) {
 				// If the sidebar is closed, send 'unhighlight_links' to all tabs
 				for (const tab of await browser.tabs.query({})) {
 					await browser.tabs.sendMessage(tab.id, {
-						type: 'unhighlight_links',
+						type: 'unhighlight_elements',
 					});
 				}
 				shouldHighlightLinks = false;

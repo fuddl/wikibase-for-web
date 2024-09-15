@@ -1,10 +1,10 @@
-.link-visual {
+.element-visual {
 	position: absolute;
 	background: none;
 	border: none;
 }
 
-.link-visual::before {
+.element-visual::before {
 	content: '';
 	position: absolute;
 	inset: -3px;
@@ -19,12 +19,12 @@
 	animation: 0.25s 0s appear;
 }
 
-.link-visual--active::before {
+.element-visual--active::before {
 	border-color: #4da679;
 }
 
-.link-visual:hover::before,
-.link-visual--hovered::before {
+.element-visual:hover::before,
+.element-visual--hovered::before {
 	inset: -6px;
 }
 
