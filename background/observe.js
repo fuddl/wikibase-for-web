@@ -7,6 +7,10 @@ const wikibaseEditQueue = new WikibaseEditQueue({
 	resolvedCache: resolvedCache,
 });
 
+const contentTabsQuery = {
+	url: ['http://*/*', 'https://*/*'],
+};
+
 wikibaseEditQueue.setProgressUpdateCallback(async queue => {
 	try {
 		await browser.runtime.sendMessage({
@@ -171,7 +175,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'highlight_elements') {
 		// Forward 'highlight_links' to the active tab
 		shouldHighlightLinks = message ?? true;
-		for (const tab of await browser.tabs.query({})) {
+		for (const tab of await browser.tabs.query(contentTabsQuery)) {
 			await browser.tabs.sendMessage(tab.id, message);
 		}
 		await checkSidebarToUnhighlight(true);
@@ -179,7 +183,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		return true;
 	} else if (message.type === 'unhighlight_elements') {
 		// Forward 'unhighlight_links' to all open tabs
-		for (const tab of await browser.tabs.query({})) {
+		for (const tab of await browser.tabs.query(contentTabsQuery)) {
 			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_elements' });
 		}
 		shouldHighlightLinks = false;
@@ -188,7 +192,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		return true;
 	} else if (message.type === 'highlight_jobs') {
 		// Forward 'highlight_jobs' to all open tabs
-		for (const tab of await browser.tabs.query({})) {
+		for (const tab of await browser.tabs.query(contentTabsQuery)) {
 			await browser.tabs.sendMessage(tab.id, message);
 		}
 
@@ -210,7 +214,7 @@ async function checkSidebarToUnhighlight(active) {
 			const sidebarPanel = await browser.sidebarAction.isOpen({});
 			if (!sidebarPanel) {
 				// If the sidebar is closed, send 'unhighlight_links' to all tabs
-				for (const tab of await browser.tabs.query({})) {
+				for (const tab of await browser.tabs.query(contentTabsQuery)) {
 					await browser.tabs.sendMessage(tab.id, {
 						type: 'unhighlight_elements',
 					});
