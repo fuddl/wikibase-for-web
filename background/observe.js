@@ -122,20 +122,7 @@ browser.tabs.onActivated.addListener(async activeInfo => {
 	} else {
 		await resolveCurrentTab(tabId);
 	}
-
-	if (shouldHighlightLinks) {
-		await highlightLinksForCurrentTab(shouldHighlightLinks);
-	}
 });
-
-async function highlightLinksForCurrentTab(message) {
-	const currentTab = await getCurrentTab();
-
-	if (currentTab && currentTab.id) {
-		// Send 'highlight_links' to the current active tab
-		await browser.tabs.sendMessage(currentTab.id, message);
-	}
-}
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
@@ -184,7 +171,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'highlight_elements') {
 		// Forward 'highlight_links' to the active tab
 		shouldHighlightLinks = message ?? true;
-		await highlightLinksForCurrentTab(message);
+		for (const tab of await browser.tabs.query({})) {
+			await browser.tabs.sendMessage(tab.id, message);
+		}
 		await checkSidebarToUnhighlight(true);
 
 		return true;
