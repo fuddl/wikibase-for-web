@@ -8,6 +8,9 @@ export async function descriptionsEdits(id, descriptions, manager) {
 
   const edits = [];
   for (const lang of languages) {
+    if (lang === 'mul') {
+      continue;
+    }
     if (!clientLanguages.includes(lang)) {
       continue;
     }
