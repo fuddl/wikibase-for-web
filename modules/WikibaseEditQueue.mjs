@@ -195,7 +195,7 @@ export class WikibaseEditQueue {
     const url = api.getEntities({
       ids: [entity],
       props: ['labels', 'aliases'],
-      languages: [language],
+      languages: [language, 'mul'],
       format: 'json',
     });
 
@@ -204,8 +204,12 @@ export class WikibaseEditQueue {
     const { labels, aliases } = entities[entity];
 
     return {
-      hasLabel: !!labels?.[language]?.hasOwnProperty('value'),
-      isLabel: labels?.[language]?.value.toLowerCase() == value.toLowerCase(),
+      hasLabel:
+        !!labels?.[language]?.hasOwnProperty('value') ||
+        !!labels?.['mul']?.hasOwnProperty('value'),
+      isLabel:
+        labels?.[language]?.value.toLowerCase() == value.toLowerCase() ||
+        labels?.['mul']?.value.toLowerCase() == value.toLowerCase(),
       aliasExists: aliases?.[language]?.some(
         item => item.value.toLowerCase() == value.toLowerCase(),
       ),
