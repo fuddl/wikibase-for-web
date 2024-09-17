@@ -6,7 +6,7 @@ export const sortByUserLanguages = object => {
 
 	// make sure 'default for all languages' is selected as a fallback
 	if (!normalizedUserLanguages.includes('mul')) {
-		normalizedUserLanguages.push('mul');
+		normalizedUserLanguages.splice(1, 0, 'mul');
 	}
 
 	// Sort entries according to userLanguages
