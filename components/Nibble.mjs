@@ -5,13 +5,14 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Amount from './Amount.mjs';
 import Annote from './Annote.mjs';
+import Appoint from './Appoint.mjs';
+import Choose from './Choose.mjs';
 import Map from './Map.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
 import Type from './Type.mjs';
-import Choose from './Choose.mjs';
 
 import Designate from './Designate.mjs';
 
@@ -88,48 +89,11 @@ class Nibble extends Component {
                 }}
                 onUpdateReference=${onUpdateReference} />`;
             case 'time':
-              return html`
-                <input
-                  name="${name}.datavalue.value.after"
-                  data-type="int"
-                  type="hidden"
-                  value=${datavalue.value.after ?? 0} />
-                <input
-                  name="${name}.datavalue.value.before"
-                  data-type="int"
-                  type="hidden"
-                  value=${datavalue.value.before ?? 0} />
-                <input
-                  name="${name}.datavalue.value.calendarmodel"
-                  type="hidden"
-                  value=${manager.urlFromIdNonSecure(
-                    datavalue.value.calendarmodel,
-                  )} />
-                <input
-                  name="${name}.datavalue.value.precision"
-                  data-type="int"
-                  type="hidden"
-                  value=${datavalue.value.precision} />
-                <input
-                  name="${name}.datavalue.value.time"
-                  type="hidden"
-                  value=${datavalue.value.time} />
-                <input
-                  name="${name}.datavalue.value.timezone"
-                  type="hidden"
-                  data-type="int"
-                  value=${datavalue.value.timezone} />
-                <${Type}
-                  value=${datavalue.value.time
-                    ? datavalue.value.time.match(/^[-\+](\d{4}-\d{2}-\d{2})/)[1]
-                    : ''}
-                  type="date"
-                  proxyName="${name}.datavalue.value.time"
-                  onValueChange=${newValue => {
-                    newValue.value = `+${newValue.value}T00:00:00Z`;
-                    onValueChange(newValue);
-                  }} />
-              `;
+              return html`<${Appoint}
+                name=${name}
+                datavalue=${datavalue}
+                manager=${manager}
+                onValueChange=${onValueChange} />`;
             case 'url':
               return html`<${Type}
                 value=${datavalue.value}

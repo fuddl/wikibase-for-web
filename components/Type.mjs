@@ -6,6 +6,9 @@ const html = htm.bind(h);
 
 class Type extends Component {
   handleChange = e => {
+    if (e.target.validity.patternMismatch) {
+      return;
+    }
     const { onValueChange } = this.props;
     if (onValueChange) {
       onValueChange({
@@ -30,6 +33,7 @@ class Type extends Component {
       required,
       onFocus,
       onBlur,
+      pattern,
       size,
       ref,
       step,
@@ -43,6 +47,7 @@ class Type extends Component {
       name=${name}
       size=${size}
       step=${step}
+      pattern=${pattern}
       onFocus=${onFocus}
       onBlur=${onBlur}
       min=${min}

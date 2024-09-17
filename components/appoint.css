@@ -1,0 +1,12 @@
+.appoint {
+	position: relative;
+}
+
+.appoint__picker {
+	position: absolute;
+	inset: 0 0 0 auto;
+	width: 1.75em;
+	background: transparent;
+	border: none;
+	outline: none;
+}
