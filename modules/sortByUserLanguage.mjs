@@ -4,6 +4,11 @@ export const sortByUserLanguages = object => {
 		lang => lang.split('-')[0],
 	);
 
+	// make sure 'default for all languages' is selected as a fallback
+	if (!normalizedUserLanguages.includes('mul')) {
+		normalizedUserLanguages.push('mul');
+	}
+
 	// Sort entries according to userLanguages
 	const sortedObject = Object.keys(object)
 		.sort((a, b) => {

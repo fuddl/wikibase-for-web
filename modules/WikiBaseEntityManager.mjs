@@ -23,6 +23,11 @@ class WikiBaseEntityManager {
 				.catch(error => {
 					console.error('Error fetching data:', error);
 				});
+
+			// make sure 'default for all languages' is selected as a fallback
+			if (!this.wikibases[wikibase].languages.includes('mul')) {
+				this.wikibases[wikibase].languages.push('mul');
+			}
 		}
 	}
 
