@@ -5,8 +5,9 @@ class ElementHighlighter {
 		this.shadowRoot = null; // To store the shadow DOM
 		this.elementsRoot = null;
 		this.elementRectsMap = new Map(); // To track elements and their visual representation
-		this.movementObserver = null; // Movement observer for elements
+		this.movementObserver = null; // Mutation observer for elements
 		this.elementGroupMap = new Map(); // To map elements to their modes
+		this.observedTargets = new Map(); // Map observed targets back to original elements
 		this.visualizer = document.createElement('div');
 		this.visualizer.style.position = 'absolute';
 		this.visualizer.style.top = '0';
@@ -136,10 +137,15 @@ class ElementHighlighter {
 			entries => {
 				entries.forEach(entry => {
 					if (entry.isIntersecting) {
-						const element = entry.target;
-						if (!element._hasTriggered) {
-							element._hasTriggered = true; // Mark the element as triggered
-							callback(element); // Execute the callback for the element
+						const target = entry.target;
+						if (!target._hasTriggered) {
+							target._hasTriggered = true; // Mark the element as triggered
+
+							// Retrieve the original element from the observed target
+							const element = this.observedTargets.get(target);
+							if (element) {
+								callback(element); // Execute the callback for the element
+							}
 						}
 					}
 				});
@@ -158,12 +164,19 @@ class ElementHighlighter {
 			if (target) {
 				target._hasTriggered = false; // Track whether the element has been triggered
 				this.observer.observe(target); // Start observing each element
+
+				// Map observed target back to the original element
+				this.observedTargets.set(target, element);
 			}
 		}
 	}
 
 	async handleElementVisibility(element, retryCount = 3, delay = 1000) {
 		const modes = this.elementsMap.get(element);
+		if (!modes) {
+			// Element is no longer being tracked
+			return;
+		}
 
 		if (
 			modes.has('item') ||
@@ -271,18 +284,18 @@ class ElementHighlighter {
 
 			// Add element to the set
 			if (
-				modes.has('item') ||
-				modes.has('lexeme') ||
-				modes.has('sense') ||
-				modes.has('form') ||
-				modes.has('property')
+				(modes.has('item') ||
+					modes.has('lexeme') ||
+					modes.has('sense') ||
+					modes.has('form') ||
+					modes.has('property')) &&
+				(!element?.resolved || element?.resolved?.length === 0)
 			) {
-				if (element?.resolved?.length > 0) {
-					elementsToVisualize.add(element);
-				}
-			} else {
-				elementsToVisualize.add(element);
+				// Skip elements that have not been resolved yet
+				continue;
 			}
+
+			elementsToVisualize.add(element);
 		}
 
 		// Remove visuals for elements that no longer need them
@@ -384,6 +397,10 @@ class ElementHighlighter {
 	// Add event listeners to the element visual
 	addElementVisualEventListeners(elementVisual, element) {
 		const modes = this.elementGroupMap.get(element);
+		if (!modes) {
+			// Element is no longer being tracked
+			return;
+		}
 
 		// Add hover event to add class to all visuals of the same element
 		elementVisual.addEventListener('mouseover', () => {
@@ -423,7 +440,8 @@ class ElementHighlighter {
 				}
 				await browser.runtime.sendMessage({
 					type: 'time_selected',
-					datetime: datetime,
+					datetime: `+${datetime}T00:00:00Z`,
+					source: createUrlReference(element),
 				});
 			} else if (modes.has('quantity')) {
 				// Handle quantity click
@@ -494,6 +512,20 @@ class ElementHighlighter {
 	clear() {
 		this.visualizer.remove();
 		this.active = false;
+
+		// Clean up maps and observers
+		this.elementsMap.clear();
+		this.elementGroupMap.clear();
+		this.elementRectsMap.clear();
+		this.observedTargets.clear();
+		if (this.observer) {
+			this.observer.disconnect();
+			this.observer = null;
+		}
+		if (this.movementObserver) {
+			this.movementObserver.disconnect();
+			this.movementObserver = null;
+		}
 	}
 }
 

@@ -92,7 +92,9 @@ class Nibble extends Component {
               return html`<${Appoint}
                 name=${name}
                 datavalue=${datavalue}
+                onUpdateReference=${onUpdateReference}
                 manager=${manager}
+                wikibase=${manager.wikibase.id}
                 onValueChange=${onValueChange} />`;
             case 'url':
               return html`<${Type}

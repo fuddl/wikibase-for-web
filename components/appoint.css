@@ -2,6 +2,10 @@
 	position: relative;
 }
 
+.appoint--focus {
+	outline: 3px solid red;
+}
+
 .appoint__picker {
 	position: absolute;
 	inset: 0 0 0 auto;
