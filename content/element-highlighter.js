@@ -6,7 +6,7 @@ class ElementHighlighter {
 		this.elementsRoot = null;
 		this.elementRectsMap = new Map(); // To track elements and their visual representation
 		this.movementObserver = null; // Mutation observer for elements
-		this.elementGroupMap = new Map(); // To map elements to their modes
+		this.elementDataMap = new Map(); // To map elements to their data
 		this.observedTargets = new Map(); // Map observed targets back to original elements
 		this.visualizer = document.createElement('div');
 		this.visualizer.style.position = 'absolute';
@@ -32,6 +32,9 @@ class ElementHighlighter {
 
 		this.modes = []; // Active modes
 
+		// Regular expression to match dates in YYYY-MM-DD format
+		this.dateRegex = /\b\d{4}-\d{2}-\d{2}\b/;
+
 		// Patterns for different modes
 		this.typePatternMap = {
 			item: /Q\d+$/,
@@ -44,22 +47,78 @@ class ElementHighlighter {
 		// Selectors or functions for different modes
 		this.modeSelectors = {
 			time: {
-				selector: 'time[datetime]:not([datetime^="P"])', // Exclude durations
-				customMatcher: this.findDateNodes.bind(this), // Custom function to find date nodes
+				bySelector: {
+					selector: 'time[datetime]:not([datetime^="P"])',
+					onVisualClick: async element => {
+						const datetime = element.getAttribute('datetime');
+						await browser.runtime.sendMessage({
+							type: 'time_selected',
+							datetime: datetime,
+							source: createUrlReference(element),
+						});
+					},
+				},
+				byInnerText: {
+					selector: this.findDateNodes.bind(this),
+					onVisualClick: async element => {
+						const datetime = element.textContent.match(this.dateRegex)[0];
+						await browser.runtime.sendMessage({
+							type: 'time_selected',
+							datetime: datetime,
+							source: createUrlReference(element),
+						});
+					},
+				},
 			},
-			quantity: 'time[datetime^="P"]',
-			url: 'a[href]',
-			globeCoordinate: '[data-latitude][data-longitude], [lat][lon]',
-			email: 'a[href^="mailto:"]',
-			item: 'a[href]',
-			lexeme: 'a[href]',
-			sense: 'a[href]',
-			form: 'a[href]',
-			property: 'a[href]',
+			quantity: {
+				bySelector: {
+					selector: 'time[datetime^="P"]',
+					onVisualClick: async element => {
+						const duration = element.getAttribute('datetime');
+						await browser.runtime.sendMessage({
+							type: 'quantity_selected',
+							duration: duration,
+						});
+					},
+				},
+			},
+			email: {
+				bySelector: {
+					selector: 'a[href^="mailto:"]',
+					onVisualClick: async element => {
+						const email = element.href.replace('mailto:', '');
+						await browser.runtime.sendMessage({
+							type: 'email_selected',
+							email: email,
+						});
+					},
+				},
+			},
+			url: {
+				bySelector: {
+					selector: 'a[href]',
+					onVisualClick: async element => {
+						await browser.runtime.sendMessage({
+							type: 'url_selected',
+							url: element.href,
+						});
+					},
+				},
+			},
+			item: {
+				bySelector: {
+					selector: 'a[href]',
+					onVisualClick: async element => {
+						await browser.runtime.sendMessage({
+							type: 'resolve_selected',
+							candidates: element.resolved,
+							source: createUrlReference(element),
+						});
+					},
+				},
+			},
+			// Define other modes similarly...
 		};
-
-		// Regular expression to match dates in YYYY-MM-DD format
-		this.dateRegex = /\b\d{4}-\d{2}-\d{2}\b/;
 	}
 
 	setJobs(edits) {
@@ -71,36 +130,35 @@ class ElementHighlighter {
 
 	// Collect elements based on active modes
 	collectElementsByMode() {
-		const elementsMap = new Map(); // To store unique elements and corresponding modes
+		const elementsMap = new Map(); // To store unique elements and their associated data
 
-		this.modes.forEach(mode => {
-			const modeConfig = this.modeSelectors[mode];
-			let elements = [];
+		this.modes.forEach(modeName => {
+			const mode = this.modeSelectors[modeName];
 
-			if (typeof modeConfig === 'string') {
-				// It's a CSS selector
-				elements = Array.from(document.querySelectorAll(modeConfig));
-			} else if (typeof modeConfig === 'object') {
-				// It may have a selector and/or custom matcher
-				if (modeConfig.selector) {
-					elements = elements.concat(
-						Array.from(document.querySelectorAll(modeConfig.selector)),
-					);
+			for (const methodName in mode) {
+				const method = mode[methodName];
+				let elements = [];
+
+				const selector = method.selector;
+				if (typeof selector === 'string') {
+					// It's a CSS selector
+					elements = Array.from(document.querySelectorAll(selector));
+				} else if (typeof selector === 'function') {
+					// It's a custom function
+					elements = elements.concat(selector());
 				}
-				if (modeConfig.customMatcher) {
-					elements = elements.concat(modeConfig.customMatcher());
-				}
-			} else if (typeof modeConfig === 'function') {
-				// It's a custom function
-				elements = elements.concat(modeConfig());
+
+				elements.forEach(element => {
+					if (!elementsMap.has(element)) {
+						elementsMap.set(element, []);
+					}
+					elementsMap.get(element).push({
+						mode: modeName,
+						method: methodName,
+						onVisualClick: method.onVisualClick,
+					});
+				});
 			}
-
-			elements.forEach(element => {
-				if (!elementsMap.has(element)) {
-					elementsMap.set(element, new Set());
-				}
-				elementsMap.get(element).add(mode);
-			});
 		});
 
 		return elementsMap;
@@ -172,18 +230,20 @@ class ElementHighlighter {
 	}
 
 	async handleElementVisibility(element, retryCount = 3, delay = 1000) {
-		const modes = this.elementsMap.get(element);
-		if (!modes) {
+		const dataList = this.elementsMap.get(element);
+		if (!dataList) {
 			// Element is no longer being tracked
 			return;
 		}
 
+		const modes = dataList.map(data => data.mode);
+
 		if (
-			modes.has('item') ||
-			modes.has('lexeme') ||
-			modes.has('sense') ||
-			modes.has('form') ||
-			modes.has('property')
+			modes.includes('item') ||
+			modes.includes('lexeme') ||
+			modes.includes('sense') ||
+			modes.includes('form') ||
+			modes.includes('property')
 		) {
 			// Handle as link that needs to be resolved
 			const url = element.href;
@@ -223,10 +283,14 @@ class ElementHighlighter {
 						this.handleElementVisibility(element, retryCount - 1, delay);
 					}, delay);
 				}
-			} else {
+			} else if (resolvedCandidates.length > 0) {
 				// Associate resolved candidates with the element
 				element.resolved = resolvedCandidates;
 				// Rebuild the visualizer once done or if retries are exhausted
+				this.rebuildVisualizer();
+			} else {
+				// No candidates found, remove the element from elementsMap
+				this.elementsMap.delete(element);
 				this.rebuildVisualizer();
 			}
 		} else {
@@ -258,11 +322,14 @@ class ElementHighlighter {
 			});
 		}
 
+		// Clear existing element data map
+		this.elementDataMap.clear();
+
 		// Set of elements that need visuals
 		const elementsToVisualize = new Set();
 
 		// Add a visual representation for each element
-		for (const [element, modes] of this.elementsMap.entries()) {
+		for (const [element, dataList] of this.elementsMap.entries()) {
 			// For text nodes, observe their parent element
 			const target =
 				element.nodeType === Node.TEXT_NODE ? element.parentNode : element;
@@ -276,19 +343,21 @@ class ElementHighlighter {
 				});
 			}
 
-			// Map the element to its modes
-			this.elementGroupMap.set(element, modes);
+			// Map the element to its dataList
+			this.elementDataMap.set(element, dataList);
 
 			// Update or create the visual rectangles
 			this.updateElementVisual(element);
 
+			const modes = dataList.map(data => data.mode);
+
 			// Add element to the set
 			if (
-				(modes.has('item') ||
-					modes.has('lexeme') ||
-					modes.has('sense') ||
-					modes.has('form') ||
-					modes.has('property')) &&
+				(modes.includes('item') ||
+					modes.includes('lexeme') ||
+					modes.includes('sense') ||
+					modes.includes('form') ||
+					modes.includes('property')) &&
 				(!element?.resolved || element?.resolved?.length === 0)
 			) {
 				// Skip elements that have not been resolved yet
@@ -302,7 +371,7 @@ class ElementHighlighter {
 		for (const element of this.elementRectsMap.keys()) {
 			if (!elementsToVisualize.has(element)) {
 				this.removeElementVisuals(element);
-				this.elementGroupMap.delete(element);
+				this.elementDataMap.delete(element);
 			}
 		}
 	}
@@ -346,7 +415,31 @@ class ElementHighlighter {
 			// Update the map
 			this.elementRectsMap.set(element, visuals);
 		}
-		const modes = this.elementGroupMap.get(element);
+		const dataList = this.elementDataMap.get(element);
+
+		// If dataList is undefined, return early
+		if (!dataList) {
+			this.removeElementVisuals(element);
+			return;
+		}
+
+		// If it's a link that needed resolution but has no resolved candidates, don't create visuals
+		const modes = dataList.map(data => data.mode);
+
+		if (
+			(modes.includes('item') ||
+				modes.includes('lexeme') ||
+				modes.includes('sense') ||
+				modes.includes('form') ||
+				modes.includes('property')) &&
+			(!element.resolved || element.resolved.length === 0)
+		) {
+			// Remove visuals and return
+			this.removeElementVisuals(element);
+			this.elementsMap.delete(element);
+			this.elementDataMap.delete(element);
+			return;
+		}
 
 		// Now update the position and styles of the visuals
 		for (let i = 0; i < rects.length; i++) {
@@ -360,11 +453,11 @@ class ElementHighlighter {
 		}
 
 		// Update classes based on modes
-
 		visuals.forEach(elementVisual => {
 			elementVisual.className = 'element-visual'; // Reset classes
 
-			modes.forEach(mode => {
+			dataList.forEach(data => {
+				const mode = data.mode;
 				elementVisual.classList.add(`element-visual--mode_${mode}`);
 			});
 
@@ -396,8 +489,8 @@ class ElementHighlighter {
 
 	// Add event listeners to the element visual
 	addElementVisualEventListeners(elementVisual, element) {
-		const modes = this.elementGroupMap.get(element);
-		if (!modes) {
+		const dataList = this.elementDataMap.get(element);
+		if (!dataList) {
 			// Element is no longer being tracked
 			return;
 		}
@@ -422,63 +515,13 @@ class ElementHighlighter {
 			}
 		});
 
-		// Handle click events based on modes
+		// Handle click events based on dataList
 		elementVisual.addEventListener('click', async () => {
-			if (modes.has('email')) {
-				// Handle email click
-				await browser.runtime.sendMessage({
-					type: 'email_selected',
-					email: element.href.replace('mailto:', ''),
-				});
-			} else if (modes.has('time')) {
-				// Handle time click
-				let datetime;
-				if (element.nodeType === Node.TEXT_NODE) {
-					datetime = element.textContent.match(this.dateRegex)[0];
-				} else {
-					datetime = element.getAttribute('datetime');
+			for (const data of dataList) {
+				const onVisualClick = data.onVisualClick;
+				if (typeof onVisualClick === 'function') {
+					await onVisualClick(element);
 				}
-				await browser.runtime.sendMessage({
-					type: 'time_selected',
-					datetime: `+${datetime}T00:00:00Z`,
-					source: createUrlReference(element),
-				});
-			} else if (modes.has('quantity')) {
-				// Handle quantity click
-				await browser.runtime.sendMessage({
-					type: 'quantity_selected',
-					duration: element.getAttribute('datetime'),
-				});
-			} else if (modes.has('globecoordinate')) {
-				// Handle globe coordinate click
-				const latitude =
-					element.dataset.latitude || element.getAttribute('lat');
-				const longitude =
-					element.dataset.longitude || element.getAttribute('lon');
-				await browser.runtime.sendMessage({
-					type: 'coordinate_selected',
-					latitude,
-					longitude,
-				});
-			} else if (modes.has('url')) {
-				// Handle URL click
-				await browser.runtime.sendMessage({
-					type: 'url_selected',
-					url: element.href,
-				});
-			} else if (
-				modes.has('item') ||
-				modes.has('lexeme') ||
-				modes.has('sense') ||
-				modes.has('form') ||
-				modes.has('property')
-			) {
-				// Handle resolved link click
-				await browser.runtime.sendMessage({
-					type: 'resolve_selected',
-					candidates: element.resolved,
-					source: createUrlReference(element),
-				});
 			}
 		});
 	}
@@ -515,7 +558,7 @@ class ElementHighlighter {
 
 		// Clean up maps and observers
 		this.elementsMap.clear();
-		this.elementGroupMap.clear();
+		this.elementDataMap.clear();
 		this.elementRectsMap.clear();
 		this.observedTargets.clear();
 		if (this.observer) {

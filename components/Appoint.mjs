@@ -5,6 +5,7 @@ import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
+import DateNormalizer from '../modules/DateNormalizer.mjs';
 
 const html = htm.bind(h);
 
@@ -29,17 +30,29 @@ const Appoint = ({
 		shouldFocus,
 		message => {
 			if (message.type === 'time_selected') {
-				onValueChange({
-					name: `${name}.datavalue.value.time`,
-					value: message.datetime,
-				});
+				console.debug(message.datetime);
+				const normalisedDate = DateNormalizer.normalizeDateString(
+					message.datetime,
+				);
+				console.debug(normalisedDate);
+				if (normalisedDate) {
+					onValueChange({
+						name: `${name}.datavalue.value.time`,
+						value: normalisedDate.datetime,
+					});
 
-				if (message.source && onUpdateReference) {
-					const reference = urlReference(
-						message.source,
-						manager.wikibases[wikibase],
-					);
-					onUpdateReference(reference);
+					onValueChange({
+						name: `${name}.datavalue.value.precision`,
+						value: normalisedDate.precision,
+					});
+
+					if (message.source && onUpdateReference) {
+						const reference = urlReference(
+							message.source,
+							manager.wikibases[wikibase],
+						);
+						onUpdateReference(reference);
+					}
 				}
 			}
 		},
@@ -102,6 +115,7 @@ const Appoint = ({
 				pattern=${'^[\\-+]\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'}
 				required=${true}
 				type="text"
+				class="appoint__type"
 				onFocus=${handleFocus}
 				onChange=${newValue => {
 					if (newValue.value === '') {
