@@ -117,7 +117,18 @@ class ElementHighlighter {
 					},
 				},
 			},
-			// Define other modes similarly...
+			lexeme: {
+				bySelector: {
+					selector: 'a[href]',
+					onVisualClick: async element => {
+						await browser.runtime.sendMessage({
+							type: 'resolve_selected',
+							candidates: element.resolved,
+							source: createUrlReference(element),
+						});
+					},
+				},
+			},
 		};
 	}
 
@@ -264,13 +275,14 @@ class ElementHighlighter {
 						if (this?.restrictors?.blacklist?.includes(resolved.id)) {
 							return false;
 						}
-
-						if (this?.restrictors?.types) {
-							const pattern = this.typePatternMap[this.restrictors.types];
-							return pattern.test(resolved.id);
-						}
-
-						return true;
+						return this.modes.some(mode => {
+							if (this.typePatternMap?.[mode]) {
+								const pattern = this.typePatternMap[mode];
+								return pattern.test(resolved.id);
+							} else {
+								return false;
+							}
+						});
 					}).length > 0
 						? [firstCandidate]
 						: [];
@@ -543,6 +555,8 @@ class ElementHighlighter {
 	init({ restrictors, modes }) {
 		this.restrictors = restrictors;
 		this.modes = modes;
+
+		this.elementsRoot.innerText = '';
 
 		this.elementsMap = this.collectElementsByMode();
 		this.observeElementVisibility(element =>
