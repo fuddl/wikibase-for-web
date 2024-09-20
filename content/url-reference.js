@@ -1,4 +1,13 @@
 function getClosestIdentifier(element) {
+  const directIdentifier =
+    element.id ||
+    element.name ||
+    element.parentElement.id ||
+    element.parentElement.name;
+  if (directIdentifier) {
+    return directIdentifier;
+  }
+
   // Helper function to check if the element or its parent is a headline
   function isHeadlineOrChildOfHeadline(el) {
     if (!el) return false;
@@ -12,16 +21,27 @@ function getClosestIdentifier(element) {
     );
   }
 
-  // Helper function to check descendants for id or name
+  // Helper function to check if an element or any of its descendants has an id or name
+  // Ignores elements that are hidden (offsetParent = null)
   function findInDescendants(element) {
+    // Check if the element is hidden (offsetParent will be null for elements that are not visible)
+    if (element.offsetParent === null) {
+      return null;
+    }
+
+    // Check if the current element has an id or name and if it's a headline or a child of one
     if ((element.id || element.name) && isHeadlineOrChildOfHeadline(element)) {
       return element.id || element.name;
     }
+
+    // Traverse through the child elements
     let children = element.children;
     for (let i = 0; i < children.length; i++) {
       let result = findInDescendants(children[i]);
       if (result) return result;
     }
+
+    // Return null if no result is found
     return null;
   }
 

@@ -33,7 +33,7 @@ class ElementHighlighter {
 		this.modes = []; // Active modes
 
 		// Regular expression to match dates in YYYY-MM-DD format
-		this.dateRegex = /\b\d{4}-\d{2}-\d{2}\b/;
+		this.dateRegex = /\s*\b\d{4}(-\d{2}(-\d{2}\b)?)?\s*/;
 
 		// Patterns for different modes
 		this.typePatternMap = {
