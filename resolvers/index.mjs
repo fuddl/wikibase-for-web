@@ -2,13 +2,14 @@ import { siteLinks } from './siteLinks.mjs';
 import { url } from './url.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { wikibase } from './wikibase.mjs';
+import { hash } from './hash.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [siteLinks, url, urlMatchPattern, wikibase],
+	list: [hash, siteLinks, url, urlMatchPattern, wikibase],
 };
 
 const resolvedCache = {};
