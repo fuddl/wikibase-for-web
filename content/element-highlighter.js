@@ -448,7 +448,6 @@ class ElementHighlighter {
 		) {
 			// Remove visuals and return
 			this.removeElementVisuals(element);
-			this.elementsMap.delete(element);
 			this.elementDataMap.delete(element);
 			return;
 		}
