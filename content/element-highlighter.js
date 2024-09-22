@@ -374,13 +374,6 @@ class ElementHighlighter {
 					return;
 				}
 
-				if (
-					highlight.element.href ===
-					'https://strategywiki.org/wiki/Category:Android'
-				) {
-					console.debug(candidates);
-				}
-
 				highlight.resolved = this.filterCandidates(candidates);
 
 				if (candidates.length > 0) {
