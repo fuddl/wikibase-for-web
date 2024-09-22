@@ -48,19 +48,19 @@ async function autocompleteLexemesToSenses(autocomplete, wikibase) {
 }
 
 const Choose = ({
-	value,
 	label,
-	name,
-	type,
-	required = false,
 	manager,
-	subject,
-	wikibase,
-	onSelected,
+	name,
 	onAddJobs,
-	onValueChange,
-	shouldFocus = false,
+	onSelected,
 	onUpdateReference,
+	onValueChange,
+	required = false,
+	shouldFocus = false,
+	subject,
+	type,
+	value,
+	wikibase,
 }) => {
 	const [suggestions, setSuggestions] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);

@@ -118,6 +118,7 @@ class Nibble extends Component {
                 languageValue=${datavalue?.value?.language}
                 languageName="${name}.datavalue.value.language"
                 wikibase=${manager.wikibase.id}
+                subject=${subject}
                 required=${true}
                 onValueChange=${onValueChange}
                 onUpdateReference=${onUpdateReference}

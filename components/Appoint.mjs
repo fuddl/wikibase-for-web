@@ -30,20 +30,13 @@ const Appoint = ({
 		shouldFocus,
 		message => {
 			if (message.type === 'time_selected') {
-				console.debug(message.datetime);
 				const normalisedDate = DateNormalizer.normalizeDateString(
 					message.datetime,
 				);
-				console.debug(normalisedDate);
 				if (normalisedDate) {
 					onValueChange({
-						name: `${name}.datavalue.value.time`,
-						value: normalisedDate.datetime,
-					});
-
-					onValueChange({
-						name: `${name}.datavalue.value.precision`,
-						value: normalisedDate.precision,
+						name: `${name}.datavalue.value`,
+						value: { ...datavalue.value, ...normalisedDate },
 					});
 
 					if (message.source && onUpdateReference) {
@@ -90,11 +83,6 @@ const Appoint = ({
 				type="hidden"
 				value=${manager.urlFromIdNonSecure(datavalue.value.calendarmodel)} />
 			<input
-				name="${name}.datavalue.value.precision"
-				data-type="int"
-				type="hidden"
-				value=${datavalue.value.precision} />
-			<input
 				name="${name}.datavalue.value.time"
 				type="hidden"
 				value=${datavalue.value.time} />
@@ -134,11 +122,35 @@ const Appoint = ({
 				onInput=${e => {
 					if (e.target.value) {
 						onValueChange({
-							name: `${name}.datavalue.value.time`,
-							value: `+${e.target.value}T00:00:00Z`,
+							name: `${name}.datavalue.value`,
+							value: {
+								...datavalue.value,
+								time: `+${e.target.value}T00:00:00Z`,
+								precision: 11,
+							},
 						});
 					}
 				}} />
+			<select
+				class="appoint__precision"
+				name="${name}.datavalue.value.precision"
+				onChange=${e => {
+					onValueChange({
+						name: `${name}.datavalue.value.precision`,
+						value: e.target.value,
+					});
+				}}
+				data-type="int">
+				${Object.entries({ 11: 'day', 10: 'month', 9: 'year' }).map(
+					([value, word]) =>
+						html`<option
+							value=${value}
+							selected=${value == datavalue.value.precision}>
+							${value == datavalue.value.precision && 'selected:'}
+							${browser.i18n.getMessage(`time_precision_${word}`)}
+						</option>`,
+				)}
+			</select>
 		</div>
 	`;
 };

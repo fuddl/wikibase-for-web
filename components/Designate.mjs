@@ -14,21 +14,23 @@ const html = htm.bind(h);
 
 class Designate extends Component {
   render({
-    textValue: initialTextValue,
-    textName,
-    languageValue: initialLanguageValue,
     languageName,
-    onValueChange,
+    languageValue: initialLanguageValue,
     manager,
-    wikibase,
+    onUpdateReference,
+    onValueChange,
     required,
     shouldFocus,
-    onUpdateReference,
+    subject,
+    textName,
+    textValue: initialTextValue,
+    wikibase,
   }) {
     const [textValue, setTextValue] = useState(initialTextValue ?? '');
     const [languageValue, setLanguageValue] = useState(
       initialLanguageValue ?? '',
     );
+    const [prevIsFocused, setPrevIsFocused] = useState(false);
 
     useEffect(() => {
       if (onValueChange) {
@@ -65,6 +67,23 @@ class Designate extends Component {
         }
       },
     );
+
+    useEffect(() => {
+      if (subject) {
+        if (isFocused) {
+          browser.runtime.sendMessage({
+            type: 'highlight_elements',
+            modes: ['monolingualtext'],
+            blacklist: [subject],
+          });
+        } else if (prevIsFocused) {
+          browser.runtime.sendMessage({
+            type: 'unhighlight_elements',
+          });
+        }
+        setPrevIsFocused(isFocused);
+      }
+    }, [isFocused, subject]);
 
     return html`<div
       class="designate ${isFocused ? 'designate--focus' : ''}"

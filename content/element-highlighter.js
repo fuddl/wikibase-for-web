@@ -27,12 +27,10 @@ class ElementHighlighter {
 						});
 					},
 				},
-				byInnerText: {
-					selector: this.findDateNodes.bind(this),
+				bySelectorSchemaOrg: {
+					selector: '[content]:is([itemprop="startDate"],[itemprop="endDate"])',
 					onVisualClick: async highlight => {
-						const datetime = highlight.element.textContent.match(
-							this.dateRegex,
-						)[0];
+						const datetime = highlight.element.getAttribute('content');
 						await browser.runtime.sendMessage({
 							type: 'time_selected',
 							datetime: datetime,
@@ -40,6 +38,19 @@ class ElementHighlighter {
 						});
 					},
 				},
+				// byInnerText: {
+				// 	selector: this.findDateNodes.bind(this),
+				// 	onVisualClick: async highlight => {
+				// 		const datetime = highlight.element.textContent.match(
+				// 			this.dateRegex,
+				// 		)[0];
+				// 		await browser.runtime.sendMessage({
+				// 			type: 'time_selected',
+				// 			datetime: datetime,
+				// 			source: createUrlReference(highlight.element),
+				// 		});
+				// 	},
+				// },
 			},
 			quantity: {
 				bySelector: {
@@ -95,6 +106,20 @@ class ElementHighlighter {
 						await browser.runtime.sendMessage({
 							type: 'resolve_selected',
 							candidates: highlight.resolved,
+							source: createUrlReference(highlight.element),
+						});
+					},
+				},
+			},
+			monolingualtext: {
+				bySelector: {
+					selector:
+						'blockquote, h1, h2, h3, h4, h5, h5, strong, em, i, caption, tr > th:only-child, [itemprop="alternateName"], [itemprop="name"]',
+					onVisualClick: async highlight => {
+						await browser.runtime.sendMessage({
+							type: 'text_selected',
+							value: highlight.element.innerText,
+							lang: highlight.element.closest('[lang]')?.lang ?? null,
 							source: createUrlReference(highlight.element),
 						});
 					},
