@@ -320,6 +320,14 @@ class ElementHighlighter {
 		}
 	}
 	filterCandidates(candidates) {
+		const minSpecificity = candidates.reduce(
+			(highest, item) => Math.max(highest, item.specificity),
+			0,
+		);
+
+		// filter all unspecific candidates
+		candidates = candidates.filter(item => item.specificity >= minSpecificity);
+
 		// remove blacklisted ids
 		candidates = candidates.map(candidate => {
 			if (this.blacklist) {
@@ -364,6 +372,13 @@ class ElementHighlighter {
 						this.resolve(highlight, element, retry - 1);
 					}, 500);
 					return;
+				}
+
+				if (
+					highlight.element.href ===
+					'https://strategywiki.org/wiki/Category:Android'
+				) {
+					console.debug(candidates);
 				}
 
 				highlight.resolved = this.filterCandidates(candidates);

@@ -340,16 +340,19 @@ export class WikibaseEditQueue {
         break;
       case 'resolver:add':
         if (job.url in this.resolvedCache) {
-          this.resolvedCache[job.url].push({
-            directMatch: true,
-            instance: job.instance,
-            resolved: [
-              {
-                specificity: 1000,
-                id: `${job.instance}:${job.entity}`,
-              },
-            ],
-          });
+          this.resolvedCache[job.url] = [
+            {
+              directMatch: true,
+              instance: job.instance,
+              specificity: 1000,
+              resolved: [
+                {
+                  specificity: 1000,
+                  id: `${job.instance}:${job.entity}`,
+                },
+              ],
+            },
+          ];
         }
         break;
     }
