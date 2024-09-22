@@ -1,24 +1,15 @@
 <html lang="en">
 	<head>
 		<title>Data Extraction tests</title>
+		<style>
+			dl {
+				min-height: 100vh;
+				max-width: 30em;
+			}
+		</style>
 	</head>
 	<body>
 		<h1>Data Extraction tests</h1>
-		<h2 id="links">Links</h2>
-		<dl>
-			<dt>Items</dt>
-			<dd id="items">
-				<a href="https://www.wikidata.org/wiki/Q4115189">Item 1</a>
-				<a href="https://www.wikidata.org/wiki/Q13406268">Item 2</a>
-				<a href="https://www.wikidata.org/wiki/Q15397819">Item 3</a>
-				<a href="https://www.wikidata.org/wiki/Q112795079">Item 4</a>
-			</dd>
-			<dt>Lexemes</dt>
-			<dd id="lexemes">
-				<a href="https://www.wikidata.org/wiki/Lexeme:L123">Lexeme 1</a>
-				<a href="https://www.wikidata.org/wiki/Lexeme:L1234">Lexeme 2</a>
-			</dd>
-		</dl>
 		<h2 id="dates">Dates</h2>
 		<dl>
 			<dt>Duration</dt>
@@ -31,6 +22,29 @@
 			<dd id="plain-iso-month">2018-07</dd>
 			<dt>Plain text iso date (year)</dt>
 			<dd id="plain-iso">2018</dd>
+		</dl>
+		<h2 id="links">Links</h2>
+		<dl>
+			<dt>Items</dt>
+			<dd id="items">
+				<a href="https://www.wikidata.org/wiki/Q4115189">Item 1</a>
+
+				<a href="https://www.wikidata.org/wiki/Q13406268">Item 2</a>
+				<a href="https://www.wikidata.org/wiki/Q15397819">Item 3</a>
+				<a href="https://www.wikidata.org/wiki/Q112795079"
+					>Item Number 4 has a very long text so that in fact it is very likely
+					to spread multiple lines</a
+				>
+				<a href="https://example.com/not-existing-entity"
+					>Link that should not resolve to anyting</a
+				>
+				<a href="https://www.wikidata.org/wiki/Q4115189">Item 1 again</a>
+			</dd>
+			<dt>Lexemes</dt>
+			<dd id="lexemes">
+				<a href="https://www.wikidata.org/wiki/Lexeme:L123">Lexeme 1</a>
+				<a href="https://www.wikidata.org/wiki/Lexeme:L1234">Lexeme 2</a>
+			</dd>
 		</dl>
 	</body>
 </html>

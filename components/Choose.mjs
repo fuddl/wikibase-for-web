@@ -119,9 +119,7 @@ const Choose = ({
 				browser.runtime.sendMessage({
 					type: 'highlight_elements',
 					modes: [type],
-					restrictors: {
-						blacklist: [subject],
-					},
+					blacklist: [subject],
 				});
 			} else if (prevIsFocused) {
 				browser.runtime.sendMessage({

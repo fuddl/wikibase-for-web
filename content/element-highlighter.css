@@ -1,10 +1,10 @@
-.element-visual {
+.element-visual__fragment {
 	position: absolute;
 	background: none;
 	border: none;
 }
 
-.element-visual::before {
+.element-visual__fragment::before {
 	content: '';
 	position: absolute;
 	inset: -3px;
@@ -19,13 +19,19 @@
 	animation: 0.25s 0s appear;
 }
 
-.element-visual--active::before {
+.element-visual--active > .element-visual__fragment::before {
 	border-color: #4da679;
 }
 
-.element-visual:hover::before,
-.element-visual--hovered::before {
+.element-visual--hovered > .element-visual__fragment::before {
 	inset: -6px;
+}
+
+.element-visual--needs-resolve {
+	display: none;
+	&.element-visual--resolved {
+		display: contents;
+	}
 }
 
 @keyframes appear {
