@@ -190,6 +190,7 @@ class ElementHighlighter {
 							element: element,
 							visual: this.createVisual(),
 							hovered: false,
+							resolveRequested: false,
 							needsResolve: mode in this.typePatternMap,
 							resolved: false,
 						});
@@ -213,8 +214,10 @@ class ElementHighlighter {
 		entries.forEach(entry => {
 			let highlight = this.highlights.get(entry.target);
 
-			highlight.inView = entry.isIntersecting;
-			this.updateView();
+			if (highlight) {
+				highlight.inView = entry.isIntersecting;
+				this.updateView();
+			}
 		});
 	}
 	checkForMovement(entries) {
@@ -228,6 +231,16 @@ class ElementHighlighter {
 			if (highlight.visual.parentNode !== this.visualsRoot) {
 				this.visualsRoot.appendChild(highlight.visual);
 			}
+
+			if (
+				highlight.inView &&
+				highlight.needsResolve &&
+				highlight.resolveRequested === false &&
+				highlight.resolved === false
+			) {
+				this.resolve(highlight, element);
+			}
+
 			this.updateVisual(highlight, element);
 		});
 	}
@@ -249,9 +262,6 @@ class ElementHighlighter {
 	updateVisual(highlight, element) {
 		if (!highlight.inView) {
 			return;
-		}
-		if (highlight.needsResolve && highlight.resolved === false) {
-			this.resolve(highlight, element);
 		}
 
 		highlight.visual.classList.toggle(
@@ -343,6 +353,9 @@ class ElementHighlighter {
 			type: 'request_resolve',
 			url: highlight.element.href,
 		});
+
+		highlight.resolveRequested = true;
+
 		sending.then(
 			candidates => {
 				// I don't understand why candidates are sometimes unefined
