@@ -8,6 +8,9 @@ import {
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { formDataToData } from '../modules/formDataToData.mjs';
 import { processEdits } from '../modules/processEdits.js';
+import Logger from '../modules/Logger.mjs';
+
+const logger = new Logger();
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
@@ -31,7 +34,13 @@ const submit = e => {
 
 	const jobs = [];
 
+	logger.info('Processing edits');
+
 	processEdits(data, jobs);
+
+	logger.group('Prepered edit jobs');
+	logger.info(JSON.stringify(jobs));
+	logger.groupEnd();
 
 	try {
 		browser.runtime.sendMessage({
@@ -40,7 +49,9 @@ const submit = e => {
 		});
 		close();
 	} catch (error) {
-		console.error(error);
+		logger.group('Failed to send jobs');
+		logger.error(JSON.stringify(error));
+		logger.groupEnd();
 	}
 };
 

@@ -7,6 +7,10 @@ import OptionsHistoryAPI from '../modules/OptionsHistoryAPI.mjs';
 import { getPropertySubjectByConstraint } from '../modules/getPropertySubjectByConstraint.mjs';
 import { processEdits } from '../modules/processEdits.js';
 
+import Logger from '../modules/Logger.mjs';
+
+const logger = new Logger();
+
 import { suggestedEdits } from '../mapping/index.mjs';
 
 import Choose from './Choose.mjs';
@@ -46,7 +50,13 @@ const submit = e => {
     });
   }
 
+  logger.info('Processing edits');
+
   processEdits(data, jobs);
+
+  logger.group('Prepered edit jobs');
+  logger.info(JSON.stringify(jobs));
+  logger.groupEnd();
 
   try {
     browser.runtime.sendMessage({
@@ -74,7 +84,9 @@ const submit = e => {
       });
     }
   } catch (error) {
-    console.error(error);
+    logger.group('Failed to send jobs');
+    logger.error(JSON.stringify(error));
+    logger.groupEnd();
   }
 };
 
