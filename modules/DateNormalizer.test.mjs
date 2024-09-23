@@ -5,43 +5,43 @@ const testCases = [
     // Valid dates
     {
         input: '2024-08',
-        expected: { datetime: '+2024-08-01T00:00:00Z', precision: 10 },
+        expected: { time: '+2024-08-01T00:00:00Z', precision: 10 },
     },
     {
         input: '1999',
-        expected: { datetime: '+1999-01-01T00:00:00Z', precision: 9 },
+        expected: { time: '+1999-01-01T00:00:00Z', precision: 9 },
     },
     {
         input: '-0500-12-31',
-        expected: { datetime: '-0500-12-31T00:00:00Z', precision: 11 },
+        expected: { time: '-0500-12-31T00:00:00Z', precision: 11 },
     },
     {
         input: '+2023-02-28',
-        expected: { datetime: '+2023-02-28T00:00:00Z', precision: 11 },
+        expected: { time: '+2023-02-28T00:00:00Z', precision: 11 },
     },
     {
         input: '0001-01-01',
-        expected: { datetime: '+0001-01-01T00:00:00Z', precision: 11 },
+        expected: { time: '+0001-01-01T00:00:00Z', precision: 11 },
     },
     {
         input: '2021-4-1',
-        expected: { datetime: '+2021-04-01T00:00:00Z', precision: 11 },
+        expected: { time: '+2021-04-01T00:00:00Z', precision: 11 },
     },
     {
         input: '2021-4',
-        expected: { datetime: '+2021-04-01T00:00:00Z', precision: 10 },
+        expected: { time: '+2021-04-01T00:00:00Z', precision: 10 },
     },
     {
         input: '2021-04-1',
-        expected: { datetime: '+2021-04-01T00:00:00Z', precision: 11 },
+        expected: { time: '+2021-04-01T00:00:00Z', precision: 11 },
     },
     {
         input: '2021-4-01',
-        expected: { datetime: '+2021-04-01T00:00:00Z', precision: 11 },
+        expected: { time: '+2021-04-01T00:00:00Z', precision: 11 },
     },
     {
         input: '2021-04-01T23:22:11Z',
-        expected: { datetime: '+2021-04-01T00:00:00Z', precision: 11 },
+        expected: { time: '+2021-04-01T00:00:00Z', precision: 11 },
     },
     // Invalid dates
     { input: '2021-13', expected: false },

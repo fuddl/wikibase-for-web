@@ -58,8 +58,8 @@ class DateNormalizer {
           dayStr = '01';
         }
 
-        const datetime = `${sign}${yearStr}-${monthStr}-${dayStr}T00:00:00Z`;
-        return { datetime, precision };
+        const time = `${sign}${yearStr}-${monthStr}-${dayStr}T00:00:00Z`;
+        return { time, precision };
       }
     }
 
