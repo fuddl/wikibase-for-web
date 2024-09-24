@@ -79,7 +79,9 @@ const Choose = ({
 				setInputValue(message.value);
 			}
 			if (message.type === 'resolve_selected') {
-				if (message?.candidates?.[0]?.resolved?.[0]?.id) {
+				const newlySelectedId =
+					message?.candidates?.[0]?.resolved?.[0]?.id.replace(/.+\:/, '');
+				if (newlySelectedId) {
 					const reference = urlReference(
 						message.source,
 						manager.wikibases[wikibase],
@@ -94,6 +96,12 @@ const Choose = ({
 							message.candidates[0].resolved[0].id.replace(/.+\:/, ''),
 						);
 						setShouldFetch(false);
+					} else if (choosenId === newlySelectedId) {
+						setChoosenId(undefined);
+						setInputValue('');
+						if (onUpdateReference) {
+							onUpdateReference({});
+						}
 					} else if (onAddJobs) {
 						onAddJobs({
 							signature: `user_selected:${message.candidates[0].resolved[0].id}:${JSON.stringify(message.source)}`,
@@ -132,9 +140,11 @@ const Choose = ({
 
 	useEffect(() => {
 		return async () => {
-			await browser.runtime.sendMessage({
-				type: 'unhighlight_elements',
-			});
+			if (isFocused) {
+				await browser.runtime.sendMessage({
+					type: 'unhighlight_elements',
+				});
+			}
 		};
 	}, []);
 
