@@ -137,7 +137,7 @@ export class WikibaseEditQueue {
     const endpoint = wikibases[instance].api.instance.apiEndpoint;
     const token = await this.getEditToken(endpoint);
     const tag = await this.getEditTag(endpoint);
-    this.logger.info(`Attemping perform edit – ${JSON.stringify(params)}`);
+    this.logger.log('Attemping perform edit', params);
 
     let response = await fetch(endpoint, {
       method: 'post',
@@ -151,12 +151,11 @@ export class WikibaseEditQueue {
     let parsedResponse = await response.json();
 
     if (parsedResponse.success === 1) {
-      this.logger.group('Edit successfully perfomed');
-      this.logger.info(`Edit: ${JSON.stringify(params)}`);
-      this.logger.info(
-        `${instance} responded with ${JSON.stringify(parsedResponse)}`,
-      );
-      this.logger.groupEnd();
+      this.logger.log('Edit successfully perfomed', {
+        edit: params,
+        instance: instance,
+        response: parsedResponse,
+      });
 
       if (parsedResponse?.claim?.id) {
         this.lastClaim = parsedResponse.claim.id;
@@ -178,12 +177,11 @@ export class WikibaseEditQueue {
       }
     }
     if (parsedResponse?.error) {
-      this.logger.group('Edit failed');
-      this.logger.error(`Attempted edit: ${JSON.stringify(params)}`);
-      this.logger.error(
-        `${instance} responded with ${JSON.stringify(parsedResponse)}`,
-      );
-      this.logger.groupEnd();
+      this.logger.log('Edit failed', {
+        edit: params,
+        instance: instance,
+        response: parsedResponse,
+      });
     }
 
     return parsedResponse;
@@ -289,9 +287,10 @@ export class WikibaseEditQueue {
 
         if (existingclaim) {
           // skipping this edit
-          this.logger.group('Edit not done. Claim was already present');
-          this.logger.info(`Attempted edit: ${JSON.stringify(claimCreation)}`);
-          this.logger.groupEnd();
+          this.logger.log(
+            'Edit not done. Claim was already present.',
+            claimCreation,
+          );
 
           this.lastClaim = existingclaim;
         } else {

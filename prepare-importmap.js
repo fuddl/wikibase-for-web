@@ -8,14 +8,15 @@ const destDir = path.join(__dirname, 'importmap');
 
 // List of modules to copy
 const modulesToCopy = [
+  '@sutton-signwriting',
   'binary-variations',
   'htm',
   'isbn3',
+  'js-yaml',
   'leaflet',
   'normalize.css',
   'preact',
   'wikibase-sdk',
-  '@sutton-signwriting',
 ];
 
 async function copySpecifiedModules() {

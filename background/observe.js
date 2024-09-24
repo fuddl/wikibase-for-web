@@ -82,6 +82,7 @@ async function resolveCurrentTab(tabId) {
 		currentTab.url.startsWith('about:') ||
 		currentTab.url.startsWith('chrome:') ||
 		currentTab.url.startsWith('moz-extension:') ||
+		currentTab.url.startsWith('view-source:') ||
 		currentTab.frameId > 0
 	) {
 		// early escape internal urls and navigation that occours in frames

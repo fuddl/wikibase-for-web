@@ -50,13 +50,11 @@ const submit = e => {
     });
   }
 
-  logger.info('Processing edits');
+  logger.log('Processing edits');
 
   processEdits(data, jobs);
 
-  logger.group('Prepered edit jobs');
-  logger.info(JSON.stringify(jobs));
-  logger.groupEnd();
+  logger.log('Prepered edit jobs');
 
   try {
     browser.runtime.sendMessage({
@@ -84,9 +82,7 @@ const submit = e => {
       });
     }
   } catch (error) {
-    logger.group('Failed to send jobs');
-    logger.error(JSON.stringify(error));
-    logger.groupEnd();
+    logger.log('Failed to send jobs', error, 'error');
   }
 };
 
