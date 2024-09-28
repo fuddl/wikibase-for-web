@@ -1,5 +1,6 @@
 import wikibases from '../wikibases.mjs';
 import Logger from './Logger.mjs';
+import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracker.mjs';
 
 export class WikibaseEditQueue {
   constructor({ resolvedCache }) {
@@ -291,6 +292,9 @@ export class WikibaseEditQueue {
             'Edit not done. Claim was already present.',
             claimCreation,
           );
+
+          const tracker = new WikibaseEntityUsageTracker(job.instance);
+          tracker.add(job.claim.mainsnak.property);
 
           this.lastClaim = existingclaim;
         } else {

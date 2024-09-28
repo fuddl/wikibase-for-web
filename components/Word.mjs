@@ -12,7 +12,7 @@ import Lament from './Lament.mjs';
 const html = htm.bind(h);
 
 class Word extends Component {
-  render({ id, manager }) {
+  render({ id, manager, showAppendix = 'yes' }) {
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const elementRef = useRef(null);
 
@@ -41,30 +41,35 @@ class Word extends Component {
       designator?.lemmas || designator?.representations || designator?.glosses;
 
     let appendix = [];
-    if (designator?.language) {
-      appendix.push(designator.language);
+
+    if (['yes', 'only'].includes(showAppendix)) {
+      if (designator?.language) {
+        appendix.push(designator.language);
+      }
+      if (designator?.lexicalCategory) {
+        appendix.push(designator.lexicalCategory);
+      }
+      if (designator?.grammaticalFeatures?.length > 0) {
+        appendix = [...appendix, ...designator.grammaticalFeatures];
+      }
     }
-    if (designator?.lexicalCategory) {
-      appendix.push(designator.lexicalCategory);
-    }
-    if (designator?.grammaticalFeatures?.length > 0) {
-      appendix = [...appendix, ...designator.grammaticalFeatures];
+
+    const append = appendix.map(
+      (item, index) => html`
+        <${Thin} id=${item} manager=${manager} />${index < appendix.length - 1
+          ? ', '
+          : ''}
+      `,
+    );
+
+    if (showAppendix == 'only') {
+      return append;
     }
 
     return html`<a class="word" href="${href}" ref=${elementRef}
         >${lemmas ? html`<${Lament} lemmas=${lemmas} />` : null}</a
       >
-      ${appendix.length > 0
-        ? htm`${' '}
-  (${appendix.map(
-    (item, index) => html`
-      <${Thin} id=${item} manager=${manager} />${index < appendix.length - 1
-        ? ', '
-        : ''}
-    `,
-  )})
-`
-        : ''}`;
+      ${append.length > 0 ? htm`${' '}(${append})` : ''}`;
   }
 }
 

@@ -28,7 +28,7 @@ class ElementHighlighter {
 					},
 				},
 				bySelectorSchemaOrg: {
-					selector: '[content]:is([itemprop="startDate"],[itemprop="endDate"])',
+					selector: '[content]:is([itemprop$="Date"], [itemprop^="date"])',
 					onVisualClick: async highlight => {
 						const datetime = highlight.element.getAttribute('content');
 						await browser.runtime.sendMessage({

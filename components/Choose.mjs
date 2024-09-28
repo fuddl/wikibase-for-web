@@ -9,6 +9,11 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { urlReference } from '../mapping/urlReference.mjs';
 
+import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracker.mjs';
+
+import Thing from './Thing.mjs';
+import Word from './Word.mjs';
+
 import { WikibaseItemClaim } from '../types/Claim.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
@@ -95,6 +100,7 @@ const Choose = ({
 						setChoosenId(
 							message.candidates[0].resolved[0].id.replace(/.+\:/, ''),
 						);
+						setSuggestions([]);
 						setShouldFetch(false);
 					} else if (choosenId === newlySelectedId) {
 						setChoosenId(undefined);
@@ -191,11 +197,17 @@ const Choose = ({
 			}
 		};
 
-		if (inputValue && shouldFetch) {
-			const debounce = setTimeout(() => {
-				fetchSuggestions();
-			}, 100);
-			return () => clearTimeout(debounce);
+		if (shouldFetch) {
+			if (inputValue !== '') {
+				const debounce = setTimeout(() => {
+					fetchSuggestions();
+				}, 100);
+				return () => clearTimeout(debounce);
+			} else {
+				const tracker = new WikibaseEntityUsageTracker(wikibase);
+				const latest = tracker.getLatest(type);
+				setSuggestions(latest);
+			}
 		}
 	}, [inputValue, type]);
 
@@ -233,6 +245,22 @@ const Choose = ({
 	};
 
 	const autoDescApi = manager.wikibases[wikibase]?.autodesc;
+
+	const makeLabel = ({ label, id }) => {
+		if (label) {
+			return label;
+		}
+		if (id.match(/^(Q|P)\d+/)) {
+			return html`<${Thing} id=${`${wikibase}:${id}`} manager=${manager} />`;
+		}
+		if (id.match(/^L\d+/)) {
+			return html`<${Word}
+				id=${`${wikibase}:${id}`}
+				manager=${manager}
+				showAppendix="no" />`;
+		}
+		return id;
+	};
 
 	return html`
 		<div class="choose ${isFocused && 'choose--focus'}" ref=${elementRef}>
@@ -280,7 +308,7 @@ const Choose = ({
 								setSelectedIndex(index);
 							}}>
 							<div class="choose__picker__pick-title">
-								${suggestion.label ?? suggestion.id}
+								${makeLabel(suggestion)}
 							</div>
 							<div class="choose__picker__pick-description">
 								${suggestion?.description

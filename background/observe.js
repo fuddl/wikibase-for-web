@@ -1,6 +1,7 @@
 import { resolvers, resolvedCache } from '../resolvers/index.mjs';
 import { getTabMetadata } from '../modules/getTabMetadata.mjs';
 import { WikibaseEditQueue } from '../modules/WikibaseEditQueue.mjs';
+import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracker.mjs';
 import wikibases from '../wikibases.mjs';
 
 const wikibaseEditQueue = new WikibaseEditQueue({
@@ -235,33 +236,60 @@ async function checkSidebarToUnhighlight(active) {
 	}
 }
 
-browser.webRequest.onCompleted.addListener(
+const requestFilter = {
+	urls: Object.values(wikibases).map(
+		entry => `${entry.api.instance.apiEndpoint}*`,
+	),
+};
+
+browser.webRequest.onCompleted.addListener(function (details) {
+	if (details.method === 'POST') {
+		const wbk = Object.values(wikibases).find(
+			entry => entry.api.instance.apiEndpoint == details.url,
+		);
+
+		const editedEnity = details.originUrl
+			.replace(wbk.instance, '')
+			.match(/([QPLM]\d+)/);
+
+		if (editedEnity) {
+			browser.runtime
+				.sendMessage({
+					type: 'update_entity',
+					entity: `${wbk.id}:${editedEnity[0]}`,
+				})
+				.then(response => {})
+				.catch(error => console.error('Message failed:', error));
+		}
+	}
+}, requestFilter);
+
+browser.webRequest.onBeforeRequest.addListener(
 	function (details) {
 		if (details.method === 'POST') {
 			const wbk = Object.values(wikibases).find(
 				entry => entry.api.instance.apiEndpoint == details.url,
 			);
-
-			const editedEnity = details.originUrl
-				.replace(wbk.instance, '')
-				.match(/([QPLM]\d+)/);
-
-			if (editedEnity) {
-				browser.runtime
-					.sendMessage({
-						type: 'update_entity',
-						entity: `${wbk.id}:${editedEnity[0]}`,
-					})
-					.then(response => {})
-					.catch(error => console.error('Message failed:', error));
+			const tracker = new WikibaseEntityUsageTracker(wbk.id);
+			const action = details.requestBody?.formData?.action;
+			if (!action) {
+				return;
+			}
+			if (action.includes('wbsetclaim')) {
+				if (details.requestBody?.formData?.claim?.[0]) {
+					const claim = JSON.parse(details.requestBody.formData.claim[0]);
+					if (claim?.mainsnak?.property) {
+						tracker.add(claim.mainsnak.property);
+					}
+					if (claim?.mainsnak?.datavalue?.value?.id) {
+						tracker.add(claim.mainsnak.datavalue.value.id);
+					}
+				}
 			}
 		}
 	},
-	{
-		urls: Object.values(wikibases).map(
-			entry => `${entry.api.instance.apiEndpoint}*`,
-		),
-	},
+	requestFilter,
+	['requestBody'],
 );
 
 browser.webNavigation.onBeforeNavigate.addListener(details => {
