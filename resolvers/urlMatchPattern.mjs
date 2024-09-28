@@ -43,7 +43,10 @@ export const urlMatchPattern = {
 			switch (prop.property) {
 				case wikibase?.props?.isbn10:
 				case wikibase?.props?.isbn13:
-					id = ISBN.hyphenate(id);
+					const hyphenated = ISBN.hyphenate(id);
+					if (hyphenated) {
+						id = hyphenated;
+					}
 					break;
 			}
 
