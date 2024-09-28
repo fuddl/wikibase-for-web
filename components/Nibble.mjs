@@ -113,14 +113,17 @@ class Nibble extends Component {
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
             case 'monolingualtext':
               return html`<${Designate}
-                textValue=${datavalue?.value?.text}
-                textName="${name}.datavalue.value.text"
-                languageValue=${datavalue?.value?.language}
-                languageName="${name}.datavalue.value.language"
+                value=${datavalue?.value}
+                name="${name}.datavalue"
                 wikibase=${manager.wikibase.id}
                 subject=${subject}
                 required=${true}
                 onValueChange=${onValueChange}
+                onAddJobs=${value => {
+                  if (onAddJobs) {
+                    onAddJobs(value);
+                  }
+                }}
                 onUpdateReference=${onUpdateReference}
                 manager=${manager} />`;
             case 'quantity':

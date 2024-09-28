@@ -121,6 +121,7 @@ class ElementHighlighter {
 							value: highlight.element.innerText,
 							lang: highlight.element.closest('[lang]')?.lang ?? null,
 							source: createUrlReference(highlight.element),
+							selectEvent: 'click',
 						});
 					},
 				},

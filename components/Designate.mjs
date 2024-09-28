@@ -1,7 +1,13 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
-import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
+import {
+  useState,
+  useEffect,
+  useRef,
+} from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
+
+import { MonolingualTextClaim } from '../types/Claim.mjs';
 
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
@@ -14,36 +20,29 @@ const html = htm.bind(h);
 
 class Designate extends Component {
   render({
-    languageName,
-    languageValue: initialLanguageValue,
     manager,
+    name,
+    onAddJobs,
     onUpdateReference,
     onValueChange,
     required,
     shouldFocus,
     subject,
-    textName,
-    textValue: initialTextValue,
+    value,
     wikibase,
   }) {
-    const [textValue, setTextValue] = useState(initialTextValue ?? '');
-    const [languageValue, setLanguageValue] = useState(
-      initialLanguageValue ?? '',
-    );
     const [prevIsFocused, setPrevIsFocused] = useState(false);
+    const textRef = useRef(null);
 
-    useEffect(() => {
-      if (onValueChange) {
-        onValueChange({
-          name: textName,
-          value: textValue,
-        });
-        onValueChange({
-          name: languageName,
-          value: languageValue,
-        });
-      }
-    }, [textValue, languageValue]);
+    const changeValues = (value, lang) => {
+      onValueChange({
+        name: `${name}.value`,
+        value: {
+          text: value,
+          language: lang,
+        },
+      });
+    };
 
     useEffect(() => {
       requireStylesheet(browser.runtime.getURL('/components/designate.css'));
@@ -53,16 +52,37 @@ class Designate extends Component {
       shouldFocus,
       message => {
         if (message.type === 'text_selected') {
-          setTextValue(message.value);
-          if (message.lang) {
-            setLanguageValue(message.lang.toLowerCase().replace('_', '-'));
-          }
-          if (message.source && onUpdateReference) {
-            const reference = urlReference(
-              message.source,
-              manager.wikibases[wikibase],
+          const references = message.source
+            ? urlReference(message.source, manager.wikibases[wikibase])
+            : [];
+
+          const multipleValuesMode =
+            message?.selectEvent === 'click' && typeof onAddJobs === 'function';
+          const currentText = textRef.current.value;
+          if (
+            currentText === '' ||
+            (message.value !== currentText && !multipleValuesMode)
+          ) {
+            changeValues(
+              message.value,
+              message?.lang
+                ? message.lang.toLowerCase().replace('_', '-')
+                : null,
             );
-            onUpdateReference(reference);
+            if (references && onUpdateReference) {
+              onUpdateReference(references);
+            }
+          } else if (message.value === currentText) {
+            changeValues('', '');
+          } else if (multipleValuesMode) {
+            onAddJobs({
+              signature: `user_selected:${message.value}:${message.lang}:${JSON.stringify(message.source)}`,
+              claim: new MonolingualTextClaim({
+                text: message.value,
+                language: message.lang,
+                references: references,
+              }),
+            });
           }
         }
       },
@@ -88,28 +108,32 @@ class Designate extends Component {
     return html`<div
       class="designate ${isFocused ? 'designate--focus' : ''}"
       ref=${elementRef}>
-      <div class="designate__rendered">${textValue ?? ''}</div>
+      <div class="designate__rendered">${value.text ?? ''}</div>
       <textarea
-        value=${textValue ?? ''}
+        value=${value.text ?? ''}
         class="designate__text"
         required=${required}
-        name="${textName}"
+        name="${name}.value.text"
         onFocus=${handleFocus}
         onBlur=${handleBlur}
-        lang=${languageValue}
+        lang=${value.language}
         rows="1"
+        ref=${textRef}
         onInput=${e => {
-          setTextValue(e.currentTarget.value);
+          onValueChange({
+            name: e.currentTarget.name,
+            value: e.currentTarget.value,
+          });
         }}></textarea>
       <div class="designate__lang">
         <${Decern}
-          value=${languageValue ?? ''}
+          value=${value.language ?? ''}
           context="monolingualtext"
-          name="${languageName}"
+          name="${name}.value.language"
           onFocus=${handleFocus}
           onBlur=${handleBlur}
           onValueChange=${newValue => {
-            setLanguageValue(newValue.value);
+            onValueChange(newValue);
           }}
           manager=${manager} />
       </div>
