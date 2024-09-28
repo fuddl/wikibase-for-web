@@ -286,7 +286,9 @@ export function reconstructClaim(serializedClaim) {
   // Create a new instance of the corresponding class
   // You might need to adjust the parameters based on your class constructors
   const instance = new ClaimClass({
-    property: serializedClaim.mainsnak.property,
+    property:
+      serializedClaim.mainsnak.property ||
+      serializedClaim.mainsnak.propertyOptions,
     value: serializedClaim.mainsnak.datavalue.value, // Adjust if your structure requires
     references: serializedClaim.references,
     // Add more fields if your constructors require them
