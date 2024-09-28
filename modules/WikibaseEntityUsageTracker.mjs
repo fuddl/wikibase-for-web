@@ -45,6 +45,7 @@ export class WikibaseEntityUsageTracker {
 			.map(entityId => ({
 				id: entityId,
 				lastUsed: this.entities[entityId].lastUsed,
+				description: false,
 			}))
 			.sort((a, b) => new Date(b.lastUsed) - new Date(a.lastUsed));
 

@@ -13,6 +13,7 @@ import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracke
 
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
+import Describe from './Describe.mjs';
 
 import { WikibaseItemClaim } from '../types/Claim.mjs';
 
@@ -262,6 +263,21 @@ const Choose = ({
 		return id;
 	};
 
+	const makeDescription = ({ description, gloss, id }) => {
+		if (gloss) {
+			return gloss;
+		}
+		if (description) {
+			return description;
+		}
+		if (description === undefined) {
+			return html`<${AutoDesc} id=${id} api=${autoDescApi} />`;
+		}
+		console.debug(id);
+		console.debug(manager);
+		return html`<${Describe} id=${`${wikibase}:${id}`} manager=${manager} />`;
+	};
+
 	return html`
 		<div class="choose ${isFocused && 'choose--focus'}" ref=${elementRef}>
 			<div class="choose__type-wrap">
@@ -311,14 +327,7 @@ const Choose = ({
 								${makeLabel(suggestion)}
 							</div>
 							<div class="choose__picker__pick-description">
-								${suggestion?.description
-									? suggestion.description
-									: autoDescApi
-										? html`<${AutoDesc}
-												id=${suggestion.id}
-												api=${autoDescApi} />`
-										: null}
-								${suggestion?.gloss && html`<div>${suggestion.gloss}</div>`}
+								${makeDescription(suggestion)}
 							</div>
 						</a>
 					`,
