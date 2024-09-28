@@ -1,4 +1,5 @@
 import { ExternalIdClaim } from '../types/Claim.mjs';
+import ISBN from '../importmap/isbn3-es6/isbn.js';
 
 export const urlMatchPattern = {
 	id: 'urlMatchPattern',
@@ -39,7 +40,12 @@ export const urlMatchPattern = {
 					break;
 			}
 
-			// @todo handle isbn numbers?
+			switch (prop.property) {
+				case wikibase?.props?.isbn10:
+				case wikibase?.props?.isbn13:
+					id = ISBN.hyphenate(id);
+					break;
+			}
 
 			const proposeEdits = [];
 
