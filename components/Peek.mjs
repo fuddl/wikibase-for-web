@@ -15,6 +15,7 @@ const logger = new Logger();
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 import Engage from './Engage.mjs';
+import List from './List.mjs';
 
 import { claimTypeMap } from '../types/Claim.mjs';
 
@@ -51,7 +52,7 @@ const submit = e => {
 	}
 };
 
-function Peek({ title, edits: initialEdits, subjectId, manager }) {
+function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 	const [open, setOpen] = useState(false);
 	const [edits, setEdits] = useState(initialEdits);
 	const formRef = useRef(null);
@@ -104,7 +105,9 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 	};
 
 	useEffect(async () => {
-		await highlightJobs();
+		if (edits) {
+			await highlightJobs();
+		}
 	}, [edits]);
 
 	return html`<dialog class="peek" open=${open}>
@@ -112,7 +115,8 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 			<h1 class="peek__title">${title}</h1>
 			<button class="peek__close" onClick=${e => close()}>${'❌︎'}</button>
 		</header>
-		<form ref=${formRef}>
+		${edits &&
+		html`<form ref=${formRef}>
 			<input type="hidden" name="instance" value=${manager.wikibase.id} />
 			<input type="hidden" name="subjectId" value=${localSubjectId} />
 			${Object.entries(edits).map(
@@ -161,7 +165,8 @@ function Peek({ title, edits: initialEdits, subjectId, manager }) {
 						submit(e);
 					}} />
 			</footer>
-		</form>
+		</form>`}
+		${view && html`<${List} type=${view} id=${subjectId} manager=${manager} />`}
 	</dialog>`;
 }
 

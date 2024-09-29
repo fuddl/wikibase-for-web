@@ -112,14 +112,14 @@ class WikiBaseEntityManager {
 		}
 	}
 
-	async add(id, useCache = true) {
+	async add(id, useCache = true, options) {
 		if (this.entities?.[id] && useCache) {
 			return this.entities[id];
 		}
 		const [wikibase, entity] = id.split(':');
 		const url = this.wikibases[wikibase].api.getEntities({
 			ids: [entity],
-			language: this.languages,
+			language: options?.languages ?? this.languages,
 		});
 
 		const result = await fetch(url).then(res => res.json());

@@ -1,5 +1,6 @@
 import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
+import { expectedIds } from './expectedIds.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
@@ -13,6 +14,7 @@ import { urlProperties } from './urlProperties.mjs';
 const queries = {
 	equivalentClasses,
 	equivalentProperties,
+	expectedIds,
 	instancesOrSubclasses,
 	itemByExternalId,
 	itemByUrl,
@@ -86,7 +88,7 @@ class WikiBaseQueryManager {
 		//console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
 
 		const processedResult = queryObject?.postProcess
-			? queryObject.postProcess(queryResult, params)
+			? queryObject.postProcess(queryResult, params, instance)
 			: queryResult;
 		this.cache[queryCacheTag] = processedResult;
 

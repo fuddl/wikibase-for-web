@@ -201,6 +201,16 @@ class Entity extends Component {
         },
       });
     };
+    const searchIds = async () => {
+      await browser.runtime.sendMessage({
+        type: 'request_workbench',
+        workbench: {
+          title: browser.i18n.getMessage('search_ids'),
+          subjectId: id,
+          view: 'id_search',
+        },
+      });
+    };
 
     return html`
       <section ref=${sectionRef}>
@@ -221,6 +231,7 @@ class Entity extends Component {
           ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
         ${experimental && html`<${Edit} icon=${'+'} action=${addClaims} />`}
+        ${experimental && html`<${Edit} icon=${'🔎'} action=${searchIds} />`}
         ${mainClaims.map(
           claim =>
             html`<${Remark}

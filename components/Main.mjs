@@ -73,6 +73,7 @@ class Main extends Component {
             ? html`<${Peek}
                 edits=${workbench.edits}
                 title=${workbench.title}
+                view=${workbench.view}
                 subjectId=${workbench.subjectId}
                 manager=${manager} />`
             : null

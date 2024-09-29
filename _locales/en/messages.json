@@ -3,6 +3,14 @@
     "message": "Add claims",
     "description": "Title of a form where claims can be added."
   },
+  "search_ids": {
+    "message": "Search for ids",
+    "description": "Title of a list where external ids can be searched."
+  },
+  "searching_ids": {
+    "message": "Searching for expected ids…",
+    "description": "Message shown when querying ids that are expected from a specific entity."
+  },
   "no_language_selected": {
     "message": "No language selected",
     "description": "The option label of a select where currently no language is selected."
@@ -55,7 +63,7 @@
   },
   "aquiring_metadata": {
     "message": "Aquiring metadata…",
-    "description": "Message shown when when aquiring metadata."
+    "description": "Message shown when aquiring metadata."
   },
   "set_alias": {
     "message": "Set alias",
