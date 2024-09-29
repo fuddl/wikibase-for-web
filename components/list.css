@@ -13,9 +13,7 @@
 }
 
 .list__item__form {
-	display: grid;
-	grid-template-columns: 1fr auto;
-	grid-template-areas: 'text lang';
+	display: flex;
 	background-color: var(--background-color-base, #fff);
 	color: var(--color-base, #202122);
 	border-color: var(--border-color-base, #a2a9b1);
@@ -47,6 +45,7 @@
 	vertical-align: bottom;
 	min-height: 1.5rem;
 	padding: 0.75rem;
+	flex-grow: 1;
 }
 
 .list__item__search {

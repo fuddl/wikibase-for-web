@@ -37,6 +37,7 @@ function getFirstMatchingName(names, langCode = 'mul') {
 function List({ type, id, manager }) {
 	const [properties, setProperties] = useState(false);
 	const [entity, setEntity] = useState({});
+	const [searchEngine, setSearchEngine] = useState(false);
 
 	useEffect(async () => {
 		requireStylesheet(browser.runtime.getURL('/components/list.css'));
@@ -52,6 +53,13 @@ function List({ type, id, manager }) {
 		const currentEntity = await manager.add(id, false);
 
 		setEntity(currentEntity);
+
+		const engines = await browser.search.get();
+		const defaultSearchEngine = engines.find(
+			engine => engine.isDefault === true,
+		);
+
+		setSearchEngine(defaultSearchEngine);
 
 		setProperties(result);
 	}, []);
@@ -110,42 +118,68 @@ function List({ type, id, manager }) {
 			: ''}
 		${properties.length > 0
 			? html`<div class="list">
-					${properties.map(
-						property =>
-							html`<details
-								class="list__item"
-								open=${!statisfaction[property.prop]}>
-								<summary class="list__item__title">
-									<${Describe}
-										id=${`${property.prop}`}
-										source="labels"
-										manager=${manager} />
-									${' '} ${statisfaction[property.prop] ? '✅' : '❌'}
-								</summary>
-								<p>
-									<${Describe} id=${`${property.prop}`} manager=${manager} />
-								</p>
-								<form class="list__item__form">
-									<input
-										class="list__item__type"
-										type="search"
-										list=${`${id}-names`}
-										value=${getFirstMatchingName(names, property.searchLang)} />
-									<button
-										class="list__item__search"
-										onClick=${e => {
-											const value = e.target.previousSibling.value;
-											const searchUrl = property.search.replace(
-												'$1',
-												encodeURIComponent(value),
-											);
-											window.open(searchUrl, '_blank').focus();
-										}}>
-										🔎
-									</button>
-								</form>
-							</details>`,
-					)}
+					${properties
+						.filter(property => property.search || property.url)
+						.map(
+							property =>
+								html`<details
+									class="list__item"
+									open=${!statisfaction[property.prop]}>
+									<summary class="list__item__title">
+										<${Describe}
+											id=${`${property.prop}`}
+											source="labels"
+											manager=${manager} />
+										${' '} ${statisfaction[property.prop] ? '✅' : '❌'}
+									</summary>
+									<p>
+										<${Describe} id=${`${property.prop}`} manager=${manager} />
+									</p>
+									<form class="list__item__form">
+										<input
+											class="list__item__type"
+											type="search"
+											list=${`${id}-names`}
+											value=${getFirstMatchingName(
+												names,
+												property.searchLang,
+											)} />
+										${property.search &&
+										html`<button
+											class="list__item__search"
+											onClick=${e => {
+												e.preventDefault();
+												const value = e.target.previousSibling.value;
+												const searchUrl = property.search.replace(
+													'$1',
+													encodeURIComponent(value),
+												);
+												window
+													.open(searchUrl, `${property.prop}_search`)
+													.focus();
+											}}>
+											🔎
+										</button>`}
+										${searchEngine &&
+										property.url &&
+										html`<button
+											class="list__item__search"
+											onClick=${e => {
+												e.preventDefault();
+												const value =
+													e.target.parentNode.querySelector(
+														'[type="search"]',
+													).value;
+												browser.search.query({
+													text: `"${value}" site:${property.url}`,
+													disposition: 'NEW_TAB',
+												});
+											}}>
+											${searchEngine.name}
+										</button>`}
+									</form>
+								</details>`,
+						)}
 				</div> `
 			: ''}
 		<datalist id=${`${id}-names`}>

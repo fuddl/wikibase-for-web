@@ -14,7 +14,7 @@ export const expectedIds = {
 	requiredItems: ['singleValueConstraint', 'itemRequiresStatementConstraint'],
 	query: ({ instance, params }) => {
 		return `
-			SELECT DISTINCT ?class ?prop ?value ?search ?searchLang ?contextUrl ?url ?single ?constraintProp ?constraintItem WHERE {
+			SELECT DISTINCT ?class ?prop ?value ?search ?searchLang ?contextUrl ?url WHERE {
 				SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 
 
@@ -31,30 +31,14 @@ export const expectedIds = {
 				?class p:${instance.props.propertiesForThisType} ?props.
 				?props ps:${instance.props.propertiesForThisType} ?prop.
 				?prop wikibase:propertyType wikibase:ExternalId.
-				BIND(EXISTS{?prop wdt:${instance.props.propertyConstraint} wd:${instance.items.singleValueConstraint}} AS ?single)
-				OPTIONAL { ?props pq:${instance.props.autosuggestValue} ?value. }
-				{
-					?props pq:${instance.props.searchFormatterURL} ?search.
-					OPTIONAL {
-						?props pq:${instance.props.sourceWebsiteForTheProperty} ?contextUrl.
-					}
-				} UNION {
+
+				OPTIONAL {
 				  ?prop p:${instance.props.searchFormatterURL} ?searchprop.
 				  ?searchprop ps:${instance.props.searchFormatterURL} ?search.
 				  OPTIONAL {
 				 	 	?searchprop pq:${instance.props.languageOfWorkOrName} ?lang.
 				    ?lang wdt:${instance.props.wikimediaLanguageCode} ?searchLang. 
 				  }
-				}
-				OPTIONAL {
-					?prop p:${instance.props.propertyConstraint} ?cst.
-					?cst ps:${instance.props.propertyConstraint} wd:${instance.items.itemRequiresStatementConstraint}.
-					OPTIONAL {
-						?cst pq:${instance.props.property} ?constraintProp. 
-					}
-					OPTIONAL {
-						?cst pq:${instance.props.itemOfPropertyConstraint} ?constraintItem.
-					}
 				}
 				OPTIONAL { ?prop wdt:${instance.props.url} ?url. }
 			}
@@ -64,13 +48,9 @@ export const expectedIds = {
 	postProcess: ({ results }, params, instance) => {
 		const processed = [];
 
-		const seen = [];
-
 		results.bindings.forEach(bind => {
-			if (seen.includes(bind.prop.value)) {
-				return;
-			}
-			seen.push(bind.prop.value);
+			console.debug(bind.url);
+			console.debug(bind.contextUrl);
 			processed.push({
 				class: bind.class.value.replace(
 					/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
@@ -80,11 +60,13 @@ export const expectedIds = {
 					/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
 					`${instance.id}:$1`,
 				),
-				search: bind.search.value,
+				search: bind?.search?.value ?? '',
 				searchLang: bind?.searchLang?.value ?? 'mul',
+				contextUrl: bind?.contextUrl?.value ?? '',
+				url: bind?.url?.value ?? '',
 			});
 		});
-		console.debug(seen);
+		console.debug(processed);
 		return processed;
 	},
 };
