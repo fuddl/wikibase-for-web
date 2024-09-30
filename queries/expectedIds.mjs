@@ -49,8 +49,6 @@ export const expectedIds = {
 		const processed = [];
 
 		results.bindings.forEach(bind => {
-			console.debug(bind.url);
-			console.debug(bind.contextUrl);
 			processed.push({
 				class: bind.class.value.replace(
 					/^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
@@ -66,7 +64,6 @@ export const expectedIds = {
 				url: bind?.url?.value ?? '',
 			});
 		});
-		console.debug(processed);
 		return processed;
 	},
 };

@@ -155,7 +155,7 @@ class WikiBaseEntityManager {
 				// If the item is an object, iterate over its properties
 				for (const key in item) {
 					if (Object.hasOwnProperty.call(item, key)) {
-						if (key === 'id') {
+						if (key === 'id' && typeof item.id === 'string') {
 							item.id = `${wikibase}:${item[key]}`;
 						} else if (key === 'property') {
 							item.property = `${wikibase}:${item[key]}`;
