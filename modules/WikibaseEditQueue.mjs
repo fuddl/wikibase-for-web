@@ -296,6 +296,10 @@ export class WikibaseEditQueue {
           const tracker = new WikibaseEntityUsageTracker(job.instance);
           tracker.add(job.claim.mainsnak.property);
 
+          this.updateView(
+            `${job.instance}:${existingclaim.replace(/\$.+/, '')}`,
+          );
+
           this.lastClaim = existingclaim;
         } else {
           await this.performFetchRequest(job.instance, claimCreation);
@@ -361,8 +365,8 @@ export class WikibaseEditQueue {
         });
         break;
       case 'resolver:add':
-        if (job.url in this.resolvedCache) {
-          this.resolvedCache[job.url] = [
+        if (this.resolvedCache.request(job.url)) {
+          this.resolvedCache.add(null, job.url, [
             {
               directMatch: true,
               instance: job.instance,
@@ -374,8 +378,9 @@ export class WikibaseEditQueue {
                 },
               ],
             },
-          ];
+          ]);
         }
+
         break;
     }
   }

@@ -10,6 +10,8 @@ const wikibaseEditQueue = new WikibaseEditQueue({
 
 const contentTabsQuery = {
 	url: ['http://*/*', 'https://*/*'],
+	currentWindow: true,
+	status: 'complete',
 };
 
 wikibaseEditQueue.setProgressUpdateCallback(async queue => {
@@ -75,8 +77,6 @@ async function resolveAndUpdateSidebar(url) {
 	}
 }
 
-const tabs = {};
-
 async function resolveCurrentTab(tabId) {
 	const currentTab = await getCurrentTab();
 	if (
@@ -89,13 +89,13 @@ async function resolveCurrentTab(tabId) {
 		// early escape internal urls and navigation that occours in frames
 		return;
 	}
+	let results = [];
 	if (tabId === currentTab.id) {
-		const results = await resolveAndUpdateSidebar(currentTab.url, tabId);
-		tabs[tabId] = results;
+		results = await resolveAndUpdateSidebar(currentTab.url, tabId);
 	} else {
-		const results = await resolveUrl(currentTab.url, tabId);
-		tabs[tabId] = results;
+		results = await resolveUrl(currentTab.url, tabId);
 	}
+	resolvedCache.add(tabId, currentTab.url, results);
 }
 
 browser.webNavigation.onCommitted.addListener(async function (details) {
@@ -123,8 +123,8 @@ let shouldHighlightLinks = false;
 browser.tabs.onActivated.addListener(async activeInfo => {
 	const { tabId } = activeInfo;
 
-	if (tabs?.[tabId]) {
-		updateSidebar(tabs[tabId]);
+	if (resolvedCache.request(tabId)) {
+		updateSidebar(resolvedCache.request(tabId));
 	} else {
 		await resolveCurrentTab(tabId);
 	}
@@ -138,7 +138,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 				currentTab.url,
 				currentTab.id,
 			);
-			tabs[currentTab.id] = results;
+			resolvedCache.add(currentTab.id, null, results);
 			return Promise.resolve('done');
 		} else {
 			const results = await resolveUrl(message.url);
@@ -293,9 +293,7 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 browser.webNavigation.onBeforeNavigate.addListener(details => {
-	if (tabs?.[details.tabId]) {
-		delete tabs[details.tabId];
-	}
+	resolvedCache.remove(details.tabId);
 });
 
 browser.browserAction.onClicked.addListener(async () => {
