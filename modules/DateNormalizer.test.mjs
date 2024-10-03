@@ -12,6 +12,10 @@ const testCases = [
         expected: { time: '+1999-01-01T00:00:00Z', precision: 9 },
     },
     {
+        input: ' 2021',
+        expected: { time: '+2021-01-01T00:00:00Z', precision: 9 },
+    },
+    {
         input: '-0500-12-31',
         expected: { time: '-0500-12-31T00:00:00Z', precision: 11 },
     },

@@ -7,7 +7,7 @@ class DateNormalizer {
     ];
 
     for (const { regex, precision } of patterns) {
-      const match = dateStr.match(regex);
+      const match = dateStr.trim().match(regex);
       if (match) {
         let yearStr, monthStr, dayStr;
         let sign = '+';

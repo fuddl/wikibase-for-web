@@ -38,19 +38,19 @@ class ElementHighlighter {
 						});
 					},
 				},
-				// byInnerText: {
-				// 	selector: this.findDateNodes.bind(this),
-				// 	onVisualClick: async highlight => {
-				// 		const datetime = highlight.element.textContent.match(
-				// 			this.dateRegex,
-				// 		)[0];
-				// 		await browser.runtime.sendMessage({
-				// 			type: 'time_selected',
-				// 			datetime: datetime,
-				// 			source: createUrlReference(highlight.element),
-				// 		});
-				// 	},
-				// },
+				byInnerText: {
+					selector: this.findDateNodes.bind(this),
+					onVisualClick: async highlight => {
+						const datetime = highlight.element.textContent.match(
+							this.dateRegex,
+						)[0];
+						await browser.runtime.sendMessage({
+							type: 'time_selected',
+							datetime: datetime,
+							source: createUrlReference(highlight.element),
+						});
+					},
+				},
 			},
 			quantity: {
 				bySelector: {
@@ -209,6 +209,21 @@ class ElementHighlighter {
 
 				elements.forEach(element => {
 					const observable = this.getObservable(element);
+
+					// Check if the current element is contained within any of the already highlighted elements
+					let isContained = false;
+					for (const highlightedElement of this.highlights.values()) {
+						if (highlightedElement.element.contains(element)) {
+							isContained = true;
+							break;
+						}
+					}
+
+					// Skip if element is contained within an already highlighted element
+					if (isContained) {
+						return;
+					}
+
 					if (!this.highlights.has(observable)) {
 						this.highlights.set(observable, {
 							inView: false,

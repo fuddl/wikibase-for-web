@@ -273,8 +273,6 @@ const Choose = ({
 		if (description === undefined) {
 			return html`<${AutoDesc} id=${id} api=${autoDescApi} />`;
 		}
-		console.debug(id);
-		console.debug(manager);
 		return html`<${Describe} id=${`${wikibase}:${id}`} manager=${manager} />`;
 	};
 
