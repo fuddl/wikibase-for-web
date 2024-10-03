@@ -17,7 +17,6 @@ class ResolverCache {
 	constructor() {
 		this.cacheByTabId = new Map(); // Store cache items by tab ID
 		this.cacheByUrl = new Map(); // Store cache items by URL
-		this.tabsByUrl = new Map(); // Keep track of tabs with the same URL
 		this.logger = new Logger('wikibase-for-web__cache');
 	}
 
@@ -28,30 +27,22 @@ class ResolverCache {
 	 * @param {string} url - The URL of the tab.
 	 * @param {*} data - The result of the resolution process.
 	 */
-	add(tabId, url, data) {
+	add(tabId = null, url = null, data) {
 		// Add or update the cache for the tab ID
 		if (tabId) {
 			this.cacheByTabId.set(tabId, data);
-			this.cacheByUrl.set(url, data);
 			this.logger.log(`Added tab ${tabId} to cache`, data);
 		}
-
 		if (url) {
-			// Maintain a list of tabs associated with the URL
-			if (!this.tabsByUrl.has(url)) {
-				this.tabsByUrl.set(url, new Set());
-			}
-			this.tabsByUrl.get(url).add(tabId);
+			this.cacheByUrl.set(url, data);
 			this.logger.log(`Added ${url} to cache`, data);
 		}
 
-		// Update all tabs with the same URL
-		const tabs = this.tabsByUrl.get(url);
-		if (tabs) {
-			for (const id of tabs) {
-				this.cacheByTabId.set(id, data);
-			}
-		}
+		browser.tabs.query({ url: url }, tabs => {
+			tabs.forEach(tab => {
+				this.cacheByTabId.set(tab.id, data);
+			});
+		});
 	}
 
 	/**
@@ -85,25 +76,20 @@ class ResolverCache {
 			const url = this._getUrlByTabId(identifier);
 			this.cacheByTabId.delete(identifier);
 			if (url) {
-				const tabs = this.tabsByUrl.get(url);
-				tabs.delete(identifier);
-				if (tabs.size === 0) {
-					this.cacheByUrl.delete(url);
-					this.tabsByUrl.delete(url);
-					this.logger.log(`Removed ${url} from cache`);
-				}
+				// Check if any tabs with this URL still exist
+				browser.tabs.query({ url: url }, tabs => {
+					if (tabs.length === 0) {
+						this.cacheByUrl.delete(url);
+					}
+				});
 			}
 		} else if (typeof identifier === 'string') {
-			// Remove by URL
-			const tabs = this.tabsByUrl.get(identifier);
-			if (tabs) {
-				for (const tabId of tabs) {
-					this.cacheByTabId.delete(tabId);
-					this.logger.log(`Removed tab ${tabId} from cache`);
-				}
-				this.tabsByUrl.delete(identifier);
+			// Remove by URL and clear all associated tabs
+			browser.tabs.query({ url: identifier }, tabs => {
+				tabs.forEach(tab => this.cacheByTabId.delete(tab.id));
+				this.logger.log(`Removed tab ${tabId} from cache`);
 				this.cacheByUrl.delete(identifier);
-			}
+			});
 		}
 	}
 
@@ -113,12 +99,15 @@ class ResolverCache {
 	 * @returns {string|null} - The URL associated with the tab, or null if not found.
 	 */
 	_getUrlByTabId(tabId) {
-		for (const [url, tabs] of this.tabsByUrl) {
-			if (tabs.has(tabId)) {
-				return url;
-			}
-		}
-		return null;
+		return new Promise(resolve => {
+			browser.tabs.get(tabId, tab => {
+				if (browser.runtime.lastError) {
+					resolve(null); // Handle cases where the tab might not exist
+				} else {
+					resolve(tab.url);
+				}
+			});
+		});
 	}
 }
 
