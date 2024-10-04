@@ -130,7 +130,10 @@ function List({ type, id, manager }) {
 											id=${`${property.prop}`}
 											source="labels"
 											manager=${manager} />
-										${' '} ${statisfaction[property.prop] ? '✅' : '❌'}
+										${' '}
+										<span class="list__icon">
+											${statisfaction[property.prop] ? '✓' : '❌︎'}
+										</span>
 									</summary>
 									<p>
 										<${Describe} id=${`${property.prop}`} manager=${manager} />
@@ -158,7 +161,7 @@ function List({ type, id, manager }) {
 													.open(searchUrl, `${property.prop}_search`)
 													.focus();
 											}}>
-											🔎
+											${'🔍︎'}
 										</button>`}
 										${searchEngine &&
 										property.url &&

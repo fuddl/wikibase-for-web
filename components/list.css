@@ -48,6 +48,22 @@
 	flex-grow: 1;
 }
 
+.list__icon {
+	font-family:
+		'icons',
+		-apple-system,
+		'BlinkMacSystemFont',
+		'Segoe UI',
+		'Roboto',
+		'Lato',
+		'Helvetica',
+		'Arial',
+		'pIqaD',
+		FairfaxHaxHD,
+		cc-icons,
+		sans-serif;
+}
+
 .list__item__search {
 	background-color: #447ff5;
 	border-color: #447ff5;

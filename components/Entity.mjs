@@ -231,7 +231,7 @@ class Entity extends Component {
           ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
         ${experimental && html`<${Edit} icon=${'+'} action=${addClaims} />`}
-        ${experimental && html`<${Edit} icon=${'🔎'} action=${searchIds} />`}
+        ${experimental && html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
         ${mainClaims.map(
           claim =>
             html`<${Remark}

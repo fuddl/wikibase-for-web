@@ -17,6 +17,19 @@
   padding-right: 12px;
   font-weight: bold;
   font-size: 1.214rem;
+  font-family:
+    'icons',
+    -apple-system,
+    'BlinkMacSystemFont',
+    'Segoe UI',
+    'Roboto',
+    'Lato',
+    'Helvetica',
+    'Arial',
+    'pIqaD',
+    FairfaxHaxHD,
+    cc-icons,
+    sans-serif;
 }
 
 .engage[disabled] {

@@ -48,7 +48,7 @@ html {
 @font-face {
   font-family: 'icons';
   src: url('res/icons.woff2');
-  unicode-range: U+1F58A, U+FE0E, U+2713, U+274C;
+  unicode-range: U+1F50D, U+1F58A, U+2713, U+274C, U+FE0E;
 }
 
 @font-face {
