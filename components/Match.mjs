@@ -152,8 +152,6 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
     );
     newEdits = [...newEdits, ...additionalEdits];
 
-    console.debug(newEdits);
-
     setAllEdits(newEdits);
 
     setSeachText(newSearchTitle);
