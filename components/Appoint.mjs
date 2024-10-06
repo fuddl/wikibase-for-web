@@ -105,12 +105,18 @@ const Appoint = ({
 				type="text"
 				class="appoint__type"
 				onFocus=${handleFocus}
-				onChange=${newValue => {
-					if (newValue.value === '') {
+				onInput=${e => {
+					if (
+						e.target.value === '' ||
+						!DateNormalizer.isValidDate(e.target.value) ||
+						!e.target.checkValidity()
+					) {
 						return;
 					}
-					newValue.value = `${newValue.value}T00:00:00Z`;
-					onValueChange(newValue);
+					onValueChange({
+						name: `${name}.datavalue.value.time`,
+						value: `${e.target.value}T00:00:00Z`,
+					});
 				}} />
 			<input
 				class="appoint__picker"

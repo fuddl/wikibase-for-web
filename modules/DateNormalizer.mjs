@@ -67,6 +67,14 @@ class DateNormalizer {
     return false;
   }
 
+  static isValidDate(dateStr) {
+    const [yearStr, monthStr, dayStr] = dateStr.split('-');
+    if (yearStr && monthStr && dayStr) {
+      return this.isValidDay(yearStr, monthStr, dayStr);
+    }
+    return false;
+  }
+
   static isValidDay(yearStr, monthStr, dayStr) {
     const year = parseInt(yearStr, 10);
     const month = parseInt(monthStr, 10);
