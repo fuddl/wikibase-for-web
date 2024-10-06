@@ -152,7 +152,6 @@ const Appoint = ({
 						html`<option
 							value=${value}
 							selected=${value == datavalue.value.precision}>
-							${value == datavalue.value.precision && 'selected:'}
 							${browser.i18n.getMessage(`time_precision_${word}`)}
 						</option>`,
 				)}
