@@ -310,7 +310,7 @@ class Change extends Component {
 						${this.state?.claim?.qualifiers &&
 						this.state.claim.qualifiers.map(
 							(qualifier, index) =>
-								html`<dl>
+								html`<dl key=${`qualifier-${index}`}>
 									<dt class="change__reference__prop">
 										<${Thin}
 											id=${qualifier.mainsnak.property}

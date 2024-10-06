@@ -11,7 +11,7 @@ import Logger from '../modules/Logger.mjs';
 
 const logger = new Logger();
 
-import { suggestedEdits } from '../mapping/index.mjs';
+import { suggestedEdits, addMediaWikiQualifiers } from '../mapping/index.mjs';
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
@@ -93,6 +93,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
   const [allEdits, setAllEdits] = useState(edits);
   const [metaData, setMetaData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [qualifiersAdded, setQualifiersAdded] = useState(false);
   const [lang, setLang] = useState(navigator.language);
   const [subjectType, setSubjectType] = useState('item');
 
@@ -103,6 +104,13 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
   const updateAdditionalEdits = async metadata => {
     let newSearchTitle = '';
     let newEdits = [...edits];
+
+    if (
+      metadata?.mediawiki?.wgArticleId &&
+      !('qualifiers' in newEdits[0].claim)
+    ) {
+      await addMediaWikiQualifiers(newEdits[0], metadata.mediawiki, manager);
+    }
 
     if (metadata?.mediawiki?.wgTitle && subjectType === 'item') {
       newSearchTitle = metadata.mediawiki.wgTitle;
@@ -143,6 +151,8 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
       manager.wikibases[suggestion.instance],
     );
     newEdits = [...newEdits, ...additionalEdits];
+
+    console.debug(newEdits);
 
     setAllEdits(newEdits);
 

@@ -1,6 +1,7 @@
 import { metaToEdits } from './meta.mjs';
 import { ldToEdits } from './ld.mjs';
 import { urlReference } from './urlReference.mjs';
+import { mediaWikiQualifiers } from './mediaWiki.mjs';
 import { constraintsToEdits } from './constraints.mjs';
 
 function removeDuplicates(arr) {
@@ -149,5 +150,12 @@ export async function suggestedEdits(suggestion, metadata, wikibase) {
     references: references,
   });
 
-  return reconcileEditSets(constraintAndMetaEdits, linkedDataEdits);
+  return reconcileEditSets(constraintAndMetaEdits, linkedDataEdits, wikibase);
+}
+
+export async function addMediaWikiQualifiers(edit, metadata, wikibase) {
+  const qualifiers = await mediaWikiQualifiers(metadata, wikibase);
+  for (const qualifier of qualifiers) {
+    edit.claim.addQualifier(qualifier);
+  }
 }
