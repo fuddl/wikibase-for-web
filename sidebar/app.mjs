@@ -105,6 +105,10 @@ class Sidebar extends Component {
 			})();
 		}
 
+		if (entity?.id) {
+			manager.updateSidebarAction(entity.id.split(':')[0]);
+		}
+
 		return html`<${Main}
 			viewId=${viewId}
 			entity=${entity}
