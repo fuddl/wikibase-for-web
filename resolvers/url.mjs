@@ -65,8 +65,10 @@ export const url = {
 		// including these urls will significantly slow down these queries
 		// we would resolve them with the siteLinks resolver anyway
 		const isPartOfUrls = [];
-		for (const [id, site] of Object.entries(wikibase.sites)) {
-			isPartOfUrls.push(`${new URL(site.pagePath).origin}/`);
+		if (wikibase.sites) {
+			for (const [id, site] of Object.entries(wikibase.sites)) {
+				isPartOfUrls.push(`${new URL(site.pagePath).origin}/`);
+			}
 		}
 
 		const hrefs = [];

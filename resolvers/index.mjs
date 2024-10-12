@@ -73,16 +73,17 @@ class ResolverCache {
 	remove(identifier) {
 		if (typeof identifier === 'number') {
 			// Remove by tab ID
-			const url = this._getUrlByTabId(identifier);
-			this.cacheByTabId.delete(identifier);
-			if (url) {
-				// Check if any tabs with this URL still exist
-				browser.tabs.query({ url: url }, tabs => {
-					if (tabs.length === 0) {
-						this.cacheByUrl.delete(url);
-					}
-				});
-			}
+			this._getUrlByTabId(identifier).then(url => {
+				this.cacheByTabId.delete(identifier);
+				if (url) {
+					// Check if any tabs with this URL still exist
+					browser.tabs.query({ url: url }, tabs => {
+						if (tabs.length === 0) {
+							this.cacheByUrl.delete(url);
+						}
+					});
+				}
+			});
 		} else if (typeof identifier === 'string') {
 			// Remove by URL and clear all associated tabs
 			browser.tabs.query({ url: identifier }, tabs => {

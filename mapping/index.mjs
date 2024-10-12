@@ -1,7 +1,7 @@
 import { metaToEdits } from './meta.mjs';
 import { ldToEdits } from './ld.mjs';
 import { urlReference } from './urlReference.mjs';
-import { mediaWikiQualifiers } from './mediaWiki.mjs';
+import { mediaWikiQualifiers } from './mediawiki.mjs';
 import { constraintsToEdits } from './constraints.mjs';
 
 function removeDuplicates(arr) {

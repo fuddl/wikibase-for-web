@@ -195,7 +195,12 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'highlight_jobs') {
 		// Forward 'highlight_jobs' to all open tabs
 		for (const tab of await browser.tabs.query(contentTabsQuery)) {
-			await browser.tabs.sendMessage(tab.id, message);
+			try {
+				await browser.tabs.sendMessage(tab.id, message);
+			} catch (error) {
+				// tab may not respond
+				console.error(error);
+			}
 		}
 
 		return true;

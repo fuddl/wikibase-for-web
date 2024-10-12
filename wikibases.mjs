@@ -175,4 +175,16 @@ Object.keys(wikibases).forEach(name => {
 	});
 });
 
+try {
+	// Get custom Wikibases from local storage
+	const localData = await browser.storage.local.get('customWikibases');
+	const customWikibases = localData.customWikibases || {};
+
+	Object.keys(customWikibases).forEach(key => {
+		wikibases[key] = customWikibases[key];
+	});
+} catch (error) {
+	console.error('Error merging Wikibases:', error);
+}
+
 export default wikibases;
