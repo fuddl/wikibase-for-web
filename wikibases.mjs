@@ -112,57 +112,69 @@ const wikibases = {
 		name: 'Wikimedia Commons',
 		instance: 'https://commons.wikimedia.org',
 		resolve: false,
+		icon: browser.runtime.getURL('icons/commons.svg'),
 		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
 	},
-
-	// an instance for testing
-	//
-	// playground: {
-	// 	name: 'Playground',
-	// 	instance: 'https://playground.wikibase.cloud',
-	// 	sparqlEndpoint: 'https://playground.wikibase.cloud/query/sparql',
-	// 	props: {
-	// 		author: 'P46',
-	// 		duration: 'P44',
-	// 		equivalentClass: 'P52',
-	// 		equivalentProperty: 'P53',
-	// 		formatterURL: 'P30',
-	// 		hasCharacteristic: 'P28',
-	// 		instanceOf: 'P1',
-	// 		isbn10: 'P48',
-	// 		isbn13: 'P49',
-	// 		location: 'P39',
-	// 		numberOfPages: 'P47',
-	// 		numberOfReviewsRatings: 'P56',
-	// 		occupation: 'P43',
-	// 		partOfTheSeries: 'P45',
-	// 		pointInTime: 'P57',
-	// 		publicationDate: 'P51',
-	// 		referenceURL: 'P31',
-	// 		retrieved: 'P54',
-	// 		reviewScore: 'P55',
-	// 		shortTitle: 'P37',
-	// 		title: 'P42',
-	// 		unitSymbol: 'P38',
-	// 		urlMatchPattern: 'P26',
-	// 		urlMatchReplacementValue: 'P27',
-	// 		websiteTitleExtractPattern: 'P29',
-	// 	},
-	// 	items: {
-	// 		allCaps: 'Q7',
-	// 		caseInsensitive: 'Q10',
-	// 		edition: 'Q20',
-	// 		film: 'Q22',
-	// 		lowercase: 'Q9',
-	// 		minute: 'Q24',
-	// 		obsoleteProperty: 'Q8',
-	// 		propertyLinkingToArticlesInMediaWikiWebsites: 'Q11',
-	// 		second: 'Q23',
-	// 		userReview: 'Q52',
-	// 		writer: 'Q21',
-	// 	},
-	// },
 };
+
+// Function to fetch manifest and update props and items for custom Wikibases
+async function updateCustomWikibasesWithManifest(wikibase, wgScriptPath) {
+	const manifestUrl = `${wikibase.instance}${wikibase.wgScriptPath ?? '/w'}/rest.php/wikibase-manifest/v0/manifest`;
+	try {
+		const response = await fetch(manifestUrl);
+		if (response.ok) {
+			const manifest = await response.json();
+			const equivEntities = manifest?.equiv_entities?.['wikidata.org'];
+
+			// Update props and items if equivalent entities are found
+			if (equivEntities) {
+				wikibase.props = {};
+				wikibase.items = {};
+
+				// Map Wikidata properties to custom Wikibase properties
+				Object.entries(equivEntities.properties).forEach(
+					([wikidataProp, customProp]) => {
+						wikibase.props[
+							getKeyByValue(wikibases.wikidata.props, wikidataProp)
+						] = customProp;
+					},
+				);
+
+				// Map Wikidata items to custom Wikibase items
+				Object.entries(equivEntities.items).forEach(
+					([wikidataItem, customItem]) => {
+						wikibase.items[
+							getKeyByValue(wikibases.wikidata.items, wikidataItem)
+						] = customItem;
+					},
+				);
+			}
+		}
+	} catch (error) {
+		console.error(`Failed to fetch manifest for ${wikibase.name}:`, error);
+	}
+}
+
+// Helper function to find the key for a specific value in an object
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
+}
+
+try {
+	// Get custom Wikibases from local storage
+	const localData = await browser.storage.local.get('customWikibases');
+	const customWikibases = localData.customWikibases || {};
+
+	// Merge custom Wikibases and dynamically update their props and items using the manifest
+	await Promise.all(
+		Object.keys(customWikibases).map(async key => {
+			await updateCustomWikibasesWithManifest(customWikibases[key]);
+			wikibases[key] = customWikibases[key];
+		}),
+	);
+} catch (error) {
+	console.error('Error merging custom Wikibases:', error);
+}
 
 Object.keys(wikibases).forEach(name => {
 	wikibases[name].id = name;
@@ -174,17 +186,5 @@ Object.keys(wikibases).forEach(name => {
 		wikiRoot: `${wikibases[name].instance}${wgScriptPath}`,
 	});
 });
-
-try {
-	// Get custom Wikibases from local storage
-	const localData = await browser.storage.local.get('customWikibases');
-	const customWikibases = localData.customWikibases || {};
-
-	Object.keys(customWikibases).forEach(key => {
-		wikibases[key] = customWikibases[key];
-	});
-} catch (error) {
-	console.error('Error merging Wikibases:', error);
-}
 
 export default wikibases;

@@ -198,7 +198,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			try {
 				await browser.tabs.sendMessage(tab.id, message);
 			} catch (error) {
-				// tab may not respond
+				// tab may not respond due to it not being loaded
 				console.error(error);
 			}
 		}

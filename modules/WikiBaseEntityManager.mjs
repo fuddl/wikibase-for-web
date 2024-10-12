@@ -321,7 +321,7 @@ class WikiBaseEntityManager {
 	iconFromId(id) {
 		const [wikibase] = id.split(':');
 		if (this?.wikibases?.[wikibase]?.icon) {
-			return browser.runtime.getURL(this.wikibases[wikibase].icon);
+			return this.wikibases[wikibase].icon;
 		}
 		return browser.runtime.getURL('/icons/wikibase.svg');
 	}

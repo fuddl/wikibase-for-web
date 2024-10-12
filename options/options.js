@@ -132,8 +132,8 @@ function Options() {
 				...instances,
 				[newId]: {
 					...newInstance,
-					resolve: false,
-					disabled: true,
+					resolve: true,
+					disabled: false,
 				},
 			};
 
@@ -201,14 +201,14 @@ function Options() {
 								<td>${instances[key].instance}</td>
 								<td>
 									<input
-										type="hidden"
+										type="checkbox"
 										disabled=${key === 'wikidata'}
 										checked=${!instances[key].disabled}
 										onChange=${() => toggleCheckbox(key, 'disabled')} />
 								</td>
 								<td>
 									<input
-										type="hidden"
+										type="checkbox"
 										checked=${instances[key].resolve}
 										onChange=${() => toggleCheckbox(key, 'resolve')} />
 								</td>
