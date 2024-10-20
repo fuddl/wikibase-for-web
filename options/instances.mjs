@@ -13,6 +13,7 @@ async function loadCustomWikibases() {
 
 function Instances() {
 	const [instances, setInstances] = useState({});
+	const [customWikibases, setCustomWikibases] = useState({});
 	const [showForm, setShowForm] = useState(false);
 	const [newInstance, setNewInstance] = useState({
 		name: '',
@@ -25,10 +26,11 @@ function Instances() {
 	useEffect(() => {
 		// Load default and custom Wikibases asynchronously
 		const loadWikibases = async () => {
-			const customWikibases = await loadCustomWikibases();
+			const storedCustomWikibases = await loadCustomWikibases();
+			setCustomWikibases(storedCustomWikibases);
 
 			// Merge default Wikibases with custom ones, prioritizing custom data
-			const mergedWikibases = { ...defaultWikibases, ...customWikibases };
+			const mergedWikibases = { ...defaultWikibases, ...storedCustomWikibases };
 			setInstances(mergedWikibases);
 		};
 		loadWikibases();
@@ -118,7 +120,6 @@ function Instances() {
 	const handleAddInstance = async () => {
 		if (newInstance.instance) {
 			const newId = newInstance.name.toLowerCase().replace(/\s+/g, '-');
-			const customWikibases = await loadCustomWikibases();
 			const updatedCustomWikibases = {
 				...customWikibases,
 				[newId]: {
@@ -128,20 +129,14 @@ function Instances() {
 				},
 			};
 
-			// Separate the default Wikibases from custom ones before saving to local storage
-			const customWikibasesToStore = Object.fromEntries(
-				Object.entries(updatedCustomWikibases).filter(
-					([key]) => !(key in defaultWikibases),
-				),
-			);
-
 			// Update state and save only the custom Wikibases to local storage
+			setCustomWikibases(updatedCustomWikibases);
 			setInstances({
 				...defaultWikibases,
-				...customWikibasesToStore,
+				...updatedCustomWikibases,
 			});
 			await browser.storage.local.set({
-				customWikibases: customWikibasesToStore,
+				customWikibases: updatedCustomWikibases,
 			});
 
 			// Reset the new instance form
@@ -153,7 +148,7 @@ function Instances() {
 				wgScriptPath: '/w',
 			});
 			setShowForm(false);
-			//browser.runtime.reload();
+			browser.runtime.reload();
 		}
 	};
 
@@ -167,6 +162,8 @@ function Instances() {
 					<th>Icon</th>
 					<th>Name</th>
 					<th>Instance URL</th>
+					<th>Enable</th>
+					<th>Resolve</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -186,13 +183,14 @@ function Instances() {
 							<td>
 								<input
 									type="checkbox"
-									disabled=${key === 'wikidata'}
+									disabled=${['wikidata', 'commons'].includes(key)}
 									checked=${!instances[key].disabled}
 									onChange=${() => toggleCheckbox(key, 'disabled')} />
 							</td>
 							<td>
 								<input
 									type="checkbox"
+									disabled=${['wikidata', 'commons'].includes(key)}
 									checked=${instances[key].resolve}
 									onChange=${() => toggleCheckbox(key, 'resolve')} />
 							</td>
