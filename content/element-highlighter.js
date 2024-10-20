@@ -3,6 +3,8 @@ class ElementHighlighter {
 		this.modes = [];
 
 		this.dateRegex = /\s*\b\d{4}(-\d{2}(-\d{2}\b)?)?\s*/;
+		this.quantityRegex =
+			/^\s*\d{1,3}(?:[.,]\d{1,3})?\s*(cm|mm|m|km|mg|g|kg|ml|l|h|s|min|m²|km²|cm²|mm²)?\s*$/;
 
 		this.initDom();
 
@@ -59,7 +61,26 @@ class ElementHighlighter {
 						const duration = element.getAttribute('datetime');
 						await browser.runtime.sendMessage({
 							type: 'quantity_selected',
-							duration: duration,
+							amount: duration,
+							source: createUrlReference(highlight.element),
+						});
+					},
+				},
+				byInnerText: {
+					selector: this.findQuantityNodes.bind(this),
+					onVisualClick: async highlight => {
+						const [amount, unitString] = highlight.element.textContent.match(
+							this.quantityRegex,
+						);
+						const elementLanguage = this.getObservable(
+							highlight.element,
+						).closest('[lang]')?.lang;
+
+						await browser.runtime.sendMessage({
+							type: 'quantity_selected',
+							amount: this.parseLocalizedFloat(amount, elementLanguage),
+							unitString: unitString,
+							source: createUrlReference(highlight.element),
 						});
 					},
 				},
@@ -129,14 +150,14 @@ class ElementHighlighter {
 		};
 	}
 
-	findDateNodes() {
+	findDateNodes(tester) {
 		const elements = [];
 		const walker = document.createTreeWalker(
 			document.body,
 			NodeFilter.SHOW_TEXT,
 			{
 				acceptNode: node => {
-					if (this.dateRegex.test(node.textContent)) {
+					if (tester.test(node.textContent)) {
 						return NodeFilter.FILTER_ACCEPT;
 					}
 					return NodeFilter.FILTER_REJECT;
@@ -151,6 +172,57 @@ class ElementHighlighter {
 		}
 
 		return elements;
+	}
+
+	findQuantityNodes(teste) {
+		const elements = [];
+		const walker = document.createTreeWalker(
+			document.body,
+			NodeFilter.SHOW_TEXT,
+			{
+				acceptNode: node => {
+					if (this.quantityRegex.test(node.textContent)) {
+						return NodeFilter.FILTER_ACCEPT;
+					}
+					return NodeFilter.FILTER_REJECT;
+				},
+			},
+			false,
+		);
+
+		let node;
+		while ((node = walker.nextNode())) {
+			elements.push(node);
+		}
+
+		return elements;
+	}
+
+	parseLocalizedFloat(str, locale) {
+		try {
+			// Use the provided locale or fall back to the user's preferred language
+			const validLocale = Intl.NumberFormat.supportedLocalesOf(locale).length
+				? locale
+				: navigator.language;
+
+			// Check if the valid locale uses commas as decimal separators
+			const usesCommaAsDecimal = (1.1)
+				.toLocaleString(validLocale)
+				.includes(',');
+
+			// Replace the appropriate decimal separator based on the locale
+			if (usesCommaAsDecimal) {
+				str = str.replace(',', '.'); // Convert comma to dot for parsing
+			} else {
+				str = str.replace(/,/g, ''); // Remove thousand separators (commas)
+			}
+		} catch (e) {
+			// In case of any error, fallback to user's language
+			str = str.replace(',', '.');
+		}
+
+		// Use parseFloat to convert the modified string to a float
+		return parseFloat(str);
 	}
 
 	initDom() {

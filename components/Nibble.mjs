@@ -8,6 +8,7 @@ import Annote from './Annote.mjs';
 import Appoint from './Appoint.mjs';
 import Choose from './Choose.mjs';
 import Map from './Map.mjs';
+import Measure from './Measure.mjs';
 import Mediate from './Mediate.mjs';
 import Spot from './Spot.mjs';
 import Thin from './Thin.mjs';
@@ -66,7 +67,7 @@ class Nibble extends Component {
             case 'wikibase-lexeme':
             case 'wikibase-property':
             case 'wikibase-sense':
-              return html` <${Choose}
+              return html`<${Choose}
                 manager=${manager}
                 value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
                 wikibase=${manager.wikibase.id}
@@ -127,33 +128,14 @@ class Nibble extends Component {
                 onUpdateReference=${onUpdateReference}
                 manager=${manager} />`;
             case 'quantity':
-              return html`<div class="nibble__line">
-                  <${Type}
-                    value=${datavalue.value.amount.replace(/^\+/, '')}
-                    type="number"
-                    proxyName="${name}.datavalue.value.amount"
-                    onValueChange=${newValue => {
-                      newValue.value = newValue.value.replace(/^(\d)/, '+$1');
-                      onValueChange(newValue);
-                    }} />
-                  ${datavalue.value.unit !== '1' &&
-                  html`<${Thin}
-                    id=${datavalue.value.unit}
-                    unit=${true}
-                    manager=${manager} />`}
-                </div>
-                <input
-                  name="${name}.datavalue.value.amount"
-                  value="${datavalue.value.amount}"
-                  type="hidden" />
-                ${/* @todo this should have autocomplete or select */ ''}
-                <${Type}
-                  value=${datavalue.value.unit === '1'
-                    ? datavalue.value.unit
-                    : manager.urlFromIdNonSecure(datavalue.value.unit)}
-                  type="hidden"
-                  name="${name}.datavalue.value.unit"
-                  onValueChange=${onValueChange} />`;
+              return html`<${Measure}
+                datavalue=${datavalue}
+                manager=${manager}
+                wikibase=${manager.wikibase.id}
+                subject=${subject}
+                onUpdateReference=${onUpdateReference}
+                name="${name}.datavalue"
+                onValueChange=${onValueChange} />`;
             case 'globe-coordinate':
               return html`<div class="nibble__line">
                   <${Type}
