@@ -1,0 +1,25 @@
+.hint {
+	display: grid;
+	grid-template-areas: 'stack';
+}
+
+.hint__text {
+	color: #a2a9b1;
+	grid-area: stack;
+	margin: auto;
+	transition: opacity 0.25s;
+	:hover > & {
+		opacity: 0.25;
+	}
+}
+
+.hint__action {
+	grid-area: stack;
+	margin: auto;
+	opacity: 0;
+	transition: opacity 0.25s;
+	position: relative;
+	:hover > & {
+		opacity: 1;
+	}
+}

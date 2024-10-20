@@ -7,6 +7,10 @@
     "message": "Search for ids",
     "description": "Title of a list where external ids can be searched."
   },
+  "no_claims": {
+    "message": "There are no claims yet.",
+    "description": "Message seen in items and lexemes that have no claims yet."
+  },
   "searching_ids": {
     "message": "Searching for expected ids…",
     "description": "Message shown when querying ids that are expected from a specific entity."

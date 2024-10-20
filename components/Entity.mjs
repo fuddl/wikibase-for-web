@@ -7,6 +7,7 @@ import {
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
 import htm from '../importmap/htm/src/index.mjs';
 import Edit from './Edit.mjs';
+import Hint from './Hint.mjs';
 
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
@@ -230,7 +231,6 @@ class Entity extends Component {
         ${senses
           ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
-        ${experimental && html`<${Edit} icon=${'+'} action=${addClaims} />`}
         ${experimental && html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
         ${mainClaims.map(
           claim =>
@@ -240,6 +240,14 @@ class Entity extends Component {
               manager=${manager}
               key=${claim[0].mainsnak.property} />`,
         )}
+        <${Hint}
+          text=${mainClaims.length === 0
+            ? browser.i18n.getMessage('no_claims')
+            : null}
+          icon=${'+'}
+          actionTitle=${browser.i18n.getMessage('add_claims')}
+          action=${addClaims} />
+
         ${urlClaims.length > 0
           ? html`
               <h2 key="links">

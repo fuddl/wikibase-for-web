@@ -22,14 +22,18 @@ export function urlReference(metadata, wikibase) {
 				value: metadata.location,
 			}).mainsnak,
 		];
-		if (props?.mediaWikiPageId && metadata?.wgArticleId) {
-			let now = new Date();
-			reference.snaks[`${id}:${props.mediaWikiPageId}`] = [
-				new ExternalIdClaim({
-					value: metadata.wgArticleId,
-				}).mainsnak,
-			];
-		}
+
+		// Should probably not be used in source statements
+		//
+		// if (props?.mediaWikiPageId && metadata?.wgArticleId) {
+		// 	let now = new Date();
+		// 	reference.snaks[`${id}:${props.mediaWikiPageId}`] = [
+		// 		new ExternalIdClaim({
+		// 			value: metadata.wgArticleId,
+		// 		}).mainsnak,
+		// 	];
+		// }
+
 		if (props?.title && metadata?.title) {
 			reference.snaks[`${id}:${props.title}`] = [
 				new MonolingualTextClaim({
