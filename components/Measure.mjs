@@ -16,11 +16,52 @@ import useExtraFocus from '../modules/focusExtra.mjs';
 
 const html = htm.bind(h);
 
+async function fetchAllowedUnitd(manager, property) {
+  const [wikibaseId] = property.split(':');
+  if (
+    manager.wikibases[wikibaseId]?.props?.propertyConstraint &&
+    manager.wikibases[wikibaseId]?.props?.itemOfPropertyConstraint &&
+    manager.wikibases[wikibaseId]?.items?.allowedUnitsConstraint
+  ) {
+    const propertyConstraintId =
+      manager.wikibases[wikibaseId]?.props?.propertyConstraint;
+    const allowedUnitsConstraintId =
+      manager.wikibases[wikibaseId]?.items?.allowedUnitsConstraint;
+    const itemOfPropertyConstraintId =
+      manager.wikibases[wikibaseId]?.props?.itemOfPropertyConstraint;
+
+    const propertyEntity = await manager.add(property);
+
+    if (propertyConstraintId in propertyEntity.claims) {
+      const allowedUnits = propertyEntity.claims[propertyConstraintId]
+        .filter(
+          item =>
+            item?.mainsnak?.datavalue?.value?.id ===
+            `${wikibaseId}:${allowedUnitsConstraintId}`,
+        )
+        .map(item => {
+          if (itemOfPropertyConstraintId in item.qualifiers) {
+            return item.qualifiers[itemOfPropertyConstraintId];
+          }
+        })
+        .flat()
+        .map(items => {
+          const id = items?.datavalue?.value?.id;
+          if (id) {
+            return id;
+          }
+        });
+      return allowedUnits;
+    }
+  }
+}
+
 class Measure extends Component {
   render({
     datavalue,
     name,
     manager,
+    property,
     shouldFocus,
     subject,
     wikibase,
@@ -29,6 +70,7 @@ class Measure extends Component {
   }) {
     const [prevIsFocused, setPrevIsFocused] = useState(false);
     const [unitSearch, setUnitSearch] = useState('');
+    const [allowedUnits, setAllowedUnits] = useState([]);
 
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
       shouldFocus,
@@ -75,6 +117,15 @@ class Measure extends Component {
       requireStylesheet(browser.runtime.getURL('/components/measure.css'));
     }, []);
 
+    useEffect(async () => {
+      if (property) {
+        const allowedUnits = await fetchAllowedUnitd(manager, property);
+        if (allowedUnits) {
+          setAllowedUnits(allowedUnits);
+        }
+      }
+    }, []);
+
     return html`<div
       class="measure ${isFocused ? 'measure--focus' : ''}"
       ref=${elementRef}>
@@ -100,6 +151,7 @@ class Measure extends Component {
         wikibase=${wikibase}
         subject=${subject}
         type="item"
+        suggestedEntities=${allowedUnits}
         onValueChange="${newValue => {
           onValueChange({
             name: `${name}.value.unit`,

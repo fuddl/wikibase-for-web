@@ -68,6 +68,7 @@ const wikibases = {
 			album: 'Q482994',
 			allCaps: 'Q3960579',
 			allowedEntityTypesConstraint: 'Q52004125',
+			allowedUnitsConstraint: 'Q21514353',
 			asMainValue: 'Q54828448',
 			bigInteger: 'Q84314203',
 			caseInsensitive: 'Q55121183',

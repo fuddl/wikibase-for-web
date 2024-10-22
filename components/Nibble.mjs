@@ -33,6 +33,7 @@ class Nibble extends Component {
     name,
     onUpdateReference,
     onAddJobs,
+    property,
   }) {
     return html`
       <fieldset class="nibble">
@@ -135,6 +136,7 @@ class Nibble extends Component {
                 subject=${subject}
                 onUpdateReference=${onUpdateReference}
                 name="${name}.datavalue"
+                property=${property}
                 onValueChange=${onValueChange} />`;
             case 'globe-coordinate':
               return html`<div class="nibble__line">

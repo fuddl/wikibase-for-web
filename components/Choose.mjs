@@ -63,6 +63,7 @@ const Choose = ({
 	onValueChange,
 	required = false,
 	shouldFocus = false,
+	suggestedEntities,
 	subject,
 	type,
 	value,
@@ -170,6 +171,18 @@ const Choose = ({
 	}, [label]);
 
 	useEffect(() => {
+		if (suggestedEntities) {
+			const defaultSuggestions = suggestedEntities.map(suggestion => {
+				return {
+					label: null,
+					id: suggestion.replace(/.+:/, ''),
+				};
+			});
+			setSuggestions(defaultSuggestions);
+		}
+	}, [suggestedEntities]);
+
+	useEffect(() => {
 		if (onSelected && choosenId !== '') {
 			onSelected(choosenId);
 		}
@@ -203,6 +216,21 @@ const Choose = ({
 						autocomplete,
 						manager.wikibases[wikibase],
 					);
+				}
+
+				if (suggestedEntities) {
+					// if there a suggestedEntities, they should be at the top of the list
+					const suggestedIds = suggestedEntities.map(item =>
+						item.split(':').pop(),
+					);
+					autocomplete.search.sort((a, b) => {
+						const aSuggested = suggestedIds.includes(a.id);
+						const bSuggested = suggestedIds.includes(b.id);
+
+						if (aSuggested && !bSuggested) return -1;
+						if (!aSuggested && bSuggested) return 1;
+						return 0;
+					});
 				}
 				setSuggestions(autocomplete.search);
 			}

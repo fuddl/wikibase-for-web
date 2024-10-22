@@ -265,6 +265,7 @@ class Change extends Component {
 							subject=${this.subject}
 							onValueChange=${this.handleDataValueChange}
 							onUpdateReference=${this.onUpdateReference}
+							property=${this.state.claim?.mainsnak?.property}
 							onAddJobs=${job => {
 								if (this.onAddJobs && this.state.claim.mainsnak.property) {
 									job.claim.setProperty(this.state.claim.mainsnak.property);
