@@ -83,6 +83,16 @@ const Choose = ({
 			if (message.type === 'text_selected') {
 				setShouldFetch(true);
 				setInputValue(message.value);
+
+				if (onUpdateReference) {
+					if (message?.source) {
+						onUpdateReference(
+							urlReference(message.source, manager.wikibases[wikibase]),
+						);
+					} else {
+						onUpdateReference([]);
+					}
+				}
 			}
 			if (message.type === 'resolve_selected') {
 				const newlySelectedId =
