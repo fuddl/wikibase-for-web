@@ -7,6 +7,7 @@ import {
 } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
+import quantityExtractor from '../modules/quantityExtractor.mjs';
 
 import Decern from './Decern.mjs';
 import Type from './Type.mjs';
@@ -75,6 +76,30 @@ class Measure extends Component {
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
       shouldFocus,
       message => {
+        if (message.type === 'text_selected') {
+          const Extractor = new quantityExtractor();
+          const suggestedQuantity = Extractor.extract(message.value);
+
+          if (suggestedQuantity.amount) {
+            onValueChange({
+              name: `${name}.value.amount`,
+              value: suggestedQuantity.amount,
+            });
+            if (suggestedQuantity.unitString) {
+              setUnitSearch(suggestedQuantity.unitString);
+            }
+          }
+
+          if (onUpdateReference) {
+            if (message?.source) {
+              onUpdateReference(
+                urlReference(message.source, manager.wikibases[wikibase]),
+              );
+            } else {
+              onUpdateReference([]);
+            }
+          }
+        }
         if (message.type === 'quantity_selected') {
           if (message.amount) {
             onValueChange({
