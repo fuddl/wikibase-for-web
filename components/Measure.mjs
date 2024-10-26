@@ -8,6 +8,7 @@ import {
 import { urlReference } from '../mapping/urlReference.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import quantityExtractor from '../modules/quantityExtractor.mjs';
+import fetchExampleData from '../modules/fetchExampleData.mjs';
 
 import Decern from './Decern.mjs';
 import Type from './Type.mjs';
@@ -17,7 +18,7 @@ import useExtraFocus from '../modules/focusExtra.mjs';
 
 const html = htm.bind(h);
 
-async function fetchAllowedUnitd(manager, property) {
+async function fetchAllowedUnits(manager, property) {
   const [wikibaseId] = property.split(':');
   if (
     manager.wikibases[wikibaseId]?.props?.propertyConstraint &&
@@ -46,8 +47,11 @@ async function fetchAllowedUnitd(manager, property) {
           }
         })
         .flat()
-        .map(items => {
-          const id = items?.datavalue?.value?.id;
+        .filter(item => item.snaktype === 'value')
+        .map(item => {
+          console.debug(item);
+          const id = item?.datavalue?.value?.id;
+          console.debug(id);
           if (id) {
             return id;
           }
@@ -72,6 +76,7 @@ class Measure extends Component {
     const [prevIsFocused, setPrevIsFocused] = useState(false);
     const [unitSearch, setUnitSearch] = useState('');
     const [allowedUnits, setAllowedUnits] = useState([]);
+    const [exampleValue, setExampleValue] = useState({});
 
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
       shouldFocus,
@@ -144,12 +149,23 @@ class Measure extends Component {
 
     useEffect(async () => {
       if (property) {
-        const allowedUnits = await fetchAllowedUnitd(manager, property);
+        const allowedUnits = await fetchAllowedUnits(manager, property);
         if (allowedUnits) {
           setAllowedUnits(allowedUnits);
         }
+        const propertyExample = await fetchExampleData(manager, property);
+        if (propertyExample) {
+          setExampleValue(propertyExample);
+        }
       }
     }, []);
+
+    const exampleText = exampleValue?.value?.amount
+      ? browser.i18n.getMessage(
+          'placeholder_example_amount',
+          exampleValue.value.amount.replace(/^\+/, ''),
+        )
+      : null;
 
     return html`<div
       class="measure ${isFocused ? 'measure--focus' : ''}"
@@ -161,6 +177,7 @@ class Measure extends Component {
         onFocus=${handleFocus}
         onBlur=${handleBlur}
         step="any"
+        placeholder=${exampleText}
         onValueChange=${onValueChange} />
       <${Type}
         value=${datavalue.value.unit === '1'

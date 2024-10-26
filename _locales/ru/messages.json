@@ -106,6 +106,26 @@
     "message": "Дезамбигуатор",
     "description": "Заголовок боковой панели, когда она отображает экран дезамбигуации."
   },
+  "placeholder_example_text": {
+    "message": "Например, «$EXAMPLE$»",
+    "description": "Placeholder of a textfield that shows an example text that can be entered.",
+    "placeholders": {
+      "example": {
+        "content": "$1",
+        "example": "On the Origin of Species by Means of Natural Selection"
+      }
+    }
+  },
+  "placeholder_example_amount": {
+    "message": "Например, «$AMOUNT$»",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "15000"
+      }
+    }
+  },
   "send_to_instance": {
     "message": "Отправить в $INSTANCE$",
     "description": "Название кнопки, которая отправляет утверждения в конкретную инстанцию wikibase.",

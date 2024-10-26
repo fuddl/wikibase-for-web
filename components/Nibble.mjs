@@ -120,6 +120,7 @@ class Nibble extends Component {
                 wikibase=${manager.wikibase.id}
                 subject=${subject}
                 required=${true}
+                property=${property}
                 onValueChange=${onValueChange}
                 onAddJobs=${value => {
                   if (onAddJobs) {

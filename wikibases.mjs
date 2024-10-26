@@ -38,6 +38,7 @@ const wikibases = {
 			partOfTheSeries: 'P179',
 			pointInTime: 'P585',
 			property: 'P2306',
+			propertyExample: 'P1855',
 			propertyConstraint: 'P2302',
 			propertyScope: 'P5314',
 			propertiesForThisType: 'P1963',

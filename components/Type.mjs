@@ -34,6 +34,7 @@ class Type extends Component {
       onFocus,
       onBlur,
       pattern,
+      placeholder,
       size,
       ref,
       step,
@@ -49,6 +50,7 @@ class Type extends Component {
       step=${step}
       pattern=${pattern}
       onFocus=${onFocus}
+      placeholder=${placeholder}
       onBlur=${onBlur}
       min=${min}
       max=${max}

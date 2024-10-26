@@ -6,6 +6,7 @@ import {
   useRef,
 } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
+import fetchExampleData from '../modules/fetchExampleData.mjs';
 
 import { MonolingualTextClaim } from '../types/Claim.mjs';
 
@@ -24,6 +25,7 @@ class Designate extends Component {
     name,
     onAddJobs,
     onUpdateReference,
+    property,
     onValueChange,
     required,
     shouldFocus,
@@ -32,6 +34,7 @@ class Designate extends Component {
     wikibase,
   }) {
     const [prevIsFocused, setPrevIsFocused] = useState(false);
+    const [exampleValue, setExampleValue] = useState({});
     const textRef = useRef(null);
 
     const changeValues = (value, lang) => {
@@ -44,8 +47,15 @@ class Designate extends Component {
       });
     };
 
-    useEffect(() => {
+    useEffect(async () => {
       requireStylesheet(browser.runtime.getURL('/components/designate.css'));
+
+      if (property) {
+        const propertyExample = await fetchExampleData(manager, property);
+        if (propertyExample) {
+          setExampleValue(propertyExample);
+        }
+      }
     }, []);
 
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
@@ -105,10 +115,17 @@ class Designate extends Component {
       }
     }, [isFocused, subject]);
 
+    const exampleText = exampleValue?.value?.text
+      ? browser.i18n.getMessage(
+          'placeholder_example_text',
+          exampleValue.value.text,
+        )
+      : null;
+
     return html`<div
       class="designate ${isFocused ? 'designate--focus' : ''}"
       ref=${elementRef}>
-      <div class="designate__rendered">${value.text ?? ''}</div>
+      <div class="designate__rendered">${value?.text || exampleText}</div>
       <textarea
         value=${value.text ?? ''}
         class="designate__text"
@@ -117,6 +134,7 @@ class Designate extends Component {
         onFocus=${handleFocus}
         onBlur=${handleBlur}
         lang=${value.language}
+        placeholder=${exampleText}
         rows="1"
         ref=${textRef}
         onInput=${e => {

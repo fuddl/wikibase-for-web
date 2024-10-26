@@ -11,6 +11,26 @@
     "message": "There are no claims yet.",
     "description": "Message seen in items and lexemes that have no claims yet."
   },
+  "placeholder_example_text": {
+    "message": "E.g. ‘$EXAMPLE$’",
+    "description": "Placeholder of a textfield that shows an example text that can be entered.",
+    "placeholders": {
+      "example": {
+        "content": "$1",
+        "example": "On the Origin of Species by Means of Natural Selection"
+      }
+    }
+  },
+  "placeholder_example_amount": {
+    "message": "E.g. ‘$AMOUNT$’",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "15000"
+      }
+    }
+  },
   "searching_ids": {
     "message": "Searching for expected ids…",
     "description": "Message shown when querying ids that are expected from a specific entity."

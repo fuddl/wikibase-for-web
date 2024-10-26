@@ -88,6 +88,26 @@
       }
     }
   },
+  "placeholder_example_text": {
+    "message": "Bspw. „$EXAMPLE$“",
+    "description": "Platzhalter für ein Textfeld, das einen Beispieltext zeigt, der eingegeben werden kann.",
+    "placeholders": {
+      "example": {
+        "content": "$1",
+        "example": "On the Origin of Species by Means of Natural Selection"
+      }
+    }
+  },
+  "placeholder_example_amount": {
+    "message": "Bspw. „$AMOUNT$“",
+    "description": "Platzhalter für ein Textfeld, das eine Beispielzahl zeigt, die eingegeben werden kann.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "15000"
+      }
+    }
+  },
   "other_matches_title": {
     "message": "Weitere Treffer"
   },

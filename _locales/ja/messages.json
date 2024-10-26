@@ -105,6 +105,26 @@
     "message": "曖昧さ除去",
     "description": "曖昧さ除去画面を表示するサイドバーのタイトル。"
   },
+  "placeholder_example_text": {
+    "message": "例えば、「$EXAMPLE$」’",
+    "description": "Placeholder of a textfield that shows an example text that can be entered.",
+    "placeholders": {
+      "example": {
+        "content": "$1",
+        "example": "On the Origin of Species by Means of Natural Selection"
+      }
+    }
+  },
+  "placeholder_example_amount": {
+    "message": "例えば、「$AMOUNT$」’",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "amount": {
+        "content": "$1",
+        "example": "15000"
+      }
+    }
+  },
   "send_to_instance": {
     "message": "$INSTANCE$に送信",
     "description": "特定のウィキベースインスタンスに主張を送信するボタンのタイトル。",
