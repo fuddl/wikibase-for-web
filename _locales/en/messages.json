@@ -31,6 +31,16 @@
       }
     }
   },
+  "placeholder_example_unit": {
+    "message": "E.g. ‘$UNIT$’",
+    "description": "Placeholder of a textfield that shows an example unit that can be entered.",
+    "placeholders": {
+      "unit": {
+        "content": "$1",
+        "example": "metre"
+      }
+    }
+  },
   "searching_ids": {
     "message": "Searching for expected ids…",
     "description": "Message shown when querying ids that are expected from a specific entity."
@@ -136,6 +146,10 @@
   "search_property_placeholder": {
     "message": "Search property label or alias.",
     "description": "Placeholder of a field that searches for wikibase senses."
+  },
+  "search_unit_placeholder": {
+    "message": "Search unit by label or alias.",
+    "description": "Placeholder of a field that searches for items that represent a unit like kilometers or Yen."
   },
   "load_autodesc": {
     "message": "Loading automatic description…",

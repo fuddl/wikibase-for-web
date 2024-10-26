@@ -61,10 +61,11 @@ const Choose = ({
 	onSelected,
 	onUpdateReference,
 	onValueChange,
+	placeholder,
 	required = false,
 	shouldFocus = false,
-	suggestedEntities,
 	subject,
+	suggestedEntities,
 	type,
 	value,
 	wikibase,
@@ -332,7 +333,8 @@ const Choose = ({
 					type="search"
 					autocomplete="off"
 					data-focus="suggested"
-					placeholder=${browser.i18n.getMessage(`search_${type}_placeholder`)}
+					placeholder=${placeholder ??
+					browser.i18n.getMessage(`search_${type}_placeholder`)}
 					onInput=${e => {
 						setInputValue(e.target.value);
 						setShouldFetch(true);

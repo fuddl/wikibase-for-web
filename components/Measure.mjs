@@ -9,6 +9,7 @@ import { urlReference } from '../mapping/urlReference.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import quantityExtractor from '../modules/quantityExtractor.mjs';
 import fetchExampleData from '../modules/fetchExampleData.mjs';
+import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 
 import Decern from './Decern.mjs';
 import Type from './Type.mjs';
@@ -49,9 +50,7 @@ async function fetchAllowedUnits(manager, property) {
         .flat()
         .filter(item => item.snaktype === 'value')
         .map(item => {
-          console.debug(item);
           const id = item?.datavalue?.value?.id;
-          console.debug(id);
           if (id) {
             return id;
           }
@@ -154,7 +153,16 @@ class Measure extends Component {
           setAllowedUnits(allowedUnits);
         }
         const propertyExample = await fetchExampleData(manager, property);
+
         if (propertyExample) {
+          if (propertyExample?.value?.unit !== '1') {
+            const designator = await manager.fetchDesignators(
+              propertyExample.value.unit,
+            );
+            propertyExample.value.unitLabel = getByUserLanguage(
+              designator.labels,
+            );
+          }
           setExampleValue(propertyExample);
         }
       }
@@ -166,6 +174,13 @@ class Measure extends Component {
           exampleValue.value.amount.replace(/^\+/, ''),
         )
       : null;
+
+    const unitPlaceholder = exampleValue?.value?.unitLabel?.value
+      ? browser.i18n.getMessage(
+          'placeholder_example_unit',
+          exampleValue.value.unitLabel.value,
+        )
+      : browser.i18n.getMessage(`search_unit_placeholder`);
 
     return html`<div
       class="measure ${isFocused ? 'measure--focus' : ''}"
@@ -193,6 +208,7 @@ class Measure extends Component {
         wikibase=${wikibase}
         subject=${subject}
         type="item"
+        placeholder=${unitPlaceholder}
         suggestedEntities=${allowedUnits}
         onValueChange="${newValue => {
           onValueChange({
