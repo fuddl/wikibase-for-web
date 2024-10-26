@@ -31,6 +31,14 @@
       }
     }
   },
+  "amount": {
+    "message": "Amount",
+    "description": "Label of a field where a user is supposed to enter an numerical amount."
+  },
+  "unit": {
+    "message": "Unit",
+    "description": "Label of a field where a user is supposed to enter a unit for an numerical amount."
+  },
   "placeholder_example_unit": {
     "message": "E.g. ‘$UNIT$’",
     "description": "Placeholder of a textfield that shows an example unit that can be entered.",

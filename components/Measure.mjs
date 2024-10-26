@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useRef,
+  useMemo,
 } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
@@ -76,6 +77,8 @@ class Measure extends Component {
     const [unitSearch, setUnitSearch] = useState('');
     const [allowedUnits, setAllowedUnits] = useState([]);
     const [exampleValue, setExampleValue] = useState({});
+
+    const uuid = useMemo(() => crypto.randomUUID(), []);
 
     const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
       shouldFocus,
@@ -185,15 +188,29 @@ class Measure extends Component {
     return html`<div
       class="measure ${isFocused ? 'measure--focus' : ''}"
       ref=${elementRef}>
-      <${Type}
+      <label class="measure__label" for=${`${uuid}_amount`}>
+        ${browser.i18n.getMessage('amount')}
+      </label>
+      <input
         value=${datavalue.value.amount}
+        id=${`${uuid}_amount`}
         type="number"
         name="${name}.value.amount"
         onFocus=${handleFocus}
         onBlur=${handleBlur}
         step="any"
+        class="measure__amount"
+        onInput=${e => {
+          onValueChange({
+            name: `${name}.value.amount`,
+            value: e.target.value,
+          });
+        }}
         placeholder=${exampleText}
         onValueChange=${onValueChange} />
+      <label class="measure__label" for=${`${uuid}_unit`}>
+        ${browser.i18n.getMessage('unit')}
+      </label>
       <${Type}
         value=${datavalue.value.unit === '1'
           ? datavalue.value.unit
@@ -203,6 +220,7 @@ class Measure extends Component {
         onValueChange=${onValueChange} />
       <${Choose}
         manager=${manager}
+        id=${`${uuid}_unit`}
         value=${datavalue.value.unit === '1' ? '' : datavalue.value.unit}
         label=${unitSearch}
         wikibase=${wikibase}

@@ -54,6 +54,7 @@ async function autocompleteLexemesToSenses(autocomplete, wikibase) {
 }
 
 const Choose = ({
+	id,
 	label,
 	manager,
 	name,
@@ -325,6 +326,7 @@ const Choose = ({
 					required=${required}
 					name=${name} />
 				<input
+					id=${id}
 					class="choose__type"
 					value=${inputValue}
 					onFocus=${handleFocus}

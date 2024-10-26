@@ -1,9 +1,32 @@
 .measure {
-	padding: 2px;
+	padding: 0 0.5714rem 0.5714rem;
+	border: 1px solid var(--border);
+	border-radius: 2px;
+	background: var(--input-paper);
+	color: var(--input-pen);
 }
 
 .measure--focus {
 	border-color: #36c;
 	outline: 1px solid transparent;
 	box-shadow: inset 0 0 0 1px #36c;
+}
+
+.measure__label {
+	padding: 0.5em 0;
+	font-size: 0.75rem;
+	display: block;
+}
+
+.measure__amount {
+	padding: 0.357rem 0;
+	line-height: 1.4285;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	color: inherit;
+	-moz-appearance: textfield;
+	&:focus {
+		outline: none;
+	}
 }
