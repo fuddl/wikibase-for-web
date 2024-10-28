@@ -4,6 +4,7 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
 import dateExtractor from '../modules/dateExtractor.mjs';
+import fetchExampleData from '../modules/fetchExampleData.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
 import DateNormalizer from '../modules/DateNormalizer.mjs';
@@ -13,12 +14,13 @@ const html = htm.bind(h);
 import Type from './Type.mjs';
 
 const Appoint = ({
-	name,
 	datavalue,
 	manager,
-	onValueChange,
-	shouldFocus = false,
+	name,
 	onUpdateReference,
+	onValueChange,
+	property,
+	shouldFocus = false,
 	wikibase,
 }) => {
 	useEffect(() => {
@@ -27,6 +29,7 @@ const Appoint = ({
 
 	const [prevIsFocused, setPrevIsFocused] = useState(false);
 	let [vocab, setVocab] = useState([]);
+	const [exampleValue, setExampleValue] = useState({});
 
 	const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
 		shouldFocus,
@@ -117,12 +120,27 @@ const Appoint = ({
 	}, [isFocused]);
 
 	useEffect(async () => {
+		if (property) {
+			const propertyExample = await fetchExampleData(manager, property);
+
+			if (propertyExample) {
+				setExampleValue(propertyExample);
+			}
+		}
+
 		const result = await manager.queryManager.query(
 			manager.wikibase,
 			manager.queryManager.queries.calendarVocabulary,
 		);
 		setVocab(result);
 	}, []);
+
+	const placeholder = exampleValue?.value?.time
+		? browser.i18n.getMessage(
+				'placeholder_example_date',
+				exampleValue.value.time.match(/\+\d{4}-\d{2}-\d{2}/)[0],
+			)
+		: '';
 
 	return html`
 		<div class="appoint ${isFocused && 'appoint--focus'}" ref=${elementRef}>
@@ -163,6 +181,7 @@ const Appoint = ({
 				type="text"
 				class="appoint__type"
 				onFocus=${handleFocus}
+				placeholder=${placeholder}
 				onInput=${e => {
 					if (
 						e.target.value === '' ||

@@ -31,6 +31,16 @@
       }
     }
   },
+  "placeholder_example_date": {
+    "message": "E.g. `$DATE$`",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "+1855-00-00"
+      }
+    }
+  },
   "amount": {
     "message": "Amount",
     "description": "Label of a field where a user is supposed to enter an numerical amount."

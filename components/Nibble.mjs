@@ -96,6 +96,7 @@ class Nibble extends Component {
                 datavalue=${datavalue}
                 onUpdateReference=${onUpdateReference}
                 manager=${manager}
+                property=${property}
                 wikibase=${manager.wikibase.id}
                 onValueChange=${onValueChange} />`;
             case 'url':

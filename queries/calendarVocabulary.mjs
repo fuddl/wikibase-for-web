@@ -7,7 +7,12 @@ export const calendarVocabulary = {
     'iso6391Code',
     'itemForThisSense',
   ],
-  requiredItems: ['calendarMonth', 'gregorianCalendar', 'dayOfAMonth'],
+  requiredItems: [
+    'calendarMonth',
+    'gregorianCalendar',
+    'dayOfAMonth',
+    'plural',
+  ],
   query: ({ instance, params }) => `
     SELECT DISTINCT ?ordinal ?type ?string ?lang  WHERE {
       FILTER (?lang in ('${params?.languages ? params.languages.join("', '") : instance.languages.join("', '")}'))
@@ -45,7 +50,6 @@ export const calendarVocabulary = {
         lang: bind.lang.value,
       });
     });
-    console.debug(processed);
     return processed;
   },
 };
