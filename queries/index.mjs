@@ -1,3 +1,4 @@
+import { calendarVocabulary } from './calendarVocabulary.mjs';
 import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
 import { expectedIds } from './expectedIds.mjs';
@@ -13,6 +14,7 @@ import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlProperties } from './urlProperties.mjs';
 
 const queries = {
+	calendarVocabulary,
 	equivalentClasses,
 	equivalentProperties,
 	expectedIds,

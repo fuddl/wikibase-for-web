@@ -1,5 +1,3 @@
-// write a quantityExtractor function that receives a string of text. it should find any number that would be a valid float and a string of text that looks like, it is the unit. It musn't be perfect because a human will check if the extraction was correct. It should use the most notable number when represented as a string. Here ist the test
-
 import quantityExtractor from './quantityExtractor.mjs';
 
 const testCases = [

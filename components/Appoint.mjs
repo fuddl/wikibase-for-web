@@ -3,6 +3,7 @@ import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import { urlReference } from '../mapping/urlReference.mjs';
+import dateExtractor from '../modules/dateExtractor.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
 import DateNormalizer from '../modules/DateNormalizer.mjs';
@@ -25,10 +26,59 @@ const Appoint = ({
 	}, []);
 
 	const [prevIsFocused, setPrevIsFocused] = useState(false);
+	let [vocab, setVocab] = useState([]);
 
 	const { isFocused, elementRef, handleFocus, handleBlur } = useExtraFocus(
 		shouldFocus,
 		message => {
+			if (message.type === 'text_selected') {
+				(async () => {
+					const languagePresent = vocab.some(
+						entry => entry.lang === message.lang,
+					);
+
+					if (!languagePresent) {
+						const result = await manager.queryManager.query(
+							manager.wikibase,
+							manager.queryManager.queries.calendarVocabulary,
+							{
+								languages: [message.lang],
+							},
+						);
+						vocab = [...vocab, ...result];
+					}
+
+					const Extractor = new dateExtractor({
+						dictionary: vocab,
+						lang: message.lang,
+					});
+					const suggestedDate = Extractor.extract(message.value);
+
+					if (suggestedDate?.time) {
+						onValueChange({
+							name: `${name}.datavalue.value.time`,
+							value: suggestedDate.time,
+						});
+						if (suggestedDate?.precision) {
+							onValueChange({
+								name: `${name}.datavalue.value.precision`,
+								value: suggestedDate.precision,
+							});
+						}
+					}
+
+					if (onUpdateReference) {
+						if (message?.source) {
+							onUpdateReference(
+								urlReference(message.source, manager.wikibases[wikibase]),
+							);
+						} else {
+							onUpdateReference([]);
+						}
+					}
+				})();
+			}
+
 			if (message.type === 'time_selected') {
 				const normalisedDate = DateNormalizer.normalizeDateString(
 					message.datetime,
@@ -49,7 +99,7 @@ const Appoint = ({
 				}
 			}
 		},
-		[],
+		[vocab],
 	);
 
 	useEffect(() => {
@@ -65,6 +115,14 @@ const Appoint = ({
 		}
 		setPrevIsFocused(isFocused);
 	}, [isFocused]);
+
+	useEffect(async () => {
+		const result = await manager.queryManager.query(
+			manager.wikibase,
+			manager.queryManager.queries.calendarVocabulary,
+		);
+		setVocab(result);
+	}, []);
 
 	return html`
 		<div class="appoint ${isFocused && 'appoint--focus'}" ref=${elementRef}>
