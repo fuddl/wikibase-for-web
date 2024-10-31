@@ -258,7 +258,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 							disabledByDefault: item?.disabledByDefault ?? false,
 							claim: new QuantityClaim({
 								property: `${wikibase.id}:${targetProperty}`,
-								amount: `+${amount}`,
+								amount: amount,
 								unit: unit,
 								references: references,
 							}),
