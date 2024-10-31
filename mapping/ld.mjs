@@ -45,7 +45,7 @@ function durationToQuantity(data, wikibase) {
 			s = s + h * 3600;
 		}
 		return {
-			amount: `+${s}`,
+			amount: s,
 			unit: `${wikibase.id}:${wikibase.items.second}`,
 		};
 	} else if (m && 'minute' in wikibase.items) {
@@ -53,12 +53,12 @@ function durationToQuantity(data, wikibase) {
 			m = m + h * 60;
 		}
 		return {
-			amount: `+${m}`,
+			amount: m,
 			unit: `${wikibase.id}:${wikibase.items.minute}`,
 		};
 	} else if (h && 'hour' in wikibase.items) {
 		return {
-			amount: `+${h}`,
+			amount: h,
 			unit: `${wikibase.id}:${wikibase.items.hour}`,
 		};
 	}

@@ -216,12 +216,13 @@ class Measure extends Component {
           ? datavalue.value.unit
           : manager.urlFromIdNonSecure(datavalue.value.unit)}
         name="${name}.value.unit"
-        type="hidden"
-        onValueChange=${onValueChange} />
+        type="hidden" />
       <${Choose}
         manager=${manager}
         id=${`${uuid}_unit`}
-        value=${datavalue.value.unit === '1' ? '' : datavalue.value.unit}
+        value=${datavalue.value.unit === '1'
+          ? ''
+          : datavalue.value.unit.split(':')[1]}
         label=${unitSearch}
         wikibase=${wikibase}
         subject=${subject}
