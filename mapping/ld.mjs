@@ -178,7 +178,7 @@ async function ldToEdits({
 					ratingAction.claim.addQualifier(
 						new QuantityClaim({
 							property: `${wikibase.id}:${wikibase.props.numberOfReviewsRatings}`,
-							amount: `+${value?.reviewCount ?? value?.ratingCount}`,
+							amount: value?.reviewCount ?? value?.ratingCount,
 							unit: `${wikibase.id}:${wikibase.items.userReview}`,
 						}),
 					);
