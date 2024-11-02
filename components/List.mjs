@@ -39,18 +39,36 @@ function List({ type, id, manager }) {
 	const [entity, setEntity] = useState({});
 	const [searchEngine, setSearchEngine] = useState(false);
 
+	let result;
+
 	useEffect(async () => {
 		requireStylesheet(browser.runtime.getURL('/components/list.css'));
 
-		const result = await manager.queryManager.query(
-			manager.wikibase,
-			manager.queryManager.queries.expectedIds,
-			{
-				subject: id.replace(/.+\:/, ''),
-			},
-		);
-
 		const currentEntity = await manager.add(id, false);
+
+		if (manager.wikibase.props.instanceOf in currentEntity.claims) {
+			const types = currentEntity.claims[manager.wikibase.props.instanceOf].map(
+				claim => {
+					return claim?.mainsnak?.datavalue?.value?.id;
+				},
+			);
+
+			result = await manager.queryManager.query(
+				manager.wikibase,
+				manager.queryManager.queries.expectedIdsByType,
+				{
+					types: types.map(type => type.split(':')[1]),
+				},
+			);
+		} else if (currentEntity.language) {
+			result = await manager.queryManager.query(
+				manager.wikibase,
+				manager.queryManager.queries.expectedIdsByLanguage,
+				{
+					language: currentEntity.language.split(':')[1],
+				},
+			);
+		}
 
 		setEntity(currentEntity);
 
@@ -61,7 +79,9 @@ function List({ type, id, manager }) {
 
 		setSearchEngine(defaultSearchEngine);
 
-		setProperties(result);
+		if (result) {
+			setProperties(result);
+		}
 	}, []);
 
 	const handleMessage = async message => {
@@ -83,12 +103,9 @@ function List({ type, id, manager }) {
 	let names = {};
 
 	if ('labels' in entity) {
-		// First, add values from labels
 		Object.keys(entity.labels).forEach(key => {
-			names[key] = [entity.labels[key].value]; // Start with the value from labels
+			names[key] = [entity.labels[key].value];
 		});
-
-		// Now, add values from aliases, ensuring no duplicates
 		Object.keys(entity.labels).forEach(key => {
 			if (!names[key]) {
 				names[key] = [];
@@ -96,11 +113,28 @@ function List({ type, id, manager }) {
 			if (key in entity.aliases) {
 				entity.aliases[key].forEach(alias => {
 					if (!names[key].includes(alias.value)) {
-						// Check for duplicates
 						names[key].push(alias.value);
 					}
 				});
 			}
+		});
+	}
+	if ('lemmas' in entity) {
+		Object.keys(entity.lemmas).forEach(key => {
+			if (!(key in names)) {
+				names[key] = [];
+			}
+			names[key].push(entity.lemmas[key].value);
+		});
+	}
+	if ('forms' in entity) {
+		entity.forms.forEach(form => {
+			Object.keys(form.representations).forEach(key => {
+				if (!(key in names)) {
+					names[key] = [];
+				}
+				names[key].push(form.representations[key].value);
+			});
 		});
 	}
 
@@ -143,10 +177,9 @@ function List({ type, id, manager }) {
 											class="list__item__type"
 											type="search"
 											list=${`${id}-names`}
-											value=${getFirstMatchingName(
-												names,
-												property.searchLang,
-											)} />
+											value=${Object.keys(names).length > 0
+												? getFirstMatchingName(names, property.searchLang)
+												: ''} />
 										${property.search &&
 										html`<button
 											class="list__item__search"
@@ -186,14 +219,8 @@ function List({ type, id, manager }) {
 				</div> `
 			: ''}
 		<datalist id=${`${id}-names`}>
-			${Object.entries(names).map(([lang, names]) =>
-				names.map(
-					(name, key) =>
-						html`<option
-							key=${`${lang}-${key}`}
-							lang=${lang}
-							value="${name}"></option>`,
-				),
+			${[...new Set(Object.values(names).flat())].map(
+				(name, key) => html`<option key=${key} value="${name}"></option>`,
 			)}
 		</datalist>`;
 }

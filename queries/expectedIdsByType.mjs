@@ -1,29 +1,25 @@
-export const expectedIds = {
+export const expectedIdsByType = {
 	id: 'expected-ids',
 	requiredProps: [
-		'autosuggestValue',
-		'instanceOf',
 		'languageOfWorkOrName',
 		'propertiesForThisType',
-		'property',
-		'propertyConstraint',
 		'searchFormatterURL',
-		'sourceWebsiteForTheProperty',
 		'subclassOf',
 	],
 	requiredItems: ['singleValueConstraint', 'itemRequiresStatementConstraint'],
 	query: ({ instance, params }) => {
 		return `
-			SELECT DISTINCT ?class ?prop ?value ?search ?searchLang ?contextUrl ?url WHERE {
+			SELECT DISTINCT ?class ?prop ?value ?search ?searchLang ?url WHERE {
 
-				{
-					wd:${params.subject} wdt:${instance.props.instanceOf} ?class .
-				}
-					UNION
-				{
-					wd:${params.subject} wdt:${instance.props.instanceOf} ?instance .
-					?instance wdt:${instance.props.subclassOf}* ?class .
-				}
+				${params.types
+					.map(
+						type => `
+					{ wd:${type} wdt:${instance.props.subclassOf}* ?class. }
+					UNION 
+					{ BIND (wd:${instance.props.subclassOf} as ?class) }
+				`,
+					)
+					.join(' UNION ')}
 
 
 				?class p:${instance.props.propertiesForThisType} ?props.
@@ -52,7 +48,8 @@ export const expectedIds = {
 			}
 	`;
 	},
-	cacheTag: ({ instance, params }) => `expectedIds:${params.class}`,
+	cacheTag: ({ instance, params }) =>
+		`expectedIdsByType:${params.types.join('|')}`,
 	postProcess: ({ results }, params, instance) => {
 		const processed = [];
 
@@ -68,7 +65,6 @@ export const expectedIds = {
 				),
 				search: bind?.search?.value ?? '',
 				searchLang: bind?.searchLang?.value ?? 'mul',
-				contextUrl: bind?.contextUrl?.value ?? '',
 				url: bind?.url?.value ?? '',
 			});
 		});

@@ -1,7 +1,8 @@
 import { calendarVocabulary } from './calendarVocabulary.mjs';
 import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
-import { expectedIds } from './expectedIds.mjs';
+import { expectedIdsByLanguage } from './expectedIdsByLanguage.mjs';
+import { expectedIdsByType } from './expectedIdsByType.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
@@ -17,7 +18,8 @@ const queries = {
 	calendarVocabulary,
 	equivalentClasses,
 	equivalentProperties,
-	expectedIds,
+	expectedIdsByLanguage,
+	expectedIdsByType,
 	instancesOrSubclasses,
 	itemByExternalId,
 	itemByUrl,

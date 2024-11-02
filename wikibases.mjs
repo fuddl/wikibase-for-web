@@ -91,6 +91,7 @@ const wikibases = {
 			instanceOrSubclassOf: 'Q30208840',
 			itemRequiresStatementConstraint: 'Q21503247',
 			JSON: 'Q2063',
+			lexemeRequiresLanguageConstraint: 'Q55819106',
 			literaryWork: 'Q7725634',
 			lowercase: 'Q65048529',
 			minute: 'Q7727',

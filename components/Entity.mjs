@@ -231,7 +231,11 @@ class Entity extends Component {
         ${senses
           ? html`<${Grasp} senses=${senses} manager=${manager} />`
           : null}
-        ${experimental && html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
+        ${experimental &&
+        (('instanceOf' in manager.wikibase.props &&
+          manager.wikibase.props.instanceOf in claims) ||
+          language) &&
+        html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
         ${mainClaims.map(
           claim =>
             html`<${Remark}
