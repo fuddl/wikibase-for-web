@@ -34,6 +34,15 @@ export const expectedIds = {
 				  ?prop p:${instance.props.searchFormatterURL} ?searchprop.
 				  ?searchprop ps:${instance.props.searchFormatterURL} ?search.
 				  ?searchprop rdf:type wikibase:BestRank.
+				  ${
+						'fileFormat' in instance.props && 'JSON' in instance.items
+							? /* do not list json searches. we only need human readable formats */
+								`MINUS {
+				  				?searchprop pq:${instance.props.fileFormat} wd:${instance.items.JSON}.
+				  			}`
+							: ''
+					}
+				  
 				  OPTIONAL {
 				 	 	?searchprop pq:${instance.props.languageOfWorkOrName} ?lang.
 				    ?lang wdt:${instance.props.wikimediaLanguageCode} ?searchLang. 
