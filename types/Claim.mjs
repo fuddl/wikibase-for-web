@@ -94,7 +94,10 @@ export class ExternalIdClaim extends Claim {
     this.mainsnak.datatype = 'external-id';
   }
   hasValue() {
-    return this.mainsnak?.datavalue?.value !== '';
+    return (
+      typeof this.mainsnak?.datavalue?.value !== 'undefined' &&
+      this.mainsnak.datavalue.value !== ''
+    );
   }
 }
 

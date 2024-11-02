@@ -1,0 +1,28 @@
+.knit {
+	padding: 0 0.5714rem 0.5714rem;
+	border: 1px solid var(--border);
+	border-radius: 2px;
+	background: var(--input-paper);
+	color: var(--input-pen);
+}
+
+.knit--focus {
+	border-color: #36c;
+	outline: 1px solid transparent;
+	box-shadow: inset 0 0 0 1px #36c;
+}
+
+.knit__text {
+	padding: 0.357rem 0;
+	line-height: 1.4285;
+	border: none;
+	background: transparent;
+	font-size: 1.2rem;
+	color: inherit;
+	-moz-appearance: textfield;
+	width: 100%;
+	&:focus {
+		outline: none;
+	}
+	vertical-align: bottom;
+}

@@ -7,6 +7,7 @@ import Amount from './Amount.mjs';
 import Annote from './Annote.mjs';
 import Appoint from './Appoint.mjs';
 import Choose from './Choose.mjs';
+import Knit from './Knit.mjs';
 import Map from './Map.mjs';
 import Measure from './Measure.mjs';
 import Mediate from './Mediate.mjs';
@@ -56,13 +57,6 @@ class Nibble extends Component {
               type="hidden" />`}
         ${(() => {
           switch (datatype) {
-            case 'external-id':
-              return html`<${Type}
-                value=${datavalue.value}
-                type="text"
-                required
-                name="${name}.datavalue.value"
-                onValueChange=${onValueChange} />`;
             case 'wikibase-form':
             case 'wikibase-item':
             case 'wikibase-lexeme':
@@ -99,18 +93,25 @@ class Nibble extends Component {
                 property=${property}
                 wikibase=${manager.wikibase.id}
                 onValueChange=${onValueChange} />`;
-            case 'url':
-              return html`<${Type}
-                value=${datavalue.value}
-                type="url"
-                name="${name}.datavalue.value"
-                onValueChange=${onValueChange} />`;
+            case 'external-id':
             case 'string':
-              return html`<${Type}
+            case 'url':
+              return html`<${Knit}
                 value=${datavalue.value}
-                type="text"
                 name="${name}.datavalue.value"
-                onValueChange=${onValueChange} />`;
+                wikibase=${manager.wikibase.id}
+                subject=${subject}
+                required=${true}
+                property=${property}
+                isUrl=${datatype === 'url'}
+                onValueChange=${onValueChange}
+                onAddJobs=${value => {
+                  if (onAddJobs) {
+                    onAddJobs(value);
+                  }
+                }}
+                onUpdateReference=${onUpdateReference}
+                manager=${manager} />`;
             case 'localMedia':
             case 'commonsMedia':
               return html`<${Mediate} ...${mainsnak} manager=${manager} />`;
