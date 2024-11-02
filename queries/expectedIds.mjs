@@ -15,8 +15,6 @@ export const expectedIds = {
 	query: ({ instance, params }) => {
 		return `
 			SELECT DISTINCT ?class ?prop ?value ?search ?searchLang ?contextUrl ?url WHERE {
-				SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-
 
 				{
 					wd:${params.subject} wdt:${instance.props.instanceOf} ?class .
@@ -35,6 +33,7 @@ export const expectedIds = {
 				OPTIONAL {
 				  ?prop p:${instance.props.searchFormatterURL} ?searchprop.
 				  ?searchprop ps:${instance.props.searchFormatterURL} ?search.
+				  ?searchprop rdf:type wikibase:BestRank.
 				  OPTIONAL {
 				 	 	?searchprop pq:${instance.props.languageOfWorkOrName} ?lang.
 				    ?lang wdt:${instance.props.wikimediaLanguageCode} ?searchLang. 
