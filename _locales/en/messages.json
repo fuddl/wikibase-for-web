@@ -31,6 +31,10 @@
       }
     }
   },
+  "no_ids_for_following_type": {
+    "message": "There are no known id properties for the following types:’",
+    "description": "Introduces a list of classes that don't have associated external id properties."
+  },
   "placeholder_example_date": {
     "message": "E.g. `$DATE$`",
     "description": "Placeholder of a textfield that shows an example number that be entered.",

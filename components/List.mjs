@@ -38,6 +38,9 @@ function List({ type, id, manager }) {
 	const [properties, setProperties] = useState(false);
 	const [entity, setEntity] = useState({});
 	const [searchEngine, setSearchEngine] = useState(false);
+	const [types, setTypes] = useState([]);
+	const [languages, setLanguages] = useState([]);
+	const [notFound, setNotFound] = useState(false);
 
 	let result;
 
@@ -46,7 +49,15 @@ function List({ type, id, manager }) {
 
 		const currentEntity = await manager.add(id, false);
 
-		if (manager.wikibase.props.instanceOf in currentEntity.claims) {
+		if (currentEntity.language) {
+			result = await manager.queryManager.query(
+				manager.wikibase,
+				manager.queryManager.queries.expectedIdsByLanguage,
+				{
+					language: currentEntity.language.split(':')[1],
+				},
+			);
+		} else if (manager.wikibase.props.instanceOf in currentEntity.claims) {
 			const types = currentEntity.claims[manager.wikibase.props.instanceOf].map(
 				claim => {
 					return claim?.mainsnak?.datavalue?.value?.id;
@@ -60,14 +71,19 @@ function List({ type, id, manager }) {
 					types: types.map(type => type.split(':')[1]),
 				},
 			);
-		} else if (currentEntity.language) {
-			result = await manager.queryManager.query(
-				manager.wikibase,
-				manager.queryManager.queries.expectedIdsByLanguage,
-				{
-					language: currentEntity.language.split(':')[1],
-				},
-			);
+
+			if (result.length === 0) {
+				setNotFound(true);
+				setTypes(types);
+				const allTypes = await manager.queryManager.query(
+					manager.wikibase,
+					manager.queryManager.queries.inheritedClasses,
+					{
+						classes: types.map(type => type.split(':')[1]),
+					},
+				);
+				setTypes(allTypes);
+			}
 		}
 
 		setEntity(currentEntity);
@@ -79,9 +95,7 @@ function List({ type, id, manager }) {
 
 		setSearchEngine(defaultSearchEngine);
 
-		if (result) {
-			setProperties(result);
-		}
+		setProperties(result);
 	}, []);
 
 	const handleMessage = async message => {
@@ -217,6 +231,17 @@ function List({ type, id, manager }) {
 								</details>`,
 						)}
 				</div> `
+			: ''}
+		${notFound
+			? html`<p>${browser.i18n.getMessage('no_ids_for_following_type')}</p>
+					<ul>
+						${types.map(
+							type =>
+								html`<li key=${type}>
+									<${Thing} id=${type} manager=${manager} />
+								</li>`,
+						)}
+					</ul>`
 			: ''}
 		<datalist id=${`${id}-names`}>
 			${[...new Set(Object.values(names).flat())].map(

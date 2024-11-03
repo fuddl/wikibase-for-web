@@ -3,6 +3,7 @@ import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
 import { expectedIdsByLanguage } from './expectedIdsByLanguage.mjs';
 import { expectedIdsByType } from './expectedIdsByType.mjs';
+import { inheritedClasses } from './inheritedClasses.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
@@ -20,6 +21,7 @@ const queries = {
 	equivalentProperties,
 	expectedIdsByLanguage,
 	expectedIdsByType,
+	inheritedClasses,
 	instancesOrSubclasses,
 	itemByExternalId,
 	itemByUrl,
