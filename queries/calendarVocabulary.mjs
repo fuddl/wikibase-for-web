@@ -26,8 +26,9 @@ export const calendarVocabulary = {
       }
 
       FILTER NOT EXISTS { ?form wikibase:grammaticalFeature wd:${instance.items.plural} }
-      
-      ?thing wdt:${instance.props.seriesOrdinal} ?ordinal.
+
+      ?thing p:${instance.props.instanceOf} ?instanceOf.
+      ?instanceOf pq:${instance.props.seriesOrdinal} ?ordinal.
       
       ?sense wdt:${instance.props.itemForThisSense} ?thing.
       ?lexeme ontolex:sense ?sense.
