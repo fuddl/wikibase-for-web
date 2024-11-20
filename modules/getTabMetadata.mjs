@@ -45,6 +45,11 @@ export async function getTabMetadata(tabId) {
             };
 
             function makeUrlsAbsolute(obj, baseUrl, parentContext = '') {
+                const currentUrls = [
+                    document.location.toString(),
+                    getCanonicalURL(),
+                ];
+
                 // Helper function to convert a relative URL to an absolute URL using an <a> element
                 function toAbsoluteUrl(relativeUrl) {
                     const a = document.createElement('link');
@@ -95,11 +100,9 @@ export async function getTabMetadata(tabId) {
                             );
                         }
                         if (
-                            key === 'url' &&
-                            [
-                                document.location.toString(),
-                                getCanonicalURL(),
-                            ].includes(obj[key])
+                            (key === 'url' && currentUrls.includes(obj[key])) ||
+                            (key === 'mainEntityOfPage' &&
+                                currentUrls.includes(obj[key]?.['@id']))
                         ) {
                             obj['@isSubjectOfPage'] = true;
                             delete obj[key];

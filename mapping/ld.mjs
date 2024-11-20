@@ -23,6 +23,28 @@ function isNumberOrNumericString(value) {
 	return false;
 }
 
+function findSubjectOfPage(obj) {
+	if (obj && typeof obj === 'object') {
+		// Check if the current object has the property set to true
+		if (obj['@isSubjectOfPage'] === true) {
+			return obj;
+		}
+
+		// Recursively search in each property of the object
+		for (const key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				const result = findSubjectOfPage(obj[key]);
+				if (result) {
+					return result;
+				}
+			}
+		}
+	}
+
+	// Return null if no matching object is found
+	return null;
+}
+
 function durationToQuantity(data, wikibase) {
 	let h, m, s;
 	const hMatch = data.match(/(\d+)H/);
@@ -106,9 +128,12 @@ async function ldToEdits({
 
 	for (const d of ld) {
 		if (!d?.['@isSubjectOfPage']) {
-			if (d?.['@graph']) {
+			const graph = d?.['@graph'];
+			const subjectOfPage = findSubjectOfPage(d);
+
+			if (graph || subjectOfPage) {
 				await ldToEdits({
-					ld: d['@graph'],
+					ld: graph ?? [subjectOfPage],
 					wikibase: wikibase,
 					metadata: metadata,
 					references: references,
@@ -322,7 +347,7 @@ async function ldToEdits({
 			const monolingualtextProperties = equivalentProperties.filter(
 				p => p.type === 'Monolingualtext',
 			);
-			if (monolingualtextProperties.length > 0 && value instanceof String) {
+			if (monolingualtextProperties.length > 0 && typeof value === 'string') {
 				newEdits.push({
 					action: 'claim:create',
 					signature: makeSignature(property),
@@ -341,11 +366,9 @@ async function ldToEdits({
 				p => p.type === 'Quantity',
 			);
 			if (quantityProperties.length > 0) {
-				if (
-					typeof value === 'string' &&
-					value.match(/^PT(\d+H)?(\d+M)?(\d+S)?$/)
-				) {
+				if (typeof value === 'string') {
 					const parseValue = durationToQuantity(value, wikibase);
+
 					if (parseValue) {
 						newEdits.push({
 							action: 'claim:create',
