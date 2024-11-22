@@ -28,6 +28,14 @@ class WikiBaseEntityManager {
 			if (!this.wikibases[wikibase].languages.includes('mul')) {
 				this.wikibases[wikibase].languages.push('mul');
 			}
+
+			this.fetchUIOptions(wikibase)
+				.then(result => {
+					this.wikibases[wikibase].UIOptions = result;
+				})
+				.catch(error => {
+					console.error('Error fetching UI options:', error);
+				});
 		}
 	}
 
@@ -106,6 +114,35 @@ class WikiBaseEntityManager {
 			}
 
 			return babelLanguages;
+		} catch (error) {
+			console.error('Failed to fetch Babel languages:', error);
+			return [];
+		}
+	}
+
+	async fetchUIOptions(wikibase) {
+		try {
+			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
+			const url = new URL(endPoint);
+			url.search = new URLSearchParams({
+				action: 'query',
+				meta: 'userinfo',
+				uiprop: 'options',
+				format: 'json',
+			});
+
+			const response = await fetch(url.toString());
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			if (data.error) {
+				console.error(data.error);
+				return [];
+			}
+
+			return data?.query?.userinfo?.options;
 		} catch (error) {
 			console.error('Failed to fetch Babel languages:', error);
 			return [];

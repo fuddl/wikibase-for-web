@@ -18,13 +18,16 @@ class Tempus extends Component {
 
     if (precision > 10) {
       const date = new Date(datetime);
-      // display dates as iso for now
-      //localised = date.toISOString().substring(0, 10);
-      localised = new Intl.DateTimeFormat(navigator.language, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }).format(date);
+      const prefersIsoDate = manager.wikibase?.UIOptions?.date === 'ISO 8601';
+      if (prefersIsoDate) {
+        localised = date.toISOString().substring(0, 10);
+      } else {
+        localised = new Intl.DateTimeFormat(navigator.language, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }).format(date);
+      }
     } else if (precision == 10) {
       const year = parseInt(time.substring(1, 6));
       const monthNumber = parseInt(time.substring(6, 8));
