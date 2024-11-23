@@ -53,6 +53,7 @@ class Change extends Component {
 				: !dismissed.isEditDismissed(this.signature),
 			invalid: empty,
 			languageNames: {},
+			hasEditMode: !props?.claim?.mainsnak?.valueOptions?.length > 0,
 		};
 	}
 
@@ -245,6 +246,7 @@ class Change extends Component {
 					<dd class="change__value" hidden=${this.state.editMode}>
 						${getValue(this.action)}
 						${this.state?.claim?.mainsnak.datavalue &&
+						this.state.hasEditMode &&
 						html`<button
 							title="${browser.i18n.getMessage('edit_button')}"
 							class="change__toggle"
@@ -257,6 +259,7 @@ class Change extends Component {
 						</button>`}
 					</dd>
 					${this.state?.claim?.mainsnak.datavalue &&
+					this.state.hasEditMode &&
 					html`<dd class="change__value" hidden=${!this.state.editMode}>
 						<${Nibble}
 							datatype=${this.state.claim.mainsnak.datatype}

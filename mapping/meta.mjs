@@ -229,7 +229,8 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 									return suggestion.resolved.map(resolved => resolved.id);
 								}
 							})
-							.flat();
+							.flat()
+							.filter(id => id.startsWith(`${wikibase.id}:Q`));
 
 						if (options.length > 0) {
 							newEdits.push({
