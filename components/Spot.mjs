@@ -8,10 +8,14 @@ import {
 import htm from '../importmap/htm/src/index.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { filterBadClaims } from '../modules/filterBadValues.mjs';
+import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
 
 class Spot extends Component {
+	componentDidMount() {
+		requireStylesheet(browser.runtime.getURL('/components/spot.css'));
+	}
 	render({ value, property, manager }) {
 		const getFormatterUrls = async id => {
 			const formatterProp = manager.wikibase.props?.formatterURL;
