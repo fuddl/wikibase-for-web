@@ -196,7 +196,6 @@ class Entity extends Component {
       await browser.runtime.sendMessage({
         type: 'request_workbench',
         workbench: {
-          title: browser.i18n.getMessage('add_claims'),
           edits: [],
           subjectId: id,
         },

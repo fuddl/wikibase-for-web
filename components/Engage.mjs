@@ -9,9 +9,11 @@ class Engage extends Component {
     requireStylesheet(browser.runtime.getURL('/components/engage.css'));
   }
 
-  render({ disabled, text, onClick }) {
+  render({ disabled, text, onClick, priority = 'primary' }) {
+    const buttonClass = `engage engage--${priority}`;
+
     return html`<button
-      class="engage"
+      class=${buttonClass}
       disabled=${disabled}
       onClick=${onClick}
       type="submit">
@@ -19,5 +21,4 @@ class Engage extends Component {
     </button>`;
   }
 }
-
 export default Engage;

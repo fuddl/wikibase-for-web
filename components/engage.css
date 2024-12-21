@@ -3,9 +3,6 @@
 }
 
 .engage {
-  background-color: #447ff5;
-  border-color: #447ff5;
-  color: white;
   outline: 1px solid;
   padding-top: 6px;
   padding-bottom: 6px;
@@ -30,6 +27,12 @@
     FairfaxHaxHD,
     cc-icons,
     sans-serif;
+}
+
+.engage--primary {
+  background-color: #447ff5;
+  border-color: #447ff5;
+  color: white;
 }
 
 .engage[disabled] {

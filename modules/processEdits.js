@@ -10,11 +10,13 @@ export function processEdits(data, jobs) {
 		if (!edit.apply) {
 			continue;
 		}
+		const subject = edit?.subject ?? data.subjectId;
+
 		if (edit?.action === 'claim:create') {
 			jobs.push({
 				action: edit.action,
 				instance: data.instance,
-				entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+				entity: subject === 'CREATE' ? 'LAST' : subject,
 				claim: edit.claim,
 			});
 
@@ -46,7 +48,7 @@ export function processEdits(data, jobs) {
 			jobs.push({
 				action: edit.action,
 				instance: data.instance,
-				entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+				entity: subject === 'CREATE' ? 'LAST' : subject,
 				sitelink: edit.sitelink,
 			});
 		}
@@ -54,7 +56,7 @@ export function processEdits(data, jobs) {
 			jobs.push({
 				action: edit.action,
 				instance: data.instance,
-				entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+				entity: subject === 'CREATE' ? 'LAST' : subject,
 				add: edit.add,
 				language: edit.language,
 			});
@@ -63,7 +65,7 @@ export function processEdits(data, jobs) {
 			jobs.push({
 				action: edit.action,
 				instance: data.instance,
-				entity: data.subjectId === 'CREATE' ? 'LAST' : data.subjectId,
+				entity: subject === 'CREATE' ? 'LAST' : subject,
 				value: edit.add,
 				language: edit.language,
 			});

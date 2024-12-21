@@ -3,6 +3,23 @@
     "message": "Add claims",
     "description": "Title of a form where claims can be added."
   },
+  "add_claims_to": {
+    "message": "Add claims to $SUBJECT$.",
+    "description": "Title of a form where claims can be added to a specific entity.",
+    "placeholders": {
+      "subject": {
+        "content": "$1",
+        "example": "wikidata:Q42"
+      }
+    }
+  },
+  "add_claims_to_many": {
+    "message": "Add claims to multiple entities",
+    "description": "Title of a form where claims can be added to multiple entities."
+  },
+  "flip_claim_direction": {
+    "message": "Flip claim direction"
+  },
   "search_ids": {
     "message": "Search for ids",
     "description": "Title of a list where external ids can be searched."

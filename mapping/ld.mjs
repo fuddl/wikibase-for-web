@@ -268,13 +268,27 @@ async function ldToEdits({
 						11: 11, // Full date (+YYYY-MM-DD)
 						14: 12, // hour (+YYYY-MM-DDTHH)
 						17: 14, // minute (+YYYY-MM-DDTHH:MM)
-						20: 15, // minute (+YYYY-MM-DDTHH:MM:SS)
+						20: 15, // second (+YYYY-MM-DDTHH:MM:SS)
 					};
 
-					const precision =
-						normal.length < 21 ? lengthToPrecision[normal.length] : 20;
-					const filled = value.split(/-|T|:|Z|\+/g);
-					const date = `+${filled[0] || '0000'}-${filled[1] || '00'}-${filled[2] || '00'}T${filled[3] || '00'}:${filled[4] || '00'}:${filled[5] || '00'}Z`;
+					// Determine the base precision from the length (or 20 if not found)
+					const basePrecision = lengthToPrecision[normal.length] ?? 20;
+
+					// currently the maximum precision is 11
+					const precision = Math.min(basePrecision, 11);
+
+					const [
+						year = '0000',
+						month = '00',
+						day = '00',
+						hour = '00',
+						minute = '00',
+						secondWithFraction = '00',
+					] = value.split(/-|T|:|Z|\+/g);
+
+					const second = secondWithFraction.split('.')[0] || '00';
+
+					const date = `+${year}-${month}-${day}T${/*hour*/ '00'}:${/*minute*/ '00'}:${/*second*/ '00'}Z`;
 
 					newEdits.push({
 						action: 'claim:create',

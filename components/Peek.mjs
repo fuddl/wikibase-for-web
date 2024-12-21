@@ -16,6 +16,8 @@ import Choose from './Choose.mjs';
 import Change from './Change.mjs';
 import Engage from './Engage.mjs';
 import List from './List.mjs';
+import Localize from './Localize.mjs';
+import Thing from './Thing.mjs';
 
 import { claimTypeMap } from '../types/Claim.mjs';
 
@@ -52,6 +54,12 @@ const submit = e => {
 	}
 };
 
+function toggleSuffix(str, suffix) {
+	return str.endsWith(suffix)
+		? str.slice(0, -suffix.length)
+		: `${str}${suffix}`;
+}
+
 function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 	const [open, setOpen] = useState(false);
 	const [edits, setEdits] = useState(initialEdits);
@@ -71,6 +79,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 						{
 							...currentEdits[index],
 							claim: { ...currentEdits[index].claim, value: undefined },
+							subject: localSubjectId,
 						},
 					];
 				} else {
@@ -84,10 +93,29 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 						action: 'claim:create',
 						claim: claim,
 						signature: signature,
+						subject: localSubjectId,
 					},
 				];
 			}
 		});
+	};
+
+	const flipDirection = e => {
+		e.preventDefault();
+		const flippedEdits = [];
+		for (const edit of edits) {
+			const flippedEdit = edit;
+			const newObject = edit.subject;
+			const newSubject = edit.claim.getValue().id.replace(/.+:/, '');
+
+			flippedEdit.subject = newSubject;
+			flippedEdit.claim.setValue(`${manager.wikibase.id}:${newObject}`);
+
+			flippedEdit.signature = toggleSuffix(flippedEdit.signature, ':flipped');
+
+			flippedEdits.push(flippedEdit);
+		}
+		setEdits(flippedEdits);
 	};
 
 	useEffect(() => {
@@ -104,6 +132,30 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 		});
 	};
 
+	const multipleSubjects = !edits.every(
+		item => item.subject === edits[0]?.subject,
+	);
+	const canFlip =
+		edits.length > 0 &&
+		edits.every(
+			item => item.claim?.mainsnak?.datavalue?.value?.id !== undefined,
+		);
+
+	if (!title && subjectId) {
+		const titleSubject = subjectId;
+		if (!multipleSubjects) {
+			title = html`
+				<${Localize}
+					message="add_claims_to"
+					placeholders=${[
+						html`<${Thing} manager=${manager} id=${titleSubject} />`,
+					]} />
+			`;
+		} else {
+			title = browser.i18n.getMessage('add_claims_to_many');
+		}
+	}
+
 	useEffect(async () => {
 		if (edits) {
 			await highlightJobs();
@@ -118,22 +170,28 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 		${edits &&
 		html`<form ref=${formRef}>
 			<input type="hidden" name="instance" value=${manager.wikibase.id} />
-			<input type="hidden" name="subjectId" value=${localSubjectId} />
 			${Object.entries(edits).map(
 				([editId, edit]) =>
-					html`<${Change}
-						key=${edit?.signature ?? editId}
-						claim=${edit?.claim}
-						labels=${edit?.labels}
-						description=${edit?.description}
-						sitelink=${edit?.sitelink}
-						action=${edit.action}
-						subject=${subjectId}
-						onChange=${highlightJobs}
-						signature=${edit?.signature}
-						onAddJobs=${handleAddJobs}
-						name=${`edits.${editId}`}
-						manager=${manager} />`,
+					html`${edit?.subject !== localSubjectId
+							? html`<h2>
+									<${Thing}
+										manager=${manager}
+										id=${[manager.wikibase.id, edit.subject].join(':')} />
+								</h2>`
+							: ''}
+						<${Change}
+							key=${edit?.signature ?? editId}
+							claim=${edit?.claim}
+							subject=${edit?.subject}
+							labels=${edit?.labels}
+							description=${edit?.description}
+							sitelink=${edit?.sitelink}
+							action=${edit.action}
+							onChange=${highlightJobs}
+							signature=${edit?.signature}
+							onAddJobs=${handleAddJobs}
+							name=${`edits.${editId}`}
+							manager=${manager} />`,
 			)}
 			${edits.length === 0 &&
 			html` <${Choose}
@@ -152,9 +210,17 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 							claim: new claimTypeMap[property.datatype]({
 								property: chosenProp,
 							}),
+							subject: localSubjectId,
 						},
 					]);
 				}} />`}
+			${canFlip &&
+			html`<${Engage}
+				text=${browser.i18n.getMessage('flip_claim_direction')}
+				onClick=${e => {
+					flipDirection(e);
+				}}
+				priority="none" />`}
 			<footer class="peek__footer">
 				<${Engage}
 					disabled=${edits.length === 0}

@@ -15,14 +15,7 @@ export class Claim {
       this.references = references;
     }
 
-    // Determine how to handle the value based on its type
-    if (value && !Array.isArray(value)) {
-      this.mainsnak.datavalue.value = value;
-    } else if (Array.isArray(value) && value.length === 1) {
-      this.mainsnak.datavalue.value = value[0];
-    } else if (Array.isArray(value) && value.length > 1) {
-      this.mainsnak.valueOptions = value;
-    }
+    this.setValue(value);
 
     // Determine how to handle the property based on its type
     if (typeof property === 'string') {
@@ -35,6 +28,23 @@ export class Claim {
 
     this.type = 'statement'; // Default type
     this.rank = 'normal'; // Default rank
+  }
+
+  setValue(value) {
+    // Determine how to handle the value based on its type
+    if (value && !Array.isArray(value)) {
+      this.mainsnak.datavalue.value = value;
+    } else if (Array.isArray(value) && value.length === 1) {
+      this.mainsnak.datavalue.value = value[0];
+    } else if (Array.isArray(value) && value.length > 1) {
+      this.mainsnak.valueOptions = value;
+    }
+  }
+
+  getValue() {
+    if (this.mainsnak.datavalue.value) {
+      return this.mainsnak.datavalue.value;
+    }
   }
 
   addQualifier(claim) {
@@ -114,6 +124,17 @@ export class WikibaseItemClaim extends Claim {
   constructor({ property, value, references }) {
     super({ property, references });
 
+    // datavalue should not be present if no value has been determined yet
+    if (this.mainsnak.datavalue) {
+      this.mainsnak.datavalue.type = 'wikibase-entityid';
+    }
+
+    this.setValue(value);
+
+    this.mainsnak.datatype = 'wikibase-item';
+  }
+
+  setValue(value) {
     if (typeof value === 'string') {
       this.mainsnak.datavalue = { value: { id: value } };
     } else if (Array.isArray(value)) {
@@ -125,14 +146,8 @@ export class WikibaseItemClaim extends Claim {
         this.mainsnak.valueOptions = value;
       }
     }
-
-    // datavalue should not be present if no value has been determined yet
-    if (this.mainsnak.datavalue) {
-      this.mainsnak.datavalue.type = 'wikibase-entityid';
-    }
-
-    this.mainsnak.datatype = 'wikibase-item';
   }
+
   hasValue() {
     return (
       this.mainsnak?.datavalue?.value?.id &&

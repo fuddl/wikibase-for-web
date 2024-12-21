@@ -238,6 +238,11 @@ class Change extends Component {
 					value=${this.signature}
 					name=${`${this.name}.signature`}
 					type="hidden" />
+				${this.subject &&
+				html`<input
+					name=${`${this.name}.subject`}
+					value=${this.subject}
+					type="hidden" />`}
 				<dl
 					class="change__preview ${!this.state.active
 						? 'change__preview--disabled'
