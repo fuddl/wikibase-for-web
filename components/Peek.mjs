@@ -132,10 +132,12 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 		});
 	};
 
-	const multipleSubjects = !edits.every(
-		item => item.subject === edits[0]?.subject,
-	);
+	const multipleSubjects =
+		Array.isArray(edits) &&
+		!edits.every(item => item.subject === edits[0]?.subject);
+
 	const canFlip =
+		Array.isArray(edits) &&
 		edits.length > 0 &&
 		edits.every(
 			item => item.claim?.mainsnak?.datavalue?.value?.id !== undefined,
