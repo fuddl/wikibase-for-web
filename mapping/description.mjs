@@ -17,6 +17,7 @@ export async function descriptionsEdits(id, descriptions, manager) {
     edits.push({
       action: 'description:set',
       signature: `suggest-description-${lang}`,
+      subject: localId,
       description: {
         id: localId,
         language: lang,
