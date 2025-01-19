@@ -256,6 +256,14 @@
     "message": "External identifiers",
     "description": "Heading for a section containing external ids."
   },
+  "quick_link": {
+    "message": "Quick Link",
+    "description": "Heading for a section containing a single quick link."
+  },
+  "quick_links": {
+    "message": "Quick Links",
+    "description": "Heading for a section containing quick links."
+  },
   "link": {
     "message": "Links",
     "description": "Heading for a section containing a single link."

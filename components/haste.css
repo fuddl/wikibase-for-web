@@ -1,0 +1,27 @@
+.haste {
+	margin: 0;
+	padding: 0;
+}
+
+.haste__item {
+	display: grid;
+	grid-template-columns: 2em auto;
+	grid-gap: 0 0.25em;
+	grid-template-areas: 'icon link';
+	margin: 1em 0;
+}
+
+.haste__icon {
+	grid-area: icon;
+	height: 2em;
+	width: 2em;
+	object-fit: contain;
+	object-position: center;
+	vertical-align: bottom;
+}
+
+.haste__links {
+	display: block;
+	margin: auto auto auto 0;
+	grid-area: link;
+}

@@ -338,6 +338,19 @@ class WikiBaseEntityManager {
 		}
 		return this.wikibases[wikibase].propOrder;
 	}
+	async fetchPropIcons(name) {
+		const wikibase = this.wikibases[name];
+
+		if ('propIcons' in wikibase) {
+			return this.wikibases[wikibase].propIcons;
+		}
+		const icons = await wikibase.manager.queryManager.query(
+			wikibase,
+			wikibase.manager.queryManager.queries.propertyIcons,
+		);
+		wikibase.propIcons = icons;
+		return icons;
+	}
 	idFromEntityUrl(url) {
 		const normalisedUrl = url.replace(/^http:/, 'https:');
 		const instance = Object.keys(this.wikibases).find(name => {

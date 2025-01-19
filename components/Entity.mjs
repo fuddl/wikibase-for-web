@@ -12,6 +12,7 @@ import Hint from './Hint.mjs';
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
 import Register from './Register.mjs';
+import Haste from './Haste.mjs';
 import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
 import Grasp from './Grasp.mjs';
@@ -145,6 +146,22 @@ class Entity extends Component {
       claims = applyPropOrder(claims, propOrder);
     }
 
+    const [propIcons, setPropIcons] = useState(
+      manager.wikibases[wikibase]?.propIcons ?? null,
+    );
+
+    if (!propIcons) {
+      useEffect(() => {
+        (async () => {
+          const newPropIcons = await manager.fetchPropIcons(wikibase);
+          console.debug(newPropIcons);
+          setPropIcons(newPropIcons);
+        })();
+      }, []);
+    }
+
+    //console.debug(propIcons);
+
     let mainClaims = Object.values(claims).filter(claim => {
       return !['external-id', 'url'].includes(claim[0].mainsnak.datatype);
     });
@@ -160,8 +177,21 @@ class Entity extends Component {
       return claim[0].mainsnak.datatype === 'url';
     });
 
+    const quickLinkClaims = [];
+
     const externalIdClaims = Object.values(claims).filter(claim => {
-      return claim[0].mainsnak.datatype === 'external-id';
+      const isExternalId = claim[0].mainsnak.datatype === 'external-id';
+      if (
+        isExternalId &&
+        propIcons &&
+        claim[0].mainsnak.property in propIcons
+      ) {
+        claim[0].icon = propIcons[claim[0].mainsnak.property];
+        quickLinkClaims.push(claim);
+        return false;
+      }
+
+      return isExternalId;
     });
 
     let counter = 1;
@@ -251,6 +281,16 @@ class Entity extends Component {
           actionTitle=${browser.i18n.getMessage('add_claims')}
           action=${addClaims} />
 
+        ${quickLinkClaims.length > 0
+          ? html`
+              <h2 key="links">
+                ${browser.i18n.getMessage(
+                  quickLinkClaims.length === 1 ? 'quick_link' : 'quick_links',
+                )}
+              </h2>
+              <${Haste} claims=${quickLinkClaims} manager=${manager} />
+            `
+          : null}
         ${urlClaims.length > 0
           ? html`
               <h2 key="links">

@@ -9,6 +9,7 @@ import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
 import { labels } from './labels.mjs';
 import { languageByIso6391Code } from './languageByIso6391Code.mjs';
+import { propertyIcons } from './propertyIcons.mjs';
 import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
@@ -27,6 +28,7 @@ const queries = {
 	itemByUrl,
 	labels,
 	languageByIso6391Code,
+	propertyIcons,
 	reviewScoreHostnames,
 	shortTitle,
 	unitSymbol,

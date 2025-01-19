@@ -19,7 +19,7 @@ import { WikibaseItemClaim } from '../types/Claim.mjs';
 
 import useExtraFocus from '../modules/focusExtra.mjs';
 
-import AutoDesc from './AutoDesc.mjs';
+import AutoDesc from './Autodesc.mjs';
 
 const html = htm.bind(h);
 

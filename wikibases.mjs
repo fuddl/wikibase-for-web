@@ -20,6 +20,7 @@ const wikibases = {
 			fileFormat: 'P2701',
 			formatterURL: 'P1630',
 			hasCharacteristic: 'P1552',
+			icon: 'P2910',
 			instanceOf: 'P31',
 			isbn10: 'P957',
 			isbn13: 'P212',
