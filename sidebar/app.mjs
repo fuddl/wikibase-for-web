@@ -10,6 +10,20 @@ const manager = new WikiBaseEntityManager({
 	languages: navigator.languages.map(lang => lang.toLowerCase()),
 });
 
+const scrollToTopInstantly = () => {
+	// Force 'scroll-behavior: auto' to be applied
+	document.documentElement.style.scrollBehavior = 'auto';
+
+	// Force a sync layout so the style is applied
+	document.documentElement.getBoundingClientRect();
+
+	// Now do the scroll
+	window.scrollTo(0, 0);
+
+	// Optionally restore the old style
+	document.documentElement.style.scrollBehavior = '';
+};
+
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -55,6 +69,7 @@ class Sidebar extends Component {
 					organised.bestMatches.length > 1 ? organised.bestMatches : null,
 				otherEntities: organised.otherMatches,
 			});
+			scrollToTopInstantly();
 			return Promise.resolve('done');
 		} else if (message.type === 'update_entity') {
 			const updatedIsCurrent = this.state.entity?.id === message.entity;
@@ -71,13 +86,11 @@ class Sidebar extends Component {
 			}
 			return Promise.resolve('done');
 		} else if (message.type === 'navigate') {
-			document.documentElement.setAttribute('style', 'scroll-behavior: auto;');
 			await this.setState({
 				entity: await manager.add(message.entity, false),
 				suggestions: null,
 			});
-			window.scrollTo(0, 0);
-			document.documentElement.removeAttribute('style');
+			scrollToTopInstantly();
 			return Promise.resolve('done');
 		} else if (message.type === 'workbench') {
 			await this.setState({
