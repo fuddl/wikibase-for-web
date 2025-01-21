@@ -283,11 +283,16 @@ browser.webRequest.onBeforeRequest.addListener(
 			if (action.includes('wbsetclaim')) {
 				if (details.requestBody?.formData?.claim?.[0]) {
 					const claim = JSON.parse(details.requestBody.formData.claim[0]);
+
+					if (claim?.id) {
+						tracker.add(claim.id.split('$')[0], 'subject');
+					}
+
 					if (claim?.mainsnak?.property) {
 						tracker.add(claim.mainsnak.property);
 					}
 					if (claim?.mainsnak?.datavalue?.value?.id) {
-						tracker.add(claim.mainsnak.datavalue.value.id);
+						tracker.add(claim.mainsnak.datavalue.value.id, 'object');
 					}
 				}
 			}

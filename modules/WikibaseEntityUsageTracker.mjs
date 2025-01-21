@@ -25,9 +25,12 @@ export class WikibaseEntityUsageTracker {
 	}
 
 	// Add an entity or update its last used time
-	add(entityId) {
+	add(entityId, context = null) {
 		if (!this.entities[entityId]) {
 			this.entities[entityId] = {};
+		}
+		if (context) {
+			this.entities[entityId].context = context;
 		}
 		this.entities[entityId].lastUsed = new Date().toISOString();
 		this.saveEntities();

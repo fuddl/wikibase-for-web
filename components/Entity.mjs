@@ -154,7 +154,6 @@ class Entity extends Component {
       useEffect(() => {
         (async () => {
           const newPropIcons = await manager.fetchPropIcons(wikibase);
-          console.debug(newPropIcons);
           setPropIcons(newPropIcons);
         })();
       }, []);
