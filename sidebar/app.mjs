@@ -42,11 +42,35 @@ class Sidebar extends Component {
 	}
 
 	componentDidMount() {
+		this.requestResolveIfNeeded();
+
 		browser.runtime.onMessage.addListener(this.handleMessage);
 	}
 
 	componentWillUnmount() {
 		browser.runtime.onMessage.removeListener(this.handleMessage);
+	}
+
+	requestResolveIfNeeded(prevState = this.state) {
+		if (
+			!this.state.entity &&
+			!this.state.selectable &&
+			!this.state.suggestions &&
+			!this.state.otherEntities
+		) {
+			if (
+				!prevState.entity &&
+				!prevState.selectable &&
+				!prevState.suggestions &&
+				!prevState.otherEntities
+			) {
+				(async () => {
+					await browser.runtime.sendMessage({
+						type: 'request_resolve',
+					});
+				})();
+			}
+		}
 	}
 
 	handleMessage = async message => {
@@ -109,14 +133,6 @@ class Sidebar extends Component {
 			workbench,
 			viewId,
 		} = this.state;
-
-		if (!entity && !selectable && !suggestions && !otherEntities) {
-			(async () => {
-				await browser.runtime.sendMessage({
-					type: 'request_resolve',
-				});
-			})();
-		}
 
 		if (entity?.id) {
 			manager.updateSidebarAction(entity.id.split(':')[0]);
