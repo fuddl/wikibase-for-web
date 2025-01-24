@@ -17,16 +17,19 @@ class Haste extends Component {
       ${claims &&
       claims.map(
         claim =>
-          html`<li class="haste__item">
+          html`<li class="haste__item" key="{claim[0].id}">
             <img class="haste__icon" src=${claim[0].icon[0]} loading="lazy" />
-            <span class="haste__links">
+            <div class="haste__links">
               ${claim.map(
                 object =>
-                  html`<span class="haste__link">
-                    /<${Snack} ...${object} manager=${manager} />
-                  </span>`,
+                  html`<div class="haste__link">
+                    /<${Snack}
+                      ...${object}
+                      qualifiers=${false}
+                      manager=${manager} /><br />
+                  </div>`,
               )}
-            </span>
+            </div>
           </li>`,
       )}
     </ul>`;
