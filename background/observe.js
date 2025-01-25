@@ -280,6 +280,15 @@ browser.webRequest.onBeforeRequest.addListener(
 			if (!action) {
 				return;
 			}
+
+			if (action.includes('wbcreateclaim')) {
+				if (details.requestBody?.formData?.entity?.length) {
+					details.requestBody.formData.entity.forEach(entity => {
+						tracker.add(entity, 'subject');
+					});
+				}
+			}
+
 			if (action.includes('wbsetclaim')) {
 				if (details.requestBody?.formData?.claim?.[0]) {
 					const claim = JSON.parse(details.requestBody.formData.claim[0]);
