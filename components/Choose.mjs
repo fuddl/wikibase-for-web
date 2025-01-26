@@ -197,7 +197,7 @@ const Choose = ({
 	}, [choosenId]);
 
 	useEffect(() => {
-		const fetchSuggestions = async () => {
+		const fetchSuggestions = async (ifEmpty = null) => {
 			const searchUrl = manager.wikibases[wikibase].api.searchEntities({
 				search: inputValue,
 				// workaround for https://phabricator.wikimedia.org/T271500
@@ -234,20 +234,28 @@ const Choose = ({
 						return 0;
 					});
 				}
-				setSuggestions(autocomplete.search);
+				if (autocomplete.search.length > 0) {
+					setSuggestions(autocomplete.search);
+				} else if (ifEmpty) {
+					ifEmpty();
+				}
 			}
+		};
+
+		const getFallbackSuggestions = () => {
+			const tracker = new WikibaseEntityUsageTracker(wikibase);
+			const latest = tracker.getLatest(type);
+			setSuggestions(latest);
 		};
 
 		if (shouldFetch) {
 			if (inputValue !== '') {
 				const debounce = setTimeout(() => {
-					fetchSuggestions();
+					fetchSuggestions(getFallbackSuggestions);
 				}, 100);
 				return () => clearTimeout(debounce);
 			} else {
-				const tracker = new WikibaseEntityUsageTracker(wikibase);
-				const latest = tracker.getLatest(type);
-				setSuggestions(latest);
+				getFallbackSuggestions();
 			}
 		}
 	}, [inputValue, type]);
