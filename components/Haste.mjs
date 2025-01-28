@@ -17,7 +17,7 @@ class Haste extends Component {
       ${claims &&
       claims.map(
         claim =>
-          html`<li class="haste__item" key="{claim[0].id}">
+          html`<li class="haste__item" key=${claim[0].id}>
             <img class="haste__icon" src=${claim[0].icon[0]} loading="lazy" />
             <div class="haste__links">
               ${claim.map(
