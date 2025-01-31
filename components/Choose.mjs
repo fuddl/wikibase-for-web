@@ -368,6 +368,7 @@ const Choose = ({
 								setChoosenId(suggestion.id);
 								setSelectedIndex(-1);
 							}}
+							key=${suggestion.id}
 							onMouseMove=${() => {
 								setSelectedIndex(index);
 							}}>
