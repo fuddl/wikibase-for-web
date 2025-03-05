@@ -187,6 +187,7 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 							subject=${edit?.subject}
 							labels=${edit?.labels}
 							description=${edit?.description}
+							lemma=${edit?.lemma}
 							sitelink=${edit?.sitelink}
 							action=${edit.action}
 							onChange=${highlightJobs}

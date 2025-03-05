@@ -134,6 +134,18 @@
     "message": "Edit descriptions",
     "description": "Title of a form where descriptions can be changed."
   },
+  "set_lemma": {
+    "message": "Set lemma",
+    "description": "Label of an input field where a lemma can be added."
+  },
+  "edit_lemmas": {
+    "message": "Edit lemmas",
+    "description": "Title of a form where lemmas of a lexeme can be changed."
+  },
+  "edit_lemma": {
+    "message": "Edit lemma",
+    "description": "Label of a text field where a lemma can be changed,"
+  },
   "aquiring_metadata": {
     "message": "Aquiring metadata…",
     "description": "Message shown when aquiring metadata."

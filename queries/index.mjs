@@ -8,8 +8,10 @@ import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
 import { labels } from './labels.mjs';
+import { languageByIETF } from './languageByIETF.mjs';
 import { languageByIso6391Code } from './languageByIso6391Code.mjs';
 import { propertyIcons } from './propertyIcons.mjs';
+import { randomLemmaByLang } from './randomLemmaByLang.mjs';
 import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
@@ -27,8 +29,10 @@ const queries = {
 	itemByExternalId,
 	itemByUrl,
 	labels,
+	languageByIETF,
 	languageByIso6391Code,
 	propertyIcons,
+	randomLemmaByLang,
 	reviewScoreHostnames,
 	shortTitle,
 	unitSymbol,

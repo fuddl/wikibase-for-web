@@ -70,6 +70,25 @@ export function processEdits(data, jobs) {
 				language: edit.language,
 			});
 		}
+		if (edit?.action === 'lemma:set' || edit?.action === 'lemma:edit') {
+			if (edit.lemma.value) {
+				const lemma = {};
+				jobs.push({
+					action: edit.action,
+					instance: data.instance,
+					entity: subject === 'CREATE' ? 'LAST' : subject,
+					value: edit.lemma.value,
+					language: edit.lemma.language,
+				});
+			} else if (edit?.action === 'lemma:edit') {
+				jobs.push({
+					action: 'lemma:remove',
+					instance: data.instance,
+					entity: subject === 'CREATE' ? 'LAST' : subject,
+					language: edit.lemma.language,
+				});
+			}
+		}
 	}
 
 	if (data.matchUrl) {

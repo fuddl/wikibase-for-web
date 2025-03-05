@@ -2,7 +2,6 @@ export const inheritedClasses = {
 	id: 'inherited-classes',
 	requiredProps: ['subclassOf'],
 	query: ({ instance, params }) => {
-		console.debug(params);
 		return `
 			SELECT DISTINCT ?inheritedClass WHERE {
 

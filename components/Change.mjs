@@ -13,6 +13,7 @@ import { urlReference } from '../mapping/urlReference.mjs';
 const html = htm.bind(h);
 
 import Distinguish from './Distinguish.mjs';
+import Lemmatize from './lemmatize.mjs';
 import Nibble from './Nibble.mjs';
 import Snack from './Snack.mjs';
 import Specify from './Specify.mjs';
@@ -46,6 +47,7 @@ class Change extends Component {
 			claim: props?.claim,
 			labels: props?.labels,
 			description: props?.description,
+			lemma: props?.lemma,
 			sitelink: props?.sitelink,
 			editMode: empty,
 			active: props.disabledByDefault
@@ -65,6 +67,14 @@ class Change extends Component {
 
 		// Check if any element is invalid using the checkValidity() method
 		return Array.from(elements).some(element => !element.checkValidity());
+	}
+
+	updateValidity() {
+		const invalid = this.checkValidity();
+		// Only update state if it actually changed, to avoid extra re-renders
+		if (invalid !== this.state.invalid) {
+			this.setState({ invalid });
+		}
 	}
 
 	handleDataValueChange = ({ name, value }) => {
@@ -122,6 +132,8 @@ class Change extends Component {
 				this.setState({ languageNames: languages.languageNames });
 			})();
 		}
+
+		this.updateValidity();
 	}
 
 	render() {
@@ -155,6 +167,10 @@ class Change extends Component {
 						this.state.languageNames?.[this.state.description.language] ??
 							this.state.description.language,
 					]);
+				case 'lemma:set':
+					return browser.i18n.getMessage('set_lemma');
+				case 'lemma:edit':
+					return browser.i18n.getMessage('edit_lemma');
 				case 'labels:add':
 					return browser.i18n.getMessage('set_label_or_alias', [
 						this.state.languageNames?.[this.state.labels.language] ??
@@ -206,7 +222,6 @@ class Change extends Component {
 							name="${this.name}.add"
 							entity=${this.state?.description?.id}
 							required=${true}
-							lang=${this.state?.description.language}
 							onValueChange=${this.handleDataValueChange}
 							value=${this.state?.description.value}
 							manager=${manager} />
@@ -214,6 +229,21 @@ class Change extends Component {
 							type="hidden"
 							name="${this.name}.language"
 							value="${this.state?.description.language}" />
+					`;
+				case 'lemma:set':
+				case 'lemma:edit':
+					return html`
+						<${Lemmatize}
+							lang=${this.state?.lemma.language}
+							name="${this.name}.lemma.value"
+							required=${action === 'lemma:set'}
+							onValueChange=${this.handleDataValueChange}
+							value=${this.state?.lemma.value}
+							manager=${manager} />
+						<input
+							type="hidden"
+							name="${this.name}.lemma.language"
+							value="${this.state?.lemma.language}" />
 					`;
 				case 'sitelink:set':
 					return html`<div>

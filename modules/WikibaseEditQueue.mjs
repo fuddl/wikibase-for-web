@@ -356,6 +356,21 @@ export class WikibaseEditQueue {
           });
         }
         break;
+      case 'lemma:set':
+      case 'lemma:edit':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbeditentity',
+          data: `{"lemmas":{"${job.language}":{"language":"${job.language}","value":"${job.value}"}}}`,
+          id: job.entity,
+        });
+        break;
+      case 'lemma:remove':
+        await this.performFetchRequest(job.instance, {
+          action: 'wbeditentity',
+          data: `{"lemmas":{"${job.language}":{"language":"${job.language}","remove":""}}}`,
+          id: job.entity,
+        });
+        break;
       case 'description:set':
         await this.performFetchRequest(job.instance, {
           action: 'wbsetdescription',

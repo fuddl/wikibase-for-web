@@ -7,6 +7,7 @@ import Thing from './Thing.mjs';
 import Lament from './Lament.mjs';
 import Edit from './Edit.mjs';
 import { descriptionsEdits } from '../mapping/description.mjs';
+import { lemmasEdits } from '../mapping/lemmas.mjs';
 
 const html = htm.bind(h);
 
@@ -76,17 +77,35 @@ class Ensign extends Component {
       }
     })();
 
-    const editDescriptions = async () => {
-      const edits = await descriptionsEdits(id, descriptions, manager);
-      await browser.runtime.sendMessage({
-        type: 'request_workbench',
-        workbench: {
-          title: browser.i18n.getMessage('edit_descriptions'),
-          edits: edits,
-          subjectId: id,
-        },
-      });
-    };
+    let editAction;
+
+    if (this.state.mayEdit) {
+      if (descriptions) {
+        editAction = async () => {
+          const edits = await descriptionsEdits(id, descriptions, manager);
+          await browser.runtime.sendMessage({
+            type: 'request_workbench',
+            workbench: {
+              title: browser.i18n.getMessage('edit_descriptions'),
+              edits: edits,
+              subjectId: id,
+            },
+          });
+        };
+      } else if (lemmas) {
+        editAction = async () => {
+          const edits = await lemmasEdits(id, lemmas, manager);
+          await browser.runtime.sendMessage({
+            type: 'request_workbench',
+            workbench: {
+              title: browser.i18n.getMessage('edit_lemmas'),
+              edits: edits,
+              subjectId: id,
+            },
+          });
+        };
+      }
+    }
 
     return html`
       <div
@@ -105,9 +124,9 @@ class Ensign extends Component {
           >
         </small>
         <p class="ensign__description" lang=${descLang}>${desc}</p>
-        ${this.state.mayEdit
+        ${editAction
           ? html`<span class="ensign__edit">
-              <${Edit} action=${editDescriptions} />
+              <${Edit} action=${editAction} />
             </span>`
           : null}
       </div>

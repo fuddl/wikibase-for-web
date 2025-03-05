@@ -1,6 +1,33 @@
 import { WBK } from './importmap/wikibase-sdk/dist/src/wikibase-sdk.js';
 import wikidataSites from './wikidataSites.mjs';
 
+async function fetchInterwikiMap(api) {
+	// Construct the full API endpoint URL
+	const endpoint = `${api}?action=query&format=json&meta=siteinfo&siprop=interwikimap`;
+
+	try {
+		const response = await fetch(endpoint);
+
+		// Check if the response status is OK (status in the range 200-299)
+		if (!response.ok) {
+			throw new Error(
+				`Network response was not ok: ${response.status} ${response.statusText}`,
+			);
+		}
+
+		// Parse the JSON from the response
+		const data = await response.json();
+
+		// Log the data to the console (or handle it as needed)
+		console.log('Interwiki Map:', data);
+
+		// Optionally, return the data for further processing
+		return data;
+	} catch (error) {
+		console.error('Error fetching interwiki map:', error);
+	}
+}
+
 const wikibases = {
 	wikidata: {
 		name: 'Wikidata',
@@ -21,6 +48,7 @@ const wikibases = {
 			formatterURL: 'P1630',
 			hasCharacteristic: 'P1552',
 			icon: 'P2910',
+			IETFLanguageTag: 'P305',
 			instanceOf: 'P31',
 			isbn10: 'P957',
 			isbn13: 'P212',
