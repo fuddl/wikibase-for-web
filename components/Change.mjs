@@ -13,7 +13,7 @@ import { urlReference } from '../mapping/urlReference.mjs';
 const html = htm.bind(h);
 
 import Distinguish from './Distinguish.mjs';
-import Lemmatize from './lemmatize.mjs';
+import Lemmatize from './Lemmatize.mjs';
 import Nibble from './Nibble.mjs';
 import Snack from './Snack.mjs';
 import Specify from './Specify.mjs';
