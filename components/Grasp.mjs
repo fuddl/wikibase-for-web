@@ -15,10 +15,10 @@ function Grasp({ senses, manager }) {
 	return html`
 		<dl class="grasp">
 			${senses.map(sense => {
-				return html`<dt class="grasp__id">
+				return html`<dt class="grasp__id" key=${`${sense.id}-id`}>
 						${sense.id.replace(/.+(S\d+)$/, '$1')}
 					</dt>
-					<dd class="grasp__gloss">
+					<dd class="grasp__gloss" key=${`${sense.id}-gloss`}>
 						<${Gloss} sense=${sense} manager=${manager} />
 					</dd>`;
 			})}

@@ -159,7 +159,7 @@ function Gloss({ sense, manager }) {
 
   const { language: lang, value: gloss } = getByUserLanguage(sense.glosses);
 
-  const isNativeGloss = lang == document.documentElement.lang;
+  const isNativeGloss = document.documentElement.lang.startsWith(lang);
 
   const conceptItems = [];
   if (
