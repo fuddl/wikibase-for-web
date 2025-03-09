@@ -5,7 +5,7 @@ export const shortTitle = {
 		SELECT ?short WHERE {
 			wd:${params.subject} wdt:${instance.props.shortTitle} ?short.
 			BIND( LANG(?short) AS ?language).
-			FILTER (?language  = '${instance.languages[0].replace(/\-.+/, '')}')
+			FILTER (?language  in ('${instance.languages[0].replace(/\-.+/, '')}', 'zxx'))
 		} order by desc(strlen(?short))
 	`,
 	cacheTag: ({ instance, params }) =>

@@ -1,0 +1,26 @@
+.gloss__context,
+.gloss__gender {
+	color: var(--ink__light);
+	&:not(:lang(zh), :lang(ja), :lang(ko)) {
+		font-size: 0.9em;
+	}
+	a {
+		color: inherit;
+	}
+}
+
+/* list of languages that use ideographic	parenthesis */
+.gloss__context:is(:lang(zh), :lang(ja), :lang(ko)) {
+	/* should maybe be replaced by `hanging-punctuation` once it is supported */
+	margin-left: -0.5em;
+	display: inline-block;
+}
+
+.gloss__style {
+	font-variant: small-caps;
+}
+
+/* list of languages that don't use italics. It might be smarter to make this a whitelist instead */
+.gloss__use:not(:lang(zh), :lang(ja), :lang(ko), :lang(pa)) {
+	font-style: italic;
+}

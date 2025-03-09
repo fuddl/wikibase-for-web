@@ -4,6 +4,7 @@
   --input-paper: white;
   --active-paper: #eaecf0;
   --ink: #222222;
+  --ink__light: #595959;
   --link: #3366cc;
   --mark: #eaf3ff;
   --code: #c8ccd1;
@@ -28,6 +29,7 @@
     --input-paper: black;
     --active-paper: #27292d;
     --ink: #f7f8f9;
+    --ink__light: #b4b4b4;
     --link: #7198f7;
     --mark: #27292d;
     --border: #a2a9b1;

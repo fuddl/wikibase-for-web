@@ -50,7 +50,8 @@ class Thin extends Component {
       class="thin"
       href="${href}"
       lang="${short?.language ?? label?.language ?? id}"
-      title="${description?.value ?? ''}"
+      title="${label?.value ? `${label.value} – ` : ''}${description?.value ??
+      ''}"
       ref=${elementRef}
       >${short?.value ?? label?.value ?? id}</a
     >`;

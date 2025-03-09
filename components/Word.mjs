@@ -12,8 +12,11 @@ import Lament from './Lament.mjs';
 const html = htm.bind(h);
 
 class Word extends Component {
-  render({ id, manager, showAppendix = 'yes' }) {
-    const [designator, setDesignator] = useState(manager?.designators?.[id]);
+  render({ id, manager, showLemma = 'no', showAppendix = 'yes' }) {
+    const displayId = showLemma === 'yes' ? id.replace(/-[FS]\d+$/, '') : id;
+    const [designator, setDesignator] = useState(
+      manager?.designators?.[displayId],
+    );
     const elementRef = useRef(null);
 
     const href = manager.urlFromId(id);
@@ -22,7 +25,7 @@ class Word extends Component {
       const setUpObserver = () => {
         const observer = new IntersectionObserver(async entries => {
           if (entries[0].isIntersecting) {
-            const newDesignators = await manager.fetchDesignators(id);
+            const newDesignators = await manager.fetchDesignators(displayId);
             setDesignator(newDesignators);
           }
         });

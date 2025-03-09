@@ -10,6 +10,10 @@ const manager = new WikiBaseEntityManager({
 	languages: navigator.languages.map(lang => lang.toLowerCase()),
 });
 
+if (manager.languages[0]) {
+	document.documentElement.lang = manager.languages[0];
+}
+
 const scrollToTopInstantly = () => {
 	// Force 'scroll-behavior: auto' to be applied
 	document.documentElement.style.scrollBehavior = 'auto';
