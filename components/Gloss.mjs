@@ -16,11 +16,11 @@ function getFormattingOptions(languageCode) {
     bracketClose: '] ',
     languageElement: 'span',
     fieldOfUseElement: 'span',
-    seperator: ',',
+    seperator: ', ',
     glossLinkPrefix: '→ ',
     derivedFromPrefix: ' ←',
     glossLinkWrapper: 'a',
-    genderBracketOpen: '(',
+    genderBracketOpen: ' (',
     genderBracketClose: ')',
   };
 
@@ -31,10 +31,10 @@ function getFormattingOptions(languageCode) {
       options: {
         bracketOpen: '[',
         bracketClose: '] ',
-        seperator: ',',
+        seperator: ', ',
         derivedFromPrefix: ' ←',
         glossLinkPrefix: '→ ',
-        genderBracketOpen: '(',
+        genderBracketOpen: ' (',
         genderBracketClose: ')',
       },
     },
@@ -293,7 +293,7 @@ function Gloss({ sense, manager }) {
               html`<${Something} id=${item} manager=${manager} />`,
           )}
       ${genderItems.length
-        ? html` <span class="gloss__gender">
+        ? html`<span class="gloss__gender">
             ${genderBracketOpen}${genderItems.reduce(
               (acc, item, index) =>
                 index === 0 ? [item] : [...acc, seperator, item],

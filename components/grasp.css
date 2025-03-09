@@ -20,8 +20,11 @@
 		Georgia,
 		Times,
 		serif;
+	grid-column: 1;
 }
 
-.grasp__gloss {
+.grasp__gloss,
+.grasp__subsenses {
+	grid-column: 2;
 	margin: auto 0;
 }

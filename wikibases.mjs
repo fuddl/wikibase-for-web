@@ -48,6 +48,7 @@ const wikibases = {
 			fileFormat: 'P2701',
 			formatterURL: 'P1630',
 			hasCharacteristic: 'P1552',
+			hyperonym: 'P6593',
 			icon: 'P2910',
 			IETFLanguageTag: 'P305',
 			instanceOf: 'P31',
