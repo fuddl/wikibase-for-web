@@ -165,15 +165,21 @@ function Lament(vars) {
       delete lemmas[kana];
     }
   }
-  if ('tlh-piqd' in lemmas && 'tlh-latn' in lemmas) {
+  if ('tlh-piqd' in lemmas && ('tlh-latn' in lemmas || 'tlh' in lemmas)) {
     const fittedKlingon = fitKlingon(
       lemmas['tlh-piqd'].value,
-      lemmas['tlh-latn'].value,
+      lemmas?.['tlh-latn']?.value ?? lemmas?.['tlh']?.value,
     );
     if (fittedKlingon.length > 0) {
       fitted.push(fittedKlingon);
+
       delete lemmas['tlh-piqd'];
-      delete lemmas['tlh-latn'];
+      if (lemmas?.['tlh-latn']) {
+        delete lemmas['tlh-latn'];
+      }
+      if (lemmas?.['tlh']) {
+        delete lemmas['tlh'];
+      }
     }
     if ('tok' in lemmas) {
       const fittedToki = fitSitelenPona(lemmas['tok'].value);
