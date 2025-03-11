@@ -1,5 +1,7 @@
 import { h } from '../importmap/preact/src/index.js';
+import { useEffect } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
+import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Furigana from '../modules/furigana.mjs';
 import { sitelen } from '../importmap/ucsur-sitelen-pona/lib.mjs';
 import { fsw } from '../importmap/@sutton-signwriting/font-ttf/index.mjs';
@@ -130,6 +132,9 @@ const rubifyLemma = function (lemmas) {
 const html = htm.bind(h);
 
 function Lament(vars) {
+  useEffect(() => {
+    requireStylesheet(browser.runtime.getURL('/components/lament.css'));
+  }, []);
   let fitted = [];
   let lemmas = structuredClone(vars.lemmas);
   for (const lang of ['ase', 'bfi', 'gsg', 'bzs', 'pks']) {
@@ -192,12 +197,21 @@ function Lament(vars) {
     }
   }
 
-  return html`<span
-    >${rubies}${rubies.length && Object.entries(lemmas).length ? '/' : null}
+  return html`<span class="lament">
+    ${rubies}${rubies.length && Object.entries(lemmas).length ? '/' : null}
     ${lemmas
       ? Object.entries(lemmas)
-          .map(([lang, lemma]) => lemma?.value)
-          .join('/')
+          .map(
+            ([lang, lemma]) =>
+              html`<span class="lament__lemma" lang=${lang}>
+                ${lemma?.value}
+              </span>`,
+          )
+          .reduce(
+            (acc, el, index, arr) =>
+              index < arr.length - 1 ? [...acc, el, '/'] : [...acc, el],
+            [],
+          )
       : 'null'}</span
   >`;
 }

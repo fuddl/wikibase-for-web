@@ -19,7 +19,6 @@ function getFormattingOptions(languageCode) {
     seperator: ', ',
     glossLinkPrefix: '→ ',
     derivedFromPrefix: ' ←',
-    glossLinkWrapper: 'a',
     genderBracketOpen: ' (',
     genderBracketClose: ')',
   };
@@ -47,7 +46,7 @@ function getFormattingOptions(languageCode) {
         seperator: ',',
         derivedFromPrefix: ' ← ',
         glossLinkPrefix: '→ ',
-        genderBracketOpen: '(',
+        genderBracketOpen: ' (',
         genderBracketClose: ')',
       },
     },
@@ -86,7 +85,7 @@ function getFormattingOptions(languageCode) {
         seperator: ', ',
         derivedFromPrefix: ' ←',
         glossLinkPrefix: '– ',
-        genderBracketOpen: '(',
+        genderBracketOpen: ' (',
         genderBracketClose: ')',
       },
     },
@@ -209,16 +208,6 @@ function Gloss({ sense, manager }) {
             id=${claim.mainsnak.datavalue.value.id}
             manager=${manager} />`,
         );
-      }
-    }
-  }
-  if (
-    'predicateFor' in manager.wikibase.props &&
-    manager.wikibase.props.predicateFor in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.predicateFor]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        conceptItems.push(claim.mainsnak.datavalue.value.id);
       }
     }
   }

@@ -38,29 +38,63 @@ function Grasp({ senses, manager }) {
 		}
 	});
 
-	function renderSense(sense) {
-		return html`
-			<dt class="grasp__id" key=${`${sense.id}-id`}>
-				${sense.id.replace(/.+(S\d+)$/, '$1')}
-			</dt>
-			<dd class="grasp__gloss" key=${`${sense.id}-gloss`}>
-				<${Gloss} sense=${sense} manager=${manager} />
-			</dd>
-			${sense.children.length > 0
-				? html`
-						<dd class="grasp__subsenses">
-							<dl class="grasp">
-								${sense.children.map(child => renderSense(child))}
-							</dl>
-						</dd>
-					`
-				: null}
-		`;
+	function getNumberFormatter(locale, level) {
+		if (level === 1) {
+			if (locale.startsWith('zh') || locale.startsWith('ja')) {
+				return new Intl.NumberFormat(locale, { numberingSystem: 'hanidec' });
+			}
+			return new Intl.NumberFormat(locale);
+		}
+		return null;
 	}
 
-	return html`
-		<dl class="grasp">${topSenses.map(sense => renderSense(sense))}</dl>
-	`;
+	function numberToLetter(n) {
+		return String.fromCharCode(96 + n);
+	}
+
+	// General formatter per level.
+	function formatOrdinal(num, level, locale) {
+		if (level === 1) {
+			return getNumberFormatter(locale, level).format(num);
+		} else if (level === 2) {
+			return numberToLetter(num);
+		}
+		// Fallback to default numeric formatting for deeper levels.
+		return num.toString();
+	}
+
+	// Get the user's locale.
+	const userLocale = (manager && manager.userLocale) || navigator.language;
+
+	// Recursively render senses while accumulating ordinal numbers.
+	// The "prefix" argument holds the parent's ordinal string (e.g. "1" or "1.a").
+	function renderSenses(sensesArr, level = 1, prefix = '') {
+		return sensesArr.map((sense, idx) => {
+			// Compute the current ordinal segment for this sense.
+			const currentOrdinalSegment = formatOrdinal(idx + 1, level, userLocale);
+			// Build the full ordinal string, inheriting parent's ordinal.
+			const fullOrdinal = prefix
+				? `${prefix}${currentOrdinalSegment}`
+				: currentOrdinalSegment;
+			return html`
+				<dt class="grasp__id" key=${`${sense.id}-id`}>${fullOrdinal}</dt>
+				<dd class="grasp__gloss" key=${`${sense.id}-gloss`}>
+					<${Gloss} sense=${sense} manager=${manager} />
+				</dd>
+				${sense.children.length > 0
+					? html`
+							<dd class="grasp__subsenses">
+								<dl class="grasp">
+									${renderSenses(sense.children, level + 1, fullOrdinal)}
+								</dl>
+							</dd>
+						`
+					: null}
+			`;
+		});
+	}
+
+	return html` <dl class="grasp">${renderSenses(topSenses)}</dl> `;
 }
 
 export default Grasp;
