@@ -10,151 +10,10 @@ import Something from './Something.mjs';
 
 const html = htm.bind(h);
 
-function getFormattingOptions(languageCode) {
-  const defaultOptions = {
-    bracketOpen: '[',
-    bracketClose: '] ',
-    languageElement: 'span',
-    fieldOfUseElement: 'span',
-    seperator: ', ',
-    glossLinkPrefix: '→ ',
-    derivedFromPrefix: ' ←',
-    genderBracketOpen: ' (',
-    genderBracketClose: ')',
-  };
-
-  const groups = [
-    {
-      // Latin-based languages (e.g., English, French, Spanish, German, Italian, Portuguese, Vietnamese)
-      languages: ['en', 'fr', 'es', 'de', 'it', 'pt', 'vi'],
-      options: {
-        bracketOpen: '[',
-        bracketClose: '] ',
-        seperator: ', ',
-        derivedFromPrefix: ' ←',
-        glossLinkPrefix: '→ ',
-        genderBracketOpen: ' (',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // Cyrillic-based languages (e.g., Russian, Bulgarian, Ukrainian, Serbian, Macedonian, Mongolian in Cyrillic)
-      languages: ['ru', 'bg', 'uk', 'sr', 'mk', 'mn'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ')',
-        seperator: ',',
-        derivedFromPrefix: ' ← ',
-        glossLinkPrefix: '→ ',
-        genderBracketOpen: ' (',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // East Asian languages (Chinese, Japanese, Korean)
-      languages: ['zh', 'ja', 'ko'],
-      options: {
-        bracketOpen: '〈',
-        bracketClose: '〉',
-        seperator: '、',
-        derivedFromPrefix: '　→　',
-        glossLinkPrefix: '〜',
-        genderBracketOpen: '（',
-        genderBracketClose: '）',
-      },
-    },
-    {
-      // Right-to-left languages (Arabic, Hebrew, Persian, Urdu, Pashto)
-      languages: ['ar', 'he', 'fa', 'ur', 'ps'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ')',
-        seperator: ',',
-        derivedFromPrefix: ' ⇐',
-        glossLinkPrefix: ' ←', // left-pointing arrow for RTL reading
-        genderBracketOpen: '(',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // Indic languages (Hindi, Bengali, Tamil, Telugu, Kannada, Malayalam, Gujarati, Oriya, Nepali)
-      languages: ['hi', 'bn', 'ta', 'te', 'kn', 'ml', 'gu', 'or', 'ne', 'pa'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ') ',
-        seperator: ', ',
-        derivedFromPrefix: ' ←',
-        glossLinkPrefix: '– ',
-        genderBracketOpen: ' (',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // Southeast Asian languages (Thai, Lao, Burmese, Khmer)
-      languages: ['th', 'lo', 'my', 'km'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ')',
-        seperator: ',',
-        derivedFromPrefix: '→ ',
-        glossLinkPrefix: '→ ',
-        genderBracketOpen: '(',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // Caucasian languages (Georgian and Armenian)
-      languages: ['ka', 'hy'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ')',
-        seperator: ',',
-        derivedFromPrefix: '→ ',
-        glossLinkPrefix: '→ ',
-        genderBracketOpen: '(',
-        genderBracketClose: ')',
-      },
-    },
-    {
-      // Ethiopic languages (e.g., Amharic, Tigrinya)
-      languages: ['am', 'ti'],
-      options: {
-        bracketOpen: '(',
-        bracketClose: ')',
-        seperator: ',',
-        derivedFromPrefix: ' ⇐',
-        languageElement: 'span',
-        fieldOfUseElement: 'span',
-        glossLinkPrefix: '→ ',
-        genderBracketOpen: '(',
-        genderBracketClose: ')',
-      },
-    },
-  ];
-
-  for (const group of groups) {
-    if (group.languages.includes(languageCode)) {
-      return group.options;
-    }
-  }
-  return defaultOptions;
-}
-
 function Gloss({ sense, manager }) {
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/gloss.css'));
   }, []);
-
-  const {
-    bracketOpen,
-    bracketClose,
-    genderBracketOpen,
-    genderBracketClose,
-    languageElement,
-    glossLinkPrefix,
-    seperator,
-    derivedFromPrefix,
-  } = getFormattingOptions(document.documentElement.lang);
 
   const { language: lang, value: gloss } = getByUserLanguage(sense.glosses);
 
@@ -264,18 +123,31 @@ function Gloss({ sense, manager }) {
     }
   }
 
+  const placeholder = '￼';
+
+  const [stylePrefix, styleInterfix, styleSuffix] = browser.i18n
+    .getMessage('gloss_style_format', [placeholder, placeholder])
+    .split(placeholder);
+
+  const [genderPrefix, genderInterfix, genderSuffix] = browser.i18n
+    .getMessage('gloss_gender_format', [placeholder, placeholder])
+    .split(placeholder);
+
+  const [itemPrefix, itemSuffix] = browser.i18n
+    .getMessage('gloss_item_format', [placeholder])
+    .split(placeholder);
+
   return html`
     <div class="gloss">
       ${contextItems.length
         ? html`<span class="gloss__context"
-            >${bracketOpen}${contextItems.reduce(
+            >${stylePrefix}${contextItems.reduce(
               (acc, item, index) =>
-                index === 0 ? [item] : [...acc, seperator, item],
+                index === 0 ? [item] : [...acc, styleInterfix, item],
               [],
-            )}${bracketClose}</span
+            )}${styleSuffix}</span
           >`
-        : ''}
-      ${isNativeGloss
+        : ''}${isNativeGloss
         ? gloss
         : conceptItems.map(
             (item, index) =>
@@ -283,11 +155,11 @@ function Gloss({ sense, manager }) {
           )}
       ${genderItems.length
         ? html`<span class="gloss__gender">
-            ${genderBracketOpen}${genderItems.reduce(
+            ${genderPrefix}${genderItems.reduce(
               (acc, item, index) =>
-                index === 0 ? [item] : [...acc, seperator, item],
+                index === 0 ? [item] : [...acc, genderInterfix, item],
               [],
-            )}${genderBracketClose}</span
+            )}${genderSuffix}</span
           >`
         : ''}
       ${derivedFromItems.length > 0
@@ -303,9 +175,9 @@ function Gloss({ sense, manager }) {
       ${conceptItems.length > 0
         ? conceptItems.map(
             (item, index) =>
-              html`<br />${glossLinkPrefix}<${Thing}
+              html`<br />${itemPrefix}<${Thing}
                   id=${item}
-                  manager=${manager} />`,
+                  manager=${manager} />${itemSuffix}`,
           )
         : ''}
     </div>

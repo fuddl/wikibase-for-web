@@ -1,0 +1,40 @@
+{
+  "gloss_style_format": {
+    "message": "($STYLE$, $USE$) ",
+    "description": "Affixes around a gloss style. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "STYLE": {
+        "content": "$1",
+        "example": "slang"
+      },
+      "USE": {
+        "content": "$2",
+        "example": "astronomy"
+      }
+    }
+  },
+  "gloss_gender_format": {
+    "message": " ($SEX$, $GENDER$)",
+    "description": "Affixes around a gloss gender. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "SEX": {
+        "content": "$1",
+        "example": "female"
+      },
+      "GENDER": {
+        "content": "$2",
+        "example": "male"
+      }
+    }
+  },
+  "gloss_item_format": {
+    "message": "– $ITEMLINK$",
+    "description": "Affixes around a item link under a gloss.",
+    "placeholders": {
+      "ITEMLINK": {
+        "content": "$1",
+        "example": "universe"
+      }
+    }
+  }
+}
