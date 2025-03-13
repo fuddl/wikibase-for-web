@@ -491,5 +491,19 @@
         "example": "universe"
       }
     }
+  },
+  "gloss_transitivity_format": {
+    "message": "$TRANS$/$INTRANS$: ",
+    "description": "Affixes around a gloss transitivity.",
+    "placeholders": {
+      "TRANS": {
+        "content": "$1",
+        "example": "transitive"
+      },
+      "INTRANS": {
+        "content": "$1",
+        "example": "transitive"
+      }
+    }
   }
 }

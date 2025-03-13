@@ -20,7 +20,20 @@
 	font-variant: small-caps;
 }
 
-/* list of languages that don't use italics. It might be smarter to make this a whitelist instead */
-.gloss__use:not(:lang(zh), :lang(ja), :lang(ko), :lang(pa)) {
-	font-style: italic;
+/* Only apply italics to languages that commonly use them */
+.gloss__transitivity,
+.gloss__use {
+	&:lang(en),
+	&:lang(fr),
+	&:lang(de),
+	&:lang(es),
+	&:lang(it),
+	&:lang(pt),
+	&:lang(nl),
+	&:lang(ru),
+	&:lang(uk),
+	&:lang(el) {
+		font-style: italic;
+	}
+	/* in case this ever becomes a black list again, here is a list of languages that don't use italics: :lang(zh), :lang(ja), :lang(ko), :lang(pa) */
 }

@@ -16,142 +16,106 @@ function Gloss({ sense, manager }) {
   }, []);
 
   const { language: lang, value: gloss } = getByUserLanguage(sense.glosses);
-
   const isNativeGloss = document.documentElement.lang.startsWith(lang);
 
-  const conceptItems = [];
-  if (
-    'itemForThisSense' in manager.wikibase.props &&
-    manager.wikibase.props.itemForThisSense in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.itemForThisSense]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        conceptItems.push(claim.mainsnak.datavalue.value.id);
+  // Helper to extract claim IDs for a given set of property keys
+  const extractClaimIds = propKeys => {
+    const ids = [];
+    propKeys.forEach(key => {
+      if (key in manager.wikibase.props) {
+        const prop = manager.wikibase.props[key];
+        if (prop in sense.claims) {
+          sense.claims[prop].forEach(claim => {
+            const id = claim.mainsnak.datavalue?.value?.id;
+            if (id) ids.push(id);
+          });
+        }
       }
-    }
-  }
-  if (
-    'predicateFor' in manager.wikibase.props &&
-    manager.wikibase.props.predicateFor in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.predicateFor]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        conceptItems.push(claim.mainsnak.datavalue.value.id);
-      }
-    }
-  }
+    });
+    return ids;
+  };
 
-  const derivedFromItems = [];
-  if (
-    'semanticDerivationOf' in manager.wikibase.props &&
-    manager.wikibase.props.semanticDerivationOf in sense.claims
-  ) {
-    for (const claim of sense.claims[
-      manager.wikibase.props.semanticDerivationOf
-    ]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        derivedFromItems.push(claim.mainsnak.datavalue.value.id);
+  // Helper to extract components from a claim using a given component and optional CSS wrapper
+  const extractClaimComponents = (propKey, Component, wrapperClass = null) => {
+    const items = [];
+    if (propKey in manager.wikibase.props) {
+      const prop = manager.wikibase.props[propKey];
+      if (prop in sense.claims) {
+        sense.claims[prop].forEach(claim => {
+          const id = claim.mainsnak.datavalue?.value?.id;
+          if (id) {
+            const element = wrapperClass
+              ? html`<span class="${wrapperClass}"
+                  ><${Component} id=${id} manager=${manager}
+                /></span>`
+              : html`<${Component} id=${id} manager=${manager} />`;
+            items.push(element);
+          }
+        });
       }
     }
-  }
+    return items;
+  };
 
-  const genderItems = [];
-  if (
-    'semanticGender' in manager.wikibase.props &&
-    manager.wikibase.props.semanticGender in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.semanticGender]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        genderItems.push(
-          html`<${Thin}
-            id=${claim.mainsnak.datavalue.value.id}
-            manager=${manager} />`,
-        );
-      }
-    }
-  }
+  // Use the helpers for the different claim groups
+  const conceptItems = extractClaimIds(['itemForThisSense', 'predicateFor']);
+  const derivedFromItems = extractClaimIds(['semanticDerivationOf']);
+  const genderItems = extractClaimComponents('semanticGender', Thin);
+  const transitivityItems = extractClaimComponents('transitivity', Thin);
 
-  const contextItems = [];
-  if (
-    'fieldOfUsage' in manager.wikibase.props &&
-    manager.wikibase.props.fieldOfUsage in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.fieldOfUsage]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        contextItems.push(
-          html`<span class="gloss__use"
-            ><${Thin}
-              id=${claim.mainsnak.datavalue.value.id}
-              manager=${manager}
-          /></span>`,
-        );
-      }
-    }
-  }
-  if (
-    'languageStyle' in manager.wikibase.props &&
-    manager.wikibase.props.languageStyle in sense.claims
-  ) {
-    for (const claim of sense.claims[manager.wikibase.props.languageStyle]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        contextItems.push(
-          html`<span class="gloss__style"
-            ><${Thin}
-              id=${claim.mainsnak.datavalue.value.id}
-              manager=${manager}
-          /></span>`,
-        );
-      }
-    }
-  }
-  if (
-    'locationOfSenseUsage' in manager.wikibase.props &&
-    manager.wikibase.props.locationOfSenseUsage in sense.claims
-  ) {
-    for (const claim of sense.claims[
-      manager.wikibase.props.locationOfSenseUsage
-    ]) {
-      if (claim.mainsnak.datavalue?.value?.id) {
-        contextItems.push(
-          html`<span class="gloss__style"
-            ><${Thin}
-              id=${claim.mainsnak.datavalue.value.id}
-              manager=${manager}
-          /></span>`,
-        );
-      }
-    }
-  }
+  // For context items, we have different CSS classes depending on the property.
+  const contextMapping = {
+    fieldOfUsage: 'gloss__use',
+    languageStyle: 'gloss__style',
+    locationOfSenseUsage: 'gloss__style',
+  };
+  let contextItems = [];
+  Object.entries(contextMapping).forEach(([propKey, cssClass]) => {
+    contextItems = contextItems.concat(
+      extractClaimComponents(propKey, Thin, cssClass),
+    );
+  });
 
+  // Internationalization messages (with placeholder splitting)
   const placeholder = '￼';
-
   const [stylePrefix, styleInterfix, styleSuffix] = browser.i18n
     .getMessage('gloss_style_format', [placeholder, placeholder])
     .split(placeholder);
-
   const [genderPrefix, genderInterfix, genderSuffix] = browser.i18n
     .getMessage('gloss_gender_format', [placeholder, placeholder])
     .split(placeholder);
-
   const [itemPrefix, itemSuffix] = browser.i18n
     .getMessage('gloss_item_format', [placeholder])
     .split(placeholder);
+  const [transitivityPrefix, transitivityInterfix, transitivitySuffix] =
+    browser.i18n
+      .getMessage('gloss_transitivity_format', [placeholder])
+      .split(placeholder);
 
   return html`
     <div class="gloss">
       ${contextItems.length
-        ? html`<span class="gloss__context"
-            >${stylePrefix}${contextItems.reduce(
+        ? html`<span class="gloss__context">
+            ${stylePrefix}${contextItems.reduce(
               (acc, item, index) =>
                 index === 0 ? [item] : [...acc, styleInterfix, item],
               [],
-            )}${styleSuffix}</span
-          >`
-        : ''}${isNativeGloss
+            )}${styleSuffix}
+          </span>`
+        : ''}
+      ${transitivityItems.length
+        ? html`<span class="gloss__transitivity">
+            ${transitivityPrefix}${transitivityItems.reduce(
+              (acc, item, index) =>
+                index === 0 ? [item] : [...acc, transitivityInterfix, item],
+              [],
+            )}${transitivitySuffix}
+          </span>`
+        : ''}
+      ${isNativeGloss
         ? gloss
         : conceptItems.map(
-            (item, index) =>
-              html`<${Something} id=${item} manager=${manager} />`,
+            item => html`<${Something} id=${item} manager=${manager} />`,
           )}
       ${genderItems.length
         ? html`<span class="gloss__gender">
@@ -159,12 +123,12 @@ function Gloss({ sense, manager }) {
               (acc, item, index) =>
                 index === 0 ? [item] : [...acc, genderInterfix, item],
               [],
-            )}${genderSuffix}</span
-          >`
+            )}${genderSuffix}
+          </span>`
         : ''}
       ${derivedFromItems.length > 0
         ? html`${derivedFromPrefix}${derivedFromItems.map(
-            (item, index) =>
+            item =>
               html`<${Word}
                 showLemma="yes"
                 showAppendix="no"
@@ -174,7 +138,7 @@ function Gloss({ sense, manager }) {
         : ''}
       ${conceptItems.length > 0
         ? conceptItems.map(
-            (item, index) =>
+            item =>
               html`<br />${itemPrefix}<${Thing}
                   id=${item}
                   manager=${manager} />${itemSuffix}`,

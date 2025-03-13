@@ -101,6 +101,7 @@ const wikibases = {
 			subpropertyOf: 'P1647',
 			thirdPartyFormatterURL: 'P3303',
 			title: 'P1476',
+			transitivity: 'P9295',
 			unitSymbol: 'P5061',
 			url: 'P2699',
 			urlMatchPattern: 'P8966',

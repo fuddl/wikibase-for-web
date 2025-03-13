@@ -14,8 +14,6 @@ class Something extends Component {
 		const [designator, setDesignator] = useState(manager?.designators?.[id]);
 		const elementRef = useRef(null);
 
-		console.debug(id);
-
 		useEffect(() => {
 			const setUpObserver = () => {
 				const observer = new IntersectionObserver(async entries => {

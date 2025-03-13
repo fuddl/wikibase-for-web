@@ -11,7 +11,7 @@ const manager = new WikiBaseEntityManager({
 });
 
 if (manager.languages[0]) {
-	document.documentElement.lang = manager.languages[0];
+	document.documentElement.lang = navigator.language;
 }
 
 const scrollToTopInstantly = () => {
