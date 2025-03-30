@@ -77,15 +77,17 @@ function Paraphrase({
 
           // Process each result item
           result.forEach(item => {
-            inferred.push({
-              //item: values.map(value => value.replace(/^[^\:]+\:/, '')),
-              fromSense: sense.id,
-              toSense: item.sense,
-              languages: [item.language],
-              semanticGenders: (item.semanticGenders || []).map(
-                g => `${manager.wikibase.id}:${g}`,
-              ),
-            });
+            if (sense.id != item.sense) {
+              inferred.push({
+                //item: values.map(value => value.replace(/^[^\:]+\:/, '')),
+                fromSense: sense.id,
+                toSense: item.sense,
+                languages: [item.language],
+                semanticGenders: (item.semanticGenders || []).map(
+                  g => `${manager.wikibase.id}:${g}`,
+                ),
+              });
+            }
           });
         }
 
