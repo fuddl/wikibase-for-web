@@ -5,6 +5,7 @@ import { expectedIdsByLanguage } from './expectedIdsByLanguage.mjs';
 import { expectedIdsByType } from './expectedIdsByType.mjs';
 import { inheritedClasses } from './inheritedClasses.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
+import { inferredSenses } from './inferredSenses.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
 import { labels } from './labels.mjs';
@@ -26,6 +27,7 @@ const queries = {
 	expectedIdsByType,
 	inheritedClasses,
 	instancesOrSubclasses,
+	inferredSenses,
 	itemByExternalId,
 	itemByUrl,
 	labels,

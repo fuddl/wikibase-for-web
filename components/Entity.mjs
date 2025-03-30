@@ -16,6 +16,7 @@ import Haste from './Haste.mjs';
 import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
 import Grasp from './Grasp.mjs';
+import Paraphrase from './Paraphrase.mjs';
 
 const html = htm.bind(h);
 
@@ -257,7 +258,24 @@ class Entity extends Component {
             `
           : null}
         ${senses
-          ? html`<${Grasp} senses=${senses} manager=${manager} />`
+          ? html`
+              <${Grasp} senses=${senses} manager=${manager} />
+              ${[
+                { property: 'translation', excludeLanguage: language },
+                { property: 'synonym', onlyLanguage: language },
+              ].map(
+                type => html`
+                  <${Paraphrase}
+                    id=${id}
+                    key=${type.property}
+                    senses=${senses}
+                    manager=${manager}
+                    property=${type.property}
+                    excludeLanguage=${type?.excludeLanguage}
+                    onlyLanguage=${type?.onlyLanguage} />
+                `,
+              )}
+            `
           : null}
         ${experimental &&
         (('instanceOf' in manager.wikibase.props &&

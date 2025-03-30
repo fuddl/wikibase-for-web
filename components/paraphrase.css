@@ -1,0 +1,31 @@
+.paraphrase,
+.paraphrase__group:only-child {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+  grid-gap: 1em;
+}
+
+.paraphrase__group:only-child {
+  grid-gap: 0 1em;
+}
+
+.paraphrase__group {
+  margin: 0;
+}
+
+.paraphrase__lang {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  grid-column: 1 / -1;
+}
+
+.paraphrase__lang > a {
+  color: inherit;
+}
+
+.paraphrase__words {
+  margin: 0 0 0.5em 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 0.5em;
+}

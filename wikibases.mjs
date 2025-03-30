@@ -102,6 +102,8 @@ const wikibases = {
 			thirdPartyFormatterURL: 'P3303',
 			title: 'P1476',
 			transitivity: 'P9295',
+			translation: 'P5972',
+			synonym: 'P5973',
 			unitSymbol: 'P5061',
 			url: 'P2699',
 			urlMatchPattern: 'P8966',
