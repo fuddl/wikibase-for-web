@@ -4,6 +4,7 @@ import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
+import Mark from './Mark.mjs';
 
 const html = htm.bind(h);
 
@@ -14,6 +15,7 @@ function Paraphrase({
   property,
   excludeLanguage,
   onlyLanguage,
+  senseOrdinals,
 }) {
   const [inferredItems, setInferredItems] = useState({});
 
@@ -77,7 +79,7 @@ function Paraphrase({
           result.forEach(item => {
             inferred.push({
               //item: values.map(value => value.replace(/^[^\:]+\:/, '')),
-              fronSense: sense.id,
+              fromSense: sense.id,
               toSense: item.sense,
               languages: [item.language],
               semanticGenders: (item.semanticGenders || []).map(
@@ -138,44 +140,69 @@ function Paraphrase({
     languages.push('unknown');
   }
 
+  const wrapper = languages.length > 0 ? 'dl' : 'div';
+  const wordsWrapper = languages.length > 0 ? 'dd' : 'div';
+
   return html`
-    <h3>
-      <${Thing}
-        id=${`${manager.wikibase.id}:${manager.wikibase.props[property]}`}
-        manager=${manager} />
-    </h3>
-    <div class="paraphrase">
-      ${languages.map(
-        language => html`
-          <dl class="paraphrase__group" key=${`${id}:${language}`}>
-            <dt class="paraphrase__lang" key=${`${id}:${language}-dt`}>
-              ${language === 'unknown'
-                ? 'Other'
-                : html`<${Thing} id=${language} manager=${manager} />`}
-            </dt>
-            <dd class="paraphrase__words" key=${`${id}:${language}-dd`}>
-              ${allItems
-                .filter(item =>
-                  language === 'unknown'
-                    ? item.languages.length === 0
-                    : item.languages.includes(language),
-                )
-                .map(
-                  (item, index, array) => html`
-                    <${Word}
-                      id=${item.toSense}
-                      key=${item.toSense}
-                      manager=${manager}
-                      showLemma="yes"
-                      showAppendix="no" />
-                    ${index < array.length - 1 ? ', ' : ''}
-                  `,
-                )}
-            </dd>
-          </dl>
+    <section class="paraphrase">
+      <h2 class="paraphrase__title">
+        <${Thing}
+          id=${`${manager.wikibase.id}:${manager.wikibase.props[property]}`}
+          manager=${manager} />
+      </h2>
+      <div class="paraphrase__list">
+        ${languages.map(
+          language => html`
+          <${wrapper} class="paraphrase__group" key=${`${id}:${language}`}>
+            ${
+              languages.length > 0 &&
+              html` <dt class="paraphrase__lang" key=${`${id}:${language}-dt`}>
+                ${language === 'unknown'
+                  ? 'Other'
+                  : html`<${Thing} id=${language} manager=${manager} />`}
+              </dt>`
+            }
+              ${senses.map(sense => {
+                const senseItems = allItems
+                  .filter(
+                    item =>
+                      item.fromSense === sense.id &&
+                      (language === 'unknown'
+                        ? item.languages.length === 0
+                        : item.languages.includes(language)),
+                  )
+                  .map(
+                    item => html`
+                      <${Word}
+                        id=${item.toSense}
+                        key=${item.toSense}
+                        manager=${manager}
+                        showLemma="yes"
+                        showAppendix="no" />
+                    `,
+                  );
+
+                if (senseItems.length === 0) return null;
+
+                return html`
+                  <${wordsWrapper}
+                    class="paraphrase__words"
+                    key=${`${id}:${language}:${sense.id}-dd`}>
+                    ${senses.length > 1 && html`<${Mark} ordinal=${senseOrdinals[sense.id]} />`}
+                    <span class="paraphrase__items">
+                      ${senseItems.reduce((acc, curr, index) => {
+                        if (index === 0) return curr;
+                        return html`${acc}, ${curr}`;
+                      }, '')}
+                    </span>
+                  </${wordsWrapper}>
+                `;
+              })}
+          </${wrapper}>
         `,
-      )}
-    </div>
+        )}
+      </div>
+    </section>
   `;
 }
 

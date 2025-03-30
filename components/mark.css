@@ -1,0 +1,20 @@
+.mark {
+  background: var(--border);
+  width: 2rem;
+  text-align: center;
+  border-radius: 1em;
+  line-height: 2rem;
+  font-family: var(--fancy);
+  aspect-ratio: 1/1;
+  display: inline-block;
+  vertical-align: middle;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.mark--hovered {
+  background: var(--link);
+  color: var(--paper);
+  cursor: pointer;
+}

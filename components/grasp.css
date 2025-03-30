@@ -9,13 +9,6 @@
 }
 
 .grasp__id {
-	background: var(--border);
-	width: 2rem;
-	aspect-ratio: 1/1;
-	text-align: center;
-	line-height: 2rem;
-	border-radius: 1em;
-	font-family: var(--fancy);
 	grid-column: 1;
 }
 

@@ -1,4 +1,4 @@
-.paraphrase,
+.paraphrase__list,
 .paraphrase__group:only-child {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
@@ -28,4 +28,15 @@
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 0.5em;
+}
+
+.paraphrase__items {
+  padding: 0.3em 0;
+}
+
+.paraphrase__title {
+  font-size: 1.2em;
+}
+.paraphrase__title > a {
+  color: inherit;
 }

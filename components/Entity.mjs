@@ -8,6 +8,7 @@ import { filterBadClaims } from '../modules/filterBadValues.mjs';
 import htm from '../importmap/htm/src/index.mjs';
 import Edit from './Edit.mjs';
 import Hint from './Hint.mjs';
+import { HoverProvider } from '../modules/hoverState.mjs';
 
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
@@ -17,8 +18,63 @@ import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
 import Grasp from './Grasp.mjs';
 import Paraphrase from './Paraphrase.mjs';
+import Gloss from './Gloss.mjs';
 
 const html = htm.bind(h);
+
+function getNumberFormatter(locale, level) {
+  if (level === 1) {
+    if (locale.startsWith('zh') || locale.startsWith('ja')) {
+      return new Intl.NumberFormat(locale, { numberingSystem: 'hanidec' });
+    }
+    return new Intl.NumberFormat(locale);
+  }
+  return null;
+}
+
+function numberToLetter(n) {
+  return String.fromCharCode(96 + n);
+}
+
+// General formatter per level.
+function formatOrdinal(num, level, locale) {
+  if (level === 1) {
+    return getNumberFormatter(locale, level).format(num);
+  } else if (level === 2) {
+    return numberToLetter(num);
+  }
+  // Fallback to default numeric formatting for deeper levels.
+  return num.toString();
+}
+
+function buildSenseHierarchy(senses, manager) {
+  const hyperProp =
+    'hyperonym' in manager.wikibase.props
+      ? manager.wikibase.props.hyperonym
+      : false;
+
+  const senseById = {};
+  senses.forEach(sense => {
+    senseById[sense.id] = { ...sense, children: [] };
+  });
+
+  const topSenses = [];
+  senses.forEach(sense => {
+    let hyperonymId = false;
+    if (hyperProp in sense.claims) {
+      hyperonymId = sense.claims[hyperProp]
+        .map(claim => claim.mainsnak?.datavalue?.value?.id)
+        .find(Boolean);
+    }
+    if (hyperonymId && senseById[hyperonymId]) {
+      senseById[hyperonymId].children.push(senseById[sense.id]);
+    } else {
+      topSenses.push(senseById[sense.id]);
+    }
+  });
+
+  return topSenses;
+}
 
 function applyPropOrder(claims, propOrder) {
   // Separate claims into those in propOrder and those not
@@ -214,12 +270,36 @@ class Entity extends Component {
       .flat();
     const numberOfReferences = Object.keys(references).length;
 
+    let senseOrdinals = null;
     if (senses) {
-      let senseNumber = 1;
-      senses = senses.map(sense => {
-        sense.number = senseNumber++;
-        return sense;
-      });
+      // Get the user's locale for ordinal formatting
+      const userLocale = (manager && manager.userLocale) || navigator.language;
+
+      // Recursively assign ordinals to senses and build the map
+      function assignOrdinals(sensesArr, level = 1, prefix = '') {
+        const ordinalMap = {};
+        sensesArr.forEach((sense, idx) => {
+          // Compute the current ordinal segment for this sense
+          const currentOrdinalSegment = formatOrdinal(idx + 1, level, userLocale);
+          // Build the full ordinal string, inheriting parent's ordinal
+          const fullOrdinal = prefix
+            ? `${prefix}${currentOrdinalSegment}`
+            : currentOrdinalSegment;
+          
+          // Add to the ordinal map
+          ordinalMap[sense.id] = fullOrdinal;
+
+          // Recursively assign ordinals to children
+          if (sense.children && sense.children.length > 0) {
+            Object.assign(ordinalMap, assignOrdinals(sense.children, level + 1, fullOrdinal));
+          }
+        });
+        return ordinalMap;
+      }
+
+      // Build sense hierarchy and assign ordinals
+      const topSenses = buildSenseHierarchy(senses, manager);
+      senseOrdinals = assignOrdinals(topSenses);
     }
 
     const addClaims = async () => {
@@ -243,107 +323,110 @@ class Entity extends Component {
     };
 
     return html`
-      <section ref=${sectionRef}>
-        ${(labels && descriptions) || lemmas
-          ? html`
-              <${Ensign}
-                labels=${labels}
-                lemmas=${lemmas}
-                id=${id}
-                descriptions=${descriptions}
-                lexicalCategory=${lexicalCategory}
-                language=${language}
-                manager=${manager}
-                title=${title} />
-            `
-          : null}
-        ${senses
-          ? html`
-              <${Grasp} senses=${senses} manager=${manager} />
-              ${[
-                { property: 'translation', excludeLanguage: language },
-                { property: 'synonym', onlyLanguage: language },
-              ].map(
-                type => html`
-                  <${Paraphrase}
-                    id=${id}
-                    key=${type.property}
-                    senses=${senses}
-                    manager=${manager}
-                    property=${type.property}
-                    excludeLanguage=${type?.excludeLanguage}
-                    onlyLanguage=${type?.onlyLanguage} />
-                `,
-              )}
-            `
-          : null}
-        ${experimental &&
-        (('instanceOf' in manager.wikibase.props &&
-          manager.wikibase.props.instanceOf in claims) ||
-          language) &&
-        html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
-        ${mainClaims.map(
-          claim =>
-            html`<${Remark}
-              claim=${claim}
-              references=${references}
-              manager=${manager}
-              key=${claim[0].mainsnak.property} />`,
-        )}
-        <${Hint}
-          text=${mainClaims.length === 0
-            ? browser.i18n.getMessage('no_claims')
+      <${HoverProvider}>
+        <section ref=${sectionRef}>
+          ${(labels && descriptions) || lemmas
+            ? html`
+                <${Ensign}
+                  labels=${labels}
+                  lemmas=${lemmas}
+                  id=${id}
+                  descriptions=${descriptions}
+                  lexicalCategory=${lexicalCategory}
+                  language=${language}
+                  manager=${manager}
+                  title=${title} />
+              `
             : null}
-          icon=${'+'}
-          actionTitle=${browser.i18n.getMessage('add_claims')}
-          action=${addClaims} />
-
-        ${quickLinkClaims.length > 0
-          ? html`
-              <h2 key="links">
-                ${browser.i18n.getMessage(
-                  quickLinkClaims.length === 1 ? 'quick_link' : 'quick_links',
+          ${senses
+            ? html`
+                <${Grasp} senses=${senses} manager=${manager} senseOrdinals=${senseOrdinals} />
+                ${[
+                  { property: 'translation', excludeLanguage: language },
+                  { property: 'synonym', onlyLanguage: language },
+                ].map(
+                  type => html`
+                    <${Paraphrase}
+                      id=${id}
+                      key=${type.property}
+                      senses=${senses}
+                      manager=${manager}
+                      property=${type.property}
+                      excludeLanguage=${type?.excludeLanguage}
+                      onlyLanguage=${type?.onlyLanguage}
+                      senseOrdinals=${senseOrdinals} />
+                  `,
                 )}
-              </h2>
-              <${Haste} claims=${quickLinkClaims} manager=${manager} />
-            `
-          : null}
-        ${urlClaims.length > 0
-          ? html`
-              <h2 key="links">
-                ${browser.i18n.getMessage(
-                  urlClaims.length === 1 ? 'link' : 'links',
-                )}
-              </h2>
-              <${Register} claims=${urlClaims} manager=${manager} />
-            `
-          : null}
-        ${numberOfReferences > 0
-          ? html`
-              <h2 key="links">
-                ${browser.i18n.getMessage(
-                  numberOfReferences === 1 ? 'reference' : 'references',
-                )}
-              </h2>
-              <${Refer}
+              `
+            : null}
+          ${experimental &&
+          (('instanceOf' in manager.wikibase.props &&
+            manager.wikibase.props.instanceOf in claims) ||
+            language) &&
+          html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
+          ${mainClaims.map(
+            claim =>
+              html`<${Remark}
+                claim=${claim}
                 references=${references}
                 manager=${manager}
-                wikibase=${wikibase} />
-            `
-          : null}
-        ${externalIdClaims.length > 0
-          ? html`
-              <h2 key="external_ids">
-                ${browser.i18n.getMessage(
-                  externalIdClaims.length === 1
-                    ? 'external_id'
-                    : 'external_ids',
-                )}
-              </h2>
-              <${Chart} claims=${externalIdClaims} manager=${manager} />
-            `
-          : null}
-      </section>
+                key=${claim[0].mainsnak.property} />`,
+          )}
+          <${Hint}
+            text=${mainClaims.length === 0
+              ? browser.i18n.getMessage('no_claims')
+              : null}
+            icon=${'+'}
+            actionTitle=${browser.i18n.getMessage('add_claims')}
+            action=${addClaims} />
+
+          ${quickLinkClaims.length > 0
+            ? html`
+                <h2 key="links">
+                  ${browser.i18n.getMessage(
+                    quickLinkClaims.length === 1 ? 'quick_link' : 'quick_links',
+                  )}
+                </h2>
+                <${Haste} claims=${quickLinkClaims} manager=${manager} />
+              `
+            : null}
+          ${urlClaims.length > 0
+            ? html`
+                <h2 key="links">
+                  ${browser.i18n.getMessage(
+                    urlClaims.length === 1 ? 'link' : 'links',
+                  )}
+                </h2>
+                <${Register} claims=${urlClaims} manager=${manager} />
+              `
+            : null}
+          ${numberOfReferences > 0
+            ? html`
+                <h2 key="links">
+                  ${browser.i18n.getMessage(
+                    numberOfReferences === 1 ? 'reference' : 'references',
+                  )}
+                </h2>
+                <${Refer}
+                  references=${references}
+                  manager=${manager}
+                  wikibase=${wikibase} />
+              `
+            : null}
+          ${externalIdClaims.length > 0
+            ? html`
+                <h2 key="external_ids">
+                  ${browser.i18n.getMessage(
+                    externalIdClaims.length === 1
+                      ? 'external_id'
+                      : 'external_ids',
+                  )}
+                </h2>
+                <${Chart} claims=${externalIdClaims} manager=${manager} />
+              `
+            : null}
+        </section>
+      </${HoverProvider}>
     `;
   }
 }
