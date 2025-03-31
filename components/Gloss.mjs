@@ -7,6 +7,7 @@ import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
 import Something from './Something.mjs';
+import Gender from './Gender.mjs';
 
 const html = htm.bind(h);
 
@@ -57,10 +58,26 @@ function Gloss({ sense, manager }) {
     return items;
   };
 
+  // Helper to extract components from a claim
+  const extractClaim = propKey => {
+    const items = [];
+    if (propKey in manager.wikibase.props) {
+      const prop = manager.wikibase.props[propKey];
+      if (prop in sense.claims) {
+        sense.claims[prop].forEach(claim => {
+          if (claim.mainsnak.datavalue?.value?.id) {
+            items.push(claim.mainsnak.datavalue.value.id);
+          }
+        });
+      }
+    }
+    return items;
+  };
+
   // Use the helpers for the different claim groups
   const conceptItems = extractClaimIds(['itemForThisSense', 'predicateFor']);
   const derivedFromItems = extractClaimIds(['semanticDerivationOf']);
-  const genderItems = extractClaimComponents('semanticGender', Thin);
+  const genderItems = extractClaim('semanticGender');
   const transitivityItems = extractClaimComponents('transitivity', Thin);
 
   // For context items, we have different CSS classes depending on the property.
@@ -80,9 +97,6 @@ function Gloss({ sense, manager }) {
   const placeholder = '￼';
   const [stylePrefix, styleInterfix, styleSuffix] = browser.i18n
     .getMessage('gloss_style_format', [placeholder, placeholder])
-    .split(placeholder);
-  const [genderPrefix, genderInterfix, genderSuffix] = browser.i18n
-    .getMessage('gloss_gender_format', [placeholder, placeholder])
     .split(placeholder);
   const [itemPrefix, itemSuffix] = browser.i18n
     .getMessage('gloss_item_format', [placeholder])
@@ -117,15 +131,7 @@ function Gloss({ sense, manager }) {
         : conceptItems.map(
             item => html`<${Something} id=${item} manager=${manager} />`,
           )}
-      ${genderItems.length
-        ? html`<span class="gloss__gender">
-            ${genderPrefix}${genderItems.reduce(
-              (acc, item, index) =>
-                index === 0 ? [item] : [...acc, genderInterfix, item],
-              [],
-            )}${genderSuffix}
-          </span>`
-        : ''}
+      ${html`<${Gender} items=${genderItems} manager=${manager} />`}
       ${derivedFromItems.length > 0
         ? html`${derivedFromPrefix}${derivedFromItems.map(
             item =>

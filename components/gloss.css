@@ -1,5 +1,4 @@
-.gloss__context,
-.gloss__gender {
+.gloss__context {
 	color: var(--ink__light);
 	&:not(:lang(zh), :lang(ja), :lang(ko)) {
 		font-size: 0.9em;

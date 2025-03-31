@@ -8,7 +8,7 @@ export const inferredSenses = {
         dct:language ?language.
 
       # Find other senses that share the same value for the specified property
-      ${params.values.map(value => `?sense wdt:${instance.props[params.property]} wd:${value} .`).join(' ')}
+      ${params.values.map(value => `{ ?sense wdt:${instance.props[params.property]} wd:${value} . }`).join(' UNION ')}
       
       ${
         instance.props?.semanticGender
@@ -38,24 +38,45 @@ export const inferredSenses = {
     `inferred-senses-${params.values}-${params.property}-${params.excludeLanguage || 'no-exclude'}-${params.onlyLanguage || 'no-only'}`,
   postProcess: ({ results }, params, instance) => {
     const processed = [];
+    const senseMap = new Map();
+
     results.bindings.forEach(bind => {
-      processed.push({
-        sense: bind.sense.value.replace(
-          /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
-          `${instance.id}:$1`,
-        ),
-        language: bind.language.value.replace(
-          /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
-          `${instance.id}:$1`,
-        ),
-        property: params.property,
-        semanticGender:
-          bind?.semanticGender?.value.replace(
+      const sense = bind.sense.value.replace(
+        /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
+        `${instance.id}:$1`,
+      );
+      const language = bind.language.value.replace(
+        /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
+        `${instance.id}:$1`,
+      );
+      const semanticGender = bind.semanticGender
+        ? bind.semanticGender.value.replace(
             /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
             `${instance.id}:$1`,
-          ) ?? '',
-      });
+          )
+        : null;
+
+      if (senseMap.has(sense)) {
+        // Merge with existing entry
+        const existing = senseMap.get(sense);
+        existing.languages = [...new Set([...existing.languages, language])];
+        if (semanticGender) {
+          existing.semanticGenders = [
+            ...new Set([...existing.semanticGenders, semanticGender]),
+          ];
+        }
+      } else {
+        // Create new entry
+        senseMap.set(sense, {
+          sense,
+          language,
+          languages: [language],
+          property: params.property,
+          semanticGenders: semanticGender ? [semanticGender] : [],
+        });
+      }
     });
-    return processed;
+
+    return Array.from(senseMap.values());
   },
 };

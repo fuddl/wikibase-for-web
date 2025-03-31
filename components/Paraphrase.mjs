@@ -5,6 +5,7 @@ import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
 import Mark from './Mark.mjs';
+import Gender from './Gender.mjs';
 
 const html = htm.bind(h);
 
@@ -79,13 +80,10 @@ function Paraphrase({
           result.forEach(item => {
             if (sense.id != item.sense) {
               inferred.push({
-                //item: values.map(value => value.replace(/^[^\:]+\:/, '')),
                 fromSense: sense.id,
                 toSense: item.sense,
-                languages: [item.language],
-                semanticGenders: (item.semanticGenders || []).map(
-                  g => `${manager.wikibase.id}:${g}`,
-                ),
+                languages: item.languages,
+                semanticGenders: item.semanticGenders,
               });
             }
           });
@@ -181,6 +179,7 @@ function Paraphrase({
                         manager=${manager}
                         showLemma="yes"
                         showAppendix="no" />
+                        ${item.semanticGenders.length > 0 && html`<${Gender} items=${item.semanticGenders} manager=${manager} />`}
                     `,
                   );
 

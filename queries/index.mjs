@@ -96,6 +96,8 @@ class WikiBaseQueryManager {
 		}
 
 		const query = queryObject.query({ params, instance });
+		//console.debug(queryObject.id);
+		//console.debug(query);
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();

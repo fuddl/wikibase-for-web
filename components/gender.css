@@ -1,0 +1,17 @@
+.gender {
+  color: var(--ink__light);
+  &:not(:lang(zh), :lang(ja), :lang(ko)) {
+		font-size: 0.9em;
+	}
+	> a {
+		color: inherit;
+	}
+  white-space: norwap;
+}
+
+/* list of languages that use ideographic parenthesis */
+.gender:is(:lang(zh), :lang(ja), :lang(ko)) {
+  /* should maybe be replaced by `hanging-punctuation` once it is supported */
+  margin-left: -0.5em;
+  display: inline-block;
+} 
