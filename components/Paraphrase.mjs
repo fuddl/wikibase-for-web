@@ -160,6 +160,10 @@ function Paraphrase({
   const wrapper = languages.length > 0 ? 'dl' : 'div';
   const wordsWrapper = languages.length > 0 ? 'dd' : 'div';
 
+  if (!senses?.length) {
+    return '';
+  }
+
   return html`
     <section class="paraphrase">
       <h2 class="paraphrase__title">
