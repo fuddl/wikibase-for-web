@@ -51,7 +51,6 @@ function Paraphrase({
     async function fetchInferredItems() {
       if (!senses?.length) return;
 
-      const results = {};
       const inferred = [];
       for (const property of ['itemForThisSense', 'predicateFor']) {
         for (const sense of senses) {
@@ -64,7 +63,7 @@ function Paraphrase({
           if (values.length === 0) continue;
 
           // Query for the property values
-          const result = await manager.query(
+          let result = await manager.query(
             manager.wikibase.id,
             'inferredSenses',
             {
@@ -75,6 +74,24 @@ function Paraphrase({
               onlyLanguage: onlyLanguage?.replace(/^[^\:]+\:/, ''),
             },
           );
+
+          // if the current sense has a semantic gender, filter all result items that don't have the same semantic gender
+          if (sense.claims[manager.wikibase.props.semanticGender]?.length) {
+            const semanticGenders = sense.claims[manager.wikibase.props.semanticGender].map(claim => claim.mainsnak.datavalue?.value?.id);
+            result = result.filter((item) => {
+              // filter items that don't have the same semantic gender but keep those that have no gender 
+              if (item.semanticGenders.length > 0) {
+                return item.semanticGenders.some(gender => semanticGenders.includes(gender))
+              } else {
+                return true;
+              }
+            });
+            // there is no need the display the semantic gender anymore so we remove it from the result items
+            result = result.map(item => ({
+              ...item,
+              semanticGenders: [],
+            }));
+          } 
 
           // Process each result item
           result.forEach(item => {
