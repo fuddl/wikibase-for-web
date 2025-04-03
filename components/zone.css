@@ -1,0 +1,37 @@
+.zone {
+	color: var(--ink__light);
+	&:not(:lang(zh), :lang(ja), :lang(ko)) {
+		font-size: 0.9em;
+	}
+	a {
+		color: inherit;
+	}
+}
+
+/* list of languages that use ideographic	parenthesis */
+.zone:is(:lang(zh), :lang(ja), :lang(ko)) {
+	/* should maybe be replaced by `hanging-punctuation` once it is supported */
+	margin-left: -0.5em;
+	display: inline-block;
+}
+
+.zone__style {
+	font-variant: small-caps;
+}
+
+/* Only apply italics to languages that commonly use them */
+.zone__use {
+	&:lang(en),
+	&:lang(fr),
+	&:lang(de),
+	&:lang(es),
+	&:lang(it),
+	&:lang(pt),
+	&:lang(nl),
+	&:lang(ru),
+	&:lang(uk),
+	&:lang(el) {
+		font-style: italic;
+	}
+	/* in case this ever becomes a black list again, here is a list of languages that don't use italics: :lang(zh), :lang(ja), :lang(ko), :lang(pa) */
+}

@@ -8,6 +8,7 @@ import Thing from './Thing.mjs';
 import Word from './Word.mjs';
 import Something from './Something.mjs';
 import Gender from './Gender.mjs';
+import Zone from './Zone.mjs';
 
 const html = htm.bind(h);
 
@@ -80,24 +81,12 @@ function Gloss({ sense, manager }) {
   const genderItems = extractClaim('semanticGender');
   const transitivityItems = extractClaimComponents('transitivity', Thin);
 
-  // For context items, we have different CSS classes depending on the property.
-  const contextMapping = {
-    fieldOfUsage: 'gloss__use',
-    languageStyle: 'gloss__style',
-    locationOfSenseUsage: 'gloss__style',
-  };
-  let contextItems = [];
-  Object.entries(contextMapping).forEach(([propKey, cssClass]) => {
-    contextItems = contextItems.concat(
-      extractClaimComponents(propKey, Thin, cssClass),
-    );
-  });
+  // Extract context items separately
+  const languageStyleItems = extractClaim('languageStyle');
+  const fieldOfUsageItems = extractClaim('fieldOfUsage');
 
   // Internationalization messages (with placeholder splitting)
   const placeholder = '￼';
-  const [stylePrefix, styleInterfix, styleSuffix] = browser.i18n
-    .getMessage('gloss_style_format', [placeholder, placeholder])
-    .split(placeholder);
   const [itemPrefix, itemSuffix] = browser.i18n
     .getMessage('gloss_item_format', [placeholder])
     .split(placeholder);
@@ -108,15 +97,11 @@ function Gloss({ sense, manager }) {
 
   return html`
     <div class="gloss">
-      ${contextItems.length
-        ? html`<span class="gloss__context">
-            ${stylePrefix}${contextItems.reduce(
-              (acc, item, index) =>
-                index === 0 ? [item] : [...acc, styleInterfix, item],
-              [],
-            )}${styleSuffix}
-          </span>`
-        : ''}
+      ${html`<${Zone}
+        languageStyle=${languageStyleItems}
+        fieldOfUsage=${fieldOfUsageItems}
+        manager=${manager}
+      />`}
       ${transitivityItems.length
         ? html`<span class="gloss__transitivity">
             ${transitivityPrefix}${transitivityItems.reduce(

@@ -1,27 +1,6 @@
-.gloss__context {
-	color: var(--ink__light);
-	&:not(:lang(zh), :lang(ja), :lang(ko)) {
-		font-size: 0.9em;
-	}
-	a {
-		color: inherit;
-	}
-}
-
-/* list of languages that use ideographic	parenthesis */
-.gloss__context:is(:lang(zh), :lang(ja), :lang(ko)) {
-	/* should maybe be replaced by `hanging-punctuation` once it is supported */
-	margin-left: -0.5em;
-	display: inline-block;
-}
-
-.gloss__style {
-	font-variant: small-caps;
-}
 
 /* Only apply italics to languages that commonly use them */
-.gloss__transitivity,
-.gloss__use {
+.gloss__transitivity {
 	&:lang(en),
 	&:lang(fr),
 	&:lang(de),
