@@ -98,8 +98,8 @@ function Gloss({ sense, manager }) {
   return html`
     <div class="gloss">
       ${html`<${Zone}
-        languageStyle=${languageStyleItems}
-        fieldOfUsage=${fieldOfUsageItems}
+        languageStyles=${languageStyleItems}
+        fieldsOfUsage=${fieldOfUsageItems}
         manager=${manager}
       />`}
       ${transitivityItems.length

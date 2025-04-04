@@ -2,7 +2,7 @@ export const inferredSenses = {
   id: 'inferred-senses',
   requiredProps: ['itemForThisSense', 'predicateFor'],
   query: ({ instance, params }) => `
-    SELECT DISTINCT ?sense ?language ${instance.props?.semanticGender ? '?semanticGender' : ''} WHERE {
+    SELECT DISTINCT ?sense ?language ${instance.props?.semanticGender ? '?semanticGender' : ''} ${instance.props?.languageStyle ? '?languageStyle' : ''} ${instance.props?.fieldOfUse ? '?fieldOfUse' : ''} WHERE {
       ?lexeme rdf:type ontolex:LexicalEntry;
         ontolex:sense ?sense;
         dct:language ?language.
@@ -16,6 +16,26 @@ export const inferredSenses = {
         OPTIONAL {
           # Get the semantic gender of the sense
           ?sense wdt:${instance.props.semanticGender} ?semanticGender .
+        }`
+          : ''
+      }
+
+      ${
+        instance.props?.languageStyle
+          ? `
+        OPTIONAL {
+          # Get the language style of the sense
+          ?sense wdt:${instance.props.languageStyle} ?languageStyle .
+        }`
+          : ''
+      }
+
+      ${
+        instance.props?.fieldOfUse
+          ? `
+        OPTIONAL {
+          # Get the field of use of the sense
+          ?sense wdt:${instance.props.fieldOfUse} ?fieldOfUse .
         }`
           : ''
       }
@@ -56,6 +76,20 @@ export const inferredSenses = {
           )
         : null;
 
+      const languageStyle = bind.languageStyle
+        ? bind.languageStyle.value.replace(
+            /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
+            `${instance.id}:$1`,
+          )
+        : null;
+
+      const fieldOfUse = bind.fieldOfUse
+        ? bind.fieldOfUse.value.replace(
+            /^.*\/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$/,
+            `${instance.id}:$1`,
+          )
+        : null;
+
       if (senseMap.has(sense)) {
         // Merge with existing entry
         const existing = senseMap.get(sense);
@@ -63,6 +97,16 @@ export const inferredSenses = {
         if (semanticGender) {
           existing.semanticGenders = [
             ...new Set([...existing.semanticGenders, semanticGender]),
+          ];
+        }
+        if (languageStyle) {
+          existing.languageStyles = [
+            ...new Set([...(existing.languageStyles || []), languageStyle]),
+          ];
+        }
+        if (fieldOfUse) {
+          existing.fieldOfUses = [
+            ...new Set([...(existing.fieldOfUses || []), fieldOfUse]),
           ];
         }
       } else {
@@ -73,6 +117,8 @@ export const inferredSenses = {
           languages: [language],
           property: params.property,
           semanticGenders: semanticGender ? [semanticGender] : [],
+          languageStyles: languageStyle ? [languageStyle] : [],
+          fieldsOfUse: fieldOfUse ? [fieldOfUse] : [],
         });
       }
     });

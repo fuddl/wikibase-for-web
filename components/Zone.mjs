@@ -6,16 +6,16 @@ import Thin from './Thin.mjs';
 
 const html = htm.bind(h);
 
-function Zone({ languageStyle, fieldOfUsage, manager }) {
+function Zone({ languageStyles, fieldsOfUsage, manager }) {
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/zone.css'));
   }, []);
 
   const items = [
-    ...(languageStyle || []).map(
+    ...(languageStyles || []).map(
       id => html`<span class="zone__style"><${Thin} id=${id} manager=${manager} /></span>`,
     ),
-    ...(fieldOfUsage || []).map(
+    ...(fieldsOfUsage || []).map(
       id => html`<span class="zone__use"><${Thin} id=${id} manager=${manager} /></span>`,
     ),
   ];
@@ -26,14 +26,10 @@ function Zone({ languageStyle, fieldOfUsage, manager }) {
     .getMessage('gloss_style_format', [placeholder, placeholder])
     .split(placeholder);
 
-  return html`
-    <span class="zone">
-      ${prefix}${items.reduce(
+  return html`<span class="zone">${prefix}${items.reduce(
         (acc, item, index) => (index === 0 ? [item] : [...acc, interfix, item]),
         [],
-      )}${suffix}
-    </span>
-  `;
+      )}${suffix}</span>`;
 }
 
 export default Zone;
