@@ -247,34 +247,17 @@ function Paraphrase({
                         claim => claim.mainsnak.datavalue?.value?.id,
                       ) || [];
 
-                    // If neither has any, add 10 points
                     if (
-                      (!group.fieldsOfUsage ||
-                        group.fieldsOfUsage.length === 0) &&
-                      currentFieldsOfUsage.length === 0
+                      !group.fieldsOfUsage ||
+                      group.fieldsOfUsage.length === 0
                     ) {
-                      score += 5;
+                      score += 1;
                     }
                     if (
-                      (!group.languageStyles ||
-                        group.languageStyles.length === 0) &&
-                      currentLanguageStyles.length === 0
+                      !group.languageStyles ||
+                      group.languageStyles.length === 0
                     ) {
-                      score += 5;
-                    }
-                    // if sense has a languageStyle and the group has no languageStyle, remove 5 points
-                    if (
-                      currentLanguageStyles?.length &&
-                      group?.languageStyles?.length === 0
-                    ) {
-                      score -= 5;
-                    }
-                    // if sense has a fieldOfUsage and the group has no fieldOfUsage, remove 5 points
-                    if (
-                      currentFieldsOfUsage?.length &&
-                      group?.fieldsOfUsage?.length === 0
-                    ) {
-                      score -= 5;
+                      score += 1;
                     }
 
                     // Add 1 point for each common fieldOfUsage
@@ -282,9 +265,10 @@ function Paraphrase({
                       group.fieldsOfUsage?.length &&
                       currentFieldsOfUsage.length
                     ) {
-                      score += group.fieldsOfUsage.filter(field =>
-                        currentFieldsOfUsage.includes(field),
-                      ).length;
+                      score +=
+                        group.fieldsOfUsage.filter(field =>
+                          currentFieldsOfUsage.includes(field),
+                        ).length * 1.5;
                     }
 
                     // Add 2 points for each common languageStyle
