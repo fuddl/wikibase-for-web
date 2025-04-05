@@ -210,13 +210,18 @@ function Paraphrase({
           id=${`${manager.wikibase.id}:${manager.wikibase.props[property]}`}
           manager=${manager} />
       </h2>
-      <div class="paraphrase__list">
+      <div
+        class="paraphrase__list paraphrase__list--amount_${languages.length}">
         ${languages.map(
           language => html`
           <${wrapper} class="paraphrase__group" key=${`${id}:${language}`}>
             ${
               languages.length > 0 &&
-              html` <dt class="paraphrase__lang" key=${`${id}:${language}-dt`}>
+              html` <dt
+                class="paraphrase__lang ${onlyLanguage == language
+                  ? 'paraphrase__lang--only'
+                  : ''}"
+                key=${`${id}:${language}-dt`}>
                 ${language === 'unknown'
                   ? 'Other'
                   : html`<${Thing} id=${language} manager=${manager} />`}
@@ -322,7 +327,7 @@ function Paraphrase({
                                   ${item.semanticGenders.length > 0 &&
                                   html`<${Gender}
                                     items=${item.semanticGenders}
-                                    manager=${manager} />`} `,
+                                    manager=${manager} />`}`,
                             )
                             .reduce((acc, curr, index) => {
                               if (index === 0) return curr;

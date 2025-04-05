@@ -58,10 +58,11 @@ class Word extends Component {
     }
 
     const append = appendix.map(
-      (item, index) => html`<${Thin} id=${item} manager=${manager} />${index < appendix.length - 1
-          ? ', '
-          : ''}
-      `,
+      (item, index) =>
+        html`<${Thin} id=${item} manager=${manager} />${index <
+          appendix.length - 1
+            ? ', '
+            : ''} `,
     );
 
     if (showAppendix == 'only') {
@@ -70,8 +71,7 @@ class Word extends Component {
 
     return html`<a class="word" href="${href}" ref=${elementRef}
         >${lemmas ? html`<${Lament} lemmas=${lemmas} />` : null}</a
-      >
-      ${append.length > 0 ? htm`${' '}(${append})` : ''}`;
+      >${append.length > 0 ? htm`${' '}(${append})` : ''}`;
   }
 }
 

@@ -1,5 +1,5 @@
-.paraphrase__list,
-.paraphrase__group:only-child {
+.paraphrase__list:not(.paraphrase__list--amount_1),
+.paraphrase__group:not(:only-child) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
   grid-gap: 1em;
@@ -39,4 +39,8 @@
 }
 .paraphrase__title > a {
   color: inherit;
+}
+
+.paraphrase__lang--only {
+  display: none;
 }
