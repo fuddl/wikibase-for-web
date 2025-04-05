@@ -249,25 +249,31 @@ function Paraphrase({
 
                     // If neither has any, add 10 points
                     if (
-                      (!group.fieldsOfUsage || group.fieldsOfUsage.length === 0) &&
-                      currentFieldsOfUsage.length === 0) {
+                      (!group.fieldsOfUsage ||
+                        group.fieldsOfUsage.length === 0) &&
+                      currentFieldsOfUsage.length === 0
+                    ) {
                       score += 5;
                     }
                     if (
-                      (!group.languageStyles || group.languageStyles.length === 0) &&
-                      currentLanguageStyles.length === 0) {
+                      (!group.languageStyles ||
+                        group.languageStyles.length === 0) &&
+                      currentLanguageStyles.length === 0
+                    ) {
                       score += 5;
                     }
                     // if sense has a languageStyle and the group has no languageStyle, remove 5 points
                     if (
                       currentLanguageStyles?.length &&
-                      group?.languageStyles?.length === 0) {
+                      group?.languageStyles?.length === 0
+                    ) {
                       score -= 5;
                     }
                     // if sense has a fieldOfUsage and the group has no fieldOfUsage, remove 5 points
                     if (
                       currentFieldsOfUsage?.length &&
-                      group?.fieldsOfUsage?.length === 0) {
+                      group?.fieldsOfUsage?.length === 0
+                    ) {
                       score -= 5;
                     }
 
@@ -290,12 +296,6 @@ function Paraphrase({
                         group.languageStyles.filter(style =>
                           currentLanguageStyles.includes(style),
                         ).length * 2;
-                    }
-
-                    if (sense.id === 'wikidata:L36227-S1') {
-                      console.debug({group: JSON.stringify(group)});
-                      console.debug({sense: JSON.stringify(sense.claims)});
-                      console.debug({score});
                     }
 
                     return { ...group, score };
@@ -328,17 +328,17 @@ function Paraphrase({
                                   : item.languages.includes(language)),
                             )
                             .map(
-                              item => html`<${Word}
-                                  id=${item.toSense}
-                                  key=${item.toSense}
-                                  manager=${manager}
-                                  showLemma="yes"
-                                  showAppendix="no" />
-                                ${item.semanticGenders.length > 0 &&
-                                html`<${Gender}
-                                  items=${item.semanticGenders}
-                                  manager=${manager} />`}
-                              `,
+                              item =>
+                                html`<${Word}
+                                    id=${item.toSense}
+                                    key=${item.toSense}
+                                    manager=${manager}
+                                    showLemma="yes"
+                                    showAppendix="no" />
+                                  ${item.semanticGenders.length > 0 &&
+                                  html`<${Gender}
+                                    items=${item.semanticGenders}
+                                    manager=${manager} />`} `,
                             )
                             .reduce((acc, curr, index) => {
                               if (index === 0) return curr;
