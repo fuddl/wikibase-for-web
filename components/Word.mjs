@@ -62,7 +62,7 @@ class Word extends Component {
         html`<${Thin} id=${item} manager=${manager} />${index <
           appendix.length - 1
             ? ', '
-            : ''} `,
+            : ''}`,
     );
 
     if (showAppendix == 'only') {
