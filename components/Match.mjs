@@ -107,6 +107,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
 
     if (
       metadata?.mediawiki?.wgArticleId &&
+      newEdits[0]?.claim &&
       !('qualifiers' in newEdits[0].claim)
     ) {
       await addMediaWikiQualifiers(newEdits[0], metadata.mediawiki, manager);
