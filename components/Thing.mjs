@@ -10,7 +10,7 @@ import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 const html = htm.bind(h);
 
 class Thing extends Component {
-  render({ id, manager }) {
+  render({ id, manager, onDescriptorAquired }) {
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const elementRef = useRef(null);
 
@@ -39,6 +39,10 @@ class Thing extends Component {
     let description = designator
       ? getByUserLanguage(designator.descriptions)
       : '';
+
+    if ((label || description) && onDescriptorAquired) {
+      onDescriptorAquired({label, description})
+    }
 
     return html`<a
       class="thing"

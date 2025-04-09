@@ -1,7 +1,7 @@
 import { h } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
-import { useEffect } from '../importmap/preact/hooks/src/index.js';
+import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Thin from './Thin.mjs';
 import Thing from './Thing.mjs';
@@ -95,6 +95,10 @@ function Gloss({ sense, manager }) {
       .getMessage('gloss_transitivity_format', [placeholder])
       .split(placeholder);
 
+  // State to track if we should use descriptor description instead of gloss
+  const [useDescriptorDescription, setUseDescriptorDescription] = useState(false);
+  const [conceptDescription, setConceptDescription] = useState(null);
+
   return html`
     <div class="gloss">
       ${html`<${Zone}
@@ -112,7 +116,7 @@ function Gloss({ sense, manager }) {
           </span>`
         : ''}
       ${isNativeGloss
-        ? gloss
+        ? (useDescriptorDescription && conceptDescription ? conceptDescription : gloss)
         : conceptItems.map(
             item => html`<${Something} id=${item} manager=${manager} />`,
           )}
@@ -132,6 +136,12 @@ function Gloss({ sense, manager }) {
             item =>
               html`<br />${itemPrefix}<${Thing}
                   id=${item}
+                  onDescriptorAquired=${(descriptor) => {
+                    if (descriptor.label?.value?.toLowerCase() === gloss?.toLowerCase()) {
+                      setUseDescriptorDescription(true);
+                      setConceptDescription(descriptor.description?.value);
+                    }
+                  }}
                   manager=${manager} />${itemSuffix}`,
           )
         : ''}
