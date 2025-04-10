@@ -277,5 +277,190 @@
         "example": "5.000"
       }
     }
+  },
+  "add_claims": {
+    "message": "Aussage hinzufügen",
+    "description": "Title of a form where claims can be added.",
+    "placeholders": {}
+  },
+  "add_claims_to": {
+    "message": "Aussage zu $SUBJECT$ hinzufügen.",
+    "description": "Title of a form where claims can be added to a specific entity.",
+    "placeholders": {
+      "subject": {
+        "content": "$1",
+        "example": "wikidata:Q42"
+      }
+    }
+  },
+  "add_claims_to_many": {
+    "message": "Aussage mehreren Entitäten hinzufügen",
+    "description": "Title of a form where claims can be added to multiple entities.",
+    "placeholders": {}
+  },
+  "flip_claim_direction": {
+    "message": "Richtung umkehren",
+    "description": "",
+    "placeholders": {}
+  },
+  "search_ids": {
+    "message": "Identifikatoren suchen",
+    "description": "Title of a list where external ids can be searched.",
+    "placeholders": {}
+  },
+  "no_claims": {
+    "message": "Es sind noch keine Aussagen vorhanden.",
+    "description": "Message seen in items and lexemes that have no claims yet.",
+    "placeholders": {}
+  },
+  "placeholder_example_date": {
+    "message": "Bspw. `$DATE$`",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "+1855-00-00"
+      }
+    }
+  },
+  "amount": {
+    "message": "Menge",
+    "description": "Label of a field where a user is supposed to enter an numerical amount.",
+    "placeholders": {}
+  },
+  "unit": {
+    "message": "Einheit",
+    "description": "Label of a field where a user is supposed to enter a unit for an numerical amount.",
+    "placeholders": {}
+  },
+  "placeholder_example_unit": {
+    "message": "Bspw. '$UNIT$'",
+    "description": "Placeholder of a textfield that shows an example unit that can be entered.",
+    "placeholders": {
+      "unit": {
+        "content": "$1",
+        "example": "metre"
+      }
+    }
+  },
+  "searching_ids": {
+    "message": "Suche nach fehlenden Identifikatoren…",
+    "description": "Message shown when querying ids that are expected from a specific entity.",
+    "placeholders": {}
+  },
+  "no_language_selected": {
+    "message": "Keine Sprache ausgewählt",
+    "description": "The option label of a select where currently no language is selected.",
+    "placeholders": {}
+  },
+  "preferred_languages": {
+    "message": "Bevorzugte Sprachen",
+    "description": "Label seen above a list of languages known to be preferred by the user.",
+    "placeholders": {}
+  },
+  "other_languages": {
+    "message": "Weitere Sprachen",
+    "description": "Label seen above a list of languages not known to be preferred by the user.",
+    "placeholders": {}
+  },
+  "no_ids_for_following_type": {
+    "message": "Für die folgenden Typen sind keine Eigenschaften bekannt:",
+    "description": "Introduces a list of classes that don't have associated external id properties."
+  },
+  "edit_button": {
+    "message": "Bearbeiten",
+    "description": "Label of a button that allows editing something."
+  },
+  "set_lemma": {
+    "message": "Lemma festlegen",
+    "description": "Label of an input field where a lemma can be added."
+  },
+  "edit_lemmas": {
+    "message": "Lemmas bearbeiten",
+    "description": "Title of a form where lemmas of a lexeme can be changed."
+  },
+  "edit_lemma": {
+    "message": "Lemma bearbeiten",
+    "description": "Label of a text field where a lemma can be changed,"
+  },
+  "search_property_placeholder": {
+    "message": "Suche nach Eigenschaft via. Bezeichnung oder Alias.",
+    "description": "Placeholder of a field that searches for wikibase senses."
+  },
+  "search_unit_placeholder": {
+    "message": "Suche nach Einheit nach Bezeichnung oder Alias.",
+    "description": "Placeholder of a field that searches for items that represent a unit like kilometers or Yen."
+  },
+  "quick_link": {
+    "message": "Quick-Link",
+    "description": "Heading for a section containing a single quick link."
+  },
+  "quick_links": {
+    "message": "Quick-Links",
+    "description": "Heading for a section containing quick links."
+  },
+  "time_precision_day": {
+    "message": "Auf den Tag genau",
+    "description": "Option stating that a date statment has the precisionn of a day."
+  },
+  "time_precision_month": {
+    "message": "Auf den Monat genau",
+    "description": "Option stating that a date statment has the precisionn of a month."
+  },
+  "time_precision_year": {
+    "message": "Auf das Jahr genau",
+    "description": "Option stating that a date statment has the precisionn of a year."
+  },
+  "gloss_style_format": {
+    "message": "[$STYLE$, $USE$] ",
+    "description": "Affixes around a gloss style. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "STYLE": {
+        "content": "$1",
+        "example": "slang"
+      },
+      "USE": {
+        "content": "$2",
+        "example": "astronomy"
+      }
+    }
+  },
+  "gloss_gender_format": {
+    "message": " ($SEX$, $GENDER$)",
+    "description": "Affixes around a gloss gender. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "SEX": {
+        "content": "$1",
+        "example": "female"
+      },
+      "GENDER": {
+        "content": "$2",
+        "example": "male"
+      }
+    }
+  },
+  "gloss_item_format": {
+    "message": "→ $ITEMLINK$",
+    "description": "Affixes around a item link under a gloss.",
+    "placeholders": {
+      "ITEMLINK": {
+        "content": "$1",
+        "example": "universe"
+      }
+    }
+  },
+  "gloss_transitivity_format": {
+    "message": "$TRANS$/$INTRANS$: ",
+    "description": "Affixes around a gloss transitivity.",
+    "placeholders": {
+      "TRANS": {
+        "content": "$1",
+        "example": "transitive"
+      },
+      "INTRANS": {
+        "content": "$1",
+        "example": "transitive"
+      }
+    }
   }
 }

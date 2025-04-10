@@ -337,5 +337,174 @@
         "example": "5.000"
       }
     }
+  },
+  "add_claims": {
+    "message": "Добавить утверждения",
+    "description": "Title of a form where claims can be added."
+  },
+  "add_claims_to": {
+    "message": "Добавить утверждения к $SUBJECT$.",
+    "description": "Title of a form where claims can be added to a specific entity.",
+    "placeholders": {
+      "subject": {
+        "content": "$1",
+        "example": "wikidata:Q42"
+      }
+    }
+  },
+  "add_claims_to_many": {
+    "message": "Добавить утверждения нескольким субъектам",
+    "description": "Title of a form where claims can be added to multiple entities."
+  },
+  "flip_claim_direction": {
+    "message": "Обратить направление утверждения"
+  },
+  "search_ids": {
+    "message": "Поиск идентификаторов",
+    "description": "Title of a list where external ids can be searched."
+  },
+  "no_claims": {
+    "message": "Пока нет утверждений.",
+    "description": "Message seen in items and lexemes that have no claims yet."
+  },
+  "no_ids_for_following_type": {
+    "message": "Нет известных свойств идентификаторов для следующих типов:",
+    "description": "Introduces a list of classes that don't have associated external id properties."
+  },
+  "placeholder_example_date": {
+    "message": "Например, `$DATE$`",
+    "description": "Placeholder of a textfield that shows an example number that be entered.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "+1855-00-00"
+      }
+    }
+  },
+  "amount": {
+    "message": "Количество",
+    "description": "Label of a field where a user is supposed to enter an numerical amount."
+  },
+  "unit": {
+    "message": "Единица измерения",
+    "description": "Label of a field where a user is supposed to enter a unit for an numerical amount."
+  },
+  "placeholder_example_unit": {
+    "message": "Например, ‘$UNIT$’",
+    "description": "Placeholder of a textfield that shows an example unit that can be entered.",
+    "placeholders": {
+      "unit": {
+        "content": "$1",
+        "example": "metre"
+      }
+    }
+  },
+  "searching_ids": {
+    "message": "Поиск ожидаемых идентификаторов…",
+    "description": "Message shown when querying ids that are expected from a specific entity."
+  },
+  "no_language_selected": {
+    "message": "Язык не выбран",
+    "description": "The option label of a select where currently no language is selected."
+  },
+  "preferred_languages": {
+    "message": "Предпочтительные языки",
+    "description": "Label seen above a list of languages known to be preferred by the user."
+  },
+  "other_languages": {
+    "message": "Другие языки",
+    "description": "Label seen above a list of languages not known to be preferred by the user."
+  },
+  "set_lemma": {
+    "message": "Установить лемму",
+    "description": "Label of an input field where a lemma can be added."
+  },
+  "edit_lemmas": {
+    "message": "Редактировать леммы",
+    "description": "Title of a form where lemmas of a lexeme can be changed."
+  },
+  "edit_lemma": {
+    "message": "Редактировать лемму",
+    "description": "Label of a text field where a lemma can be changed,"
+  },
+  "search_property_placeholder": {
+    "message": "Искать свойство по метке или псевдониму.",
+    "description": "Placeholder of a field that searches for wikibase senses."
+  },
+  "search_unit_placeholder": {
+    "message": "Искать единицу измерения по метке или псевдониму.",
+    "description": "Placeholder of a field that searches for items that represent a unit like kilometers or Yen."
+  },
+  "quick_link": {
+    "message": "Быстрая ссылка",
+    "description": "Heading for a section containing a single quick link."
+  },
+  "quick_links": {
+    "message": "Быстрые ссылки",
+    "description": "Heading for a section containing quick links."
+  },
+  "time_precision_day": {
+    "message": "С точностью до дня",
+    "description": "Option stating that a date statment has the precisionn of a day."
+  },
+  "time_precision_month": {
+    "message": "С точностью до месяца",
+    "description": "Option stating that a date statment has the precisionn of a month."
+  },
+  "time_precision_year": {
+    "message": "С точностью до года",
+    "description": "Option stating that a date statment has the precisionn of a year."
+  },
+  "gloss_style_format": {
+    "message": "[$STYLE$, $USE$] ",
+    "description": "Affixes around a gloss style. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "STYLE": {
+        "content": "$1",
+        "example": "slang"
+      },
+      "USE": {
+        "content": "$2",
+        "example": "astronomy"
+      }
+    }
+  },
+  "gloss_gender_format": {
+    "message": " ($SEX$, $GENDER$)",
+    "description": "Affixes around a gloss gender. Can be used for parenthesis, etc.",
+    "placeholders": {
+      "SEX": {
+        "content": "$1",
+        "example": "female"
+      },
+      "GENDER": {
+        "content": "$2",
+        "example": "male"
+      }
+    }
+  },
+  "gloss_item_format": {
+    "message": "→ $ITEMLINK$",
+    "description": "Affixes around a item link under a gloss.",
+    "placeholders": {
+      "ITEMLINK": {
+        "content": "$1",
+        "example": "universe"
+      }
+    }
+  },
+  "gloss_transitivity_format": {
+    "message": "$TRANS$/$INTRANS$: ",
+    "description": "Affixes around a gloss transitivity.",
+    "placeholders": {
+      "TRANS": {
+        "content": "$1",
+        "example": "transitive"
+      },
+      "INTRANS": {
+        "content": "$1",
+        "example": "transitive"
+      }
+    }
   }
 }

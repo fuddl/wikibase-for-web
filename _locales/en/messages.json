@@ -195,7 +195,7 @@
     "description": "Placeholder of a field that searches for wikibase senses."
   },
   "search_property_placeholder": {
-    "message": "Search property label or alias.",
+    "message": "Search property by label or alias.",
     "description": "Placeholder of a field that searches for wikibase senses."
   },
   "search_unit_placeholder": {
