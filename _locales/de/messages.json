@@ -401,15 +401,15 @@
   },
   "time_precision_day": {
     "message": "Auf den Tag genau",
-    "description": "Option stating that a date statment has the precisionn of a day."
+    "description": "Option stating that a date statment has the precision of a day."
   },
   "time_precision_month": {
     "message": "Auf den Monat genau",
-    "description": "Option stating that a date statment has the precisionn of a month."
+    "description": "Option stating that a date statment has the precision of a month."
   },
   "time_precision_year": {
     "message": "Auf das Jahr genau",
-    "description": "Option stating that a date statment has the precisionn of a year."
+    "description": "Option stating that a date statment has the precision of a year."
   },
   "gloss_style_format": {
     "message": "[$STYLE$, $USE$] ",

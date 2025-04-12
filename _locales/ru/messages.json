@@ -445,15 +445,15 @@
   },
   "time_precision_day": {
     "message": "С точностью до дня",
-    "description": "Option stating that a date statment has the precisionn of a day."
+    "description": "Option stating that a date statment has the precision of a day."
   },
   "time_precision_month": {
     "message": "С точностью до месяца",
-    "description": "Option stating that a date statment has the precisionn of a month."
+    "description": "Option stating that a date statment has the precision of a month."
   },
   "time_precision_year": {
     "message": "С точностью до года",
-    "description": "Option stating that a date statment has the precisionn of a year."
+    "description": "Option stating that a date statment has the precision of a year."
   },
   "gloss_style_format": {
     "message": "[$STYLE$, $USE$] ",
