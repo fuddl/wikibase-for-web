@@ -177,9 +177,8 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	} else if (message.type === 'highlight_elements') {
 		// Forward 'highlight_links' to the active tab
 		shouldHighlightLinks = message ?? true;
-		for (const tab of await browser.tabs.query(contentTabsQuery)) {
-			await browser.tabs.sendMessage(tab.id, message);
-		}
+		const activeTab = await getCurrentTab();
+		await browser.tabs.sendMessage(activeTab.id, message);
 		await checkSidebarToUnhighlight(true);
 
 		return true;
