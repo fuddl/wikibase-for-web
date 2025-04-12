@@ -93,6 +93,10 @@ function Gloss({ sense, manager }) {
   const [transitivityPrefix, transitivityInterfix, transitivitySuffix] =
     browser.i18n
       .getMessage('gloss_transitivity_format', [placeholder])
+      .split(placeholder); 
+  const [derivedFromPrefix, derivedFromInterfix, derivedFromSuffix] =
+    browser.i18n
+      .getMessage('gloss_derived_from_format', [placeholder])
       .split(placeholder);
 
   // State to track if we should use descriptor description instead of gloss
@@ -124,12 +128,12 @@ function Gloss({ sense, manager }) {
       ${derivedFromItems.length > 0
         ? html`${derivedFromPrefix}${derivedFromItems.map(
             item =>
-              html`<${Word}
+              html`<i class="gloss__derived-from"><${Word}
                 showLemma="yes"
                 showAppendix="no"
                 id=${item}
-                manager=${manager} />`,
-          )}`
+                manager=${manager} /></i>`,
+          )}${derivedFromSuffix}`
         : ''}
       ${conceptItems.length > 0
         ? conceptItems.map(

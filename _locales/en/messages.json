@@ -505,5 +505,19 @@
         "example": "transitive"
       }
     }
+  },
+  "gloss_derived_from_format": {
+    "message": " ⇐ $FOO$/$BAR$",
+    "description": "Affixes around a gloss transitivity.",
+    "placeholders": {
+      "FOO": {
+        "content": "$1",
+        "example": "foo"
+      },
+      "BAR": {
+        "content": "$1",
+        "example": "bar"
+      }
+    }
   }
 }

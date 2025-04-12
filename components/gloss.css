@@ -1,6 +1,7 @@
 
 /* Only apply italics to languages that commonly use them */
-.gloss__transitivity {
+.gloss__transitivity,
+.gloss__derived-from {
 	&:lang(en),
 	&:lang(fr),
 	&:lang(de),
