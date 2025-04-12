@@ -3,6 +3,7 @@ import { equivalentClasses } from './equivalentClasses.mjs';
 import { equivalentProperties } from './equivalentProperties.mjs';
 import { expectedIdsByLanguage } from './expectedIdsByLanguage.mjs';
 import { expectedIdsByType } from './expectedIdsByType.mjs';
+import { hyperonyms } from './hyperonyms.mjs';
 import { inheritedClasses } from './inheritedClasses.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
 import { inferredSenses } from './inferredSenses.mjs';
@@ -25,6 +26,7 @@ const queries = {
 	equivalentProperties,
 	expectedIdsByLanguage,
 	expectedIdsByType,
+	hyperonyms,
 	inheritedClasses,
 	instancesOrSubclasses,
 	inferredSenses,
@@ -96,8 +98,10 @@ class WikiBaseQueryManager {
 		}
 
 		const query = queryObject.query({ params, instance });
-		//console.debug(queryObject.id);
-		//console.debug(query);
+		if (queryObject.id == 'hyperonyms') {
+			
+		console.debug(query);
+		}
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();

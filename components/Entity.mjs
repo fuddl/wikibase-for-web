@@ -342,8 +342,9 @@ class Entity extends Component {
             ? html`
                 <${Grasp} senses=${senses} manager=${manager} senseOrdinals=${senseOrdinals} />
                 ${[
-                  { property: 'translation', excludeLanguage: language },
-                  { property: 'synonym', onlyLanguage: language },
+                  { property: 'translation', excludeLanguage: language, query: 'inferredSenses' },
+                  { property: 'synonym', onlyLanguage: language, query: 'inferredSenses' },
+                  { property: 'hyperonym', onlyLanguage: language, query: 'hyperonyms' },
                 ].map(
                   type => html`
                     <${Paraphrase}
@@ -354,7 +355,8 @@ class Entity extends Component {
                       property=${type.property}
                       excludeLanguage=${type?.excludeLanguage}
                       onlyLanguage=${type?.onlyLanguage}
-                      senseOrdinals=${senseOrdinals} />
+                      senseOrdinals=${senseOrdinals}
+                      query=${type.query} />
                   `,
                 )}
               `

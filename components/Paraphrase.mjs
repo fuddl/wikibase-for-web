@@ -17,6 +17,7 @@ function Paraphrase({
   excludeLanguage,
   onlyLanguage,
   senseOrdinals,
+  query,  
 }) {
   const [inferredItems, setInferredItems] = useState({});
 
@@ -77,7 +78,7 @@ function Paraphrase({
           // Query for the property values
           let result = await manager.query(
             manager.wikibase.id,
-            'inferredSenses',
+            query,
             {
               property,
               values: values.map(value => value.replace(/^[^\:]+\:/, '')),
