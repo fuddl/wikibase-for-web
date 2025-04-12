@@ -444,15 +444,15 @@
   },
   "time_precision_day": {
     "message": "Precise to day",
-    "description": "Option stating that a date statment has the precisionn of a day."
+    "description": "Option stating that a date statment has the precision of a day."
   },
   "time_precision_month": {
     "message": "Precise to month",
-    "description": "Option stating that a date statment has the precisionn of a month."
+    "description": "Option stating that a date statment has the precision of a month."
   },
   "time_precision_year": {
     "message": "Precise to year",
-    "description": "Option stating that a date statment has the precisionn of a year."
+    "description": "Option stating that a date statment has the precision of a year."
   },
   "gloss_style_format": {
     "message": "[$STYLE$, $USE$] ",
