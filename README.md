@@ -12,20 +12,16 @@ A browser extension that displays information from Wikidata and other Wikibase i
 
 ## Data Mining Capabilities
 
-The extension can extract structured data from various web pages, including:
-- Bibliographic information from book pages
-- Geographic coordinates from mapping sites
-- Identifiers from various knowledge bases
-- Structured data embedded in web page metadata
+The extension can extract structured data from various web pages like Bibliographic information from book pages.
 
-This information can be used to create or enhance Wikidata items with properly sourced references.
+Create statements based sourced from websites.
 
 ## Editing Capabilities
 
 The extension allows users to make minimal edits to Wikidata directly from their browser:
 - Update item descriptions
-- Add identifiers with references
-- Create new statements with proper sourcing
+- Add Lemma representations
+- Find missing identifiers
 - Link web content to existing Wikidata items
 
 ## Multilingual Support
