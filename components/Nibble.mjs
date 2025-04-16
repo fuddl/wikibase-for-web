@@ -35,6 +35,7 @@ class Nibble extends Component {
     onUpdateReference,
     onAddJobs,
     property,
+    options,
   }) {
     return html`
       <fieldset class="nibble">
@@ -68,6 +69,7 @@ class Nibble extends Component {
                 wikibase=${manager.wikibase.id}
                 name="${name}.datavalue.value.id"
                 subject=${subject}
+                suggestedEntities=${options}
                 type=${{
                   'wikibase-item': 'item',
                   'wikibase-property': 'property',

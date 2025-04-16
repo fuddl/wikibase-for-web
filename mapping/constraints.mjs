@@ -79,7 +79,7 @@ export async function constraintsToEdits(id, wikibase) {
 						signature: `constraint:${prop.id}`,
 						claim: new WikibaseItemClaim({
 							property: `${wikibase.id}:${props.instanceOf}`,
-							value: cclasses[0],
+							value: cclasses,
 						}),
 					});
 				}

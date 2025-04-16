@@ -4,9 +4,9 @@ export const instancesOrSubclasses = {
 	query: ({ instance, params }) => `
 		SELECT ?subClass WHERE {
 			VALUES ?superClass { ${params.superClasses.map(superClass => `wd:${superClass}`).join(' ')} }.
-			?subClass wdt:${instance.props.subclassOf} ?superClass.
+			?subClass wdt:${instance.props.subclassOf}* ?superClass.
 			FILTER(STRSTARTS(STR(?subClass), "http://www.wikidata.org/entity/Q"))
-		} LIMIT 12
+		}
 	`,
 	cacheTag: ({ instance, params }) =>
 		`instances-or-subclasses:${params.superClasses.join('/')}`,

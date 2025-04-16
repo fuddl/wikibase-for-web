@@ -77,8 +77,13 @@ template.choose__picker__pick {
 	background: var(--input-paper);
 }
 
+.choose__picker__pick--suggested {
+	background: color-mix(in srgb, var(--link) 10%, transparent 100%)
+}
+
 .choose--focus {
 	border-color: var(--border-color-progressive--focus, #36c);
 	box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c);
 	outline: 1px solid transparent;
 }
+

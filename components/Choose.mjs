@@ -70,6 +70,7 @@ const Choose = ({
 	type,
 	value,
 	wikibase,
+	mayCreate = true,
 }) => {
 	const [suggestions, setSuggestions] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -205,7 +206,7 @@ const Choose = ({
 			});
 			const autocomplete = await fetch(searchUrl).then(res => res.json());
 			if (autocomplete?.success) {
-				if (type === 'item') {
+				if (type === 'item' && mayCreate) {
 					autocomplete.search.push({
 						label: autocomplete.searchinfo.search,
 						description: browser.i18n.getMessage('create_new_entity'),
@@ -232,6 +233,10 @@ const Choose = ({
 						if (aSuggested && !bSuggested) return -1;
 						if (!aSuggested && bSuggested) return 1;
 						return 0;
+					}).map((item) => {
+						item.suggested = suggestedIds.includes(item.id);
+						
+						return item;
 					});
 				}
 				if (autocomplete.search.length > 0) {
@@ -360,7 +365,7 @@ const Choose = ({
 				${suggestions.map(
 					(suggestion, index) => html`
 						<a
-							class=${`choose__picker__pick ${index === selectedIndex ? 'choose__picker__pick--active' : ''}`}
+							class=${`choose__picker__pick ${index === selectedIndex ? 'choose__picker__pick--active' : ''} ${suggestion?.suggested ? 'choose__picker__pick--suggested' : ''}`}
 							onMouseUp=${() => {
 								setShouldFetch(false);
 								setInputValue(suggestion.label);
