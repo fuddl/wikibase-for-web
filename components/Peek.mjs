@@ -18,6 +18,7 @@ import Engage from './Engage.mjs';
 import List from './List.mjs';
 import Localize from './Localize.mjs';
 import Thing from './Thing.mjs';
+import Word from './Word.mjs';
 
 import { claimTypeMap } from '../types/Claim.mjs';
 
@@ -145,12 +146,18 @@ function Peek({ title, edits: initialEdits, subjectId, manager, view }) {
 
 	if (!title && subjectId) {
 		const titleSubject = subjectId;
+		
+		let linkElement = Thing;
+		if (titleSubject.startsWith(`${manager.wikibase.id}:L`)) {
+			linkElement = Word;
+		}
+
 		if (!multipleSubjects) {
 			title = html`
 				<${Localize}
 					message="add_claims_to"
 					placeholders=${[
-						html`<${Thing} manager=${manager} id=${titleSubject} />`,
+						html`<${linkElement} manager=${manager} id=${titleSubject} />`,
 					]} />
 			`;
 		} else {
