@@ -108,9 +108,9 @@ class WikiBaseEntityManager {
 			const babelLanguages = [];
 
 			for (const [lang, proficiency] of Object.entries(babelInfo)) {
-				if (proficiency === 'N' || Number(proficiency) > 0) {
-					babelLanguages.push(lang.toLowerCase());
-				}
+				// add `if (proficiency === 'N' || Number(proficiency) > 0)`
+				// to include only language the user has at least some proficiency in
+				babelLanguages.push(lang.toLowerCase());
 			}
 
 			return babelLanguages;

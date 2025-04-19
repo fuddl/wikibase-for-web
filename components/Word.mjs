@@ -69,8 +69,16 @@ class Word extends Component {
       return append;
     }
 
+    const languageFromLemmas = (lemmas) => {
+      const unique = new Set(Object.keys(lemmas).map(i => i.split('-')[0]))
+      if (unique.size === 1) {
+        return Array.from(unique)[0]
+      }
+      return 'mul'
+    }
+
     return html`<a class="word" href="${href}" ref=${elementRef}
-        >${lemmas ? html`<${Lament} lemmas=${lemmas} />` : null}</a
+        >${lemmas ? html`<${Lament} lemmas=${lemmas} lang=${languageFromLemmas(lemmas)} />` : null}</a
       >${append.length > 0 ? htm`${' '}(${append})` : ''}`;
   }
 }

@@ -203,7 +203,7 @@ function Lament(vars) {
     }
   }
 
-  return html`<span class="lament">
+  return html`<span lang=${vars.lang} class="lament">
     ${rubies}${rubies.length && Object.entries(lemmas).length ? '/' : null}
     ${lemmas
       ? Object.entries(lemmas)

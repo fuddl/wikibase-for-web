@@ -101,7 +101,7 @@ html {
 
 :root {
   --plain: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Lato',
-    'Helvetica', 'Arial', 'pIqaD', FairfaxHaxHD, cc-icons, sans-serif;
+    'Helvetica', 'Arial', pIqaD, FairfaxHaxHD, cc-icons, sans-serif;
   --fancy: Linux Libertine, Georgia, Times, pIqaD, FairfaxHaxHD, serif;
   --mon: 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
   font-family:;

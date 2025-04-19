@@ -39,8 +39,11 @@ export const inferredSenses = {
         }`
           : ''
       }
-
-      ?language wdt:${instance.props.iso6391Code} ?lang .
+      {
+        ?language wdt:${instance.props.iso6391Code} ?lang .
+      } UNION {
+        ?language wdt:${instance.props.wikimediaLanguageCode} ?lang .
+      }
       FILTER(?lang in ('${params.languages.join("', '")}'))
 
       # Filter by language if specified
