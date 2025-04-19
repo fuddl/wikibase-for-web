@@ -36,6 +36,7 @@ class Nibble extends Component {
     onAddJobs,
     property,
     options,
+    requireFocus,
   }) {
     return html`
       <fieldset class="nibble">
@@ -70,6 +71,7 @@ class Nibble extends Component {
                 name="${name}.datavalue.value.id"
                 subject=${subject}
                 suggestedEntities=${options}
+                requireFocusForSuggestions=${requireFocus}
                 type=${{
                   'wikibase-item': 'item',
                   'wikibase-property': 'property',

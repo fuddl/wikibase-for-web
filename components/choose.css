@@ -78,7 +78,7 @@ template.choose__picker__pick {
 }
 
 .choose__picker__pick--suggested {
-	background: color-mix(in srgb, var(--link) 10%, transparent 100%)
+	background: color-mix(in srgb, var(--link) 25%, transparent 100%)
 }
 
 .choose--focus {

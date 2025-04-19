@@ -65,6 +65,7 @@ const Choose = ({
 	placeholder,
 	required = false,
 	shouldFocus = false,
+	requireFocusForSuggestions = false,
 	subject,
 	suggestedEntities,
 	type,
@@ -174,7 +175,7 @@ const Choose = ({
 	}, [label]);
 
 	useEffect(() => {
-		if (suggestedEntities) {
+		if (suggestedEntities && (isFocused || (!requireFocusForSuggestions && !isFocused))) {
 			const defaultSuggestions = suggestedEntities.map(suggestion => {
 				return {
 					label: null,
@@ -253,7 +254,7 @@ const Choose = ({
 			setSuggestions(latest);
 		};
 
-		if (shouldFetch) {
+		if (shouldFetch && (isFocused || (!requireFocusForSuggestions && !isFocused))) {
 			if (inputValue !== '') {
 				const debounce = setTimeout(() => {
 					fetchSuggestions(getFallbackSuggestions);

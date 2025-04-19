@@ -219,6 +219,7 @@ class Change extends Component {
 								}
 							}}
 							manager=${manager}
+							requireFocus=${true}
 							options=${this.state.claim.mainsnak.valueOptions} />`;
 						}
 					}
