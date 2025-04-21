@@ -25,6 +25,33 @@ wikibaseEditQueue.setProgressUpdateCallback(async queue => {
 	}
 });
 
+// Keep track if sidebar is open
+let isSidebarOpen = false;
+
+// Check sidebar state on startup
+async function checkSidebarState() {
+	try {
+		isSidebarOpen = await browser.sidebarAction.isOpen({});
+		
+		// Start the sidebar check interval
+		checkSidebarToUnhighlight(true);
+		
+		// If sidebar is open on startup, initialize with current tab
+		if (isSidebarOpen) {
+			const currentTab = await getCurrentTab();
+			if (currentTab) {
+				await resolveCurrentTab(currentTab.id);
+			}
+		}
+	} catch (error) {
+		console.error('Error checking sidebar state:', error);
+		isSidebarOpen = false;
+	}
+}
+
+// Call once on initialization
+checkSidebarState();
+
 function getCurrentTab() {
 	// Query for the active tab in the current window
 	return browser.tabs
@@ -59,6 +86,8 @@ async function findTabByUrl(url) {
 }
 
 async function updateSidebar(resolved) {
+	if (!isSidebarOpen) return;
+	
 	await browser.runtime.sendMessage({
 		type: 'resolved',
 		candidates: resolved,
@@ -69,16 +98,46 @@ async function resolveUrl(url) {
 	return await resolvers.resolve(url);
 }
 
-async function resolveAndUpdateSidebar(url) {
+async function resolveAndUpdateSidebar(url, tabId) {
+	// Always check cache first
+	if (tabId && resolvedCache.request(tabId)) {
+		const cachedResults = resolvedCache.request(tabId);
+		if (isSidebarOpen) {
+			await updateSidebar(cachedResults);
+		}
+		return cachedResults;
+	}
+	
+	// Only do a new resolution if the sidebar is open
+	if (!isSidebarOpen) return null;
+	
 	const results = await resolveUrl(url);
 	if (results) {
 		await updateSidebar(results);
+		// Always cache the results regardless of sidebar state
+		if (tabId) {
+			resolvedCache.add(tabId, url, results);
+		}
 		return results;
 	}
+	return null;
 }
 
 async function resolveCurrentTab(tabId) {
 	const currentTab = await getCurrentTab();
+	
+	// First check cache before doing anything else
+	if (resolvedCache.request(tabId)) {
+		const cachedResults = resolvedCache.request(tabId);
+		if (isSidebarOpen) {
+			await updateSidebar(cachedResults);
+		}
+		return cachedResults;
+	}
+	
+	// Don't proceed with resolution if sidebar is closed
+	if (!isSidebarOpen) return null;
+	
 	if (
 		currentTab.url.startsWith('about:') ||
 		currentTab.url.startsWith('chrome:') ||
@@ -87,33 +146,50 @@ async function resolveCurrentTab(tabId) {
 		currentTab.frameId > 0
 	) {
 		// early escape internal urls and navigation that occours in frames
-		return;
+		return null;
 	}
+	
 	let results = [];
 	if (tabId === currentTab.id) {
-		results = await resolveAndUpdateSidebar(currentTab.url, tabId);
+		results = await resolveUrl(currentTab.url);
+		if (results && results.length > 0) {
+			if (isSidebarOpen) {
+				await updateSidebar(results);
+			}
+			// Always cache results
+			resolvedCache.add(tabId, currentTab.url, results);
+		}
 	} else {
-		results = await resolveUrl(currentTab.url, tabId);
+		results = await resolveUrl(currentTab.url);
+		if (results && results.length > 0) {
+			// Always cache results
+			resolvedCache.add(tabId, currentTab.url, results);
+		}
 	}
-	resolvedCache.add(tabId, currentTab.url, results);
+	
+	return results;
 }
 
 browser.webNavigation.onCommitted.addListener(async function (details) {
 	const currentTab = await getCurrentTab();
-	if (currentTab.id === details.tabId) {
+	
+	// Always clear cache for the tab that navigated
+	resolvedCache.remove(details.tabId);
+	
+	// Only resolve if sidebar is open
+	if (isSidebarOpen && currentTab.id === details.tabId) {
 		await resolveCurrentTab(details.tabId);
-	} else {
-		await resolveUrl(details.url);
 	}
 });
 
 browser.webNavigation.onHistoryStateUpdated.addListener(
 	async function (details) {
 		const currentTab = await getCurrentTab();
-		if (currentTab.id === details.tabId) {
+		
+		// Handle history state updates like SPAs - don't clear cache 
+		// but update the cache if it's the current tab and sidebar is open
+		if (isSidebarOpen && currentTab.id === details.tabId) {
 			await resolveCurrentTab(details.tabId);
-		} else {
-			await resolveUrl(details.url);
 		}
 	},
 );
@@ -123,9 +199,14 @@ let shouldHighlightLinks = false;
 browser.tabs.onActivated.addListener(async activeInfo => {
 	const { tabId } = activeInfo;
 
+	// Always check cache first regardless of sidebar state
 	if (resolvedCache.request(tabId)) {
-		updateSidebar(resolvedCache.request(tabId));
-	} else {
+		// If sidebar is open, update it with cached results
+		if (isSidebarOpen) {
+			await updateSidebar(resolvedCache.request(tabId));
+		}
+	} else if (isSidebarOpen) {
+		// Only attempt new resolution if sidebar is open AND no cache exists
 		await resolveCurrentTab(tabId);
 	}
 });
@@ -134,13 +215,31 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
 		if (!message.url) {
 			const currentTab = await getCurrentTab();
-			const results = await resolveAndUpdateSidebar(
-				currentTab.url,
-				currentTab.id,
-			);
-			resolvedCache.add(currentTab.id, null, results);
+			
+			// Check cache first
+			if (resolvedCache.request(currentTab.id)) {
+				const cachedResults = resolvedCache.request(currentTab.id);
+				if (isSidebarOpen) {
+					await updateSidebar(cachedResults);
+				}
+				return Promise.resolve(cachedResults);
+			}
+			
+			// Only do an actual resolution if the sidebar is open
+			if (!isSidebarOpen) return Promise.resolve('sidebar closed');
+			
+			const results = await resolveUrl(currentTab.url);
+			if (results && results.length > 0) {
+				if (isSidebarOpen) {
+					await updateSidebar(results);
+				}
+				// Always cache results
+				resolvedCache.add(currentTab.id, currentTab.url, results);
+				return Promise.resolve(results);
+			}
 			return Promise.resolve('done');
 		} else {
+			// For specific URL requests
 			const results = await resolveUrl(message.url);
 			return results;
 		}
@@ -153,7 +252,23 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		return Promise.resolve({ response: metadata });
 	} else if (message.type === 'hash_changed') {
 		const tabId = await findTabByUrl(message.url);
-		const results = await resolveAndUpdateSidebar(message.url, tabId);
+		
+		if (tabId) {
+			// Always do a new resolution for hash changes as they might change the entity
+			const results = await resolveUrl(message.url);
+			
+			if (results && results.length > 0) {
+				// Always update the cache
+				resolvedCache.add(tabId, message.url, results);
+				
+				// Only update the sidebar if it's open
+				if (isSidebarOpen) {
+					await updateSidebar(results);
+				}
+			}
+		}
+		
+		return Promise.resolve('done');
 	} else if (message.type === 'request_navigate') {
 		try {
 			await browser.runtime.sendMessage({
@@ -218,6 +333,27 @@ async function checkSidebarToUnhighlight(active) {
 
 		sidebarCheckInterval = setInterval(async () => {
 			const sidebarPanel = await browser.sidebarAction.isOpen({});
+			
+			// Update the global sidebar state
+			if (isSidebarOpen !== sidebarPanel) {
+				isSidebarOpen = sidebarPanel;
+				
+				// If sidebar just opened, update with cached content for current tab
+				if (isSidebarOpen) {
+					const currentTab = await getCurrentTab();
+					if (currentTab) {
+						// Just show cached results for the current tab
+						// without triggering a new resolution
+						if (resolvedCache.request(currentTab.id)) {
+							await updateSidebar(resolvedCache.request(currentTab.id));
+						} else {
+							// Only resolve if not in cache
+							await resolveCurrentTab(currentTab.id);
+						}
+					}
+				}
+			}
+			
 			if (!sidebarPanel) {
 				// If the sidebar is closed, send 'unhighlight_links' to all tabs
 				for (const tab of await browser.tabs.query(contentTabsQuery)) {
@@ -316,4 +452,10 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
 
 browser.browserAction.onClicked.addListener(async () => {
 	await browser.sidebarAction.toggle();
+	
+	// Update sidebar state after toggle
+	isSidebarOpen = await browser.sidebarAction.isOpen({});
+	
+	// Start/restart the check interval
+	checkSidebarToUnhighlight(isSidebarOpen);
 });
