@@ -18,6 +18,7 @@ import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
 import { shortTitle } from './shortTitle.mjs';
 import { unitSymbol } from './unitSymbol.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
+import { urlMatchPatternByDomain } from './urlMatchPatternByDomain.mjs';
 import { urlProperties } from './urlProperties.mjs';
 
 const queries = {
@@ -41,6 +42,7 @@ const queries = {
 	shortTitle,
 	unitSymbol,
 	urlMatchPattern,
+	urlMatchPatternByDomain,
 	urlProperties,
 };
 
@@ -98,10 +100,7 @@ class WikiBaseQueryManager {
 		}
 
 		const query = queryObject.query({ params, instance });
-		if (queryObject.id == 'hyperonyms') {
-			
-		console.debug(query);
-		}
+		
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();

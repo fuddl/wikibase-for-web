@@ -41,6 +41,7 @@ const wikibases = {
 			author: 'P50',
 			autosuggestValue: 'P11889',
 			class: 'P2308',
+			domainName: 'P13337',
 			duration: 'P2047',
 			equivalentClass: 'P1709',
 			equivalentProperty: 'P1628',

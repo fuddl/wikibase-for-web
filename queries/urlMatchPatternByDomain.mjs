@@ -1,5 +1,5 @@
-export const urlMatchPattern = {
-	id: 'url-match-patterns',
+export const urlMatchPatternByDomain = {
+	id: 'url-match-patterns-by-domain',
 	requiredProps: [
 		'hasCharacteristic',
 		'instanceOf',
@@ -14,20 +14,19 @@ export const urlMatchPattern = {
 		'bigInteger',
 		'propertyLinkingToArticlesInMediaWikiWebsites',
 	],
-	query: ({ instance, params }) => `
-		SELECT ?p ?s ?r ?c ?t WHERE {
+	query: ({ instance, params }) => {
+		// Return empty query if domainName prop doesn't exist
+		if (!instance?.props?.domainName) {
+			return `SELECT ?p ?s ?r ?c ?t ?d WHERE { FILTER(false) }`;
+		}
+		
+		return `
+		SELECT ?p ?s ?r ?c ?t ?d WHERE {
 			?stat ps:${instance.props.urlMatchPattern} ?s.
 			OPTIONAL { ?stat pq:${instance.props.urlMatchReplacementValue} ?r. }
 			OPTIONAL { ?stat pq:${instance.props.websiteTitleExtractPattern} ?t }
+			OPTIONAL { ?stat pq:${instance.props.domainName} ?d }
 			?prop p:${instance.props.urlMatchPattern} ?stat.
-			
-			${
-				instance?.props?.domainName
-					? `# Filter out patterns that have domainName qualifier
-			FILTER NOT EXISTS { ?stat pq:${instance.props.domainName} ?d }`
-					: ''
-			}
-			
 			BIND(IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.allCaps}}, 'upper',
 				IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.lowercase}}, 'lower',
 					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive',
@@ -72,11 +71,18 @@ export const urlMatchPattern = {
 				BIND(3 as ?prio)
 			}
 			
+			${
+				params?.domains?.length
+					? `FILTER (?d IN (${params.domains.map(d => `"${d}"`).join(', ')}))`
+					: ''
+			}
+			
 			BIND(IF(BOUND(?prio),?prio,2) AS ?prio).
 		} ORDER BY ?prio STRLEN(str(?s))
-	`,
+	`;
+	},
 	cacheTag: ({ instance, params }) =>
-		`url-match-patterns:all`,
+		`url-match-patterns-by-domain:${params.domains?.join(',')}`,
 	postProcess: ({ results }) => {
 		if (results.bindings.length === 0) {
 			return [];
@@ -101,9 +107,10 @@ export const urlMatchPattern = {
 						'r' in bind ? bind.r.value.replace(/\\(\d+)/g, '$$$1') : '$1',
 					format: 'c' in bind ? bind.c.value : '',
 					title: 't' in bind ? bind.t.value : '',
+					domain: 'd' in bind ? bind.d.value : '',
 				});
 			}
 		});
 		return processed;
 	},
-};
+}; 
