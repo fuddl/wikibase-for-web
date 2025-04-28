@@ -121,9 +121,8 @@ function Gloss({ sense, manager }) {
         : ''}
       ${isNativeGloss
         ? (useDescriptorDescription && conceptDescription ? conceptDescription : gloss)
-        : conceptItems.map(
-            item => html`<${Something} id=${item} manager=${manager} />`,
-          )}
+        :  html`<${Something} id=${conceptItems[0]} key="concept" manager=${manager} />`
+      }
       ${html`<${Gender} items=${genderItems} manager=${manager} />`}
       ${derivedFromItems.length > 0
         ? html`${derivedFromPrefix}${derivedFromItems.map(
