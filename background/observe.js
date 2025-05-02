@@ -85,6 +85,19 @@ async function findTabByUrl(url) {
 	}
 }
 
+// Helper function to check if a tab is still active and no navigation occurred
+async function isTabStillValidForUpdate(tabId, originalUrl) {
+	// Check if the tab is still the active tab
+	const currentTab = await getCurrentTab();
+	const isStillActive = currentTab.id === tabId;
+	
+	// Check if the URL is still the same (no navigation occurred)
+	const noNavigation = originalUrl && currentTab.url === originalUrl;
+	
+	// Return true only if the tab is still active and no navigation occurred
+	return isStillActive && noNavigation;
+}
+
 async function updateSidebar(resolved) {
 	if (!isSidebarOpen) return;
 	
@@ -151,13 +164,19 @@ async function resolveCurrentTab(tabId) {
 	
 	let results = [];
 	if (tabId === currentTab.id) {
+		// Store the URL we're resolving to check later if navigation occurred
+		const urlToResolve = currentTab.url;
+		
 		results = await resolveUrl(currentTab.url);
+		
 		if (results && results.length > 0) {
-			if (isSidebarOpen) {
-				await updateSidebar(results);
-			}
 			// Always cache results
 			resolvedCache.add(tabId, currentTab.url, results);
+			
+			// Only update sidebar if the tab is still active and no navigation occurred
+			if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
+				await updateSidebar(results);
+			}
 		}
 	} else {
 		results = await resolveUrl(currentTab.url);
@@ -228,13 +247,20 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 			// Only do an actual resolution if the sidebar is open
 			if (!isSidebarOpen) return Promise.resolve('sidebar closed');
 			
+			// Store current URL to check if navigation occurred
+			const urlToResolve = currentTab.url;
+			const tabToResolve = currentTab.id;
+			
 			const results = await resolveUrl(currentTab.url);
+			
 			if (results && results.length > 0) {
-				if (isSidebarOpen) {
-					await updateSidebar(results);
-				}
 				// Always cache results
 				resolvedCache.add(currentTab.id, currentTab.url, results);
+				
+				// Only update the sidebar if the tab is still active and no navigation occurred
+				if (isSidebarOpen && await isTabStillValidForUpdate(tabToResolve, urlToResolve)) {
+					await updateSidebar(results);
+				}
 				return Promise.resolve(results);
 			}
 			return Promise.resolve('done');
@@ -254,6 +280,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		const tabId = await findTabByUrl(message.url);
 		
 		if (tabId) {
+			// Store the URL to check for navigation
+			const urlToResolve = message.url;
+			
 			// Always do a new resolution for hash changes as they might change the entity
 			const results = await resolveUrl(message.url);
 			
@@ -261,8 +290,8 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 				// Always update the cache
 				resolvedCache.add(tabId, message.url, results);
 				
-				// Only update the sidebar if it's open
-				if (isSidebarOpen) {
+				// Only update the sidebar if it's open and this is still the active tab
+				if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
 					await updateSidebar(results);
 				}
 			}

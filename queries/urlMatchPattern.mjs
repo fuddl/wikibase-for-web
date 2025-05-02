@@ -37,12 +37,6 @@ export const urlMatchPattern = {
 			) AS ?c)
 			BIND(REPLACE(STR(?prop), '^.*/([A-Z]+[0-9]+(-[A-Z0-9]+)?)$', '$1') AS ?p).
 			${
-				instance?.props?.mastodonAddress
-					? `FILTER (?p != '${instance.props.mastodonAddress}')
-			`
-					: ''
-			}
-			${
 				instance?.items?.obsoleteProperty
 					? `
 				MINUS {
