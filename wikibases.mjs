@@ -73,6 +73,7 @@ const wikibases = {
 			officialWebsite: 'P856',
 			partOf: 'P361',
 			partOfTheSeries: 'P179',
+			pertainymOf: 'P8471',
 			pointInTime: 'P585',
 			predicateFor: 'P9970',
 			propertiesForThisType: 'P1963',

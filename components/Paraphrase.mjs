@@ -65,7 +65,7 @@ function Paraphrase({
       if (!senses?.length) return;
 
       const inferred = [];
-      for (const property of ['itemForThisSense', 'predicateFor', 'demonymOf']) {
+      for (const property of ['itemForThisSense', 'predicateFor', 'demonymOf', 'pertainymOf']) {
         for (const sense of senses) {
           // Get values based on type
           const values =

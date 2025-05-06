@@ -1,6 +1,6 @@
 export const inferredSenses = {
   id: 'inferred-senses',
-  requiredProps: ['itemForThisSense', 'predicateFor'],
+  requiredProps: [],
   query: ({ instance, params }) => `
     SELECT DISTINCT ?sense ?language ${instance.props?.semanticGender ? '?semanticGender' : ''} ${instance.props?.languageStyle ? '?languageStyle' : ''} ${instance.props?.fieldOfUse ? '?fieldOfUse' : ''} WHERE {
       ?lexeme rdf:type ontolex:LexicalEntry;
@@ -8,7 +8,17 @@ export const inferredSenses = {
         dct:language ?language.
 
       # Find other senses that share the same value for the specified property
-      ${params.values.map(value => `{ ?sense wdt:${instance.props[params.property]} wd:${value} . }`).join(' UNION ')}
+      ${params.values.map((value) => {
+        if (params.property === 'pertainymOf' && instance.props?.itemForThisSense) {
+          return `{
+            wd:L337170-S1 wdt:${instance.props.pertainymOf} ?pertainer .
+            ?pertainer wdt:${instance.props.itemForThisSense} ?pertainerItem.
+            ?perteinerSense wdt:${instance.props.itemForThisSense} ?pertainerItem.
+            ?sense wdt:${instance.props.pertainymOf}  ?perteinerSense.
+          }`
+        }
+        return `{ ?sense wdt:${instance.props[params.property]} wd:${value} . }`
+      }).join(' UNION ')}
       
       ${
         instance.props?.semanticGender
