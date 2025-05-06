@@ -76,7 +76,7 @@ function Gloss({ sense, manager }) {
   };
 
   // Use the helpers for the different claim groups
-  const conceptItems = extractClaimIds(['itemForThisSense', 'predicateFor']);
+  const conceptItems = extractClaimIds(['itemForThisSense', 'predicateFor', 'demonymOf']);
   const derivedFromItems = extractClaimIds(['semanticDerivationOf']);
   const genderItems = extractClaim('semanticGender');
   const transitivityItems = extractClaimComponents('transitivity', Thin);
