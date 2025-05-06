@@ -59,9 +59,10 @@
   "commands": {
     "toggle-sidebar": {
       "suggested_key": {
-        "default": "Alt+3"
+        "default": "Ctrl+Shift+D",
+        "mac": "MacCtrl+Shift+D"
       },
-      "description": "Show/hide sidebar"
+      "description": "Toggle sidebar"
     }
   }
 }

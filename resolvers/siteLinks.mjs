@@ -3,7 +3,7 @@ export const siteLinks = {
   pagePathToRegex(urlTemplate) {
     const escapedUrl = urlTemplate.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regexPattern = escapedUrl.replace(/\\\$1/g, '([^/#?]+)');
-    return new RegExp(`^${regexPattern}$`);
+    return new RegExp(`^${regexPattern}`);
   },
   applies: function (location, { wikibase }) {
     if (!('sites' in wikibase)) {
@@ -12,6 +12,7 @@ export const siteLinks = {
     const proposeEdits = [];
     for (const [id, site] of Object.entries(wikibase.sites)) {
       const regex = this.pagePathToRegex(site.pagePath);
+      console.debug(regex)
       const matches = location.match(regex);
       if (matches && matches.length > 1) {
         return [

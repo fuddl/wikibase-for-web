@@ -488,3 +488,16 @@ browser.browserAction.onClicked.addListener(async () => {
 	// Start/restart the check interval
 	checkSidebarToUnhighlight(isSidebarOpen);
 });
+
+// Add listener for keyboard shortcuts
+browser.commands.onCommand.addListener(async (command) => {
+    if (command === "toggle-sidebar") {
+        await browser.sidebarAction.toggle();
+        
+        // Update sidebar state after toggle
+        isSidebarOpen = await browser.sidebarAction.isOpen({});
+        
+        // Start/restart the check interval
+        checkSidebarToUnhighlight(isSidebarOpen);
+    }
+});
