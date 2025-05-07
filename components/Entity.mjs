@@ -16,10 +16,7 @@ import Register from './Register.mjs';
 import Haste from './Haste.mjs';
 import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
-import Grasp from './Grasp.mjs';
-import Paraphrase from './Paraphrase.mjs';
-import Gloss from './Gloss.mjs';
-import Show from './Show.mjs';
+import Senses from './Senses.mjs';
 
 const html = htm.bind(h);
 
@@ -341,102 +338,13 @@ class Entity extends Component {
             : null}
           ${senses
             ? html`
-                <${Grasp} senses=${senses} manager=${manager} senseOrdinals=${senseOrdinals} />
-                ${(() => {
-                  // Exit early if no images to show
-                  if (!senses || !manager?.wikibase?.props?.image) return null;
-                  
-                  // Create imageItems from senses
-                  const imageItems = [];
-                  const imageProperty = manager.wikibase.props.image;
-                  const mediaLegendProperty = manager.wikibase.props.mediaLegend;
-                  
-                  senses.forEach(sense => {
-                    if (sense.claims && imageProperty in sense.claims) {
-                      const images = sense.claims[imageProperty] || [];
-                      images.forEach(claim => {
-                        if (claim.mainsnak?.datavalue?.value) {
-                          const fileName = encodeURIComponent(claim.mainsnak.datavalue.value);
-                          if (fileName.match(/\.(jpe?g|png|webp|gif|svg|tiff?)$/i)) {
-                            // Extract caption from mediaLegend qualifier if available
-                            let caption = null;
-                            if (mediaLegendProperty && claim.qualifiers && mediaLegendProperty in claim.qualifiers) {
-                              const legendQualifiers = claim.qualifiers[mediaLegendProperty];
-                              if (legendQualifiers && legendQualifiers.length > 0) {
-                                // Since it's always monolingualtext, handle appropriately
-                                // First try to find a qualifier with language matching navigator.languages
-                                const navigatorLanguages = navigator.languages || [navigator.language];
-                                
-                                // Try to find a text in user's preferred languages
-                                let matchedQualifier = null;
-                                
-                                // Start with exact match
-                                for (const lang of navigatorLanguages) {
-                                  matchedQualifier = legendQualifiers.find(q => 
-                                    q.datavalue?.value?.language === lang
-                                  );
-                                  if (matchedQualifier) break;
-                                }
-                                
-                                // If no exact match, try to match language base (en-US -> en)
-                                if (!matchedQualifier) {
-                                  for (const lang of navigatorLanguages) {
-                                    const baseLang = lang.split('-')[0];
-                                    matchedQualifier = legendQualifiers.find(q => 
-                                      q.datavalue?.value?.language && q.datavalue?.value?.language.startsWith(baseLang)
-                                    );
-                                    if (matchedQualifier) break;
-                                  }
-                                }
-                                
-                                // If still no match, just use the first qualifier
-                                if (!matchedQualifier && legendQualifiers.length > 0) {
-                                  matchedQualifier = legendQualifiers.find(q => 
-                                    q.datavalue?.value?.text
-                                  );
-                                }
-                                
-                                // Extract the text from the matched qualifier
-                                if (matchedQualifier && matchedQualifier.datavalue?.value?.text) {
-                                  caption = matchedQualifier.datavalue.value.text;
-                                }
-                              }
-                            }
-                            
-                            imageItems.push({
-                              fileName,
-                              marker: senses.length > 1 ? senseOrdinals?.[sense.id] || null : null,
-                              caption
-                            });
-                          }
-                        }
-                      });
-                    }
-                  });
-                  
-                  // Return the Show component only if we have images
-                  return imageItems.length > 0 
-                    ? html`<${Show} imageItems=${imageItems} targetRowAspectRatio=${2} key=${manager.wikibase.props.image}/>` 
-                    : null;
-                })()}
-                ${[
-                  { property: 'translation', excludeLanguage: language, query: 'inferredSenses' },
-                  { property: 'synonym', onlyLanguage: language, query: 'inferredSenses' },
-                  { property: 'hyperonym', onlyLanguage: language, query: 'hyperonyms' },
-                ].map(
-                  type => html`
-                    <${Paraphrase}
-                      id=${id}
-                      key=${type.property}
-                      senses=${senses}
-                      manager=${manager}
-                      property=${type.property}
-                      excludeLanguage=${type?.excludeLanguage}
-                      onlyLanguage=${type?.onlyLanguage}
-                      senseOrdinals=${senseOrdinals}
-                      query=${type.query} />
-                  `,
-                )}
+                <${Senses} 
+                  senses=${senses} 
+                  manager=${manager} 
+                  senseOrdinals=${senseOrdinals} 
+                  language=${language} 
+                  id=${id} 
+                />
               `
             : null}
           ${experimental &&
