@@ -405,7 +405,7 @@ class Entity extends Component {
                             
                             imageItems.push({
                               fileName,
-                              marker: senseOrdinals?.[sense.id] || null,
+                              marker: senses.length > 1 ? senseOrdinals?.[sense.id] || null : null,
                               caption
                             });
                           }
