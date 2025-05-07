@@ -11,6 +11,7 @@
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+  outline: 1px solid var(--paper);
 }
 
 .mark--hovered {

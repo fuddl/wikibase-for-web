@@ -1,0 +1,32 @@
+.show {
+  margin-inline: calc(var(--main-padding) * -1);
+  margin-block: 2em;
+}
+
+.show__item {
+  display: inline-grid;
+  grid-template: 
+    'image' auto
+    'caption' auto / 1fr;
+}
+
+.show__image {
+  grid-area: image;
+}
+
+.show__marker {
+  grid-area: image;
+  padding: var(--main-padding);
+  pointer-events: none;
+}
+
+.show__caption {
+  grid-area: caption;
+  padding: .5em .5em 1em;
+  font-size: 0.5em;
+}
+
+.show__row {
+  display: flex;
+  width: 100%;
+}

@@ -1,6 +1,7 @@
 main {
+  --main-padding: 1rem;
   background: white;
-  padding: 1rem;
+  padding: var( --main-padding);
   min-height: 100vh;
 }
 
