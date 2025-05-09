@@ -8,6 +8,69 @@ import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 const html = htm.bind(h);
 
 const formTableLayouts = {
+  englishNoun: {
+    requiredLanguage: 'english',
+    requiredLexicalCategory: 'noun',
+    layout: {
+      header: [
+        { label: 'singular' },
+        { label: 'plural' },
+      ],
+      groups: {
+        deklination: [
+          [
+            { queryForms: { requireFeature: [ 'singular'] } },
+            { queryForms: { requireFeature: [ 'plural'] } },
+          ],
+        ],
+      },
+    }
+  },
+  englishVerb: {
+    requiredLanguage: 'english',
+    requiredLexicalCategory: 'verb',
+    layout: {
+      header: [
+        { label: 'grammaticalTense' },
+        { label: 'grammaticalPerson', type: 'prefixHeader' },
+        { label: 'linguisticForm' },
+      ],
+      groups: {
+        simplePresent: [
+          [
+            { label: 'simplePresent', type: 'header', rowspan: 2 },
+            { text: 'I, you, they ', type: 'prefix' },
+            { queryForms: { requireFeature: [ 'simplePresent' ], excludeFeature: [ 'thirdPerson' ] } },
+          ],
+          [
+            { text: 'he, she, it ', type: 'prefix' },
+            { queryForms: { requireFeature: ['singular', 'simplePresent', 'thirdPerson']}}
+          ],
+        ],
+        simplePast: [
+          [
+            { label: 'simplePast', type: 'header' },
+            { type: 'prefix' },
+            { queryForms: { requireFeature: ['simplePast']}}
+          ]
+        ],
+        presentParticiple: [
+          [
+            { label: 'presentParticiple', type: 'header' },
+            { type: 'prefix' },
+            { queryForms: { requireFeature: ['presentParticiple']}}
+          ]
+        ],
+        pastParticiple: [
+          [
+            { label: 'pastParticipleEn', type: 'header' },
+            { type: 'prefix' },
+            { queryForms: { requireFeature: ['pastParticipleEn']}}
+          ]
+        ]
+      },
+    }, 
+  },
   germanNounMale: {
     requiredLanguage: 'german',
     requiredLexicalCategory: 'noun',
@@ -191,13 +254,15 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
     requireStylesheet(browser.runtime.getURL('/components/forms.css'));
   }, []);
   
+  // Track which forms have been used in tables
+  const usedFormIds = new Set();
+  
   // Helper function to query forms based on grammatical features
   const queryForms = (query) => {
     if (!forms || !Array.isArray(forms)) {
       return [];
     }
     
-    // Convert feature names to Q-IDs using manager.wikibase.items
     if (query.requireFeature) {
       const featureQIds = query.requireFeature.map(feature => {
         const qid = manager.wikibase.items[feature];
@@ -210,16 +275,33 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       }
       
       // Filter forms that match all required Q-IDs
-      const matchingForms = forms.filter(form => {
+      let matchingForms = forms.filter(form => {
         const matches = featureQIds.every(qid => 
           form.grammaticalFeatures && 
           form.grammaticalFeatures.includes(qid)
         );
-        if (matches) {
-        }
+
         return matches;
       });
-      
+
+      if (query.excludeFeature) {
+        const excludeFeatureQIds = query.excludeFeature.map(feature => {
+          const qid = manager.wikibase.items[feature];
+          return qid;
+        }).filter(Boolean);
+
+        matchingForms = matchingForms.filter(form => 
+          !excludeFeatureQIds.some(qid => 
+            form.grammaticalFeatures && 
+            form.grammaticalFeatures.includes(qid)
+          )
+        );
+      }
+
+      // add matching forms to usedFormIds
+      matchingForms.forEach(form => {
+        usedFormIds.add(form.id);
+      });
       
       if (matchingForms.length > 0) {
         return matchingForms.map((item) => html`<${Word} id=${item.id} manager=${manager} showAppendix='no' />`)
@@ -333,15 +415,36 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       `);
     }
   }
+  
+  // Get unused forms and render them in a definition list
+  const unusedForms = forms?.filter(form => !usedFormIds.has(form.id)) || [];
 
-  // Default fallback if no matching layout found
-  if (tables.length < 1) {
-    return null;
-  }
+  
   return html`
     <div class="forms">
-      <h2>Forms</h2>
-      ${tables}    
+      <h2>${browser.i18n.getMessage('forms')}</h2>
+      ${tables}
+      ${unusedForms.length > 0 ? html`
+        ${tables.length > 0 ? html`<h3>${browser.i18n.getMessage('additional_forms')}</h3>` : null }
+        <dl class="forms__additional">
+          ${unusedForms.map(form => {
+            return html`
+              <dt>
+                ${form.grammaticalFeatures?.map(featureId => 
+                  html`<${Thing} id=${`${manager.wikibase.id}:${featureId}`} manager=${manager} />`
+                ).map((item, index, array) => 
+                  index === array.length - 1 
+                    ? html`${item}`
+                    : html`${item} / `
+                )}
+              </dt>
+              <dd>
+                <${Word} id=${form.id} manager=${manager} showAppendix='no' />
+              </dd>
+            `;
+          })}
+        </dl>
+      ` : ''}
     </div>
   `;
   

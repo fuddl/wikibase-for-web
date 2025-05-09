@@ -519,5 +519,13 @@
         "example": "bar"
       }
     }
+  },
+  "forms": {
+    "message": "Forms",
+    "description": "Title of a section that lists lexicographical forms"
+  },
+  "additional_forms": {
+    "message": "Additional forms",
+    "description": "Title of a section that lists lexicographical forms not listed previously"
   }
 }

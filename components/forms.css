@@ -33,3 +33,8 @@ th.form__cell {
     color: inherit;
   }
 }
+
+.forms__additional > dt > a {
+  font-weight: bold;
+  color: inherit;
+}
