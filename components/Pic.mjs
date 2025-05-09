@@ -8,13 +8,13 @@ class Pic extends Component {
   componentDidMount() {
     requireStylesheet(browser.runtime.getURL('/components/pic.css'));
   }
-  render({ src, sources, scaleable }) {
+  render({ src, sources, scaleable, onLoad }) {
     return html`<picture class="pic ${scaleable && 'pic--scaleable'}">
       ${sources &&
       sources.map(source => {
         html`<source srcset=${source.srcSet} />`;
       })}
-      <img class="pic__placeholder" src=${src} loading="lazy" />
+      <img class="pic__placeholder" src=${src} loading="lazy" onLoad=${onLoad} />
     </picture>`;
   }
 }

@@ -12,7 +12,6 @@ export const siteLinks = {
     const proposeEdits = [];
     for (const [id, site] of Object.entries(wikibase.sites)) {
       const regex = this.pagePathToRegex(site.pagePath);
-      console.debug(regex)
       const matches = location.match(regex);
       if (matches && matches.length > 1) {
         return [

@@ -212,16 +212,24 @@ function Show({ imageItems, targetRowAspectRatio = 2 }) {
     const className = dimensions 
       ? 'show__item' 
       : 'show__item show__item--loading';
+
+    const attributes = {
+      src: srcUrl,
+      sources: [
+        {
+          srcSet: [250, 501, 801, 1068]
+            .map(width => {
+              return `${srcUrl}&width=${width}px ${width}w`;
+            })
+            .join(', '),
+        },
+      ],
+    };
     
     return html`
       <div class=${className} key=${srcUrl} style=${style}>
         <a href="${href}" class="show__image">
-          <img 
-            src=${srcUrl}
-            onLoad=${(e) => handleImageLoad(e, index)}
-            style="display: none;"
-          />
-          <${Pic} src=${srcUrl} />
+          <${Pic} ...${attributes} onLoad=${(e) => handleImageLoad(e, index)} />
         </a>
         ${image.marker && html`
           <div class="show__marker">

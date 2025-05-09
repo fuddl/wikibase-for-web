@@ -1,0 +1,35 @@
+.forms__table {
+  background-color: var(--paper);
+  margin:1em 0;
+  border:1px solid var(--border);
+  border-collapse:collapse;
+  width: 100%;
+}
+
+.form__cell {
+  padding: 3.2px 6.4px;
+  vertical-align: top;
+  white-space: pre;
+  border: 1px solid var(--border);
+}
+
+.form__cell--prefix {
+  padding-inline-end: 0;
+  border-inline-end: none;
+  text-align: end;
+  + .form__cell {
+    border-inline-start: none;
+    padding-inline-start: 0;
+  }
+}
+
+.form__cell--prefix-header {
+  text-align: end;
+}
+
+th.form__cell {
+  background-color: var(--active-paper);
+  > a {
+    color: inherit;
+  }
+}

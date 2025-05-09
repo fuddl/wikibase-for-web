@@ -17,6 +17,7 @@ import Haste from './Haste.mjs';
 import Refer from './Refer.mjs';
 import Chart from './Chart.mjs';
 import Senses from './Senses.mjs';
+import Forms from './Forms.mjs';
 
 const html = htm.bind(h);
 
@@ -143,6 +144,7 @@ class Entity extends Component {
     manager,
     modified,
     senses,
+    forms,
     title,
   }) {
     const [wikibase, localId] = id.split(':');
@@ -344,6 +346,17 @@ class Entity extends Component {
                   senseOrdinals=${senseOrdinals} 
                   language=${language} 
                   id=${id} 
+                />
+              `
+            : null}
+          ${forms
+            ? html`
+                <${Forms} 
+                  forms=${forms} 
+                  manager=${manager} 
+                  language=${language}
+                  lexicalCategory=${lexicalCategory}
+                  claims=${claims}
                 />
               `
             : null}

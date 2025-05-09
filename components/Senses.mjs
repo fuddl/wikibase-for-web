@@ -1,7 +1,5 @@
 import { h } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
-import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
-import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Show from './Show.mjs';
 import Grasp from './Grasp.mjs';
 import Paraphrase from './Paraphrase.mjs';
@@ -19,9 +17,6 @@ const html = htm.bind(h);
  * @param {string} props.id Entity ID
  */
 function Senses({ senses, manager, senseOrdinals, language, id }) {
-  useEffect(() => {
-    requireStylesheet(browser.runtime.getURL('/components/senses.css'));
-  }, []);
 
   if (!senses) return null;
 
@@ -39,7 +34,7 @@ function Senses({ senses, manager, senseOrdinals, language, id }) {
         images.forEach(claim => {
           if (claim.mainsnak?.datavalue?.value) {
             const fileName = encodeURIComponent(claim.mainsnak.datavalue.value);
-            if (fileName.match(/\.(jpe?g|png|webp|gif|svg|tiff?)$/i)) {
+            if (fileName.match(/\.(jpe?g|png|webp|gif|tiff?)$/i)) {
               // Extract caption from mediaLegend qualifier if available
               let caption = null;
               if (mediaLegendProperty && claim.qualifiers && mediaLegendProperty in claim.qualifiers) {
