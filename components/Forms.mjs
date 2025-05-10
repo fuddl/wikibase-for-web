@@ -395,10 +395,36 @@ const formTableLayouts = {
       },
     }
   },
-  japaneseBaColumnLowerOneRow: {
+  japaneseIchidanVerb: {
     requiredLanguage: 'japanese',
     requiredLexicalCategory: 'verb',
-    requiredClaims: [{ property: 'conjugationClass', item: 'baColumnLowerOneRow' }],
+    requiredClaims: [{
+      property: 'conjugationClass',
+      some: [
+        'aColumnLowerOneRow',
+        'aColumnUpperOneRow',
+        'baColumnLowerOneRow',
+        'baColumnUpperOneRow',
+        'daColumnLowerOneRow',
+        'gaColumnLowerOneRow',
+        'gaColumnUpperOneRow',
+        'haColumnLowerOneRow',
+        'haColumnUpperOneRow',
+        'kaColumnLowerOneRow',
+        'kaColumnUpperOneRow',
+        'maColumnLowerOneRow',
+        'maColumnUpperOneRow',
+        'naColumnLowerOneRow',
+        'naColumnUpperOneRow',
+        'raColumnLowerOneRow',
+        'raColumnUpperOneRow',
+        'saColumnLowerOneRow',
+        'taColumnLowerOneRow',
+        'taColumnUpperOneRow',
+        'zaColumnLowerOneRow',
+        'zaColumnUpperOneRow',
+      ]
+    }],
     layout: {
       header: [
         { },
@@ -406,7 +432,7 @@ const formTableLayouts = {
         { label: 'negation' },
       ],
       groups: {
-        deklination: [
+        conjugation: [
           [
             { label: 'nonpastTense', type: 'header' },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
@@ -414,48 +440,64 @@ const formTableLayouts = {
           ],
           [
             { labels: ['nonpastTense', 'honorific'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ます' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ません' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ません' },
           ],
           [
             { labels: ['pastTense'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'た' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'なかった' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'た' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'なかった' },
           ],
           [
             { labels: ['pastTense', 'honorific'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ました' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませんでした' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ませんでした' },
           ],
           [
             { labels: ['teForm'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'て' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'なくて' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'て' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'なくて' },
           ],
           [
             { labels: ['potential'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られる' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られない' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'られる' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'られない' },
           ],
           [
             { labels: ['passiveForm'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られる' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られない' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'られる' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'られない' },
           ],
           [
             { labels: ['causativeForm'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させる' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させない' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'させる' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'させない' },
           ],
           [
             { labels: ['causativeForm', 'passiveForm'], type: 'header' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させられる' },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させられない' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'させられる' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'させられない' },
           ],
           [
             { labels: ['imperativeJa'], type: 'header' },
             { queryForms: { requireFeature: [ 'imperativeJa'] } },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
+          ],
+          [
+            { type: 'header', labels: ['attributiveForm'] },
+            { queryForms: { requireFeature: ['attributiveForm'] } },
+            { queryForms: { requireFeature: ['negativeForm'] }, formSuffix: 'ない' },
+          ],
+          [
+            { type: 'header', labels: ['hypotheticalForm'] },
+            { 
+              queryForms: { requireFeature: ['hypotheticalForm'] },
+              formSuffix: 'ば'
+            },
+            { 
+              queryForms: { requireFeature: ['negativeForm'] },
+              formSuffix: 'なければ'
+            },
           ],
         ],
       },
@@ -611,14 +653,14 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
 
     const hasRequiredClaims = layoutConfig.requiredClaims ? layoutConfig.requiredClaims.every(claim => {
       const prop = manager.wikibase.props?.[claim.property];
-      const value = manager.wikibase.items?.[claim.item];
-      if (!prop || !value) {
+      const values = claim.some ? claim.some.map(item => manager.wikibase.items?.[item]) : [manager.wikibase.items?.[claim.item]];
+      if (!prop || !values) {
         return false;
       }
       if (!claims?.[prop]) {
         return false;
       }
-      return claims[prop].some(c => c?.mainsnak?.datavalue?.value?.id.endsWith(value));
+      return claims[prop].some(c => values.some(value => c?.mainsnak?.datavalue?.value?.id.endsWith(value)));
     }) : true;
     
     if (language.endsWith(manager.wikibase.items[reqLanguage]) && 
