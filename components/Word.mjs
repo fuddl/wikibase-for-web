@@ -12,7 +12,7 @@ import Lament from './Lament.mjs';
 const html = htm.bind(h);
 
 class Word extends Component {
-  render({ id, manager, showLemma = 'no', showAppendix = 'yes' }) {
+  render({ id, manager, showLemma = 'no', showAppendix = 'yes', processText = null }) {
     const displayId = showLemma === 'yes' ? id.replace(/-[FS]\d+$/, '') : id;
     const [designator, setDesignator] = useState(
       manager?.designators?.[displayId],
@@ -77,8 +77,15 @@ class Word extends Component {
       return 'mul'
     }
 
+    //console.debug(lemmas)
+    const processedLemmas = processText && lemmas ? Object.keys(lemmas).reduce((acc, lang) => {
+      acc[lang] = { language: lang, value: processText(lemmas[lang].value) };
+      return acc;
+    }, {}) : lemmas;
+    //console.debug(processedLemmas)
+
     return html`<a class="word" href="${href}" ref=${elementRef}
-        >${lemmas ? html`<${Lament} lemmas=${lemmas} lang=${languageFromLemmas(lemmas)} />` : null}</a
+        >${lemmas ? html`<${Lament} lemmas=${processedLemmas} lang=${languageFromLemmas(lemmas)} />` : null}</a
       >${append.length > 0 ? htm`${' '}(${append})` : ''}`;
   }
 }

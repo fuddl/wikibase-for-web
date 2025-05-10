@@ -395,6 +395,72 @@ const formTableLayouts = {
       },
     }
   },
+  japaneseBaColumnLowerOneRow: {
+    requiredLanguage: 'japanese',
+    requiredLexicalCategory: 'verb',
+    requiredClaims: [{ property: 'conjugationClass', item: 'baColumnLowerOneRow' }],
+    layout: {
+      header: [
+        { },
+        { label: 'affirmative' },
+        { label: 'negation' },
+      ],
+      groups: {
+        deklination: [
+          [
+            { label: 'nonpastTense', type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
+            { queryForms: { requireFeature: [ 'negativeForm'] }, formSuffix: 'ない' },
+          ],
+          [
+            { labels: ['nonpastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ません' },
+          ],
+          [
+            { labels: ['pastTense'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'た' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'なかった' },
+          ],
+          [
+            { labels: ['pastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませんでした' },
+          ],
+          [
+            { labels: ['teForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'て' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'なくて' },
+          ],
+          [
+            { labels: ['potential'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られる' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られない' },
+          ],
+          [
+            { labels: ['passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られる' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られない' },
+          ],
+          [
+            { labels: ['causativeForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させる' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させない' },
+          ],
+          [
+            { labels: ['causativeForm', 'passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させられる' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'させられない' },
+          ],
+          [
+            { labels: ['imperativeJa'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperativeJa'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
+          ],
+        ],
+      },
+    }
+  }
 }
 
 function Forms({ forms, manager, language, lexicalCategory, claims }) {
@@ -406,7 +472,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
   const usedFormIds = new Set();
   
   // Helper function to query forms based on grammatical features
-  const queryForms = (query) => {
+  const queryForms = (query, options = {}) => {
     if (!forms || !Array.isArray(forms)) {
       return [];
     }
@@ -452,7 +518,15 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       });
       
       if (matchingForms.length > 0) {
-        return matchingForms.map((item) => html`<${Word} id=${item.id} manager=${manager} showAppendix='no' />`)
+        return matchingForms.map((item) => 
+          html`<${Word}
+            id=${item.id}
+            manager=${manager}
+            showAppendix='no'
+            processText=${options.slice ? (text) => {
+              return text.slice(options.slice.start, options.slice.end) 
+            } : null}
+          />`)
       }
     }
       
@@ -483,7 +557,8 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
     let content = '';
     const classes = ['form__cell'];
     if (cell.queryForms) {
-      const forms = queryForms(cell.queryForms);
+      const forms = queryForms(cell.queryForms, cell);
+
       if (forms.length > 0) {
         content = forms.map((item, index, array) => 
           index === array.length - 1 
