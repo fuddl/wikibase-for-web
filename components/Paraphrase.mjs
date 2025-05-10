@@ -19,7 +19,7 @@ function Paraphrase({
   senseOrdinals,
   query,  
 }) {
-  const [inferredItems, setInferredItems] = useState({});
+  const [inferredItems, setInferredItems] = useState([]);
 
   const directItems = senses
     .map(sense => {
@@ -124,9 +124,9 @@ function Paraphrase({
             }
           });
         }
-
-        setInferredItems(inferred);
       }
+      
+      setInferredItems(inferred);
     }
 
     fetchInferredItems();

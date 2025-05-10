@@ -11,10 +11,9 @@ export const inferredSenses = {
       ${params.values.map((value) => {
         if (params.property === 'pertainymOf' && instance.props?.itemForThisSense) {
           return `{
-            wd:L337170-S1 wdt:${instance.props.pertainymOf} ?pertainer .
-            ?pertainer wdt:${instance.props.itemForThisSense} ?pertainerItem.
+            wd:${value} wdt:${instance.props.itemForThisSense} ?pertainerItem.
             ?perteinerSense wdt:${instance.props.itemForThisSense} ?pertainerItem.
-            ?sense wdt:${instance.props.pertainymOf}  ?perteinerSense.
+            ?sense wdt:${instance.props.pertainymOf} ?perteinerSense.
           }`
         }
         return `{ ?sense wdt:${instance.props[params.property]} wd:${value} . }`

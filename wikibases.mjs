@@ -167,6 +167,7 @@ const wikibases = {
 			german: 'Q188',
 
 			/* lexical categories */
+			adjective: 'Q34698',
 			noun: 'Q1084',
 			verb: 'Q24905',
 
@@ -175,6 +176,7 @@ const wikibases = {
 			active: 'Q1317831',
 			auxiliaryVerb: 'Q465800',
 			case: 'Q128234',
+			comparative: 'Q14169499',
 			dativeCase: 'Q145599',
 			feminine: 'Q1775415',
 			firstPerson: 'Q21714344', 
@@ -191,6 +193,8 @@ const wikibases = {
 			pastParticipleEn: 'Q1230649',
 			perfect: 'Q625420',
 			plural: 'Q146786',
+			predicative: 'Q1931259',
+			positive: 'Q3482678',
 			presentParticiple: 'Q10345583',
 			presentTense: 'Q192613',
 			preterite: 'Q442485',
@@ -200,6 +204,7 @@ const wikibases = {
 			singular: 'Q110786',
 			subjunctiveI: 'Q55685962',
 			subjunctiveII: 'Q54671845',
+			superlative: 'Q1817208',
 			thirdPerson: 'Q51929074', 
 		},
 		sites: wikidataSites,

@@ -246,7 +246,27 @@ const formTableLayouts = {
          ],
       }
     }
-  }
+  },
+  germanAdjectives: {
+    requiredLanguage: 'german',
+    requiredLexicalCategory: 'adjective',
+    layout: {
+      header: [
+        { label: 'positive' },
+        { label: 'comparative' },
+        { label: 'superlative' },
+      ],
+      groups: {
+        deklination: [
+          [
+            { queryForms: { requireFeature: [ 'predicative', 'positive'] } },
+            { queryForms: { requireFeature: [ 'predicative', 'comparative'] } },
+            { queryForms: { requireFeature: [ 'predicative', 'superlative'] }, formPrefix: 'am ' },
+          ],
+        ],
+      },
+    }
+  },
 }
 
 function Forms({ forms, manager, language, lexicalCategory, claims }) {
