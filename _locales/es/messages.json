@@ -1,0 +1,531 @@
+{
+    "add_claims": {
+        "message": "Agregar afirmaciones",
+        "description": "Title of a form where claims can be added."
+    },
+    "add_claims_to": {
+        "message": "Agregar afirmaciones a $SUBJECT$.",
+        "description": "Title of a form where claims can be added to a specific entity.",
+        "placeholders": {
+            "subject": {
+                "content": "$1",
+                "example": "wikidata:Q42"
+            }
+        }
+    },
+    "add_claims_to_many": {
+        "message": "Agregar afirmaciones a múltiples entidades",
+        "description": "Title of a form where claims can be added to multiple entities."
+    },
+    "flip_claim_direction": {
+        "message": "Invertir dirección de la declaración"
+    },
+    "search_ids": {
+        "message": "Buscar identificadores",
+        "description": "Title of a list where external ids can be searched."
+    },
+    "no_claims": {
+        "message": "Aún no hay afirmaciones.",
+        "description": "Message seen in items and lexemes that have no claims yet."
+    },
+    "placeholder_example_text": {
+        "message": "Ej. ‘$EXAMPLE$’",
+        "description": "Placeholder of a textfield that shows an example text that can be entered.",
+        "placeholders": {
+            "example": {
+                "content": "$1",
+                "example": "On the Origin of Species by Means of Natural Selection"
+            }
+        }
+    },
+    "placeholder_example_amount": {
+        "message": "Ej. ‘$AMOUNT$’",
+        "description": "Placeholder of a textfield that shows an example number that be entered.",
+        "placeholders": {
+            "amount": {
+                "content": "$1",
+                "example": "15000"
+            }
+        }
+    },
+    "no_ids_for_following_type": {
+        "message": "No hay propiedades identificadoras conocidas para las siguientes clases:",
+        "description": "Introduces a list of classes that don't have associated external id properties."
+    },
+    "placeholder_example_date": {
+        "message": "Ej. `$DATE$`",
+        "description": "Placeholder of a textfield that shows an example number that be entered.",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "+1855-00-00"
+            }
+        }
+    },
+    "amount": {
+        "message": "Cantidad",
+        "description": "Label of a field where a user is supposed to enter an numerical amount."
+    },
+    "unit": {
+        "message": "Unidad",
+        "description": "Label of a field where a user is supposed to enter a unit for an numerical amount."
+    },
+    "placeholder_example_unit": {
+        "message": "Ej. ‘$UNIT$’",
+        "description": "Placeholder of a textfield that shows an example unit that can be entered.",
+        "placeholders": {
+            "unit": {
+                "content": "$1",
+                "example": "metre"
+            }
+        }
+    },
+    "searching_ids": {
+        "message": "Buscando identificadores esperados…",
+        "description": "Message shown when querying ids that are expected from a specific entity."
+    },
+    "no_language_selected": {
+        "message": "Ningún idioma seleccionado",
+        "description": "The option label of a select where currently no language is selected."
+    },
+    "preferred_languages": {
+        "message": "Idiomas preferidos",
+        "description": "Label seen above a list of languages known to be preferred by the user."
+    },
+    "other_languages": {
+        "message": "Otros idiomas",
+        "description": "Label seen above a list of languages not known to be preferred by the user."
+    },
+    "match_via_sitelink": {
+        "message": "Conectar con $INSTANCE$ mediante enlace de sitio",
+        "description": "Header of a section that allows matching a url to a wikibase entity via sitelink.",
+        "placeholders": {
+            "instance": {
+                "content": "$1",
+                "example": "Wikidata"
+            }
+        }
+    },
+    "match_via_external_id": {
+        "message": "Conectar con $INSTANCE$ mediante ID",
+        "description": "Header of a section that allows matching a url to a wikibase entity via an external id.",
+        "placeholders": {
+            "instance": {
+                "content": "$1",
+                "example": "Wikidata"
+            }
+        }
+    },
+    "match_via_url": {
+        "message": "Conectar con $INSTANCE$ mediante URL",
+        "description": "Header of a section that allows matching a url to a wikibase entity.",
+        "placeholders": {
+            "instance": {
+                "content": "$1",
+                "example": "Wikidata"
+            }
+        }
+    },
+    "edit_button": {
+        "message": "Editar",
+        "description": "Label of a button that allows editing something."
+    },
+    "edit_descriptions": {
+        "message": "Editar descripciones",
+        "description": "Title of a form where descriptions can be changed."
+    },
+    "set_lemma": {
+        "message": "Definir lema",
+        "description": "Label of an input field where a lemma can be added."
+    },
+    "edit_lemmas": {
+        "message": "Editar lemas",
+        "description": "Title of a form where lemmas of a lexeme can be changed."
+    },
+    "edit_lemma": {
+        "message": "Editar lema",
+        "description": "Label of a text field where a lemma can be changed,"
+    },
+    "aquiring_metadata": {
+        "message": "Obteniendo metadatos…",
+        "description": "Message shown when aquiring metadata."
+    },
+    "set_alias": {
+        "message": "Definir alias",
+        "description": "Title of an edit that sets an alias."
+    },
+    "set_label_or_alias": {
+        "message": "Definir etiqueta o alias en $1",
+        "description": "Title of an edit that sets an label or an alias.",
+        "placeholders": {
+            "language": {
+                "content": "$1",
+                "example": "en"
+            }
+        }
+    },
+    "set_description": {
+        "message": "Definir descripción para $1",
+        "description": "Title of an edit that sets a description.",
+        "placeholders": {
+            "language": {
+                "content": "$1",
+                "example": "en"
+            }
+        }
+    },
+    "set_sitelink": {
+        "message": "Definir sitelink",
+        "description": "Title of an edit that sets a sitelink."
+    },
+    "dismiss_action": {
+        "message": "Descartar este mensaje",
+        "description": "Label of a button that dismisses a message."
+    },
+    "search_item_placeholder": {
+        "message": "Buscar elementos por etiqueta o alias.",
+        "description": "Placeholder of a field that searches for wikibase items."
+    },
+    "search_lexeme_placeholder": {
+        "message": "Buscar léxemas por lema o forma.",
+        "description": "Placeholder of a field that searches for wikibase lexemes."
+    },
+    "search_sense_placeholder": {
+        "message": "Buscar sentidos de léxema por lema.",
+        "description": "Placeholder of a field that searches for wikibase senses."
+    },
+    "search_property_placeholder": {
+        "message": "Buscar propiedad por etiqueta o alias.",
+        "description": "Placeholder of a field that searches for wikibase senses."
+    },
+    "search_unit_placeholder": {
+        "message": "Buscar unidad por etiqueta o alias.",
+        "description": "Placeholder of a field that searches for items that represent a unit like kilometers or Yen."
+    },
+    "load_autodesc": {
+        "message": "Cargando descripción automática…",
+        "description": "Message that informs the user that an automatic description is in the state of being loaded."
+    },
+    "match_title": {
+        "message": "Coincidencia",
+        "description": "Title of an entity matches form."
+    },
+    "create_new_entity": {
+        "message": "Crear nueva entidad",
+        "description": "Label of an option that will create a new entity."
+    },
+    "new_entity": {
+        "message": "Nueva entidad",
+        "description": "Label of a selected option that will create a new entity."
+    },
+    "disambiguation_title": {
+        "message": "Desambiguador",
+        "description": "Title of the sidebar when it shows disambiguation screen."
+    },
+    "send_to_instance": {
+        "message": "Enviar a $INSTANCE$",
+        "description": "Title of a button that sends claims to a particular wikibase instance.",
+        "placeholders": {
+            "instance": {
+                "content": "$1",
+                "example": "Wikidata"
+            }
+        }
+    },
+    "other_matches_title": {
+        "message": "Otras coincidencias",
+        "description": "Title for a section that contains contextual matches for a particular website."
+    },
+    "wb_set_alias": {
+        "message": "Definir alias",
+        "description": "Name of the command that sets aliases of the wikibase api."
+    },
+    "ambiguous_url_title": {
+        "message": "Múltiples coincidencias encontradas",
+        "description": "Title of a disambiguation screen."
+    },
+    "ambiguous_url_intro": {
+        "message": "Esta URL coincidió con múltiples entidades de wikibase. Por favor, seleccione la entidad deseada.",
+        "description": "Message shown when a url was matched to multiple entitis over a selection."
+    },
+    "unknown": {
+        "message": "desconocido",
+        "description": "The snaktype unknown"
+    },
+    "no_value": {
+        "message": "sin valor",
+        "description": "The snaktype no value"
+    },
+    "media_info": {
+        "message": "Información del documento",
+        "description": "Label of a link showing more information about a file."
+    },
+    "external_id": {
+        "message": "Identificador externo",
+        "description": "Heading for a section containing a single external id."
+    },
+    "external_ids": {
+        "message": "Identificadores externos",
+        "description": "Heading for a section containing external ids."
+    },
+    "quick_link": {
+        "message": "Enlace directo",
+        "description": "Heading for a section containing a single quick link."
+    },
+    "quick_links": {
+        "message": "Enlaces directos",
+        "description": "Heading for a section containing quick links."
+    },
+    "link": {
+        "message": "Enlace",
+        "description": "Heading for a section containing a single link."
+    },
+    "links": {
+        "message": "Enlaces",
+        "description": "Heading for a section containing links."
+    },
+    "reference": {
+        "message": "Referencia",
+        "description": "Heading for a section containing a single reference."
+    },
+    "references": {
+        "message": "Referencias",
+        "description": "Heading for a section containing references."
+    },
+    "month_1": {
+        "message": "Enero",
+        "description": "The name of the first month."
+    },
+    "month_2": {
+        "message": "Febrero",
+        "description": "The name of the second month."
+    },
+    "month_3": {
+        "message": "Marzo",
+        "description": "The name of the third month."
+    },
+    "month_4": {
+        "message": "Abril",
+        "description": "The name of the fourth month."
+    },
+    "month_5": {
+        "message": "Mayo",
+        "description": "The name of the fifth month."
+    },
+    "month_6": {
+        "message": "Junio",
+        "description": "The name of the sixth month."
+    },
+    "month_7": {
+        "message": "Julio",
+        "description": "The name of the seventh month."
+    },
+    "month_8": {
+        "message": "Agosto",
+        "description": "The name of the eighth month."
+    },
+    "month_9": {
+        "message": "Septiembre",
+        "description": "The name of the ninth month."
+    },
+    "month_10": {
+        "message": "Octubre",
+        "description": "The name of the tenth month."
+    },
+    "month_11": {
+        "message": "Noviembre",
+        "description": "The name of the eleventh month."
+    },
+    "month_12": {
+        "message": "Diciembre",
+        "description": "The name of the twelfth month."
+    },
+    "date_month": {
+        "message": "$MONTHNAME$ $YEAR$",
+        "description": "The name of a month.",
+        "placeholders": {
+            "monthname": {
+                "content": "$1",
+                "example": "February"
+            },
+            "monthnumber": {
+                "content": "$2",
+                "example": "2"
+            },
+            "year": {
+                "content": "$3",
+                "example": "2024"
+            }
+        }
+    },
+    "date_bce": {
+        "message": "$DATE$ a. C.",
+        "description": "A date before the year 0.",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "2032-12-34"
+            }
+        }
+    },
+    "date_year": {
+        "message": "$NUMBER$",
+        "description": "The name of a year.",
+        "placeholders": {
+            "number": {
+                "content": "$1",
+                "example": "2024"
+            }
+        }
+    },
+    "date_decade": {
+        "message": "$NUMBER$s",
+        "description": "The name of a decade.",
+        "placeholders": {
+            "ordinal": {
+                "content": "$1",
+                "example": "202"
+            },
+            "number": {
+                "content": "$2",
+                "example": "2010"
+            }
+        }
+    },
+    "date_century": {
+        "message": "Siglo $ORDINAL$",
+        "description": "The name of a century.",
+        "placeholders": {
+            "ordinal": {
+                "content": "$1",
+                "example": "21"
+            },
+            "number": {
+                "content": "$2",
+                "example": "20"
+            }
+        }
+    },
+    "date_millenium": {
+        "message": "$ORDINAL$ milenio",
+        "description": "The name of a millennium.",
+        "placeholders": {
+            "ordinal": {
+                "content": "$1",
+                "example": "1"
+            },
+            "number": {
+                "content": "$2",
+                "example": "2"
+            }
+        }
+    },
+    "date_year_range": {
+        "message": "$year$ ±$DELTA$ años",
+        "description": "A range between two years.",
+        "placeholders": {
+            "year": {
+                "content": "$1",
+                "example": "1967"
+            },
+            "lower": {
+                "content": "$2",
+                "example": "1966"
+            },
+            "upper": {
+                "content": "$3",
+                "example": "1969"
+            },
+            "delta": {
+                "content": "$4",
+                "example": "5.000"
+            }
+        }
+    },
+    "time_precision_day": {
+        "message": "Precisión de un día",
+        "description": "Option stating that a date statement has the precision of a day."
+    },
+    "time_precision_month": {
+        "message": "Precisión de un mes",
+        "description": "Option stating that a date statement has the precision of a month."
+    },
+    "time_precision_year": {
+        "message": "Precisión de un año",
+        "description": "Option stating that a date statement has the precision of a year."
+    },
+    "gloss_style_format": {
+        "message": "[$STYLE$, $USE$] ",
+        "description": "Affixes around a gloss style. Can be used for parenthesis, etc.",
+        "placeholders": {
+            "STYLE": {
+                "content": "$1",
+                "example": "slang"
+            },
+            "USE": {
+                "content": "$2",
+                "example": "astronomy"
+            }
+        }
+    },
+    "gloss_gender_format": {
+        "message": " ($SEX$, $GENDER$)",
+        "description": "Affixes around a gloss gender. Can be used for parenthesis, etc.",
+        "placeholders": {
+            "SEX": {
+                "content": "$1",
+                "example": "female"
+            },
+            "GENDER": {
+                "content": "$2",
+                "example": "male"
+            }
+        }
+    },
+    "gloss_item_format": {
+        "message": "→ $ITEMLINK$",
+        "description": "Affixes around a item link under a gloss.",
+        "placeholders": {
+            "ITEMLINK": {
+                "content": "$1",
+                "example": "universe"
+            }
+        }
+    },
+    "gloss_transitivity_format": {
+        "message": "$TRANS$/$INTRANS$: ",
+        "description": "Affixes around a gloss transitivity.",
+        "placeholders": {
+            "TRANS": {
+                "content": "$1",
+                "example": "transitive"
+            },
+            "INTRANS": {
+                "content": "$1",
+                "example": "transitive"
+            }
+        }
+    },
+    "gloss_derived_from_format": {
+        "message": " ⇐ $FOO$/$BAR$",
+        "description": "Affixes around a gloss transitivity.",
+        "placeholders": {
+            "FOO": {
+                "content": "$1",
+                "example": "foo"
+            },
+            "BAR": {
+                "content": "$1",
+                "example": "bar"
+            }
+        }
+    },
+    "forms": {
+        "message": "Formas",
+        "description": "Title of a section that lists lexicographical forms"
+    },
+    "additional_forms": {
+        "message": "Formas adicionales",
+        "description": "Title of a section that lists lexicographical forms not listed previously"
+    }
+}
