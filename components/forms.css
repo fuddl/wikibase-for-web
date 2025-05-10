@@ -27,6 +27,10 @@
   text-align: end;
 }
 
+.form__cell--bottom {
+  vertical-align: bottom;
+}
+
 th.form__cell {
   background-color: var(--active-paper);
   > a {

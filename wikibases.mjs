@@ -184,6 +184,7 @@ const wikibases = {
 			grammaticalPerson: 'Q690940',
 			grammaticalTense: 'Q177691',
 			imperative: 'Q22716',
+			infinitive: 'Q179230',
 			indicative: 'Q682111',
 			linguisticForm: 'Q115786086',
 			masculine: 'Q499327',

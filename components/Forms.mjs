@@ -71,6 +71,26 @@ const formTableLayouts = {
       },
     }, 
   },
+  englishAdjective: {
+    requiredLanguage: 'english',
+    requiredLexicalCategory: 'adjective',
+    layout: {
+      header: [
+        { label: 'positive' },
+        { label: 'comparative' },
+        { label: 'superlative' },
+      ],
+      groups: {
+        deklination: [
+          [
+            { queryForms: { requireFeature: [ 'positive'] } },
+            { queryForms: { requireFeature: [ 'comparative'] } },
+            { queryForms: { requireFeature: [ 'superlative'] } },
+          ],
+        ],
+      },
+    }
+  },
   germanNounMale: {
     requiredLanguage: 'german',
     requiredLexicalCategory: 'noun',
@@ -182,10 +202,9 @@ const formTableLayouts = {
       },
     }
   },
-  germanVerbIndicative: {
+  germanVerbBasic: {
     requiredLanguage: 'german',
     requiredLexicalCategory: 'verb',
-    caption: 'Indicative',
     layout: {
       header: [
         { },
@@ -244,6 +263,111 @@ const formTableLayouts = {
             { lexemeClaim: 'auxiliaryVerb' },
           ],
          ],
+      }
+    }
+  },
+  germanVerbAdditional: {
+    requiredLanguage: 'german',
+    requiredLexicalCategory: 'verb',
+    layout: {
+      header: [
+        { },
+        { label: 'linguisticForm', colspan: 2 },
+      ],
+      groups: {
+        infinitive: [
+          [
+            { label: 'infinitive', type: 'header' },
+            { queryForms: { requireFeature: [ 'infinitive' ] }, colspan: 2 },
+          ],
+          [
+            { labels: ['presentParticiple', 'active', 'presentTense'], type: 'header' },
+            { queryForms: { requireFeature: ['presentParticiple', 'active', 'presentTense'] }, colspan: 2 },
+          ]
+        ],
+        presentIndicative: [
+          [
+            { labels: ['indicative', 'presentTense'], type: 'header', colspan: 3 },
+          ], 
+          [
+            { labels: ['firstPerson', 'plural'], type: 'header' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'wir ', colspan: 2 },
+          ],
+          [
+            { labels: ['secondPerson', 'plural'], type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'ihr ', colspan: 2 },
+          ],
+          [
+            { labels: ['thirdPerson', 'plural'], type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'sie ', colspan: 2 },
+          ]
+        ],
+        preteriteIndicative: [
+          [
+            { labels: ['indicative', 'preterite'], type: 'header', vAlign: 'bottom' },
+            { label: ['singular'], type: 'header', vAlign: 'bottom' },
+            { label: ['plural'], type: 'header', vAlign: 'bottom' },
+          ], 
+          [
+            { labels: ['firstPerson'], type: 'header' },
+            {},
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'wir ', colspan: 2 },
+          ],
+          [
+            { labels: ['secondPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'du ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'ihr ' },
+          ],
+          [
+            { labels: ['thirdPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'er/sie/es ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'sie ' },
+          ]
+        ],
+        presentIndicativeSubjunctiveI: [
+          [
+            { labels: ['subjunctiveI', 'presentTense'], type: 'header', vAlign: 'bottom' },
+            { label: ['singular'], type: 'header', vAlign: 'bottom' },
+            { label: ['plural'], type: 'header', vAlign: 'bottom' },
+          ],
+          [
+            { labels: ['firstPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ich ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'wir ' },
+          ],
+          [
+            { labels: ['secondPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'du ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ihr ' },
+          ],
+          [
+            { labels: ['thirdPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'er/sie/es ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'sie ' },
+          ], 
+        ],
+        presentIndicativeSubjunctiveII: [
+          [
+            { labels: ['subjunctiveII', 'preterite'], type: 'header', vAlign: 'bottom' },
+            { label: ['singular'], type: 'header', vAlign: 'bottom' },
+            { label: ['plural'], type: 'header', vAlign: 'bottom' },
+          ],
+          [
+            { labels: ['firstPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ich ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'wir ' },
+          ],
+          [
+            { labels: ['secondPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'du ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ihr ' },
+          ],
+          [
+            { labels: ['thirdPerson'], type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'er/sie/es ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'sie ' },
+          ], 
+        ],
       }
     }
   },
@@ -378,16 +502,25 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       }
     } else if (cell.label) {
       content = html`<${Thing} id=${manager.wikibase.id}:${manager.wikibase.items[cell.label]} manager=${manager} showAppendix='no' />`;
+    } else if (cell.labels) {
+      content = cell.labels.map(label => html`<${Thing} id=${manager.wikibase.id}:${manager.wikibase.items[label]} manager=${manager} showAppendix='no' />`).map((label, index, array) => 
+        index === array.length - 1 
+          ? html`${label}`
+          : html`${label}<br />`
+      );
     } else if (cell.text) {
       content = cell.text;
     }
     const cellType = ['header', 'prefixHeader'].includes(cell.type) ? 'th' : 'td';
+    if (cell.vAlign === 'bottom') {
+      classes.push('form__cell--bottom')
+    }
     if (cell.type === 'prefix') {
       classes.push('form__cell--prefix')
     } else if (cell.type === 'prefixHeader') {
       classes.push('form__cell--prefix-header') 
     }
-    return html`<${cellType} class=${classes.join(' ')} rowspan="${cell.rowspan}">${content}</${cellType}>`;
+    return html`<${cellType} class=${classes.join(' ')} rowspan="${cell.rowspan}"  colspan="${cell.colspan}">${content}</${cellType}>`;
   };
 
   const tables = []
