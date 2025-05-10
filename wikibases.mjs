@@ -207,6 +207,7 @@ const wikibases = {
 			subjunctiveII: 'Q54671845',
 			superlative: 'Q1817208',
 			thirdPerson: 'Q51929074', 
+			zuInfinitive: 'Q100952920', 
 		},
 		sites: wikidataSites,
 		badResolvers: [

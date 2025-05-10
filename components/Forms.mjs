@@ -281,8 +281,12 @@ const formTableLayouts = {
             { queryForms: { requireFeature: [ 'infinitive' ] }, colspan: 2 },
           ],
           [
-            { labels: ['presentParticiple', 'active', 'presentTense'], type: 'header' },
-            { queryForms: { requireFeature: ['presentParticiple', 'active', 'presentTense'] }, colspan: 2 },
+            { label: 'zuInfinitive', type: 'header' },
+            { queryForms: { requireFeature: [ 'zuInfinitive' ] }, colspan: 2 },
+          ],
+          [
+            { labels: ['presentParticiple'], type: 'header' },
+            { queryForms: { requireFeature: ['presentParticiple'] }, colspan: 2 },
           ]
         ],
         presentIndicative: [
