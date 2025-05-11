@@ -12,7 +12,7 @@ import Lament from './Lament.mjs';
 const html = htm.bind(h);
 
 class Word extends Component {
-  render({ id, manager, showLemma = 'no', showAppendix = 'yes', processText = null }) {
+  render({ id, manager, showLemma = 'no', showAppendix = 'yes', processText = null, lemmas: providedLemmas = null }) {
     const displayId = showLemma === 'yes' ? id.replace(/-[FS]\d+$/, '') : id;
     const [designator, setDesignator] = useState(
       manager?.designators?.[displayId],
@@ -40,7 +40,7 @@ class Word extends Component {
       return setUpObserver();
     }, [id, manager]);
 
-    const lemmas =
+    const lemmas = providedLemmas || 
       designator?.lemmas || designator?.representations || designator?.glosses;
 
     let appendix = [];

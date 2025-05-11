@@ -250,6 +250,11 @@ const wikibases = {
 			zaColumnLowerOneRow: 'Q54072150',
 			zaColumnUpperOneRow: 'Q54064446',
 
+			aColumnFiveRow: 'Q115910055',
+			maColumnFiveRow: 'Q54025055',
+			raColumnFiveRow: 'Q54025078',
+			waColumnFiveRow: 'Q54025117',
+
 		},
 		sites: wikidataSites,
 		badResolvers: [

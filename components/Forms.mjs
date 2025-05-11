@@ -494,13 +494,256 @@ const formTableLayouts = {
               queryForms: { requireFeature: ['hypotheticalForm'] },
               formSuffix: 'ば'
             },
-            { 
-              queryForms: { requireFeature: ['negativeForm'] },
-              formSuffix: 'なければ'
-            },
+            {},
           ],
         ],
       },
+    }
+  },
+  japaneseGodanWaVerb: {
+    requiredLanguage: 'japanese',
+    requiredLexicalCategory: 'verb',
+    requiredClaims: [{
+      property: 'conjugationClass',
+      item: 'waColumnFiveRow',
+    }],
+    layout: {
+      header: [
+        { },
+        { label: 'affirmative' },
+        { label: 'negation' },
+      ],
+      groups: {
+        conjugation: [
+          [
+            { label: 'nonpastTense', type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わない' },
+          ],
+          [
+            { labels: ['nonpastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ません' },
+          ],
+          [
+            { labels: ['pastTense'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'った' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わなかった' }, // sic
+          ],
+          [
+            { labels: ['pastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ませんでした' },
+          ],
+          [
+            { labels: ['teForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'って' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わなくて' },  // sic
+          ],
+          [
+            { labels: ['potential'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'える' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'えない' },  // sic
+          ],
+          [
+            { labels: ['passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'われる' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'われない' },  // sic
+          ],
+          [
+            { labels: ['causativeForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わせる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わせない' }, // sic
+          ],
+          [
+            { labels: ['causativeForm', 'passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わせられる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わせられない' }, // sic
+          ],
+          [
+            { labels: ['imperativeJa'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperativeJa'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
+          ],
+          [
+            { type: 'header', labels: ['attributiveForm'] },
+            { queryForms: { requireFeature: ['attributiveForm'] } },
+            {},
+          ],
+          [
+            { type: 'header', labels: ['hypotheticalForm'] },
+            { 
+              queryForms: { requireFeature: ['hypotheticalForm'] },
+              formSuffix: 'ば'
+            },
+            {},
+          ],
+        ],
+      }
+    }
+  },
+  japaneseGodanMuVerb: {
+    requiredLanguage: 'japanese',
+    requiredLexicalCategory: 'verb',
+    requiredClaims: [{
+      property: 'conjugationClass',
+      item: 'maColumnFiveRow',
+    }],
+    layout: {
+      header: [
+        { },
+        { label: 'affirmative' },
+        { label: 'negation' },
+      ],
+      groups: {
+        conjugation: [
+          [
+            { label: 'nonpastTense', type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
+            { queryForms: { requireFeature: [ 'negativeForm'] }, formSuffix: 'ない' },
+          ],
+          [
+            { labels: ['nonpastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ません' },
+          ],
+          [
+            { labels: ['pastTense'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'んだ' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まなかった' }, // sic
+          ],
+          [
+            { labels: ['pastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ませんでした' },
+          ],
+          [
+            { labels: ['teForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'んで' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まなくて' },  // sic
+          ],
+          [
+            { labels: ['potential'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'める' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'めない' },  // sic
+          ],
+          [
+            { labels: ['passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まれる' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まれない' },  // sic
+          ],
+          [
+            { labels: ['causativeForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませない' }, // sic
+          ],
+          [
+            { labels: ['causativeForm', 'passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませられる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'ませられない' }, // sic
+          ],
+          [
+            { labels: ['imperativeJa'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperativeJa'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
+          ],
+          [
+            { type: 'header', labels: ['attributiveForm'] },
+            { queryForms: { requireFeature: ['attributiveForm'] } },
+            {},
+          ],
+          [
+            { type: 'header', labels: ['hypotheticalForm'] },
+            { 
+              queryForms: { requireFeature: ['hypotheticalForm'] },
+              formSuffix: 'ば'
+            },
+            {},
+          ],
+        ],
+      }
+    }
+  },
+  japaneseGodanRaVerb: {
+    requiredLanguage: 'japanese',
+    requiredLexicalCategory: 'verb',
+    requiredClaims: [{
+      property: 'conjugationClass',
+      item: 'raColumnFiveRow',
+    }],
+    layout: {
+      header: [
+        { },
+        { label: 'affirmative' },
+        { label: 'negation' },
+      ],
+      groups: {
+        conjugation: [
+          [
+            { label: 'nonpastTense', type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
+            { queryForms: { requireFeature: [ 'negativeForm'] }, formSuffix: 'ない' },
+          ],
+          [
+            { labels: ['nonpastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ません' },
+          ],
+          [
+            { labels: ['pastTense'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'った' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らなかった' }, // sic
+          ],
+          [
+            { labels: ['pastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ませんでした' },
+          ],
+          [
+            { labels: ['teForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'って' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らなくて' },  // sic
+          ],
+          [
+            { labels: ['potential'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'れる' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'れない' },  // sic
+          ],
+          [
+            { labels: ['passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られる' },  // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'られない' },  // sic
+          ],
+          [
+            { labels: ['causativeForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らせる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らせない' }, // sic
+          ],
+          [
+            { labels: ['causativeForm', 'passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らせられる' }, // sic
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'らせられない' }, // sic
+          ],
+          [
+            { labels: ['imperativeJa'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperativeJa'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
+          ],
+          [
+            { type: 'header', labels: ['attributiveForm'] },
+            { queryForms: { requireFeature: ['attributiveForm'] } },
+            {},
+          ],
+          [
+            { type: 'header', labels: ['hypotheticalForm'] },
+            { 
+              queryForms: { requireFeature: ['hypotheticalForm'] },
+              formSuffix: 'ば'
+            },
+            {},
+          ],
+        ],
+      }
     }
   }
 }
@@ -564,6 +807,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
           html`<${Word}
             id=${item.id}
             manager=${manager}
+            lemmas=${item.representations}
             showAppendix='no'
             processText=${options.slice ? (text) => {
               return text.slice(options.slice.start, options.slice.end) 
@@ -713,7 +957,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
                 )}
               </dt>
               <dd>
-                <${Word} id=${form.id} manager=${manager} showAppendix='no' />
+                <${Word} id=${form.id} lemmas=${form.representations} manager=${manager} showAppendix='no' />
               </dd>
             `;
           })}
