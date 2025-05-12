@@ -9,7 +9,7 @@
 .form__cell {
   padding: 3.2px 6.4px;
   vertical-align: top;
-  white-space: pre;
+  white-space: pre-wrap;
   border: 1px solid var(--border);
 }
 

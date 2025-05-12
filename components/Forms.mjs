@@ -600,7 +600,7 @@ const formTableLayouts = {
           [
             { label: 'nonpastTense', type: 'header' },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
-            { queryForms: { requireFeature: [ 'negativeForm'] }, formSuffix: 'ない' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まない' },
           ],
           [
             { labels: ['nonpastTense', 'honorific'], type: 'header' },
