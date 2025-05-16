@@ -12,8 +12,8 @@ export default {
       groups: {
         deklination: [
           [
-            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: 'il ' },
-            { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'i ' },
+            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: 'el ' },
+            { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'los ' },
           ],
         ]
       }
