@@ -50,17 +50,8 @@ export const url = {
 			url.match(/https?:\/\/www\./)
 				? url.replace(/^(http:\/\/)www\./, '$1')
 				: url,
-		domainOnlyTrailingSlash: url => {
-			const u = new URL(url);
-			return `${u.protocol}//${u.hostname}/`;
-		},
-		domainOnly: url => {
-			const u = new URL(url);
-			return `${u.protocol}//${u.hostname}`;
-		},
 	},
 	resolve: async function ({ matchFromUrl }, { wikibase, queryManager }) {
-		const fuzzyPermutation = binaryVariations(Object.keys(this.urlFuzziness));
 
 		// including these urls will significantly slow down these queries
 		// we would resolve them with the siteLinks resolver anyway
@@ -72,6 +63,8 @@ export const url = {
 		}
 
 		const hrefs = [];
+
+		const fuzzyPermutation = binaryVariations(Object.keys(this.urlFuzziness));
 		for (const fuzzy of fuzzyPermutation) {
 			let variation = matchFromUrl;
 			for (const fuzz of fuzzy) {
@@ -91,6 +84,7 @@ export const url = {
 				urls: hrefs,
 			},
 		);
+
 		const found = [];
 		results.forEach(obj => {
 			// Non-properties get a specificity bonus
