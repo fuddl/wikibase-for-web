@@ -121,8 +121,6 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 	}
 
 	let candidates = [];
-	const uniqueCandidatesMap = new Map();
-	
 	await Promise.all(
 		this.list.map(async resolver => {
 			await Promise.all(
@@ -142,23 +140,13 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 					if (applies.length > 0) {
 						for (const apply of applies) {
 							apply.resolved = await resolver.resolve(apply, context);
-							const uniqueKey = JSON.stringify({
-								id: apply.id, 
-								wikibaseID: context.wikibaseID,
-								url: apply.url || url
-							});
-							
-							if (!uniqueCandidatesMap.has(uniqueKey)) {
-								uniqueCandidatesMap.set(uniqueKey, apply);
-							}
 						}
+						candidates = [...candidates, ...applies];
 					}
 				}),
 			);
 		}),
 	);
-
-	candidates = Array.from(uniqueCandidatesMap.values());
 
 	candidates.sort((a, b) => b.specificity - a.specificity);
 

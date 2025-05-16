@@ -167,6 +167,7 @@ const wikibases = {
 			english: 'Q1860',
 			german: 'Q188',
 			japanese: 'Q5287',
+			spanish: 'Q1321',
 
 			/* lexical categories */
 			adjective: 'Q34698',
