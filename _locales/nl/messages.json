@@ -507,7 +507,7 @@
      }
    },
    "gloss_derived_from_format": {
-     "message": " ⇐ $FOO$/$BAR$",
+     "message": " ⇐ $FOO$/$BAR$",
      "description": "Affixes around a gloss transitivity.",
      "placeholders": {
        "FOO": {
