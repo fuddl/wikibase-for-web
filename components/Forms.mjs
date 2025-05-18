@@ -206,24 +206,27 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       ${tables}
       ${unusedForms.length > 0 ? html`
         ${tables.length > 0 ? html`<h3>${browser.i18n.getMessage('additional_forms')}</h3>` : null }
-        <dl class="forms__additional">
+        <div class="forms__extra">
           ${unusedForms.map(form => {
             return html`
-              <dt>
-                ${form.grammaticalFeatures?.map(featureId => 
-                  html`<${Thing} id=${`${manager.wikibase.id}:${featureId}`} manager=${manager} />`
-                ).map((item, index, array) => 
-                  index === array.length - 1 
-                    ? html`${item}`
-                    : html`${item} / `
-                )}
-              </dt>
-              <dd>
-                <${Word} id=${form.id} lemmas=${form.representations} manager=${manager} showAppendix='no' />
-              </dd>
+              <figure class="forms__extra__form">
+                <div class="forms__extra__form__text">
+                  <${Word} id=${form.id} lemmas=${form.representations} manager=${manager} showAppendix='no' />
+                </div>
+                <figcaption class="forms__extra__form__caption">
+                  ${form.grammaticalFeatures?.map(featureId => 
+                    html`<${Thing} id=${`${manager.wikibase.id}:${featureId}`} manager=${manager} />`
+                  ).map((item, index, array) => 
+                    index === array.length - 1 
+                      ? html`${item}`
+                      : html`${item} / `
+                  )}
+                  <span class="forms__extra__form__caption__id">(${form.id.replace(`${manager.wikibase.id}:`, '')})</span>
+                </figcaption>
+              </figure>
             `;
           })}
-        </dl>
+        </div>
       ` : ''}
     </div>
   `;

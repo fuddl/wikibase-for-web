@@ -38,7 +38,37 @@ th.form__cell {
   }
 }
 
-.forms__additional > dt > a {
-  font-weight: bold;
-  color: inherit;
+.forms__extra {
+  display: flex;
+  grid-gap: 1em;
+  flex-wrap: wrap;
+}
+
+.forms__extra__form__caption {
+  background-color: #e6e6ff;
+  margin-top: auto;
+  padding: 1em;
+  overflow: hidden;
+}
+
+.forms__extra__form__caption__id {
+  float: right;
+}
+
+.forms__extra__form {
+  display: inline-block;
+}
+
+.forms__extra__form {
+  border: 1px solid var(--border);
+}
+
+.forms__extra__form__text {
+  font-family: var(--fancy);
+  font-size: 1.5rem;
+  font-weight: 400;
+  padding: 1em;
+  > a {
+    color: inherit;
+  }
 }
