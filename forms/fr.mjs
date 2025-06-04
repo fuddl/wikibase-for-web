@@ -29,8 +29,8 @@ export default {
           [
             {
               queryForms: { requireFeature: [ 'singular'] },
-              formPrefix: (form) => {
-                return form.representations?.fr ? contractArticle(form.representations.fr.value, 'la ') : ''
+              formPrefix: ({ representations }) => {
+                return representations?.fr ? contractArticle(representations.fr.value, 'la ') : ''
               }
             },
             { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'les ' },
@@ -52,8 +52,8 @@ export default {
       groups: {
         deklination: [
           [
-            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: (form) => {
-              return form.representations?.fr ? contractArticle(form.representations.fr.value, 'le ') : ''
+            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: ( { representations }) => {
+              return representations?.fr ? contractArticle(representations.fr.value, 'le ') : ''
             } },
             { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'les ' },
           ],
