@@ -166,6 +166,7 @@ const wikibases = {
 			year: 'Q577',
 
 			/* languages */
+			breton: 'Q12107',
 			english: 'Q1860',
 			french: 'Q150',
 			german: 'Q188',
@@ -187,10 +188,12 @@ const wikibases = {
 			augmentative: 'Q1358239',
 			case: 'Q128234',
 			causativeForm: 'Q106781981',
+			collective: 'Q694268',
 			comparative: 'Q14169499',
 			conjunctiveForm: 'Q2888577',
 			dativeCase: 'Q145599',
 			diminutive: 'Q108709',
+			dual: 'Q110022',
 			endearingForm: 'Q66664394',
 			feminine: 'Q1775415',
 			firstPerson: 'Q21714344',
@@ -218,6 +221,7 @@ const wikibases = {
 			pastTense: 'Q1994301',
 			perfect: 'Q625420',
 			plural: 'Q146786',
+			pluralOfPlural: 'Q110588065',
 			positive: 'Q3482678',
 			possessive: 'Q2105891',
 			potential: 'Q11411856',
@@ -229,12 +233,18 @@ const wikibases = {
 			simplePast: 'Q1392475', 
 			simplePresent: 'Q3910936',
 			singular: 'Q110786',
+			singulative: 'Q1450795',
 			subjunctiveI: 'Q55685962',
 			subjunctiveII: 'Q54671845',
 			superlative: 'Q1817208',
 			teForm: 'Q106781941',
 			thirdPerson: 'Q51929074', 
 			zuInfinitive: 'Q100952920',
+			
+			noMutation:'Q101252532',
+			softMutation: 'Q56648699',
+			aspirateMutation: 'Q56648701',
+			hardMutation: 'Q97130345',
 
 			meyNoun: 'Q107491952',
 
