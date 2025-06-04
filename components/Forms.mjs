@@ -65,16 +65,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       });
       
       if (matchingForms.length > 0) {
-        return matchingForms.map((item) => 
-          html`<${Word}
-            id=${item.id}
-            manager=${manager}
-            lemmas=${item.representations}
-            showAppendix='no'
-            processText=${options.slice ? (text) => {
-              return text.slice(options.slice.start, options.slice.end) 
-            } : null}
-          />`)
+        return matchingForms;
       }
     }
       
@@ -108,10 +99,22 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
       const forms = queryForms(cell.queryForms, cell);
 
       if (forms.length > 0) {
-        content = forms.map((item, index, array) => 
-          index === array.length - 1 
-            ? html`${cell.formPrefix ?? ''}${item}${cell.formSuffix ?? ''}`
-            : html`${cell.formPrefix ?? ''}${item}${cell.formSuffix ?? ''}<br/>`
+        content = forms.map((item, index, array) => {
+          const prefix = typeof cell.formPrefix === 'function' ? cell.formPrefix(item) : cell.formPrefix
+          const suffix = typeof cell.formSuffix === 'function' ? cell.formSuffix(item) : cell.formSuffix
+          const form = html`<${Word}
+            id=${item.id}
+            manager=${manager}
+            lemmas=${item.representations}
+            showAppendix='no'
+            processText=${cell.slice ? (text) => {
+              return text.slice(cell.slice.start, cell.slice.end) 
+            } : null}
+          />`
+          return index === array.length - 1 
+            ? html`${prefix ?? ''}${form}${suffix ?? ''}`
+            : html`${prefix ?? ''}${form}${suffix ?? ''}<br/>`
+          }
         );
       } else {
         content = '–';
