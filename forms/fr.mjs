@@ -1,6 +1,6 @@
 
 function contractArticle(string, uncontracted) {
-  if (string.match(/^[AEIOUÂÉÊÎÆŒ]/i)) {
+  if (string.match(/^[AEIOUÂÉÊÎÆŒÅ]/i)) {
     // when the thing starts with one of those, 
     // the article should be contracted
     return 'l’';
