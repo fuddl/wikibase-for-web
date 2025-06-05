@@ -7,7 +7,9 @@ function contractArticle(string, uncontracted) {
   } else if (string.match(/^H/i)) {
     // lets just not use an article for now, 
     // since we cannot know whether or not the `h` 
-    // as aspirated
+    // is aspirated
+    // @todo, check for hasQuality Q3006122 or Q131441009
+    // on the form in order to decide
     return '';
   }
   return uncontracted;
