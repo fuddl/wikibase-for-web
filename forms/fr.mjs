@@ -1,15 +1,20 @@
 
-function contractArticle(string, uncontracted) {
+function contractArticle(string, claims, manager, uncontracted) {
   if (string.match(/^[AEIOUÂÉÊÎÆŒÅ]/i)) {
-    // when the thing starts with one of those, 
-    // the article should be contracted
     return 'l’';
   } else if (string.match(/^H/i)) {
-    // lets just not use an article for now, 
-    // since we cannot know whether or not the `h` 
-    // is aspirated
-    // @todo, check for hasQuality Q3006122 or Q131441009
-    // on the form in order to decide
+    if (manager.wikibase?.props?.hasCharacteristic) {
+      if (manager.wikibase?.items?.aspiratedH) {
+        if (claims?.[manager.wikibase.props.hasCharacteristic].some(claim => claim.mainsnak?.datavalue?.value?.id === `${manager.wikibase.id}:${manager.wikibase.items.aspiratedH}`)) {
+          return 'l’';
+        }
+      }
+      if (manager.wikibase?.items?.muteH) {
+        if (claims?.[manager.wikibase.props.hasCharacteristic].some(claim => claim.mainsnak?.datavalue?.value?.id === `${manager.wikibase.id}:${manager.wikibase.items.muteH}`)) {
+          return uncontracted;
+        }
+      }
+    }
     return '';
   }
   return uncontracted;
@@ -31,8 +36,8 @@ export default {
           [
             {
               queryForms: { requireFeature: [ 'singular'] },
-              formPrefix: ({ representations }) => {
-                return representations?.fr ? contractArticle(representations.fr.value, 'la ') : ''
+              formPrefix: ({ representations, claims }, manager) => {
+                return representations?.fr ? contractArticle(representations.fr.value, claims, manager, 'la ') : ''
               }
             },
             { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'les ' },
@@ -54,8 +59,8 @@ export default {
       groups: {
         deklination: [
           [
-            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: ( { representations }) => {
-              return representations?.fr ? contractArticle(representations.fr.value, 'le ') : ''
+            { queryForms: { requireFeature: [ 'singular'] }, formPrefix: ( { representations, claims }, manager) => {
+              return representations?.fr ? contractArticle(representations.fr.value, claims, manager, 'le ') : ''
             } },
             { queryForms: { requireFeature: [ 'plural' ] }, formPrefix: 'les ' },
           ],

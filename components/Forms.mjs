@@ -100,8 +100,8 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
 
       if (forms.length > 0) {
         content = forms.map((item, index, array) => {
-          const prefix = typeof cell.formPrefix === 'function' ? cell.formPrefix(item) : cell.formPrefix
-          const suffix = typeof cell.formSuffix === 'function' ? cell.formSuffix(item) : cell.formSuffix
+          const prefix = typeof cell.formPrefix === 'function' ? cell.formPrefix(item, manager) : cell.formPrefix
+          const suffix = typeof cell.formSuffix === 'function' ? cell.formSuffix(item, manager) : cell.formSuffix
           const form = html`<${Word}
             id=${item.id}
             manager=${manager}
