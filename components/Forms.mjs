@@ -93,6 +93,11 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
   
   // Function to render a table cell based on cell configuration
   const renderTableCell = (cell) => {
+    if (cell?.displayQuery) {
+      if (queryForms(cell.displayQuery).length === 0) {
+        return null;
+      }
+    }
     let content = '';
     const classes = ['form__cell'];
     if (cell.queryForms) {
