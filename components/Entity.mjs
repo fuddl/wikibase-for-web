@@ -355,6 +355,7 @@ class Entity extends Component {
                   forms=${forms} 
                   manager=${manager} 
                   language=${language}
+                  lemmas=${lemmas}
                   lexicalCategory=${lexicalCategory}
                   claims=${claims}
                 />

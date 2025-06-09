@@ -44,6 +44,10 @@ th.form__cell {
   flex-wrap: wrap;
 }
 
+.forms__extra__form--lemma {
+  order: -1;
+}
+
 .forms__extra__form__caption {
   background-color: #e6e6ff;
   margin-top: auto;
@@ -56,10 +60,8 @@ th.form__cell {
 }
 
 .forms__extra__form {
-  display: inline-block;
-}
-
-.forms__extra__form {
+  display: inline-flex;
+  flex-direction: column;
   border: 1px solid var(--border);
 }
 
@@ -68,6 +70,7 @@ th.form__cell {
   font-size: 1.5rem;
   font-weight: 400;
   padding: 1em;
+  margin-top: auto;
   > a {
     color: inherit;
   }

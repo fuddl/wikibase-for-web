@@ -527,5 +527,9 @@
   "additional_forms": {
     "message": "Additional forms",
     "description": "Title of a section that lists lexicographical forms not listed previously"
+  },
+  "lemma": {
+    "message": "Lemma",
+    "description": "Indicates that a form is equal to a lemma."
   }
 }

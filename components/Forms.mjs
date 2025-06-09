@@ -10,7 +10,7 @@ const html = htm.bind(h);
 
 
 
-function Forms({ forms, manager, language, lexicalCategory, claims }) {
+function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
   useEffect(() => {
     requireStylesheet(browser.runtime.getURL('/components/forms.css'));
   }, []);
@@ -216,12 +216,15 @@ function Forms({ forms, manager, language, lexicalCategory, claims }) {
         ${tables.length > 0 ? html`<h3>${browser.i18n.getMessage('additional_forms')}</h3>` : null }
         <div class="forms__extra">
           ${unusedForms.map(form => {
+            const isLemma = JSON.stringify(form.representations) === JSON.stringify(lemmas)
             return html`
-              <figure class="forms__extra__form">
+              <figure class="forms__extra__form ${ isLemma && 'forms__extra__form--lemma'}">
                 <div class="forms__extra__form__text">
                   <${Word} id=${form.id} lemmas=${form.representations} manager=${manager} showAppendix='no' />
                 </div>
                 <figcaption class="forms__extra__form__caption">
+                  ${isLemma && html`<strong>${browser.i18n.getMessage('Lemma')}</strong>`}
+                  ${form.grammaticalFeatures ?? ' • '}
                   ${form.grammaticalFeatures?.map(featureId => 
                     html`<${Thing} id=${`${manager.wikibase.id}:${featureId}`} manager=${manager} />`
                   ).map((item, index, array) => 
