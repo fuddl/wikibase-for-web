@@ -92,4 +92,25 @@ export default {
       }
     }
   },
+  bretonPreposition: {
+    requiredLanguage: 'breton',
+    requiredLexicalCategory: 'preposition',
+    layout: {
+      header: [
+        { },
+        { label: 'grammaticalPerson' },
+      ],
+      groups: [
+        //add a first row for no feature
+        { queryForms: { requireFeature: [ 'firstPerson', 'singular' ] } },
+        { queryForms: { requireFeature: [ 'secondPerson', 'singular' ] } },
+        { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'masculine' ] } },
+        { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'feminine' ] } },
+        { queryForms: { requireFeature: [ 'firstPerson', 'plural' ] } },
+        { queryForms: { requireFeature: [ 'secondPerson', 'plural' ] } },
+        { queryForms: { requireFeature: [ 'thirdPerson', 'plural' ] } },
+        { queryForms: { requireFeature: [ 'zeroPerson', 'plural' ] } },
+      ]
+    }
+  },
 }
