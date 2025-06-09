@@ -33,7 +33,13 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
     
       
       if (featureQIds.length === 0) {
-        return [];
+        return forms.filter(form => {
+          const noFeature = form.grammaticalFeatures.length === 0
+          if (noFeature) {
+            usedFormIds.add(form.id);
+          }
+          return noFeature;
+        });
       }
       
       // Filter forms that match all required Q-IDs

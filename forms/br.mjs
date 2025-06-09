@@ -92,4 +92,66 @@ export default {
       }
     }
   },
+  bretonPreposition: {
+    requiredLanguage: 'breton',
+    requiredLexicalCategory: 'preposition',
+    layout: {
+      header: [
+        { label: 'grammaticalPerson' },
+        { label: 'grammaticalForm', colspan: 2 },
+      ],
+      groups: {
+        singular: [
+          [
+            { type: 'header' },
+            { label: 'singular', type: 'header', colspan: 2 },
+          ],
+          [
+            { label: 'uninflectedWord', type: 'header' },
+            { queryForms: { requireFeature: [] }, colspan: 2 }
+          ],
+          [
+            { label: 'firstPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular' ] }, colspan: 2 }
+          ],
+          [
+            { label: 'secondPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular' ] }, colspan: 2 }
+          ],
+          [
+            { type: 'header' },
+            { label: 'masculine', type: 'header' },
+            { label: 'feminine', type: 'header' },
+          ],
+          [
+            { label: 'thirdPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'masculine' ] } },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'feminine' ] } },
+          ],
+        ],
+        plural: [
+          [
+            { type: 'header' },
+            { label: 'plural', type: 'header', colspan: 2 },
+          ],
+          [
+            { label: 'firstPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural' ] }, colspan: 2 }
+          ],
+          [
+            { label: 'secondPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural' ] }, colspan: 2 }
+          ],
+          [
+            { label: 'thirdPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural' ] }, colspan: 2 }
+          ],
+          [
+            { label: 'zeroPerson', type: 'header' },
+            { queryForms: { requireFeature: [ 'zeroPerson', 'plural' ] }, colspan: 2 }
+          ],
+        ]
+      }
+    }
+  },
 }

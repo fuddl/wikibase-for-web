@@ -179,6 +179,7 @@ const wikibases = {
 			/* lexical categories */
 			adjective: 'Q34698',
 			noun: 'Q1084',
+			preposition: 'Q4833830',
 			verb: 'Q24905',
 
 			/* grammatical features */
@@ -200,6 +201,7 @@ const wikibases = {
 			feminine: 'Q1775415',
 			firstPerson: 'Q21714344',
 			genitiveCase: 'Q146233',
+			grammaticalForm: 'Q4147654',
 			grammaticalPerson: 'Q690940',
 			grammaticalTense: 'Q177691',
 			honorific: 'Q5897044',
@@ -241,7 +243,9 @@ const wikibases = {
 			superlative: 'Q1817208',
 			teForm: 'Q106781941',
 			thirdPerson: 'Q51929074', 
+			uninflectedWord: 'Q228503',
 			zuInfinitive: 'Q100952920',
+			zeroPerson: 'Q88778575',
 			
 			noMutation:'Q101252532',
 			softMutation: 'Q56648699',
