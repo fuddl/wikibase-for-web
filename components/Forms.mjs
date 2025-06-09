@@ -2,6 +2,7 @@ import { h } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
+import Id from './Id.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import formTableLayouts from '../forms/index.mjs';
@@ -224,7 +225,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
                 </div>
                 <figcaption class="forms__extra__form__caption">
                   ${isLemma && html`<strong>${browser.i18n.getMessage('Lemma')}</strong>`}
-                  ${form.grammaticalFeatures ?? ' • '}
+                  ${isLemma && form.grammaticalFeatures.length > 0 ? ' • ' : ''}
                   ${form.grammaticalFeatures?.map(featureId => 
                     html`<${Thing} id=${`${manager.wikibase.id}:${featureId}`} manager=${manager} />`
                   ).map((item, index, array) => 
@@ -232,7 +233,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
                       ? html`${item}`
                       : html`${item} / `
                   )}
-                  <span class="forms__extra__form__caption__id">(${form.id.replace(`${manager.wikibase.id}:`, '')})</span>
+                  <span class="forms__extra__form__caption__id"><${Id} id=${form.id} /></span>
                 </figcaption>
               </figure>
             `;

@@ -1,0 +1,15 @@
+.id {
+	&::before {
+		content: '(';
+	}
+	&::after {
+		content: ')';
+	}
+	user-select: all;
+}
+
+.id__context {
+	position: absolute;
+	opacity: 0;
+	top: 1em;
+}
