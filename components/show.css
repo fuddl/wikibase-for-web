@@ -17,7 +17,6 @@
 .show__marker {
   grid-area: image;
   padding: var(--main-padding);
-  pointer-events: none;
 }
 
 .show__caption {

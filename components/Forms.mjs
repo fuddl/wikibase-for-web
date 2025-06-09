@@ -233,7 +233,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
                       ? html`${item}`
                       : html`${item} / `
                   )}
-                  <span class="forms__extra__form__caption__id"><${Id} id=${form.id} /></span>
+                  <span class="forms__extra__form__caption__id"><${Id} id=${form.id} manager=${manager} /></span>
                 </figcaption>
               </figure>
             `;

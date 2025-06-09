@@ -16,3 +16,11 @@
 	}
 	/* in case this ever becomes a black list again, here is a list of languages that don't use italics: :lang(zh), :lang(ja), :lang(ko), :lang(pa) */
 }
+
+.gloss__id {
+	opacity: 0;
+	transition: .25s opacity;
+	:hover > & {
+		opacity: 1;
+	}
+}

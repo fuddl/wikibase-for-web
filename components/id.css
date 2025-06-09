@@ -1,11 +1,16 @@
 .id {
+	color: var(--id);
+	user-select: all;
+	cursor: default;
 	&::before {
 		content: '(';
 	}
 	&::after {
 		content: ')';
 	}
-	user-select: all;
+	&:hover {
+		text-decoration: none;
+	}
 }
 
 .id__context {

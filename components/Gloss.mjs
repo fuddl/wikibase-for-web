@@ -9,6 +9,7 @@ import Word from './Word.mjs';
 import Something from './Something.mjs';
 import Gender from './Gender.mjs';
 import Zone from './Zone.mjs';
+import Id from './Id.mjs';
 
 const html = htm.bind(h);
 
@@ -123,6 +124,10 @@ function Gloss({ sense, manager }) {
         ? (useDescriptorDescription && conceptDescription ? conceptDescription : gloss)
         :  html`<${Something} id=${conceptItems[0]} key="concept" manager=${manager} />`
       }
+      ${' '}
+      <span class="gloss__id">
+        <${Id} id=${sense.id} manager=${manager} />
+      </span>
       ${html`<${Gender} items=${genderItems} manager=${manager} />`}
       ${derivedFromItems.length > 0
         ? html`${derivedFromPrefix}${derivedFromItems.map(
