@@ -1,3 +1,8 @@
+const endsWithAMora = ({ representations }) => {
+  const aMora = /[かさたなはまやらわがざだばぱ]$/;
+  return Object.values(representations).some(entry => aMora.test(entry.value))
+}
+
 export default {
   japaneseIchidanVerb: {
     requiredLanguage: 'japanese',
@@ -104,6 +109,8 @@ export default {
       },
     }
   },
+
+  // example: https://www.wikidata.org/wiki/Lexeme:L861
   japaneseGodanWaVerb: {
     requiredLanguage: 'japanese',
     requiredLexicalCategory: 'verb',
@@ -122,7 +129,7 @@ export default {
           [
             { label: 'nonpastTense', type: 'header' },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'わない' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'ない' },
           ],
           [
             { labels: ['nonpastTense', 'honorific'], type: 'header' },
@@ -186,7 +193,9 @@ export default {
       }
     }
   },
-  japaneseGodanMuVerb: {
+
+  // example: https://www.wikidata.org/wiki/Lexeme:L572
+  japaneseGodanMaVerb: {
     requiredLanguage: 'japanese',
     requiredLexicalCategory: 'verb',
     requiredClaims: [{
@@ -204,7 +213,7 @@ export default {
           [
             { label: 'nonpastTense', type: 'header' },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
-            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'まない' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'ない' },
           ],
           [
             { labels: ['nonpastTense', 'honorific'], type: 'header' },
@@ -268,6 +277,8 @@ export default {
       }
     }
   },
+
+  // example: https://www.wikidata.org/wiki/Lexeme:L8993
   japaneseGodanRaVerb: {
     requiredLanguage: 'japanese',
     requiredLexicalCategory: 'verb',
@@ -286,7 +297,7 @@ export default {
           [
             { label: 'nonpastTense', type: 'header' },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
-            { queryForms: { requireFeature: [ 'negativeForm'] }, formSuffix: 'ない' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'ない' },
           ],
           [
             { labels: ['nonpastTense', 'honorific'], type: 'header' },

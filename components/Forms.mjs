@@ -24,7 +24,9 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
     if (!forms || !Array.isArray(forms)) {
       return [];
     }
-    
+
+    let matchingForms;
+
     if (query.requireFeature) {
       const featureQIds = query.requireFeature.map(feature => {
         const qid = manager.wikibase.items[feature];
@@ -43,7 +45,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
       }
       
       // Filter forms that match all required Q-IDs
-      let matchingForms = forms.filter(form => {
+      matchingForms = forms.filter(form => {
         const matches = featureQIds.every(qid => 
           form.grammaticalFeatures && 
           form.grammaticalFeatures.includes(qid)
@@ -71,11 +73,16 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
         usedFormIds.add(form.id);
       });
       
-      if (matchingForms.length > 0) {
-        return matchingForms;
-      }
     }
-      
+
+    if (query?.filter && matchingForms.length > 0) {
+      matchingForms = matchingForms.filter(query.filter)
+    }
+
+    if (matchingForms.length > 0) {
+      return matchingForms;
+    }
+  
     return [];
   };
 
