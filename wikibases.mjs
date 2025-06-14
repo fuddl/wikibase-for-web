@@ -282,6 +282,8 @@ const wikibases = {
 			raColumnFiveRow: 'Q54025078',
 			waColumnFiveRow: 'Q54025117',
 
+			sIrregularConjugation: 'Q11146472',
+
 		},
 		sites: wikidataSites,
 		badResolvers: [

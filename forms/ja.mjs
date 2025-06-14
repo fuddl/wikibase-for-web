@@ -3,6 +3,10 @@ const endsWithAMora = ({ representations }) => {
   return Object.values(representations).some(entry => aMora.test(entry.value))
 }
 
+const endsWithShi = ({ representations }) => {
+  return Object.values(representations).some(entry => entry.value.endsWith('し'))
+}
+
 export default {
   japaneseIchidanVerb: {
     requiredLanguage: 'japanese',
@@ -92,19 +96,6 @@ export default {
             { queryForms: { requireFeature: [ 'imperativeJa'] } },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
           ],
-          [
-            { type: 'header', labels: ['attributiveForm'] },
-            { queryForms: { requireFeature: ['attributiveForm'] } },
-            { queryForms: { requireFeature: ['negativeForm'] }, formSuffix: 'ない' },
-          ],
-          [
-            { type: 'header', labels: ['hypotheticalForm'] },
-            { 
-              queryForms: { requireFeature: ['hypotheticalForm'] },
-              formSuffix: 'ば'
-            },
-            {},
-          ],
         ],
       },
     }
@@ -175,19 +166,6 @@ export default {
             { labels: ['imperativeJa'], type: 'header' },
             { queryForms: { requireFeature: [ 'imperativeJa'] } },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
-          ],
-          [
-            { type: 'header', labels: ['attributiveForm'] },
-            { queryForms: { requireFeature: ['attributiveForm'] } },
-            {},
-          ],
-          [
-            { type: 'header', labels: ['hypotheticalForm'] },
-            { 
-              queryForms: { requireFeature: ['hypotheticalForm'] },
-              formSuffix: 'ば'
-            },
-            {},
           ],
         ],
       }
@@ -260,19 +238,6 @@ export default {
             { queryForms: { requireFeature: [ 'imperativeJa'] } },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
           ],
-          [
-            { type: 'header', labels: ['attributiveForm'] },
-            { queryForms: { requireFeature: ['attributiveForm'] } },
-            {},
-          ],
-          [
-            { type: 'header', labels: ['hypotheticalForm'] },
-            { 
-              queryForms: { requireFeature: ['hypotheticalForm'] },
-              formSuffix: 'ば'
-            },
-            {},
-          ],
         ],
       }
     }
@@ -344,18 +309,74 @@ export default {
             { queryForms: { requireFeature: [ 'imperativeJa'] } },
             { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
           ],
+        ],
+      }
+    }
+  },
+  japaneseSuruVerb: {
+    requiredLanguage: 'japanese',
+    requiredLexicalCategory: 'verb',
+    requiredClaims: [{
+      property: 'conjugationClass',
+      item: 'sIrregularConjugation',
+    }],
+    layout: {
+      header: [
+        { },
+        { label: 'affirmative' },
+        { label: 'negation' },
+      ],
+      groups: {
+        conjugation: [
           [
-            { type: 'header', labels: ['attributiveForm'] },
-            { queryForms: { requireFeature: ['attributiveForm'] } },
-            {},
+            { label: 'nonpastTense', type: 'header' },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] } },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithShi }, formSuffix: 'ない' },
           ],
           [
-            { type: 'header', labels: ['hypotheticalForm'] },
-            { 
-              queryForms: { requireFeature: ['hypotheticalForm'] },
-              formSuffix: 'ば'
-            },
-            {},
+            { labels: ['nonpastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ます' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ません' },
+          ],
+          [
+            { labels: ['pastTense'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'た' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'なかった' }, 
+          ],
+          [
+            { labels: ['pastTense', 'honorific'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ました' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'ませんでした' },
+          ],
+          [
+            { labels: ['teForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'て' }, 
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, formSuffix: 'なくて' }, 
+          ],
+          [
+            { labels: ['potential'], type: 'header' },
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'できる' }, 
+            { queryForms: { requireFeature: [ 'conjunctiveForm'] }, slice: { start: 0, end: -1 }, formSuffix: 'できない' },
+          ],
+          [
+            { labels: ['passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'れる' }, 
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'れない' },
+          ],
+          [
+            { labels: ['causativeForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'せる' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'せない' },
+          ],
+          [
+            { labels: ['causativeForm', 'passiveForm'], type: 'header' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'せられる' },
+            { queryForms: { requireFeature: [ 'negativeForm'], filter: endsWithAMora }, formSuffix: 'せられない' },
+          ],
+          [
+            { labels: ['imperativeJa'], type: 'header' },
+            { queryForms: { requireFeature: [ 'imperativeJa'] } },
+            { queryForms: { requireFeature: [ 'imperfectiveForm'] }, formSuffix: 'な' },
           ],
         ],
       }
