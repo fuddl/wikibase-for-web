@@ -148,7 +148,7 @@ export default {
           ],
           [
             { label: 'zeroPerson', type: 'header' },
-            { queryForms: { requireFeature: [ 'zeroPerson', 'plural' ] }, colspan: 2 }
+            { queryForms: { requireFeature: [ 'zeroPerson' ] }, colspan: 2 }
           ],
         ]
       }
