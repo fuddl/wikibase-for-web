@@ -20,12 +20,13 @@ function Paraphrase({
   query,  
 }) {
   const [inferredItems, setInferredItems] = useState([]);
+  const [knownLanguages, setKnownLanguages] = useState({});
 
   const directItems = senses
     .map(sense => {
       const claims = sense.claims[manager.wikibase.props[property]] || [];
       return claims.map(claim => {
-        const languages =
+        let languages =
           claim.qualifiers?.[manager.wikibase.props.languageOfWorkOrName]
             ?.map(qualifier => qualifier.datavalue?.value?.id)
             .filter(Boolean) || [];
@@ -43,6 +44,10 @@ function Paraphrase({
           claim.qualifiers?.[manager.wikibase.props.fieldOfUsage]
             ?.map(qualifier => qualifier.datavalue?.value?.id)
             .filter(Boolean) || [];
+
+        if (claim.mainsnak.datavalue.value.id in knownLanguages && languages.length == 0) {
+          languages = [knownLanguages[claim.mainsnak.datavalue.value.id]]
+        }
 
         return {
           fromSense: sense.id,
@@ -323,6 +328,10 @@ function Paraphrase({
                                     id=${item.toSense}
                                     key=${item.toSense}
                                     manager=${manager}
+                                    onDescriptorAquired=${(id, descriptor) => {
+                                      knownLanguages[id] = descriptor.language
+                                      setKnownLanguages(knownLanguages)
+                                    }}
                                     showLemma="yes"
                                     showAppendix="no" />
                                   ${item.semanticGenders.length > 0 &&
