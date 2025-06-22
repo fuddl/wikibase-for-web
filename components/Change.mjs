@@ -189,7 +189,7 @@ class Change extends Component {
 							mainsnak=${this.state.claim.mainsnak}
 							manager=${manager} />`;
 					} else if (this.state.claim.mainsnak.valueOptions) {
-						if (this.state.claim.mainsnak.valueOptions.length < 12) {
+						//if (this.state.claim.mainsnak.valueOptions.length < 12) {
 							return html`<${Specify}
 									options=${this.state.claim.mainsnak.valueOptions}
 									manager="${manager}"
@@ -203,25 +203,25 @@ class Change extends Component {
 									type="hidden"
 									name="${this.name}.claim.mainsnak.snaktype"
 									value="value" />`;
-						} else {
-						return html`<${Nibble}
-							datatype=${this.state.claim.mainsnak.datatype}
-							datavalue=${this.state.claim.mainsnak.datavalue}
-							name=${`${this.name}.claim.mainsnak`}
-							subject=${this.subject}
-							onValueChange=${this.handleDataValueChange}
-							onUpdateReference=${this.onUpdateReference}
-							property=${this.state.claim?.mainsnak?.property}
-							onAddJobs=${job => {
-								if (this.onAddJobs && this.state.claim.mainsnak.property) {
-									job.claim.setProperty(this.state.claim.mainsnak.property);
-									this.onAddJobs(job);
-								}
-							}}
-							manager=${manager}
-							requireFocus=${true}
-							options=${this.state.claim.mainsnak.valueOptions} />`;
-						}
+						//} else {
+						// return html`<${Nibble}
+						// 	datatype=${this.state.claim.mainsnak.datatype}
+						// 	datavalue=${this.state.claim.mainsnak.datavalue}
+						// 	name=${`${this.name}.claim.mainsnak`}
+						// 	subject=${this.subject}
+						// 	onValueChange=${this.handleDataValueChange}
+						// 	onUpdateReference=${this.onUpdateReference}
+						// 	property=${this.state.claim?.mainsnak?.property}
+						// 	onAddJobs=${job => {
+						// 		if (this.onAddJobs && this.state.claim.mainsnak.property) {
+						// 			job.claim.setProperty(this.state.claim.mainsnak.property);
+						// 			this.onAddJobs(job);
+						// 		}
+						// 	}}
+						// 	manager=${manager}
+						// 	requireFocus=${true}
+						// 	options=${this.state.claim.mainsnak.valueOptions} />`;
+						// }
 					}
 					break;
 				case 'labels:add':
