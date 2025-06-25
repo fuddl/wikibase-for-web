@@ -22,6 +22,9 @@ class Word extends Component {
     const href = manager.urlFromId(id);
 
     useEffect(() => {
+      if (designator && onDescriptorAquired) {
+        onDescriptorAquired(id, designator)
+      }
       const setUpObserver = () => {
         const observer = new IntersectionObserver(async entries => {
           if (entries[0].isIntersecting) {
@@ -81,12 +84,10 @@ class Word extends Component {
       return 'mul'
     }
 
-    //console.debug(lemmas)
     const processedLemmas = processText && lemmas ? Object.keys(lemmas).reduce((acc, lang) => {
       acc[lang] = { language: lang, value: processText(lemmas[lang].value) };
       return acc;
     }, {}) : lemmas;
-    //console.debug(processedLemmas)
 
     return html`<a class="word" href="${href}" ref=${elementRef}
         >${lemmas ? html`<${Lament} lemmas=${processedLemmas} lang=${languageFromLemmas(lemmas)} />` : null}</a
