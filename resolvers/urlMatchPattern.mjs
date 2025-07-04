@@ -4,22 +4,59 @@ import ISBN from '../importmap/isbn3-es6/isbn.js';
 /**
  * Format ID based on the format specified
  * 
- * @param {string} id - The ID to format
- * @param {string} format - The format to apply
+ * @param {string} id - The ID to format (always a string)
+ * @param {'upper'|'lower'|'insensitive'|'bigint'} format - The format to apply
  * @returns {string} The formatted ID
  */
 function formatId(id, format) {
-	switch (format) {
-		case 'upper':
-			return id.toUpperCase();
-		case 'lower':
-		case 'insensitive':
-			return id.toLowerCase();
-		case 'bigint':
-			return String(BigInt(id, 16));
-		default:
-			return id;
-	}
+  const s = id.trim();
+
+  switch (format) {
+    case 'upper':
+      return s.toUpperCase();
+
+    case 'lower':
+    case 'insensitive':
+      return s.toLowerCase();
+
+    case 'bigint': {
+      try {
+        let bi;
+
+        if (/^[-+]?\d+$/.test(s)) {
+          // simple decimal
+          bi = BigInt(s);
+        }
+        else if (/^[-+]?0[xX][0-9a-fA-F]+$/.test(s)) {
+          // hex with 0x prefix
+          bi = BigInt(s);
+        }
+        else if (/^[-+]?0[bB][01]+$/.test(s) ||
+                 /^[-+]?0[oO][0-7]+$/.test(s)) {
+          // binary or octal
+          bi = BigInt(s);
+        }
+        else if (/^[-+]?[0-9a-fA-F]+$/.test(s)) {
+          // hex without 0x — prepend it
+          const prefix = s.startsWith('-') ? '-0x' : '0x';
+          bi = BigInt(prefix + s.replace(/^[+-]/, ''));
+        }
+        else {
+          // no recognized format
+          throw new Error('Unrecognized integer format');
+        }
+
+        return bi.toString();  // decimal representation
+      }
+      catch {
+        // parsing failed → return original
+        return s;
+      }
+    }
+
+    default:
+      return s;
+  }
 }
 
 /**
