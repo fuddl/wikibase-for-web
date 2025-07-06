@@ -14,6 +14,10 @@ const resolvers = {
 	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase],
 };
 
+function uniqueFilter(item, index, self) {
+  return index === self.findIndex(el => JSON.stringify(el) === JSON.stringify(item));
+}
+
 class ResolverCache {
 	constructor() {
 		this.cacheByTabId = new Map(); // Store cache items by tab ID
@@ -147,6 +151,8 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 			);
 		}),
 	);
+
+	candidates = candidates.filter(uniqueFilter);
 
 	candidates.sort((a, b) => b.specificity - a.specificity);
 

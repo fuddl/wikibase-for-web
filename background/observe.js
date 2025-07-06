@@ -201,17 +201,21 @@ browser.webNavigation.onCommitted.addListener(async function (details) {
 	}
 });
 
-browser.webNavigation.onHistoryStateUpdated.addListener(
-	async function (details) {
-		const currentTab = await getCurrentTab();
-		
-		// Handle history state updates like SPAs - don't clear cache 
-		// but update the cache if it's the current tab and sidebar is open
-		if (isSidebarOpen && currentTab.id === details.tabId) {
-			await resolveCurrentTab(details.tabId);
-		}
-	},
-);
+
+let historyStateTimer = null;
+
+browser.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
+  clearTimeout(historyStateTimer);
+
+  historyStateTimer = setTimeout(async () => {
+    const currentTab = await getCurrentTab();
+    if (isSidebarOpen && currentTab.id === details.tabId) {
+      resolvedCache.remove(details.tabId);
+      await resolveCurrentTab(details.tabId);
+    }
+  }, 300);
+});
+
 
 let shouldHighlightLinks = false;
 
