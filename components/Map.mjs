@@ -8,11 +8,11 @@ class Map extends Component {
   componentDidMount() {
     requireStylesheet(browser.runtime.getURL('/components/map.css'));
   }
-  render({ latitude, longitude }) {
+  render({ latitude, longitude, precision }) {
     const src = browser.runtime.getURL(`sidebar/map.html`);
     return html`<iframe
       class="map"
-      src="${src}?${latitude}/${longitude}"
+      src="${src}?${latitude}/${longitude}/${precision}"
       loading="lazy"></iframe>`;
   }
 }
