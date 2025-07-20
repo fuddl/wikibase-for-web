@@ -11,7 +11,7 @@ import Logger from '../modules/Logger.mjs';
 
 const logger = new Logger();
 
-import { suggestedEdits, addMediaWikiQualifiers } from '../mapping/index.mjs';
+import { suggestedEdits, addMediaWikiQualifiers, addUrlQualifiers } from '../mapping/index.mjs';
 
 import Choose from './Choose.mjs';
 import Change from './Change.mjs';
@@ -111,6 +111,12 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
       !('qualifiers' in newEdits[0].claim)
     ) {
       await addMediaWikiQualifiers(newEdits[0], metadata.mediawiki, manager);
+    } else if(
+      metadata?.lang &&
+      newEdits[0]?.claim?.mainsnak?.datatype === 'url' &&
+      !('qualifiers' in newEdits[0].claim)
+    ) {
+      await addUrlQualifiers(newEdits[0], metadata, manager);
     }
 
     if (metadata?.mediawiki?.wgTitle && subjectType === 'item') {

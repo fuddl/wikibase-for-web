@@ -248,7 +248,7 @@ class WikiBaseEntityManager {
 
 		const { languages: validLanguages } = await this.fetchLanguages(
 			wikibase.id,
-			'term',
+			context ?? 'term',
 		);
 
 		if (validLanguages.includes(lowerCaseCode)) {

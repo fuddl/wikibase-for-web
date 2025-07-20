@@ -3,6 +3,7 @@ import { ldToEdits } from './ld.mjs';
 import { urlReference } from './urlReference.mjs';
 import { mediaWikiQualifiers } from './mediawiki.mjs';
 import { constraintsToEdits } from './constraints.mjs';
+import { MonolingualTextClaim, WikibaseItemClaim } from '../types/Claim.mjs';
 
 function removeDuplicates(arr) {
   const seen = new Set();
@@ -158,6 +159,55 @@ export async function suggestedEdits(suggestion, metadata = null, wikibase) {
 
 export async function addMediaWikiQualifiers(edit, metadata, wikibase) {
   const qualifiers = await mediaWikiQualifiers(metadata, wikibase);
+  for (const qualifier of qualifiers) {
+    edit.claim.addQualifier(qualifier);
+  }
+}
+
+
+export async function addUrlQualifiers(edit, metadata, manager) {
+
+  const qualifiers = [];
+
+  const language = await manager.validateLanguage(
+    metadata.lang.replace('_', '-'),
+    'monolingualtext',
+    manager.wikibase,
+  );
+  
+  if (metadata.title && manager.wikibase?.props?.title) {
+    qualifiers.push(
+      new MonolingualTextClaim({
+        property: `${manager.wikibase.id}:${manager.wikibase.props.title}`,
+        text: metadata.title.toString(),
+        language: language,
+      }),
+    );
+  }
+
+  if (
+    metadata?.lang &&
+    manager.wikibase?.props?.languageOfWorkOrName
+  ) {
+    const languages = await manager.wikibase.manager.query(
+      manager.wikibase.id,
+      'languageByIso6391Code',
+      { code: language },
+    );
+
+
+    if (languages.length > 0) {
+      qualifiers.push(
+        new WikibaseItemClaim({
+          property: `${manager.wikibase.id}:${manager.wikibase.props.languageOfWorkOrName}`,
+          value: `${manager.wikibase.id}:${languages[0]}`,
+        }),
+      );
+    }
+  }
+
+
+
   for (const qualifier of qualifiers) {
     edit.claim.addQualifier(qualifier);
   }
