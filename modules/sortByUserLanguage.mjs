@@ -1,12 +1,17 @@
 export const sortByUserLanguages = object => {
 	// Normalize user languages to match the entries object keys
-	const normalizedUserLanguages = navigator.languages.map(
-		lang => lang.split('-')[0],
-	);
+	const normalizedUserLanguages = [...new Set([
+		...navigator.languages,
+		...navigator.languages.map(
+			lang => lang.split('-')[0],
+		),
+	].map(
+		lang => lang.toLowerCase(),
+	))]
 
 	// make sure 'default for all languages' is selected as a fallback
 	if (!normalizedUserLanguages.includes('mul')) {
-		normalizedUserLanguages.splice(1, 0, 'mul');
+		normalizedUserLanguages.push('mul');
 	}
 
 	// Sort entries according to userLanguages
