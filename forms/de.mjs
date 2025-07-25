@@ -222,8 +222,8 @@ export default {
           ], 
           [
             { labels: ['firstPerson'], type: 'header' },
-            {},
-            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'wir ', colspan: 2 },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'ich ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'wir ' },
           ],
           [
             { labels: ['secondPerson'], type: 'header' },
