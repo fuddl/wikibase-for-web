@@ -1,9 +1,10 @@
+import { domain } from './domain.mjs';
+import { hash } from './hash.mjs';
 import { siteLinks } from './siteLinks.mjs';
 import { url } from './url.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlMatchPatternByDomain } from './urlMatchPatternByDomain.mjs';
 import { wikibase } from './wikibase.mjs';
-import { hash } from './hash.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 import Logger from '../modules/Logger.mjs';
@@ -11,7 +12,7 @@ import Logger from '../modules/Logger.mjs';
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase],
+	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain],
 };
 
 function uniqueFilter(item, index, self) {

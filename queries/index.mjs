@@ -4,9 +4,10 @@ import { equivalentProperties } from './equivalentProperties.mjs';
 import { expectedIdsByLanguage } from './expectedIdsByLanguage.mjs';
 import { expectedIdsByType } from './expectedIdsByType.mjs';
 import { hyperonyms } from './hyperonyms.mjs';
+import { inferredSenses } from './inferredSenses.mjs';
 import { inheritedClasses } from './inheritedClasses.mjs';
 import { instancesOrSubclasses } from './instancesOrSubclasses.mjs';
-import { inferredSenses } from './inferredSenses.mjs';
+import { itemByDomain } from './itemByDomain.mjs';
 import { itemByExternalId } from './itemByExternalId.mjs';
 import { itemByUrl } from './itemByUrl.mjs';
 import { labels } from './labels.mjs';
@@ -28,9 +29,10 @@ const queries = {
 	expectedIdsByLanguage,
 	expectedIdsByType,
 	hyperonyms,
+	inferredSenses,
 	inheritedClasses,
 	instancesOrSubclasses,
-	inferredSenses,
+	itemByDomain,
 	itemByExternalId,
 	itemByUrl,
 	labels,

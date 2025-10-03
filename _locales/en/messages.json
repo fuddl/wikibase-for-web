@@ -126,6 +126,16 @@
       }
     }
   },
+  "match_via_domain": {
+    "message": "Match to $INSTANCE$ via domain name",
+    "description": "Header of a section that allows matching a domain to a wikibase entity.",
+    "placeholders": {
+      "instance": {
+        "content": "$1",
+        "example": "Wikidata"
+      }
+    }
+  },
   "edit_button": {
     "message": "Edit",
     "description": "Label of a button that allows editing something."
