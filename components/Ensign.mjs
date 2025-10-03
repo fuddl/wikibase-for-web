@@ -118,7 +118,7 @@ class Ensign extends Component {
           (lemmas ? html`<${Lament} lemmas=${lemmas} />` : null)}
         </h1>
         ${' '}
-        <small class="ensign__id">
+        <small class="ensign__id" aria-hidden="true">
           <a onClick=${selectId} class="ensign__id__link" href=${canonical}
             >${localId}</a
           >

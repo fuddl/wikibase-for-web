@@ -20,7 +20,7 @@ class Id extends Component {
       selection.addRange(range);
     };
 
-    return html`<a class="id ${subId && 'id--has-subid'}" href=${manager.urlFromId(id)} onClick=${selectId}>${ subId ? html`<span class="id__context">${parentId}-</span>${subId}` : localId}</a>`;
+    return html`<a class="id ${subId && 'id--has-subid'}" aria-hidden="true" href=${manager.urlFromId(id)} onClick=${selectId}>${ subId ? html`<span class="id__context">${parentId}-</span>${subId}` : localId}</a>`;
   }
 }
 

@@ -89,8 +89,10 @@ class Word extends Component {
       return acc;
     }, {}) : lemmas;
 
-    return html`<a class="word" href="${href}" ref=${elementRef}
-        >${lemmas ? html`<${Lament} lemmas=${processedLemmas} lang=${languageFromLemmas(lemmas)} />` : null}</a
+    const lemmaLanguage = lemmas ? languageFromLemmas(lemmas) : null;
+
+    return html`<a class="word" href="${href}" ref=${elementRef} lang="${lemmaLanguage}"
+        >${lemmas ? html`<${Lament} lemmas=${processedLemmas} lang=${lemmaLanguage} />` : null}</a
       >${append.length > 0 ? htm`${' '}(${append})` : ''}`;
   }
 }

@@ -169,7 +169,7 @@ function Forms({ forms, manager, language, lexicalCategory, claims, lemmas }) {
     } else if (cell.type === 'prefixHeader') {
       classes.push('form__cell--prefix-header') 
     }
-    return html`<${cellType} class=${classes.join(' ')} rowspan="${cell.rowspan}"  colspan="${cell.colspan}">${content}</${cellType}>`;
+    return html`<${cellType} class=${classes.join(' ')} rowspan="${cell.rowspan}"  colspan="${cell.colspan}" lang="${cell.lang}">${content}</${cellType}>`;
   };
 
   const tables = []

@@ -209,7 +209,7 @@ function Lament(vars) {
       ? Object.entries(lemmas)
           .map(
             ([lang, lemma]) =>
-              html`<span class="lament__lemma" lang=${lang}>
+              html`<span class="lament__lemma" lang=${vars.lang !== lang ? lang : '' }>
                 ${lemma?.value}
               </span>`,
           )

@@ -49,6 +49,7 @@ class Thin extends Component {
     return html`<a
       class="thin"
       href="${href}"
+      aria-label="${label.value}"
       lang="${short?.language ?? label?.language ?? id}"
       title="${label?.value ? `${label.value} – ` : ''}${description?.value ??
       ''}"

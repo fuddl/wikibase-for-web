@@ -14,23 +14,23 @@ export default {
         deklination: [
           [
             { label: 'nominativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'der ' },
-            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'der ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
           [
             { label: 'genitiveCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'des ' },
-            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ' },
+            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'des ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ', lang: 'de' },
           ],
           [
             { label: 'dativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'dem ' },
-            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ' },
+            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'dem ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ', lang: 'de' },
           ],
           [
             { label: 'accusativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'den ' },
-            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'den ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
         ],
       },
@@ -51,23 +51,23 @@ export default {
         deklination: [
           [
             { label: 'nominativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'die ' },
-            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'die ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
           [
             { label: 'genitiveCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'der ' },
-            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ' },
+            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'der ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ', lang: 'de' },
           ],
           [
             { label: 'dativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'der ' },
-            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ' },
+            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'der ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ', lang: 'de' },
           ],
           [
             { label: 'accusativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'die ' },
-            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'die ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
         ],
       },
@@ -88,23 +88,23 @@ export default {
         deklination: [
           [
             { label: 'nominativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'das ' },
-            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'nominativeCase'] }, formPrefix: 'das ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'nominativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
           [
             { label: 'genitiveCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'des ' },
-            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ' },
+            { queryForms: { requireFeature: [ 'singular', 'genitiveCase'] }, formPrefix: 'des ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'genitiveCase'] }, formPrefix: 'der ', lang: 'de' },
           ],
           [
             { label: 'dativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'dem ' },
-            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ' },
+            { queryForms: { requireFeature: [ 'singular', 'dativeCase'] }, formPrefix: 'dem ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'dativeCase'] }, formPrefix: 'den ', lang: 'de' },
           ],
           [
             { label: 'accusativeCase', type: 'header' },
-            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'das ' },
-            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ' },
+            { queryForms: { requireFeature: [ 'singular', 'accusativeCase'] }, formPrefix: 'das ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'plural', 'accusativeCase'] }, formPrefix: 'die ', lang: 'de' },
           ],
         ],
       },
@@ -123,40 +123,40 @@ export default {
         presentTense: [
           [
             { label: 'presentTense', type: 'header', rowspan: 3 },
-            { text: 'ich ', type: 'prefix' },
+            { text: 'ich ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'presentTense', 'indicative'] } },
           ],
           [
-            { text: 'du ', type: 'prefix' },
+            { text: 'du ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'presentTense', 'indicative'] } },
           ],
           [
-            { text: 'er/sie/es ', type: 'prefix' },
+            { text: 'er/sie/es ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'presentTense', 'indicative'] } },
           ],
         ],
         preterite: [
           [
             { label: 'preterite', type: 'header' },
-            { text: 'ich ', type: 'prefix' },
+            { text: 'ich ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'preterite', 'indicative'] } },
           ],
         ],
         subjunctiveII: [
           [
             { label: 'subjunctiveII', type: 'header' },
-            { text: 'ich ', type: 'prefix' },
+            { text: 'ich ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveII'] } },
           ],
         ],
         imperative: [
           [
             { label: 'imperative', type: 'header', rowspan: 2 },
-            { text: 'du, ', type: 'prefix' },
+            { text: 'du, ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'singular', 'imperative'] }, formSuffix: '!' },
           ],
           [
-            { text: 'ihr, ', type: 'prefix' },
+            { text: 'ihr, ', type: 'prefix', lang: 'de' },
             { queryForms: { requireFeature: [ 'plural', 'imperative'] }, formSuffix: '!' },
           ],
          ],
@@ -203,15 +203,15 @@ export default {
           ], 
           [
             { labels: ['firstPerson', 'plural'], type: 'header' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'wir ', colspan: 2 },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'wir ', colspan: 2, lang: 'de' },
           ],
           [
             { labels: ['secondPerson', 'plural'], type: 'header' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'ihr ', colspan: 2 },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'ihr ', colspan: 2, lang: 'de' },
           ],
           [
             { labels: ['thirdPerson', 'plural'], type: 'header' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'sie ', colspan: 2 },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'presentTense' ] }, formPrefix: 'sie ', colspan: 2, lang: 'de' },
           ]
         ],
         preteriteIndicative: [
@@ -222,18 +222,18 @@ export default {
           ], 
           [
             { labels: ['firstPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'ich ' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'wir ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'ich ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'wir ', lang: 'de' },
           ],
           [
             { labels: ['secondPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'du ' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'ihr ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'du ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'ihr ', lang: 'de' },
           ],
           [
             { labels: ['thirdPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'er/sie/es ' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'sie ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'indicative', 'preterite' ] }, formPrefix: 'er/sie/es ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'indicative', 'preterite' ] }, formPrefix: 'sie ', lang: 'de' },
           ]
         ],
         presentIndicativeSubjunctiveI: [
@@ -244,18 +244,18 @@ export default {
           ],
           [
             { labels: ['firstPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ich ' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'wir ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ich ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'wir ', lang: 'de' },
           ],
           [
             { labels: ['secondPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'du ' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ihr ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'du ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'ihr ', lang: 'de' },
           ],
           [
             { labels: ['thirdPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'er/sie/es ' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'sie ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'er/sie/es ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveI', 'presentTense' ] }, formPrefix: 'sie ', lang: 'de' },
           ], 
         ],
         presentIndicativeSubjunctiveII: [
@@ -266,18 +266,18 @@ export default {
           ],
           [
             { labels: ['firstPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ich ' },
-            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'wir ' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ich ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'firstPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'wir ', lang: 'de' },
           ],
           [
             { labels: ['secondPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'du ' },
-            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ihr ' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'du ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'secondPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'ihr ', lang: 'de' },
           ],
           [
             { labels: ['thirdPerson'], type: 'header' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'er/sie/es ' },
-            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'sie ' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'singular', 'subjunctiveII', 'preterite' ] }, formPrefix: 'er/sie/es ', lang: 'de' },
+            { queryForms: { requireFeature: [ 'thirdPerson', 'plural', 'subjunctiveII', 'preterite' ] }, formPrefix: 'sie ', lang: 'de' },
           ], 
         ],
       }
@@ -297,7 +297,7 @@ export default {
           [
             { queryForms: { requireFeature: [ 'predicative', 'positive'] } },
             { queryForms: { requireFeature: [ 'predicative', 'comparative'] } },
-            { queryForms: { requireFeature: [ 'predicative', 'superlative'] }, formPrefix: 'am ' },
+            { queryForms: { requireFeature: [ 'predicative', 'superlative'] }, formPrefix: 'am ', lang: 'de' },
           ]
         ]
       }
