@@ -37,7 +37,7 @@ export class WikibaseEntityUsageTracker {
 	}
 
 	// Get a sorted list of entities of a specific type, by last used date
-	getLatest(type) {
+	getLatest(type, amount = -1) {
 		if (!this.typePatterns[type]) {
 			throw new Error(`Invalid entity type: ${type}`);
 		}
@@ -52,6 +52,10 @@ export class WikibaseEntityUsageTracker {
 			}))
 			.sort((a, b) => new Date(b.lastUsed) - new Date(a.lastUsed));
 
-		return filteredEntities;
+		if (amount > -1) {
+			return filteredEntities.slice(0, amount);
+		} else {
+			return filteredEntities;
+		}
 	}
 }

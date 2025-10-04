@@ -250,7 +250,7 @@ const Choose = ({
 
 		const getFallbackSuggestions = () => {
 			const tracker = new WikibaseEntityUsageTracker(wikibase);
-			const latest = tracker.getLatest(type);
+			const latest = tracker.getLatest(type, 12);
 			setSuggestions(latest);
 		};
 
