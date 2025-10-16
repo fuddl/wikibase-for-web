@@ -156,6 +156,7 @@ async function ldToEdits({
 				newEdits.push({
 					action: 'claim:create',
 					signature: makeSignature('ld:type'),
+					disabledByDefault: true,
 					claim: new WikibaseItemClaim({
 						property: `${wikibase.id}:${wikibase.props.instanceOf}`,
 						value: equivalentClasses.map(option => `${wikibase.id}:${option}`),

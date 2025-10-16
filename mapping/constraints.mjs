@@ -77,6 +77,7 @@ export async function constraintsToEdits(id, wikibase) {
 					newEdits.push({
 						action: 'claim:create',
 						signature: `constraint:${prop.id}`,
+						disabledByDefault: true,
 						claim: new WikibaseItemClaim({
 							property: `${wikibase.id}:${props.instanceOf}`,
 							value: cclasses,
@@ -98,6 +99,7 @@ export async function constraintsToEdits(id, wikibase) {
 					newEdits.push({
 						action: 'claim:create',
 						signature: `constraint:${prop.id}`,
+						disabledByDefault: true,
 						claim: new WikibaseItemClaim({
 							property: `${wikibase.id}:${props.instanceOf}`,
 							value: possibleClasses.map(

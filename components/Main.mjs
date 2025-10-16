@@ -42,10 +42,11 @@ class Main extends Component {
 
     return html`
       <div class="main">
-        <${Inform} id="edit-descriptions">
-          <p>You can now <strong>update descriptions!</strong></p>
-          <p>Just click the <${Edit} compact=${true} /> next to an item's id.</p>
-          <p>Automatic descriptions are provided by <a href="https://autodesc.toolforge.org/">auto​desc.​tool​forge.org</a>.</p>
+        <${Inform} id="please-feedback">
+          <p><strong>Like this extension?</strong></p>
+          <p>Please consider <a href="https://addons.mozilla.org/en-US/firefox/addon/wikidata/">leaving a review.</a></p>
+          <p><strong>Found a bug?</strong></p>
+          <p><a href="https://github.com/fuddl/wikibase-for-web/issues/new">Write a bug report</a> or <a href="https://www.wikidata.org/w/index.php?title=Wikidata_talk%3ATools%2FWikidata_for_Web&action=edit&section=new&wvprov=sticky-header">discuss on wikidata.</a></p>
         </${Inform}>
         ${
           suggestions?.length > 0
