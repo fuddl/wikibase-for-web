@@ -43,6 +43,7 @@ const wikibases = {
 			auxiliaryVerb: 'P5401',
 			class: 'P2308',
 			conjugationClass: 'P5186',
+			coordinateLocation: 'P625', 
 			countsInstancesOf: 'P10927',
 			demonymOf: 'P6271',
 			domainName: 'P13337',

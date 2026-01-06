@@ -120,7 +120,7 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 		{
 			name: 'geo.position',
 			type: 'globe-coordinate',
-			prop: 'location',
+			prop: 'coordinateLocation',
 		},
 	];
 
@@ -304,9 +304,8 @@ async function metaToEdits({ meta, wikibase, metadata, references }) {
 								disabledByDefault: item?.disabledByDefault ?? false,
 								claim: new GlobeCoordinateClaim({
 									property: `${wikibase.id}:${targetProperty}`,
-									latitude: latlon[0],
-									longitude: latlon[1],
-									precision: 1,
+									latitude: parseFloat(latlon[0]),
+									longitude: parseFloat(latlon[1]),
 								}),
 								references: references,
 							});

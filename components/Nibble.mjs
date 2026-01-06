@@ -45,7 +45,7 @@ class Nibble extends Component {
         ${[
           'external-id',
           'commonsMedia',
-          'commonsMedia',
+          'globe-coordinate',
           'string',
           'url',
         ].includes(datatype)
@@ -150,6 +150,7 @@ class Nibble extends Component {
                   <${Type}
                     value=${datavalue.value.latitude}
                     type="number"
+                    dataType="float"
                     name="${name}.datavalue.value.latitude"
                     step="any"
                     min="-90"
@@ -159,6 +160,7 @@ class Nibble extends Component {
                   <${Type}
                     value=${datavalue.value.longitude}
                     type="number"
+                     dataType="float"
                     step="any"
                     min="-180"
                     max="180"
@@ -170,14 +172,16 @@ class Nibble extends Component {
                     type="number"
                     dataType="float"
                     size="1"
-                    min="1"
+                    min="0.00000000001"
                     max="10"
+                    step="0.00000000001"
                     name="${name}.datavalue.value.precision"
                     onValueChange=${onValueChange} />
                 </div>
                 <${Type}
-                  value=${datavalue.value.globe}
-                  type="hidden"
+                  value=${manager.urlFromIdNonSecure(datavalue.value.globe)}
+                  type="text"
+                  disabled
                   name="${name}.datavalue.value.globe"
                   disabled=${true}
                   onValueChange=${onValueChange} />`;

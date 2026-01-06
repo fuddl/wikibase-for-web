@@ -233,10 +233,10 @@ export class TimeClaim extends Claim {
 export class GlobeCoordinateClaim extends Claim {
   constructor({
     property,
-    latitude,
-    longitude,
+    latitude = 0,
+    longitude = 0,
     altitude = null,
-    precision = 1,
+    precision = 0.0001,
     globe = 'wikidata:Q2',
     references,
   }) {
@@ -245,9 +245,9 @@ export class GlobeCoordinateClaim extends Claim {
       value: {
         latitude,
         longitude,
-        altitude: altitude,
-        precision: precision,
-        globe: globe,
+        altitude,
+        precision,
+        globe,
       },
       references,
     });
@@ -302,17 +302,14 @@ export function reconstructClaim(serializedClaim) {
   }
 
   // Create a new instance of the corresponding class
-  // You might need to adjust the parameters based on your class constructors
   const instance = new ClaimClass({
     property:
       serializedClaim.mainsnak.property ||
       serializedClaim.mainsnak.propertyOptions,
-    value: serializedClaim.mainsnak.datavalue.value, // Adjust if your structure requires
+    value: serializedClaim.mainsnak.datavalue.value, 
     references: serializedClaim.references,
-    // Add more fields if your constructors require them
   });
 
-  // If there were qualifiers, add them back
   if (serializedClaim.qualifiers) {
     serializedClaim.qualifiers.forEach(qualifier => {
       instance.addQualifier(reconstructClaim(qualifier)); // Recursively reconstruct qualifiers
