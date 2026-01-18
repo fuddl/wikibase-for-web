@@ -5,7 +5,7 @@ export const languageByIETF = {
 		SELECT ?item
 		WHERE {
 
-		  ?item wdt:${instance.props.IETFLanguageTag} ?tagValue .
+		  ?item t:${instance.props.IETFLanguageTag} ?tagValue .
 
 		  FILTER (lcase(str(?tagValue)) = "${params.lang.toLowerCase()}")
 		} LIMIT 1

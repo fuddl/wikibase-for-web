@@ -8,12 +8,12 @@ export const equivalentClasses = {
 			SELECT DISTINCT ?item WHERE {
 				{
 					VALUES ?url { <${http}> <${https}> }
-					?item wdt:${instance.props.equivalentClass} ?url.
+					?item t:${instance.props.equivalentClass} ?url.
 				} UNION {
 					VALUES ?url { <${http}> <${https}> }
-          ?parent wdt:${instance.props.equivalentClass} ?url.
+          ?parent t:${instance.props.equivalentClass} ?url.
 
-					?item wdt:${instance.props.subclassOf} ?parent.
+					?item t:${instance.props.subclassOf} ?parent.
 				}
 			}
 			LIMIT 20

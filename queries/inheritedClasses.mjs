@@ -8,7 +8,7 @@ export const inheritedClasses = {
 				${params.classes
 					.map(
 						classId => `
-					{ wd:${classId} wdt:${instance.props.subclassOf}* ?inheritedClass. }
+					{ wd:${classId} t:${instance.props.subclassOf}* ?inheritedClass. }
 					UNION 
 					{ BIND (wd:${classId} as ?inheritedClass) }
 				`,

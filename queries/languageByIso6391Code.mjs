@@ -3,7 +3,7 @@ export const languageByIso6391Code = {
 	requiredProps: ['iso6391Code'],
 	query: ({ instance, params }) => `
 		SELECT ?language WHERE {
-		  ?language wdt:${instance.props.iso6391Code} '${params.code}'.
+		  ?language t:${instance.props.iso6391Code} '${params.code}'.
 		}
 		LIMIT 1
 	`,

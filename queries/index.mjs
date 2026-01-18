@@ -101,8 +101,17 @@ class WikiBaseQueryManager {
 			return [];
 		}
 
-		const query = queryObject.query({ params, instance });
-		
+		const prefixes = []
+		if (instance?.rdf_namespaces) {
+			for (const [rdfKey, sparqlPrefix] of Object.entries(instance.rdf_namespaces)) {
+				const iri = instance.rdf_namespaces?.[rdfKey];
+				if (!iri) continue;
+				if (!rdfKey) continue;
+				prefixes.push(`PREFIX ${rdfKey}: <${iri}>`);
+			}
+		}
+
+		const query = `${prefixes.join("\n")}\n${queryObject.query({ params, instance })}`;
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();

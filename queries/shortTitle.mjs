@@ -3,7 +3,7 @@ export const shortTitle = {
 	requiredProps: ['shortTitle'],
 	query: ({ instance, params }) => `
 		SELECT ?short WHERE {
-			wd:${params.subject} wdt:${instance.props.shortTitle} ?short.
+			wd:${params.subject} t:${instance.props.shortTitle} ?short.
 			BIND( LANG(?short) AS ?language).
 			FILTER (?language  in ('${instance.languages[0].replace(/\-.+/, '')}', 'zxx'))
 		} order by desc(strlen(?short))

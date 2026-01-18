@@ -36,6 +36,9 @@ const wikibases = {
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		autodesc: 'https://autodesc.toolforge.org',
 		icon: browser.runtime.getURL('/icons/wikidata.svg'),
+		rdf_namespaces: {
+			t:	"https://www.wikidata.org/prop/direct/",
+		},
 		props: {
 			appliesIfRegularExpressionMatches: 'P8460',
 			author: 'P50',
@@ -332,7 +335,9 @@ async function updateCustomWikibasesWithManifest(wikibase, wgScriptPath) {
 							getKeyByValue(wikibases.wikidata.items, wikidataItem)
 						] = customItem;
 					},
-				);
+				);				
+
+				wikibase.rdf_namespaces = manifest?.local_rdf_namespaces;
 			}
 		}
 	} catch (error) {

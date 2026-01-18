@@ -14,7 +14,7 @@ export const expectedIdsByType = {
 				${params.types
 					.map(
 						type => `
-					{ wd:${type} wdt:${instance.props.subclassOf}* ?class. }
+					{ wd:${type} t:${instance.props.subclassOf}* ?class. }
 					UNION 
 					{ BIND (wd:${instance.props.subclassOf} as ?class) }
 				`,
@@ -40,10 +40,10 @@ export const expectedIdsByType = {
 				  
 					OPTIONAL {
 						?searchprop pq:${instance.props.languageOfWorkOrName} ?lang.
-						?lang wdt:${instance.props.wikimediaLanguageCode} ?searchLang. 
+						?lang t:${instance.props.wikimediaLanguageCode} ?searchLang. 
 					}
 				}
-				OPTIONAL { ?prop wdt:${instance.props.url} ?url. }
+				OPTIONAL { ?prop t:${instance.props.url} ?url. }
 				${'' /*  Ensure that at least one of ?search or ?url is present */}
 				FILTER (BOUND(?search) || BOUND(?url))
 			}

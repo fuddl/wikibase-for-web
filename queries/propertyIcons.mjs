@@ -4,9 +4,9 @@ export const propertyIcons = {
   query: ({ instance }) => {
     return `
       SELECT ?icon ?prop WHERE {
-        ?prop wdt:${instance.props.icon} ?icon.
+        ?prop t:${instance.props.icon} ?icon.
         ?prop rdf:type wikibase:Property.
-        ?prop wdt:${instance.props.formatterURL} ?formatterUrl.
+        ?prop t:${instance.props.formatterURL} ?formatterUrl.
         ${'' /*FILTER(STRENDS(?formatterUrl, "$1")). */}
         FILTER(STRENDS(STR(?icon), ".svg")).
       }

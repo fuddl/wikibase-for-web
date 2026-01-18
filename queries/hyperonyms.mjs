@@ -7,7 +7,7 @@ export const hyperonyms = {
     // Build hyperonym properties list dynamically
     const hyperonymProps = ['subclassOf', 'parentTaxon', 'instanceOf', 'hyperonym']
       .filter(prop => instance.props[prop])
-      .map(prop => `wdt:${instance.props[prop]}`);
+      .map(prop => `t:${instance.props[prop]}`);
     
     return `
     SELECT DISTINCT ?sense ?language ?hyperonym ${instance.props?.semanticGender ? '?semanticGender' : ''} ${instance.props?.languageStyle ? '?languageStyle' : ''} ${instance.props?.fieldOfUse ? '?fieldOfUse' : ''} WHERE {
@@ -21,14 +21,14 @@ export const hyperonyms = {
           ${hyperonymProps.map(prop => `{ wd:${value} ${prop} ?parentConcept. }`).join(' UNION ')  } 
         }`).join(' UNION ')}
       
-      ?sense  wdt:${instance.props[params.property]} ?parentConcept.
+      ?sense  t:${instance.props[params.property]} ?parentConcept.
 
       ${
         instance.props?.semanticGender
           ? `
         OPTIONAL {
           # Get the semantic gender of the sense
-          ?sense wdt:${instance.props.semanticGender} ?semanticGender .
+          ?sense t:${instance.props.semanticGender} ?semanticGender .
         }`
           : ''
       }
@@ -38,7 +38,7 @@ export const hyperonyms = {
           ? `
         OPTIONAL {
           # Get the language style of the sense
-          ?sense wdt:${instance.props.languageStyle} ?languageStyle .
+          ?sense t:${instance.props.languageStyle} ?languageStyle .
         }`
           : ''
       }
@@ -48,7 +48,7 @@ export const hyperonyms = {
           ? `
         OPTIONAL {
           # Get the field of use of the sense
-          ?sense wdt:${instance.props.fieldOfUse} ?fieldOfUse .
+          ?sense t:${instance.props.fieldOfUse} ?fieldOfUse .
         }`
           : ''
       }

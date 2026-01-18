@@ -11,12 +11,12 @@ export const inferredSenses = {
       ${params.values.map((value) => {
         if (params.property === 'pertainymOf' && instance.props?.itemForThisSense) {
           return `{
-            wd:${value} wdt:${instance.props.itemForThisSense} ?pertainerItem.
-            ?perteinerSense wdt:${instance.props.itemForThisSense} ?pertainerItem.
-            ?sense wdt:${instance.props.pertainymOf} ?perteinerSense.
+            wd:${value} t:${instance.props.itemForThisSense} ?pertainerItem.
+            ?perteinerSense t:${instance.props.itemForThisSense} ?pertainerItem.
+            ?sense t:${instance.props.pertainymOf} ?perteinerSense.
           }`
         }
-        return `{ ?sense wdt:${instance.props[params.property]} wd:${value} . }`
+        return `{ ?sense t:${instance.props[params.property]} wd:${value} . }`
       }).join(' UNION ')}
       
       ${
@@ -24,7 +24,7 @@ export const inferredSenses = {
           ? `
         OPTIONAL {
           # Get the semantic gender of the sense
-          ?sense wdt:${instance.props.semanticGender} ?semanticGender .
+          ?sense t:${instance.props.semanticGender} ?semanticGender .
         }`
           : ''
       }
@@ -34,7 +34,7 @@ export const inferredSenses = {
           ? `
         OPTIONAL {
           # Get the language style of the sense
-          ?sense wdt:${instance.props.languageStyle} ?languageStyle .
+          ?sense t:${instance.props.languageStyle} ?languageStyle .
         }`
           : ''
       }
@@ -44,14 +44,14 @@ export const inferredSenses = {
           ? `
         OPTIONAL {
           # Get the field of use of the sense
-          ?sense wdt:${instance.props.fieldOfUse} ?fieldOfUse .
+          ?sense t:${instance.props.fieldOfUse} ?fieldOfUse .
         }`
           : ''
       }
       {
-        ?language wdt:${instance.props.iso6391Code} ?lang .
+        ?language t:${instance.props.iso6391Code} ?lang .
       } UNION {
-        ?language wdt:${instance.props.wikimediaLanguageCode} ?lang .
+        ?language t:${instance.props.wikimediaLanguageCode} ?lang .
       }
       FILTER(?lang in ('${params.languages.join("', '")}'))
 

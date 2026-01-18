@@ -17,11 +17,11 @@ export const calendarVocabulary = {
     SELECT DISTINCT ?ordinal ?type ?string ?lang  WHERE {
       FILTER (?lang in ('${params?.languages ? params.languages.join("', '") : instance.languages.join("', '")}'))
       {
-        ?thing wdt:${instance.props.instanceOf} wd:${instance.items.calendarMonth}.
-        ?thing wdt:${instance.props.partOf} wd:${instance.items.gregorianCalendar}.
+        ?thing t:${instance.props.instanceOf} wd:${instance.items.calendarMonth}.
+        ?thing t:${instance.props.partOf} wd:${instance.items.gregorianCalendar}.
         BIND ('month' as ?type)
       } UNION {
-        ?thing wdt:${instance.props.instanceOf} wd:${instance.items.dayOfAMonth}.
+        ?thing t:${instance.props.instanceOf} wd:${instance.items.dayOfAMonth}.
         BIND ('day' as ?type)
       }
 
@@ -30,11 +30,11 @@ export const calendarVocabulary = {
       ?thing p:${instance.props.instanceOf} ?instanceOf.
       ?instanceOf pq:${instance.props.seriesOrdinal} ?ordinal.
       
-      ?sense wdt:${instance.props.itemForThisSense} ?thing.
+      ?sense t:${instance.props.itemForThisSense} ?thing.
       ?lexeme ontolex:sense ?sense.
       ?lexeme ontolex:lexicalForm ?form.
       ?lexeme dct:language ?language.
-      ?language wdt:${instance.props.iso6391Code} ?lang.
+      ?language t:${instance.props.iso6391Code} ?lang.
       
       ?form ontolex:representation ?string.
     }

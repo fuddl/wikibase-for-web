@@ -4,7 +4,7 @@ export const itemByDomain = {
 	query: ({ instance, params }) => `
 		SELECT ?item ?domain WHERE {
 		  VALUES ?domain { ${params.domains.map(domain => `"${domain}"`).join(' ')} }
-		  ?item wdt:${instance.props.domainName} ?domain.
+		  ?item t:${instance.props.domainName} ?domain.
 		}
 		ORDER BY DESC(STRLEN(STR(?domain)))
 		LIMIT 10

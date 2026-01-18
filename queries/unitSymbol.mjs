@@ -3,7 +3,7 @@ export const unitSymbol = {
 	requiredProps: ['unitSymbol'],
 	query: ({ instance, params }) => `
 		SELECT ?u WHERE {
-			wd:${params.subject} wdt:${instance.props.unitSymbol} ?u.
+			wd:${params.subject} t:${instance.props.unitSymbol} ?u.
 			BIND( LANG(?u) AS ?language).
 			FILTER (?language in ('${instance.languages.join("', '")}'))
 		} order by desc(strlen(?u))

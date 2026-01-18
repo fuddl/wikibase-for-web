@@ -55,7 +55,7 @@ export const equivalentProperties = {
 				} UNION {
 					?property p:${instance.props.equivalentProperty}/ps:${instance.props.equivalentProperty} <${https}>.
 				}
-				?subproperty wdt:${instance.props.subpropertyOf} * ?property.
+				?subproperty t:${instance.props.subpropertyOf} * ?property.
 
 				?property wikibase:propertyType ?propType.
 				BIND (REPLACE(STR(?propType), '.*#([A-Za-z]+)$', '$1') AS ?type)

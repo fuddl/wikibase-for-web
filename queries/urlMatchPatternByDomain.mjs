@@ -27,9 +27,9 @@ export const urlMatchPatternByDomain = {
 			OPTIONAL { ?stat pq:${instance.props.websiteTitleExtractPattern} ?t }
 			OPTIONAL { ?stat pq:${instance.props.domainName} ?d }
 			?prop p:${instance.props.urlMatchPattern} ?stat.
-			BIND(IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.allCaps}}, 'upper',
-				IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.lowercase}}, 'lower',
-					IF(EXISTS{?prop wdt:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive',
+			BIND(IF(EXISTS{?prop t:${instance.props.hasCharacteristic} wd:${instance.items.allCaps}}, 'upper',
+				IF(EXISTS{?prop t:${instance.props.hasCharacteristic} wd:${instance.items.lowercase}}, 'lower',
+					IF(EXISTS{?prop t:${instance.props.hasCharacteristic} wd:${instance.items.caseInsensitive}}, 'insensitive',
 						IF(EXISTS { ?stat pq:${instance.props.hasCharacteristic} wd:${instance.items.bigInteger}.}, 'bigint', '')
 					)
 				)
@@ -39,7 +39,7 @@ export const urlMatchPatternByDomain = {
 				instance?.items?.obsoleteProperty
 					? `
 				MINUS {
-					?prop wdt:${instance.props.instanceOf} wd:${instance.items.obsoleteProperty}.
+					?prop t:${instance.props.instanceOf} wd:${instance.items.obsoleteProperty}.
 				}
 			`
 					: ''
@@ -52,7 +52,7 @@ export const urlMatchPatternByDomain = {
 				instance?.items?.propertyLinkingToArticlesInMediaWikiWebsites
 					? `
 				OPTIONAL {
-					?prop wdt:${instance.props.instanceOf} wd:${instance.items.propertyLinkingToArticlesInMediaWikiWebsites}.
+					?prop t:${instance.props.instanceOf} wd:${instance.items.propertyLinkingToArticlesInMediaWikiWebsites}.
 					BIND(1 as ?prio)
 				}
 			`

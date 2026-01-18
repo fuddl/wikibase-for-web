@@ -22,7 +22,7 @@ export const expectedIdsByLanguage = {
 					?searchprop ps:${instance.props.searchFormatterURL} ?search.
 					?searchprop rdf:type wikibase:BestRank.
 				}
-			OPTIONAL { ?prop wdt:${instance.props.url} ?url. }
+			OPTIONAL { ?prop t:${instance.props.url} ?url. }
 			}
 	`;
 	},
