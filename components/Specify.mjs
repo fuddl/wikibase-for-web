@@ -56,7 +56,7 @@ class Specify extends Component {
       <input
         name=${name}
         type="hidden"
-        value=${this.state.value.replace(/^\w+\:/, '')} />
+        value=${this.state.value.replace(/^[a-z-_]+\:/, '')} />
       <select
         class="specify"
         disabled=${disabled}

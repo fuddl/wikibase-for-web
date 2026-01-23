@@ -9,6 +9,9 @@ export const domain = {
 		return URL.parse(location).host.split('.') ?? false;
 	},
 	applies: function (location, { wikibase }) {
+		if (!wikibase?.props?.domainName ?? false) {
+			return false;
+		}
 		const domain = this.getDomain(location);
 		if (domain.length < 2) {
 			return [];

@@ -6,9 +6,12 @@ import defaultWikibases from '../wikibases.mjs';
 const html = htm.bind(h);
 
 // Get custom Wikibases from local storage
-async function loadCustomWikibases() {
-	const localData = await browser.storage.local.get('customWikibases');
-	return localData.customWikibases || {};
+async function loadWikibaseData() {
+	const localData = await browser.storage.local.get(['customWikibases', 'instanceSettings']);
+	return {
+		customWikibases: localData.customWikibases || {},
+		instanceSettings: localData.instanceSettings || {},
+	};
 }
 
 function Instances() {
@@ -26,24 +29,62 @@ function Instances() {
 	useEffect(() => {
 		// Load default and custom Wikibases asynchronously
 		const loadWikibases = async () => {
-			const storedCustomWikibases = await loadCustomWikibases();
+			const { customWikibases: storedCustomWikibases, instanceSettings } = await loadWikibaseData();
 			setCustomWikibases(storedCustomWikibases);
 
 			// Merge default Wikibases with custom ones, prioritizing custom data
 			const mergedWikibases = { ...defaultWikibases, ...storedCustomWikibases };
+
+			// Apply instance settings (like resolve) to default instances
+			Object.keys(instanceSettings).forEach(key => {
+				if (mergedWikibases[key]) {
+					mergedWikibases[key] = {
+						...mergedWikibases[key],
+						...instanceSettings[key]
+					};
+				}
+			});
+
 			setInstances(mergedWikibases);
 		};
 		loadWikibases();
 	}, []);
 
-	const toggleCheckbox = (key, field) => {
-		setInstances(prev => ({
-			...prev,
+	const toggleCheckbox = async (key, field) => {
+		const newValue = !instances[key][field];
+		const updatedInstances = {
+			...instances,
 			[key]: {
-				...prev[key],
-				[field]: !prev[key][field],
+				...instances[key],
+				[field]: newValue,
 			},
-		}));
+		};
+		setInstances(updatedInstances);
+
+		if (defaultWikibases[key]) {
+			// Update default instance settings in storage
+			const localData = await browser.storage.local.get('instanceSettings');
+			const instanceSettings = localData.instanceSettings || {};
+			instanceSettings[key] = {
+				...instanceSettings[key],
+				[field]: newValue,
+			};
+			await browser.storage.local.set({ instanceSettings });
+		} else {
+			// Update custom Wikibases in storage
+			const updatedCustomWikibases = {
+				...customWikibases,
+				[key]: {
+					...customWikibases[key],
+					[field]: newValue,
+				},
+			};
+			setCustomWikibases(updatedCustomWikibases);
+			await browser.storage.local.set({
+				customWikibases: updatedCustomWikibases,
+			});
+		}
+		browser.runtime.reload();
 	};
 
 	// Fetch icon from the Wiki front page
@@ -168,11 +209,11 @@ function Instances() {
 			</thead>
 			<tbody>
 				${Object.keys(instances).map(
-					key => html`
+		key => html`
 						<tr>
 							<td>
 								${instances[key].icon &&
-								html`<img
+			html`<img
 									src=${instances[key].icon}
 									alt="${instances[key].name} icon"
 									width="20"
@@ -190,13 +231,12 @@ function Instances() {
 							<td>
 								<input
 									type="checkbox"
-									disabled=${['wikidata', 'commons'].includes(key)}
 									checked=${instances[key].resolve}
 									onChange=${() => toggleCheckbox(key, 'resolve')} />
 							</td>
 						</tr>
 					`,
-				)}
+	)}
 			</tbody>
 		</table>
 
@@ -220,7 +260,7 @@ function Instances() {
 							type="text"
 							value=${newInstance.sparqlEndpoint}
 							onInput=${e =>
-								handleInputChange('sparqlEndpoint', e.target.value)} />
+				handleInputChange('sparqlEndpoint', e.target.value)} />
 					</label>
 				</p>
 				<p>
@@ -230,7 +270,7 @@ function Instances() {
 							type="text"
 							value=${newInstance.wgScriptPath}
 							onInput=${e =>
-								handleInputChange('wgScriptPath', e.target.value)} />
+				handleInputChange('wgScriptPath', e.target.value)} />
 					</label>
 				</p>
 				<p>

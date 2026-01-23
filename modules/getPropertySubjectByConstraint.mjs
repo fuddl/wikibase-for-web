@@ -46,7 +46,7 @@ export async function getPropertySubjectByConstraint(suggestion, manager) {
                         qualifiers[instance.props.itemOfPropertyConstraint];
                     values.forEach(value => {
                         const constraintItem =
-                            value?.datavalue?.value?.id.replace(/^\w+\:/, '');
+                            value?.datavalue?.value?.id.replace(/^[a-z-_]+\:/, '');
                         if (constraintItem in scopes) {
                             output.push(scopes[constraintItem]);
                         }

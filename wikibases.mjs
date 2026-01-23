@@ -31,13 +31,13 @@ async function fetchInterwikiMap(api) {
 const wikibases = {
 	wikidata: {
 		name: 'Wikidata',
-		//resolve: false,
+		resolve: true,
 		instance: 'https://www.wikidata.org',
 		sparqlEndpoint: 'https://query.wikidata.org/sparql',
 		autodesc: 'https://autodesc.toolforge.org',
 		icon: browser.runtime.getURL('/icons/wikidata.svg'),
 		rdf_namespaces: {
-			t:	"https://www.wikidata.org/prop/direct/",
+			t: "http://www.wikidata.org/prop/direct/",
 		},
 		props: {
 			appliesIfRegularExpressionMatches: 'P8460',
@@ -46,7 +46,7 @@ const wikibases = {
 			auxiliaryVerb: 'P5401',
 			class: 'P2308',
 			conjugationClass: 'P5186',
-			coordinateLocation: 'P625', 
+			coordinateLocation: 'P625',
 			countsInstancesOf: 'P10927',
 			demonymOf: 'P6271',
 			domainName: 'P13337',
@@ -237,8 +237,8 @@ const wikibases = {
 			presentParticiple: 'Q10345583',
 			presentTense: 'Q192613',
 			preterite: 'Q442485',
-			secondPerson: 'Q51929049', 
-			simplePast: 'Q1392475', 
+			secondPerson: 'Q51929049',
+			simplePast: 'Q1392475',
 			simplePresent: 'Q3910936',
 			singular: 'Q110786',
 			singulative: 'Q1450795',
@@ -246,12 +246,12 @@ const wikibases = {
 			subjunctiveII: 'Q54671845',
 			superlative: 'Q1817208',
 			teForm: 'Q106781941',
-			thirdPerson: 'Q51929074', 
+			thirdPerson: 'Q51929074',
 			uninflectedWord: 'Q228503',
 			zuInfinitive: 'Q100952920',
 			zeroPerson: 'Q88778575',
-			
-			noMutation:'Q101252532',
+
+			noMutation: 'Q101252532',
 			softMutation: 'Q56648699',
 			aspirateMutation: 'Q56648701',
 			hardMutation: 'Q97130345',
@@ -299,7 +299,7 @@ const wikibases = {
 	commons: {
 		name: 'Wikimedia Commons',
 		instance: 'https://commons.wikimedia.org',
-		resolve: false,
+		resolve: true,
 		icon: browser.runtime.getURL('icons/commons.svg'),
 		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
 	},
@@ -335,7 +335,7 @@ async function updateCustomWikibasesWithManifest(wikibase, wgScriptPath) {
 							getKeyByValue(wikibases.wikidata.items, wikidataItem)
 						] = customItem;
 					},
-				);				
+				);
 
 				wikibase.rdf_namespaces = manifest?.local_rdf_namespaces;
 			}
@@ -351,9 +351,10 @@ function getKeyByValue(object, value) {
 }
 
 try {
-	// Get custom Wikibases from local storage
-	const localData = await browser.storage.local.get('customWikibases');
+	// Get custom Wikibases and instance settings from local storage
+	const localData = await browser.storage.local.get(['customWikibases', 'instanceSettings']);
 	const customWikibases = localData.customWikibases || {};
+	const instanceSettings = localData.instanceSettings || {};
 
 	// Merge custom Wikibases and dynamically update their props and items using the manifest
 	await Promise.all(
@@ -362,8 +363,18 @@ try {
 			wikibases[key] = customWikibases[key];
 		}),
 	);
+
+	// Apply instance settings (like resolve) to all Wikibases
+	Object.keys(instanceSettings).forEach(key => {
+		if (wikibases[key]) {
+			wikibases[key] = {
+				...wikibases[key],
+				...instanceSettings[key],
+			};
+		}
+	});
 } catch (error) {
-	console.error('Error merging custom Wikibases:', error);
+	console.error('Error merging custom Wikibases or applying settings:', error);
 }
 
 Object.keys(wikibases).forEach(name => {

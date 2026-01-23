@@ -66,7 +66,7 @@ class Nibble extends Component {
             case 'wikibase-sense':
               return html`<${Choose}
                 manager=${manager}
-                value=${datavalue?.value?.id.replace(/^\w+\:/, '')}
+                value=${datavalue?.value?.id.replace(/^[a-z-_]+\:/, '')}
                 wikibase=${manager.wikibase.id}
                 name="${name}.datavalue.value.id"
                 subject=${subject}

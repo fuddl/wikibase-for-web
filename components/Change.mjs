@@ -155,7 +155,7 @@ class Change extends Component {
 								manager="${manager}" />
 							<input
 								value=${this.state.claim.mainsnak.property.replace(
-									/^\w+\:/,
+									/^[a-z-_]+\:/,
 									'',
 								)}
 								name=${`${this.name}.claim.mainsnak.property`}

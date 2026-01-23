@@ -1,6 +1,6 @@
 export const itemByDomain = {
 	id: 'item-by-domain',
-	requiredProps: ['domain'],
+	requiredProps: ['domainName'],
 	query: ({ instance, params }) => `
 		SELECT ?item ?domain WHERE {
 		  VALUES ?domain { ${params.domains.map(domain => `"${domain}"`).join(' ')} }
