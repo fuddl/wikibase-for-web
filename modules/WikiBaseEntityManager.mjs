@@ -39,6 +39,24 @@ class WikiBaseEntityManager {
 		}
 	}
 
+	async fetchJSON(url, options = {}, retries = 3) {
+		let res = await fetch(url, options);
+		while (res.status === 429 && retries > 0) {
+			const retryAfter = res.headers.get('Retry-After');
+			const delay = retryAfter ? parseInt(retryAfter, 10) : 2;
+			console.warn(`Rate limited (429). Retrying after ${delay}s...`);
+			await new Promise(resolve => setTimeout(resolve, delay * 1000));
+			res = await fetch(url, options);
+			retries--;
+		}
+		
+		if (!res.ok) {
+			throw new Error(`HTTP error! status: ${res.status}`);
+		}
+		
+		return res.json();
+	}
+
 	async getUsername(wikibase) {
 		try {
 			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
@@ -50,12 +68,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const response = await fetch(url.toString());
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const data = await response.json();
+			const data = await this.fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return null;
@@ -89,12 +102,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const response = await fetch(url.toString());
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const data = await response.json();
+			const data = await this.fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return [];
@@ -131,12 +139,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const response = await fetch(url.toString());
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const data = await response.json();
+			const data = await this.fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return [];
@@ -144,7 +147,7 @@ class WikiBaseEntityManager {
 
 			return data?.query?.userinfo?.options;
 		} catch (error) {
-			console.error('Failed to fetch Babel languages:', error);
+			console.error('Failed to fetch UI options:', error);
 			return [];
 		}
 	}
@@ -159,7 +162,7 @@ class WikiBaseEntityManager {
 			language: options?.languages ?? this.languages,
 		});
 
-		const result = await fetch(url).then(res => res.json());
+		const result = await this.fetchJSON(url);
 
 		const entityWithContext = this.entityAddContext({
 			entity: result.entities[entity],
@@ -224,8 +227,7 @@ class WikiBaseEntityManager {
 		});
 
 		try {
-			const response = await fetch(url);
-			const data = await response.json();
+			const data = await this.fetchJSON(url);
 			const languagesData = data.query.wbcontentlanguages;
 
 			const languages = Object.keys(languagesData).map(
@@ -277,7 +279,7 @@ class WikiBaseEntityManager {
 			language: this.languages,
 		});
 
-		const result = await fetch(url).then(res => res.json());
+		const result = await this.fetchJSON(url);
 
 		this.designators[id] = result.entities[entity];
 
@@ -299,29 +301,23 @@ class WikiBaseEntityManager {
 	async hasEditPermissions(instance) {
 		const endpoint = this.wikibases[instance].api.instance.apiEndpoint;
 		try {
-			const response = await fetch(
+			const data = await this.fetchJSON(
 				`${endpoint}?action=query&meta=userinfo&uiprop=rights&format=json`,
 			);
-			if (!response.ok) {
-				return false;
-			}
-
-			const data = await response.json();
 			const rights = data.query.userinfo.rights;
 
 			return rights.includes('edit');
 		} catch (error) {
-			reject(error);
+			return false;
 		}
 	}
 	async fetchPropOrder(wikibase) {
 		if (!('propOrder' in this.wikibases[wikibase])) {
 			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
 			try {
-				const response = await fetch(
+				const data = await this.fetchJSON(
 					`${endPoint}?action=query&titles=MediaWiki:Wikibase-SortedProperties&prop=revisions&rvprop=content&format=json&origin=*`,
 				);
-				const data = await response.json();
 				const pageId = Object.keys(data.query.pages)[0];
 				const lastRevisionContent =
 					data?.query?.pages?.[pageId]?.revisions?.[0]['*'];

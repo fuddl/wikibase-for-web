@@ -41,7 +41,7 @@ class Thing extends Component {
       : '';
 
     if ((label || description) && onDescriptorAquired) {
-      onDescriptorAquired({label, description})
+      onDescriptorAquired({ label, description })
     }
 
     return html`<a

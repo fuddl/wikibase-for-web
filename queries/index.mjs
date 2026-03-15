@@ -54,6 +54,24 @@ class WikiBaseQueryManager {
 		this.queries = queries;
 	}
 
+	async fetchJSON(url, options = {}, retries = 3) {
+		let res = await fetch(url, options);
+		while (res.status === 429 && retries > 0) {
+			const retryAfter = res.headers.get('Retry-After');
+			const delay = retryAfter ? parseInt(retryAfter, 10) : 2;
+			console.warn(`Rate limited (429). Retrying after ${delay}s...`);
+			await new Promise(resolve => setTimeout(resolve, delay * 1000));
+			res = await fetch(url, options);
+			retries--;
+		}
+		
+		if (!res.ok) {
+			throw new Error(`HTTP error! status: ${res.status}`);
+		}
+		
+		return res.json();
+	}
+
 	queryCached(instance, queryObject, params) {
 		if (
 			queryObject?.requiredProps &&
@@ -115,7 +133,7 @@ class WikiBaseQueryManager {
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();
-		const queryResult = await fetch(queryUrl).then(res => res.json());
+		const queryResult = await this.fetchJSON(queryUrl);
 		const endTime = performance.now();
 		//console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
 
