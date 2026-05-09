@@ -10,6 +10,7 @@ import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 import { urlReference } from '../mapping/urlReference.mjs';
 
 import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracker.mjs';
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
 
 import Thing from './Thing.mjs';
 import Word from './Word.mjs';
@@ -28,7 +29,7 @@ async function autocompleteLexemesToSenses(autocomplete, wikibase) {
 	const ids = autocomplete.search.map(item => item.id).slice(0, 10);
 
 	//getEntities
-	const result = await fetch(
+	const result = await fetchWithUserAgent(
 		wikibase.api.getEntities({ ids: ids, props: ['claims'] }),
 	).then(res => res.json());
 
@@ -205,7 +206,7 @@ const Choose = ({
 				// workaround for https://phabricator.wikimedia.org/T271500
 				type: type === 'sense' ? 'lexeme' : type,
 			});
-			const autocomplete = await fetch(searchUrl).then(res => res.json());
+			const autocomplete = await fetchWithUserAgent(searchUrl).then(res => res.json());
 			if (autocomplete?.success) {
 				if (type === 'item' && mayCreate) {
 					autocomplete.search.push({

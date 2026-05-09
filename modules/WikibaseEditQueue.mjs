@@ -1,5 +1,6 @@
 import wikibases from '../wikibases.mjs';
 import Logger from './Logger.mjs';
+import { fetchWithRetry } from './fetch.mjs';
 import { WikibaseEntityUsageTracker } from '../modules/WikibaseEntityUsageTracker.mjs';
 
 export class WikibaseEditQueue {
@@ -57,21 +58,10 @@ export class WikibaseEditQueue {
     });
   }
 
-  async fetchWithRetry(url, options = {}, retries = 3) {
-    let res = await fetch(url, options);
-    while (res.status === 429 && retries > 0) {
-      const retryAfter = res.headers.get('Retry-After');
-      const delay = retryAfter ? parseInt(retryAfter, 10) : 2;
-      this.logger.info(`Rate limited (429). Retrying after ${delay}s...`);
-      await new Promise(resolve => setTimeout(resolve, delay * 1000));
-      res = await fetch(url, options);
-      retries--;
-    }
-    return res;
-  }
+
 
   async getEditToken(endpoint) {
-    const response = await this.fetchWithRetry(
+    const response = await fetchWithRetry(
       `${endpoint}?action=query&meta=tokens&format=json`,
     );
     const json = JSON.parse(await response.text());
@@ -92,7 +82,7 @@ export class WikibaseEditQueue {
     });
 
     while (true) {
-      const response = await this.fetchWithRetry(`${endpoint}?${params.toString()}`);
+      const response = await fetchWithRetry(`${endpoint}?${params.toString()}`);
       const data = await response.json();
 
       // Check for the tag in the current batch of results
@@ -153,7 +143,7 @@ export class WikibaseEditQueue {
     const tag = await this.getEditTag(endpoint);
     this.logger.info('Attemping perform edit', params);
 
-    let response = await this.fetchWithRetry(endpoint, {
+    let response = await fetchWithRetry(endpoint, {
       method: 'post',
       body: new URLSearchParams({
         token: token,
@@ -225,7 +215,7 @@ export class WikibaseEditQueue {
       format: 'json',
     });
 
-    const { entities } = await this.fetchWithRetry(url).then(res => res.json());
+    const { entities } = await fetchWithRetry(url).then(res => res.json());
 
     const { labels, aliases } = entities[entity];
 
@@ -250,7 +240,7 @@ export class WikibaseEditQueue {
       format: 'json',
     });
 
-    const { entities } = await this.fetchWithRetry(url).then(res => res.json());
+    const { entities } = await fetchWithRetry(url).then(res => res.json());
     if (entities?.[params.entity]?.claims?.[params.property]) {
       const claims = entities[params.entity].claims[params.property];
       for (const claim of claims) {

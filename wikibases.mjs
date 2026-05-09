@@ -1,12 +1,13 @@
 import { WBK } from './importmap/wikibase-sdk/dist/src/wikibase-sdk.js';
 import wikidataSites from './wikidataSites.mjs';
+import { fetchWithUserAgent } from './modules/fetch.mjs';
 
 async function fetchInterwikiMap(api) {
 	// Construct the full API endpoint URL
 	const endpoint = `${api}?action=query&format=json&meta=siteinfo&siprop=interwikimap`;
 
 	try {
-		const response = await fetch(endpoint);
+		const response = await fetchWithUserAgent(endpoint);
 
 		// Check if the response status is OK (status in the range 200-299)
 		if (!response.ok) {
@@ -309,7 +310,7 @@ const wikibases = {
 async function updateCustomWikibasesWithManifest(wikibase, wgScriptPath) {
 	const manifestUrl = `${wikibase.instance}${wikibase.wgScriptPath ?? '/w'}/rest.php/wikibase-manifest/v0/manifest`;
 	try {
-		const response = await fetch(manifestUrl);
+		const response = await fetchWithUserAgent(manifestUrl);
 		if (response.ok) {
 			const manifest = await response.json();
 			const equivEntities = manifest?.equiv_entities?.['wikidata.org'];

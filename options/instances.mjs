@@ -2,6 +2,7 @@ import { h, render } from '../importmap/preact/src/index.js';
 import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import defaultWikibases from '../wikibases.mjs';
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
 
 const html = htm.bind(h);
 
@@ -90,7 +91,7 @@ function Instances() {
 	// Fetch icon from the Wiki front page
 	const fetchWikiIcon = async instanceUrl => {
 		try {
-			const response = await fetch(instanceUrl);
+			const response = await fetchWithUserAgent(instanceUrl);
 			const text = await response.text();
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(text, 'text/html');
@@ -123,7 +124,7 @@ function Instances() {
 		if (field === 'instance' && value) {
 			try {
 				// Fetch the WikibaseManifest to check for SPARQL endpoint
-				const manifestResponse = await fetch(
+				const manifestResponse = await fetchWithUserAgent(
 					`${value}${newInstance.wgScriptPath}/rest.php/wikibase-manifest/v0/manifest`,
 				);
 				if (manifestResponse.ok) {
@@ -137,7 +138,7 @@ function Instances() {
 				}
 
 				// Fetch site info using MediaWiki API
-				const apiResponse = await fetch(
+				const apiResponse = await fetchWithUserAgent(
 					`${value}${newInstance.wgScriptPath}/api.php?action=query&meta=siteinfo&format=json&origin=*`,
 				);
 				const apiData = await apiResponse.json();

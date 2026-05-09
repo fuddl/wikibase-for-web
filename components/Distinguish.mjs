@@ -1,6 +1,7 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 const html = htm.bind(h);
@@ -31,7 +32,7 @@ class Distinguish extends Component {
       if (entity && value == '' && manager.wikibase.autodesc) {
         try {
           (async () => {
-            const request = await fetch(
+            const request = await fetchWithUserAgent(
               `${manager.wikibase.autodesc}/?q=${entity}&lang=${lang}&mode=short&links=text&redlinks=&format=json`,
             );
             const autoDescription = await request.json();

@@ -5,6 +5,7 @@ import {
   useRef,
 } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
 
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
@@ -24,7 +25,7 @@ class AutoDesc extends Component {
       const setUpObserver = () => {
         const observer = new IntersectionObserver(async entries => {
           if (entries[0].isIntersecting) {
-            const request = await fetch(
+            const request = await fetchWithUserAgent(
               `${api}/?q=${id}&lang=${lang}&mode=short&links=text&redlinks=&format=json`,
             );
             const autoDesctription = await request.json();

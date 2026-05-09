@@ -1,3 +1,5 @@
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
+
 export const siteLinks = {
   id: 'sitelinks',
   pagePathToRegex(urlTemplate) {
@@ -47,7 +49,7 @@ export const siteLinks = {
     { matchSiteLink, matchSiteId, specificity },
     { wikibase, wikibaseID },
   ) {
-    const redirect = await fetch(
+    const redirect = await fetchWithUserAgent(
       `${wikibase.instance}/wiki/Special:ItemByTitle/?site=${matchSiteId}&page=${matchSiteLink}`,
     );
 

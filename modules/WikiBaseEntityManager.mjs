@@ -1,5 +1,6 @@
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
+import { fetchJSON } from './fetch.mjs';
 import NavigationManager from './NavigationManager.mjs';
 
 class WikiBaseEntityManager {
@@ -39,23 +40,7 @@ class WikiBaseEntityManager {
 		}
 	}
 
-	async fetchJSON(url, options = {}, retries = 3) {
-		let res = await fetch(url, options);
-		while (res.status === 429 && retries > 0) {
-			const retryAfter = res.headers.get('Retry-After');
-			const delay = retryAfter ? parseInt(retryAfter, 10) : 2;
-			console.warn(`Rate limited (429). Retrying after ${delay}s...`);
-			await new Promise(resolve => setTimeout(resolve, delay * 1000));
-			res = await fetch(url, options);
-			retries--;
-		}
-		
-		if (!res.ok) {
-			throw new Error(`HTTP error! status: ${res.status}`);
-		}
-		
-		return res.json();
-	}
+
 
 	async getUsername(wikibase) {
 		try {
@@ -68,7 +53,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const data = await this.fetchJSON(url.toString());
+			const data = await fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return null;
@@ -102,7 +87,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const data = await this.fetchJSON(url.toString());
+			const data = await fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return [];
@@ -139,7 +124,7 @@ class WikiBaseEntityManager {
 				format: 'json',
 			});
 
-			const data = await this.fetchJSON(url.toString());
+			const data = await fetchJSON(url.toString());
 			if (data.error) {
 				console.error(data.error);
 				return [];
@@ -162,7 +147,7 @@ class WikiBaseEntityManager {
 			language: options?.languages ?? this.languages,
 		});
 
-		const result = await this.fetchJSON(url);
+		const result = await fetchJSON(url);
 
 		const entityWithContext = this.entityAddContext({
 			entity: result.entities[entity],
@@ -227,7 +212,7 @@ class WikiBaseEntityManager {
 		});
 
 		try {
-			const data = await this.fetchJSON(url);
+			const data = await fetchJSON(url);
 			const languagesData = data.query.wbcontentlanguages;
 
 			const languages = Object.keys(languagesData).map(
@@ -279,7 +264,7 @@ class WikiBaseEntityManager {
 			language: this.languages,
 		});
 
-		const result = await this.fetchJSON(url);
+		const result = await fetchJSON(url);
 
 		this.designators[id] = result.entities[entity];
 
@@ -301,7 +286,7 @@ class WikiBaseEntityManager {
 	async hasEditPermissions(instance) {
 		const endpoint = this.wikibases[instance].api.instance.apiEndpoint;
 		try {
-			const data = await this.fetchJSON(
+			const data = await fetchJSON(
 				`${endpoint}?action=query&meta=userinfo&uiprop=rights&format=json`,
 			);
 			const rights = data.query.userinfo.rights;
@@ -315,7 +300,7 @@ class WikiBaseEntityManager {
 		if (!('propOrder' in this.wikibases[wikibase])) {
 			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
 			try {
-				const data = await this.fetchJSON(
+				const data = await fetchJSON(
 					`${endPoint}?action=query&titles=MediaWiki:Wikibase-SortedProperties&prop=revisions&rvprop=content&format=json&origin=*`,
 				);
 				const pageId = Object.keys(data.query.pages)[0];

@@ -1,5 +1,6 @@
 import { h, Component } from '../importmap/preact/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
+import { fetchWithUserAgent } from '../modules/fetch.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 import Lament from './Lament.mjs';
 
@@ -27,7 +28,7 @@ class Title extends Component {
       });
 
       try {
-        const response = await fetch(url);
+        const response = await fetchWithUserAgent(url);
         const data = await response.json();
         const languagesData = data.query.wbcontentlanguages;
 
