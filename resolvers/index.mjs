@@ -37,11 +37,11 @@ class ResolverCache {
 		// Add or update the cache for the tab ID
 		if (tabId) {
 			this.cacheByTabId.set(tabId, data);
-			this.logger.log(`Added tab ${tabId} to cache`, data);
+			this.logger.info(`Added tab ${tabId} to cache`, data);
 		}
 		if (url) {
 			this.cacheByUrl.set(url, data);
-			this.logger.log(`Added ${url} to cache`, data);
+			this.logger.info(`Added ${url} to cache`, data);
 		}
 
 		browser.tabs.query({ url: url }, tabs => {
@@ -58,16 +58,16 @@ class ResolverCache {
 	 */
 	request(identifier) {
 		if (typeof identifier === 'number') {
-			this.logger.log(`Fullfiled request of tab ${identifier}`);
+			this.logger.info(`Fullfiled request of tab ${identifier}`);
 			// Request by tab ID
 			return this.cacheByTabId.get(identifier);
 		} else if (typeof identifier === 'string') {
-			this.logger.log(`Fullfiled request ${identifier}`);
+			this.logger.info(`Fullfiled request ${identifier}`);
 			// Request by URL
 			return this.cacheByUrl.get(identifier);
 		}
 
-		this.logger.log(`Could not fulfill request for ${identifier}`);
+		this.logger.info(`Could not fulfill request for ${identifier}`);
 		return undefined;
 	}
 
@@ -94,7 +94,7 @@ class ResolverCache {
 			// Remove by URL and clear all associated tabs
 			browser.tabs.query({ url: identifier }, tabs => {
 				tabs.forEach(tab => this.cacheByTabId.delete(tab.id));
-				this.logger.log(`Removed tab ${tabId} from cache`);
+				this.logger.info(`Removed tab ${tabId} from cache`);
 				this.cacheByUrl.delete(identifier);
 			});
 		}

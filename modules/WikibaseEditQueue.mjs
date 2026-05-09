@@ -62,7 +62,7 @@ export class WikibaseEditQueue {
     while (res.status === 429 && retries > 0) {
       const retryAfter = res.headers.get('Retry-After');
       const delay = retryAfter ? parseInt(retryAfter, 10) : 2;
-      this.logger.log(`Rate limited (429). Retrying after ${delay}s...`);
+      this.logger.info(`Rate limited (429). Retrying after ${delay}s...`);
       await new Promise(resolve => setTimeout(resolve, delay * 1000));
       res = await fetch(url, options);
       retries--;
@@ -151,7 +151,7 @@ export class WikibaseEditQueue {
     const endpoint = wikibases[instance].api.instance.apiEndpoint;
     const token = await this.getEditToken(endpoint);
     const tag = await this.getEditTag(endpoint);
-    this.logger.log('Attemping perform edit', params);
+    this.logger.info('Attemping perform edit', params);
 
     let response = await this.fetchWithRetry(endpoint, {
       method: 'post',
@@ -165,7 +165,7 @@ export class WikibaseEditQueue {
     let parsedResponse = await response.json();
 
     if (parsedResponse.success === 1) {
-      this.logger.log('Edit successfully perfomed', {
+      this.logger.info('Edit successfully perfomed', {
         edit: params,
         instance: instance,
         response: parsedResponse,
@@ -191,7 +191,7 @@ export class WikibaseEditQueue {
       }
     }
     if (parsedResponse?.error) {
-      this.logger.log('Edit failed', {
+      this.logger.error('Edit failed', {
         edit: params,
         instance: instance,
         response: parsedResponse,
@@ -301,7 +301,7 @@ export class WikibaseEditQueue {
 
         if (existingclaim) {
           // skipping this edit
-          this.logger.log(
+          this.logger.info(
             'Edit not done. Claim was already present.',
             claimCreation,
           );

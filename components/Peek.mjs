@@ -38,11 +38,11 @@ const submit = e => {
 
 	const jobs = [];
 
-	logger.log('Processing edits');
+	logger.info('Processing edits');
 
 	processEdits(data, jobs);
 
-	logger.log('Prepered edit jobs', jobs);
+	logger.info('Prepered edit jobs', jobs);
 
 	try {
 		browser.runtime.sendMessage({
