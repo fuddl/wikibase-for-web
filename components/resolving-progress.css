@@ -25,10 +25,10 @@
 
 .resolving-progress__resolver {
 	display: grid;
-	grid-template-columns: min-content 1fr;
+	grid-template-columns: 20px 1fr;
 	gap: .75em;
 
-	&:not(:last-child) {
+	&:not(:first-child) {
 		border-top: 1px solid var(--border-color-base, #a2a9b1);
 		padding-top: 1rem;
 	}
@@ -52,22 +52,38 @@
 	background: var(--paper);
 }
 
+.resolving-progress__result-list {
+	grid-column: 2;
+	list-style-type: '→ ';
+	padding: 0;
+	margin-left: 1em;
+}
+
 .resolving-progress__results {
 	grid-column: 2;
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.25rem;
+	font-size: 0.9rem;
 }
 
-.resolving-progress__result-link {
-	display: inline-block;
-}
-
-.resolving-progress__results-header {
+.resolving-progress__error {
 	grid-column: 2;
+	border: 1px solid;
+	padding: 0.5rem;
+	border-radius: 4px;
+	margin-top: 0.5rem;
+	font-size: 0.8rem;
+	color: #d33;
+}
+
+.resolving-progress__error-message {
+	font-weight: bold;
+	margin-bottom: .5rem;
+}
+
+.resolving-progress__ignore-button {
+	align-self: flex-start;
+	font-size: 0.75rem;
+	padding: 0.2rem 0.5rem;
+	cursor: pointer;
 }
 
 .resolving-progress__name {

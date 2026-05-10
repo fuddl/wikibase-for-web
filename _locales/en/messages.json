@@ -140,31 +140,31 @@
     "message": "URL Fragment"
   },
   "resolver_hash_desc": {
-    "message": "Matches an entity ID in the URL fragment (e.g. https://example.com/#wikidata:Q42)."
+    "message": "Matches an entity ID in the URL fragment (e.g. https://example.com/#wikidata:Q42 → Q42)."
   },
   "resolver_sitelinks_name": {
     "message": "Sitelinks"
   },
   "resolver_sitelinks_desc": {
-    "message": "Matches a Wiki to an item via it's sitelinks."
+    "message": "Matches a Wiki to an item via it's sitelinks (e.g. https://en.wikipedia.org/wiki/Douglas_Adams → Q42)."
   },
   "resolver_url_name": {
-    "message": "URL Properties"
+    "message": "URL"
   },
   "resolver_url_desc": {
-    "message": "Matches the URL against website related URL properties."
+    "message": "Matches the URL against website related URL properties (e.g. https://douglasadams.com/ → Q42)."
   },
   "resolver_urlMatchPatternByDomain_name": {
-    "message": "Domain Patterns"
+    "message": "URL Patterns by Domain name"
   },
   "resolver_urlMatchPatternByDomain_desc": {
-    "message": "Uses domain-specific patterns to extract IDs."
+    "message": "Resolves URLs by using URL patterns with a known domain name."
   },
   "resolver_urlMatchPattern_name": {
-    "message": "Global Patterns"
+    "message": "URL Patterns"
   },
   "resolver_urlMatchPattern_desc": {
-    "message": "Uses general patterns to extract IDs from the URL."
+    "message": "Resolves URLs by using URL patterns with an unspecified domain name."
   },
   "resolver_wikibase_name": {
     "message": "Wikibase URL"
@@ -176,10 +176,32 @@
     "message": "Domain Name"
   },
   "resolver_domain_desc": {
-    "message": "Matches the website's domain name to an item."
+    "message": "Matches the URLs domain name part to an item."
   },
+  "resolver_error429_name": { "message": "Test: Always 429" },
+  "resolver_error429_desc": { "message": "This resolver always fails with a 429 Rate Limit error. Only for testing purposes." },
+  "resolver_error5xx_name": { "message": "Test: Always 5xx" },
+  "resolver_error5xx_desc": { "message": "This resolver always fails with a 500 Server Error. Only for testing purposes." },
   "resolving_results": {
     "message": "Found results"
+  },
+  "resolving_rate_limit": {
+    "message": "Rate limited by server. Retrying…"
+  },
+  "resolving_taking_long": {
+    "message": "This resolver is taking longer than expected…"
+  },
+  "resolving_error_prefix": {
+    "message": "Error"
+  },
+  "resolving_ignore_button": {
+    "message": "Ignore for now"
+  },
+  "resolving_or": {
+    "message": "or"
+  },
+  "resolving_disable_permanently": {
+    "message": "disable permanently"
   },
   "edit_button": {
     "message": "Edit",

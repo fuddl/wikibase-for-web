@@ -302,6 +302,11 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		}
 		
 		return Promise.resolve('done');
+	} else if (message.type === 'request_finish') {
+		if (resolvers.abortController) {
+			resolvers.abortController.abort();
+		}
+		return Promise.resolve('done');
 	} else if (message.type === 'request_navigate') {
 		if (resolvers.abortController) {
 			resolvers.abortController.abort();

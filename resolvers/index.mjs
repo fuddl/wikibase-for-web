@@ -5,6 +5,7 @@ import { url } from './url.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlMatchPatternByDomain } from './urlMatchPatternByDomain.mjs';
 import { wikibase } from './wikibase.mjs';
+import { error429, error5xx } from './test.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 import Logger from '../modules/Logger.mjs';
@@ -12,7 +13,7 @@ import Logger from '../modules/Logger.mjs';
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain],
+	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain, error429, error5xx],
 	abortController: null,
 };
 
@@ -129,6 +130,10 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 	if (this.abortController) {
 		this.abortController.abort();
 	}
+
+	const { disabledResolvers } = await browser.storage.sync.get('disabledResolvers');
+	const activeResolvers = this.list.filter(r => !(disabledResolvers || []).includes(r.id));
+
 	this.abortController = new AbortController();
 	const signal = this.abortController.signal;
 
@@ -141,14 +146,14 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 	await browser.runtime.sendMessage({
 		type: 'resolving_started',
 		url,
-		resolvers: this.list.map(r => r.id),
+		resolvers: activeResolvers.map(r => r.id),
 		wikibases: wikibaseNames
 	});
 
 	let candidates = [];
 	try {
 		await Promise.all(
-			this.list.map(async resolver => {
+			activeResolvers.map(async resolver => {
 				await Promise.all(
 					wikibaseNames.map(async name => {
 						if (signal.aborted) return;
@@ -158,35 +163,48 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 							wikibaseID: name,
 							signal: signal,
 						};
-						const applies = await resolver.applies(url, context);
-						let results = [];
-						if (applies.length > 0) {
-							for (const apply of applies) {
-								if (signal.aborted) return;
-								apply.resolved = await resolver.resolve(apply, context);
-								if (apply.resolved) {
-									results = [...results, ...apply.resolved];
+						try {
+							const applies = await resolver.applies(url, context);
+							let results = [];
+							if (applies.length > 0) {
+								for (const apply of applies) {
+									if (signal.aborted) return;
+									apply.resolved = await resolver.resolve(apply, context);
+									if (apply.resolved) {
+										results = [...results, ...apply.resolved];
+									}
 								}
+								candidates = [...candidates, ...applies];
 							}
-							candidates = [...candidates, ...applies];
-						}
 
-						await browser.runtime.sendMessage({
-							type: 'resolving_progress',
-							url,
-							resolver: resolver.id,
-							wikibase: name,
-							status: 'finished',
-							results: results,
-							applies: applies.length > 0,
-						});
+							await browser.runtime.sendMessage({
+								type: 'resolving_progress',
+								url,
+								resolver: resolver.id,
+								wikibase: name,
+								status: 'finished',
+								results: results,
+								applies: applies.length > 0,
+							});
+						} catch (error) {
+							console.error(`Error resolving ${resolver.id} for ${name}:`, error);
+							await browser.runtime.sendMessage({
+								type: 'resolving_progress',
+								url,
+								resolver: resolver.id,
+								wikibase: name,
+								status: 'error',
+								error: error.message,
+								errorCode: error.status,
+							});
+						}
 					}),
 				);
 			}),
 		);
 	} catch (e) {
 		if (e.name === 'AbortError') {
-			return [];
+			return candidates.filter(uniqueFilter);
 		}
 		throw e;
 	}

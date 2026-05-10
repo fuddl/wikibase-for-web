@@ -195,10 +195,9 @@ function Instances() {
 	};
 
 	return html`
+		<fieldset>
+			<legend>Manage Wikibase Instances</legend>
 		<table>
-			<caption>
-				Manage Wikibase Instances
-			</caption>
 			<thead>
 				<tr>
 					<th>Icon</th>
@@ -297,6 +296,7 @@ function Instances() {
 		`}
 		${!showForm &&
 		html`<button onClick=${() => setShowForm(true)}>Add New Instance</button>`}
+		</fieldset>
 	`;
 }
 

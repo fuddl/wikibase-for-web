@@ -3,6 +3,7 @@ import { useEffect, useState } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import Experimental from './experimental.mjs';
 import Instances from './instances.mjs';
+import Resolvers from './resolvers.mjs';
 
 const html = htm.bind(h);
 
@@ -11,6 +12,7 @@ function Options() {
 		<div>
 			<${Experimental} />
 			<${Instances} />
+			<${Resolvers} />
 		</div>
 	`;
 }

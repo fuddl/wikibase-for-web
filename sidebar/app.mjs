@@ -39,6 +39,7 @@ class Sidebar extends Component {
 			otherEntities: null,
 			workbench: null,
 			resolvingProgress: null,
+			ignoredResolvers: [],
 		};
 		requireStylesheet(
 			browser.runtime.getURL('/node_modules/normalize.css/normalize.css'),
@@ -85,9 +86,11 @@ class Sidebar extends Component {
 					url: message.url,
 					resolvers: message.resolvers,
 					wikibases: message.wikibases,
+					startTime: Date.now(),
 					finished: [],
 					results: {},
 					applies: {},
+					errors: {},
 				},
 				suggestions: null,
 				entity: null,
@@ -100,6 +103,7 @@ class Sidebar extends Component {
 				if (prevState.resolvingProgress?.url !== message.url) return null;
 				const key = `${message.resolver}:${message.wikibase}`;
 				if (prevState.resolvingProgress.finished.includes(key)) return null;
+				const isError = message.status === 'error';
 				return {
 					resolvingProgress: {
 						...prevState.resolvingProgress,
@@ -110,7 +114,11 @@ class Sidebar extends Component {
 						},
 						applies: {
 							...prevState.resolvingProgress.applies,
-							[key]: message.applies,
+							[key]: isError ? true : message.applies,
+						},
+						errors: {
+							...prevState.resolvingProgress.errors,
+							[key]: isError ? { message: message.error, code: message.errorCode } : null,
 						},
 					},
 				};
@@ -167,6 +175,24 @@ class Sidebar extends Component {
 		}
 	};
 
+	handleIgnoreResolver = key => {
+		this.setState(prevState => {
+			const ignored = [...(prevState.ignoredResolvers || []), key];
+			const { resolvingProgress } = prevState;
+			
+			if (resolvingProgress) {
+				const total = resolvingProgress.resolvers.length * resolvingProgress.wikibases.length;
+				const finishedOrIgnored = new Set([...resolvingProgress.finished, ...ignored]);
+
+				if (finishedOrIgnored.size >= total) {
+					browser.runtime.sendMessage({ type: 'request_finish' });
+				}
+			}
+
+			return { ignoredResolvers: ignored };
+		});
+	};
+
 	render() {
 		const {
 			entity,
@@ -190,6 +216,7 @@ class Sidebar extends Component {
 			otherEntities=${otherEntities}
 			workbench=${workbench}
 			resolvingProgress=${resolvingProgress}
+			onIgnore=${this.handleIgnoreResolver}
 			manager=${manager} />`;
 	}
 }

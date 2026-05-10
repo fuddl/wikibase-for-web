@@ -26,6 +26,7 @@ class Main extends Component {
     manager,
     viewId,
     resolvingProgress,
+    onIgnore,
   }) {
     const actionGroups = [];
 
@@ -53,7 +54,7 @@ class Main extends Component {
         </${Inform}>
         ${
           !hasResults && resolvingProgress
-            ? html`<${ResolvingProgress} progress=${resolvingProgress} manager=${manager} />`
+            ? html`<${ResolvingProgress} progress=${resolvingProgress} manager=${manager} onIgnore=${onIgnore} />`
             : null
         }
         ${

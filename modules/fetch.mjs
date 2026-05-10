@@ -35,7 +35,9 @@ export async function fetchJSON(url, options = {}, retries = 3) {
 	const res = await fetchWithRetry(url, options, retries);
 
 	if (!res.ok) {
-		throw new Error(`HTTP error! status: ${res.status} for ${url}`);
+		const error = new Error(`HTTP error! status: ${res.status} for ${url}`);
+		error.status = res.status;
+		throw error;
 	}
 
 	return res.json();
