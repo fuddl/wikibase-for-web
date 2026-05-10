@@ -81,7 +81,7 @@ class WikiBaseQueryManager {
 		}
 	}
 
-	async query(instance, queryObject, params) {
+	async query(instance, queryObject, params, signal) {
 		if (
 			queryObject?.requiredProps &&
 			!this.checkRequiredProps(instance, queryObject.requiredProps) &&
@@ -117,7 +117,7 @@ class WikiBaseQueryManager {
 		const queryUrl = instance.api.sparqlQuery(query);
 
 		const startTime = performance.now();
-		const queryResult = await fetchJSON(queryUrl);
+		const queryResult = await fetchJSON(queryUrl, { signal });
 		const endTime = performance.now();
 		//console.debug(`Query: ${queryObject.id} | ${endTime - startTime}ms`);
 

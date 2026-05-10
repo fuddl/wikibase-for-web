@@ -136,6 +136,51 @@
       }
     }
   },
+  "resolver_hash_name": {
+    "message": "URL Fragment"
+  },
+  "resolver_hash_desc": {
+    "message": "Matches an entity ID in the URL fragment (e.g. https://example.com/#wikidata:Q42)."
+  },
+  "resolver_sitelinks_name": {
+    "message": "Sitelinks"
+  },
+  "resolver_sitelinks_desc": {
+    "message": "Matches a Wiki to an item via it's sitelinks."
+  },
+  "resolver_url_name": {
+    "message": "URL Properties"
+  },
+  "resolver_url_desc": {
+    "message": "Matches the URL against website related URL properties."
+  },
+  "resolver_urlMatchPatternByDomain_name": {
+    "message": "Domain Patterns"
+  },
+  "resolver_urlMatchPatternByDomain_desc": {
+    "message": "Uses domain-specific patterns to extract IDs."
+  },
+  "resolver_urlMatchPattern_name": {
+    "message": "Global Patterns"
+  },
+  "resolver_urlMatchPattern_desc": {
+    "message": "Uses general patterns to extract IDs from the URL."
+  },
+  "resolver_wikibase_name": {
+    "message": "Wikibase URL"
+  },
+  "resolver_wikibase_desc": {
+    "message": "Directly matches a Wikibase item or property URL."
+  },
+  "resolver_domain_name": {
+    "message": "Domain Name"
+  },
+  "resolver_domain_desc": {
+    "message": "Matches the website's domain name to an item."
+  },
+  "resolving_results": {
+    "message": "Found results"
+  },
   "edit_button": {
     "message": "Edit",
     "description": "Label of a button that allows editing something."
@@ -159,6 +204,10 @@
   "aquiring_metadata": {
     "message": "Aquiring metadata…",
     "description": "Message shown when aquiring metadata."
+  },
+  "resolving_content": {
+    "message": "Resolving content…",
+    "description": "Message shown when the extension is resolving the current page's content against Wikibase."
   },
   "set_alias": {
     "message": "Set alias",

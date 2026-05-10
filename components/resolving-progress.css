@@ -1,0 +1,96 @@
+.resolving-progress {
+	padding: 1rem;
+}
+
+.resolving-progress__list {
+	list-style: none;
+	padding: 0;
+	margin: 1rem 0;
+}
+
+.resolving-progress__wikibase {
+	margin-bottom: 1.5rem;
+}
+
+.resolving-progress__wikibase-name {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: bold;
+}
+
+.resolving-progress__resolvers {
+	list-style: none;
+	padding: 0;
+}
+
+.resolving-progress__resolver {
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	gap: .75em;
+
+	&:not(:last-child) {
+		border-top: 1px solid var(--border-color-base, #a2a9b1);
+		padding-top: 1rem;
+	}
+}
+
+.resolving-progress__description {
+	grid-column: 2;
+
+}
+
+.resolving-progress__resolver--finished {
+	opacity: 1;
+}
+
+.resolving-progress__resolver--not-applied {
+	opacity: 0.4;
+}
+
+.resolving-progress__resolver--no-results {
+	opacity: 0.6;
+	background: var(--paper);
+}
+
+.resolving-progress__results {
+	grid-column: 2;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+}
+
+.resolving-progress__result-link {
+	display: inline-block;
+}
+
+.resolving-progress__results-header {
+	grid-column: 2;
+}
+
+.resolving-progress__name {
+	font-weight: bold;
+	grid-column: 2;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.resolving-progress__icon {
+	grid-column: 1;
+	font-family:
+		'icons',
+		-apple-system,
+		'BlinkMacSystemFont',
+		'Segoe UI',
+		'Roboto',
+		'Lato',
+		'Helvetica',
+		'Arial',
+		'pIqaD',
+		FairfaxHaxHD,
+		cc-icons,
+		sans-serif;
+}

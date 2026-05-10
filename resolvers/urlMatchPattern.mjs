@@ -142,7 +142,7 @@ export async function processUrlPatterns(location, patterns, wikibase, specifici
  */
 export async function resolveUrlPattern(
 	{ matchProperty, matchValue, specificity },
-	{ wikibase, queryManager },
+	{ wikibase, queryManager, signal },
 ) {
 	const found = [];
 	const results = await queryManager.query(
@@ -152,6 +152,7 @@ export async function resolveUrlPattern(
 			property: matchProperty,
 			id: matchValue,
 		},
+		signal
 	);
 	for (const entity of results) {
 		found.push({
@@ -164,11 +165,13 @@ export async function resolveUrlPattern(
 
 export const urlMatchPattern = {
 	id: 'urlMatchPattern',
-	applies: async function (location, { wikibase, queryManager, metadata }) {
+	applies: async function (location, { wikibase, queryManager, metadata, signal }) {
 		// Get generic patterns (without domain qualifier)
 		const patterns = await queryManager.query(
 			wikibase,
 			queryManager.queries.urlMatchPattern,
+			{},
+			signal
 		);
 
 		// Process patterns using shared utility

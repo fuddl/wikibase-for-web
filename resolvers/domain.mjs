@@ -41,13 +41,14 @@ export const domain = {
 		}
 	  return result;
 	},
-	resolve: async function ({ matchFromUrl, specificity }, { wikibase, wikibaseID }) {
+	resolve: async function ({ matchFromUrl, specificity }, { wikibase, wikibaseID, signal }) {
 		const result = await queryManager.query(
 			wikibase,
 			queryManager.queries.itemByDomain,
 			{
 				domains: this.expandDomains(this.getDomain(matchFromUrl)),
 			},
+			signal
 		)
 
 		if (result.length === 0) {

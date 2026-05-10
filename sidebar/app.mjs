@@ -38,6 +38,7 @@ class Sidebar extends Component {
 			selectable: null,
 			otherEntities: null,
 			workbench: null,
+			resolvingProgress: null,
 		};
 		requireStylesheet(
 			browser.runtime.getURL('/node_modules/normalize.css/normalize.css'),
@@ -78,10 +79,48 @@ class Sidebar extends Component {
 	}
 
 	handleMessage = async message => {
-		if (message.type === 'resolved') {
+		if (message.type === 'resolving_started') {
+			this.setState({
+				resolvingProgress: {
+					url: message.url,
+					resolvers: message.resolvers,
+					wikibases: message.wikibases,
+					finished: [],
+					results: {},
+					applies: {},
+				},
+				suggestions: null,
+				entity: null,
+				selectable: null,
+				otherEntities: null,
+			});
+			return Promise.resolve('done');
+		} else if (message.type === 'resolving_progress') {
+			this.setState(prevState => {
+				if (prevState.resolvingProgress?.url !== message.url) return null;
+				const key = `${message.resolver}:${message.wikibase}`;
+				if (prevState.resolvingProgress.finished.includes(key)) return null;
+				return {
+					resolvingProgress: {
+						...prevState.resolvingProgress,
+						finished: [...prevState.resolvingProgress.finished, key],
+						results: {
+							...prevState.resolvingProgress.results,
+							[key]: message.results || [],
+						},
+						applies: {
+							...prevState.resolvingProgress.applies,
+							[key]: message.applies,
+						},
+					},
+				};
+			});
+			return Promise.resolve('done');
+		} else if (message.type === 'resolved') {
 			let viewId = Date.now();
 			this.setState({
 				viewId: viewId,
+				resolvingProgress: null,
 			});
 
 			const organised = await organiseView(message, manager);
@@ -136,6 +175,7 @@ class Sidebar extends Component {
 			selectable,
 			workbench,
 			viewId,
+			resolvingProgress,
 		} = this.state;
 
 		if (entity?.id) {
@@ -149,6 +189,7 @@ class Sidebar extends Component {
 			suggestions=${suggestions}
 			otherEntities=${otherEntities}
 			workbench=${workbench}
+			resolvingProgress=${resolvingProgress}
 			manager=${manager} />`;
 	}
 }

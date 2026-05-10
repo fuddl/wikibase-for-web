@@ -2,7 +2,7 @@ import { processUrlPatterns, resolveUrlPattern } from './urlMatchPattern.mjs';
 
 export const urlMatchPatternByDomain = {
 	id: 'urlMatchPatternByDomain',
-	applies: async function (location, { wikibase, queryManager, metadata }) {
+	applies: async function (location, { wikibase, queryManager, metadata, signal }) {
 		// Skip this resolver if domainName property isn't defined
 		if (!wikibase?.props?.domainName) {
 			return [];
@@ -36,7 +36,8 @@ export const urlMatchPatternByDomain = {
 		const patterns = await queryManager.query(
 			wikibase,
 			queryManager.queries.urlMatchPatternByDomain,
-			{ domains }
+			{ domains },
+			signal
 		);
 
 		// Process patterns using shared utility (with higher specificity base)

@@ -13,10 +13,11 @@ const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
 	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain],
+	abortController: null,
 };
 
 function uniqueFilter(item, index, self) {
-  return index === self.findIndex(el => JSON.stringify(el) === JSON.stringify(item));
+	return index === self.findIndex(el => JSON.stringify(el) === JSON.stringify(item));
 }
 
 class ResolverCache {
@@ -125,33 +126,70 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 		return resolvedCache.request(url);
 	}
 
+	if (this.abortController) {
+		this.abortController.abort();
+	}
+	this.abortController = new AbortController();
+	const signal = this.abortController.signal;
+
+	const wikibaseNames = Object.keys(wikibases).filter(name => {
+		if (allowedWikibases && !allowedWikibases.includes(name)) return false;
+		if (wikibases[name]?.resolve === false) return false;
+		return true;
+	});
+
+	await browser.runtime.sendMessage({
+		type: 'resolving_started',
+		url,
+		resolvers: this.list.map(r => r.id),
+		wikibases: wikibaseNames
+	});
+
 	let candidates = [];
-	await Promise.all(
-		this.list.map(async resolver => {
-			await Promise.all(
-				Object.keys(wikibases).map(async name => {
-					if (allowedWikibases && !allowedWikibases.includes(name)) {
-						return;
-					}
-					if (wikibases[name]?.resolve === false) {
-						return;
-					}
-					const context = {
-						wikibase: wikibases[name],
-						queryManager: queryManager,
-						wikibaseID: name,
-					};
-					const applies = await resolver.applies(url, context);
-					if (applies.length > 0) {
-						for (const apply of applies) {
-							apply.resolved = await resolver.resolve(apply, context);
+	try {
+		await Promise.all(
+			this.list.map(async resolver => {
+				await Promise.all(
+					wikibaseNames.map(async name => {
+						if (signal.aborted) return;
+						const context = {
+							wikibase: wikibases[name],
+							queryManager: queryManager,
+							wikibaseID: name,
+							signal: signal,
+						};
+						const applies = await resolver.applies(url, context);
+						let results = [];
+						if (applies.length > 0) {
+							for (const apply of applies) {
+								if (signal.aborted) return;
+								apply.resolved = await resolver.resolve(apply, context);
+								if (apply.resolved) {
+									results = [...results, ...apply.resolved];
+								}
+							}
+							candidates = [...candidates, ...applies];
 						}
-						candidates = [...candidates, ...applies];
-					}
-				}),
-			);
-		}),
-	);
+
+						await browser.runtime.sendMessage({
+							type: 'resolving_progress',
+							url,
+							resolver: resolver.id,
+							wikibase: name,
+							status: 'finished',
+							results: results,
+							applies: applies.length > 0,
+						});
+					}),
+				);
+			}),
+		);
+	} catch (e) {
+		if (e.name === 'AbortError') {
+			return [];
+		}
+		throw e;
+	}
 
 	candidates = candidates.filter(uniqueFilter);
 

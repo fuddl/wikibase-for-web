@@ -47,10 +47,11 @@ export const siteLinks = {
   },
   resolve: async function (
     { matchSiteLink, matchSiteId, specificity },
-    { wikibase, wikibaseID },
+    { wikibase, wikibaseID, signal },
   ) {
     const redirect = await fetchWithUserAgent(
       `${wikibase.instance}/wiki/Special:ItemByTitle/?site=${matchSiteId}&page=${matchSiteLink}`,
+      { signal }
     );
 
     const wikibaseUrl = redirect.url;

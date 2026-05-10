@@ -303,6 +303,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		
 		return Promise.resolve('done');
 	} else if (message.type === 'request_navigate') {
+		if (resolvers.abortController) {
+			resolvers.abortController.abort();
+		}
 		try {
 			await browser.runtime.sendMessage({
 				type: 'navigate',

@@ -5,11 +5,11 @@ const logger = new Logger();
 
 export async function fetchWithUserAgent(url, options = {}) {
 	const headers = new Headers(options.headers || {});
-	
+
 	if (!headers.has('Api-User-Agent')) {
 		headers.set('Api-User-Agent', defaultUserAgent);
 	}
-	
+
 	const newOptions = {
 		...options,
 		headers
@@ -33,10 +33,10 @@ export async function fetchWithRetry(url, options = {}, retries = 3) {
 
 export async function fetchJSON(url, options = {}, retries = 3) {
 	const res = await fetchWithRetry(url, options, retries);
-	
+
 	if (!res.ok) {
-		throw new Error(`HTTP error! status: ${res.status}`);
+		throw new Error(`HTTP error! status: ${res.status} for ${url}`);
 	}
-	
+
 	return res.json();
 }

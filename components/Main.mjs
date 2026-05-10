@@ -8,7 +8,7 @@ import Match from './Match.mjs';
 import Pick from './Pick.mjs';
 import Inform from './Inform.mjs';
 import Peek from './Peek.mjs';
-import Edit from './Edit.mjs';
+import ResolvingProgress from './ResolvingProgress.mjs';
 
 const html = htm.bind(h);
 
@@ -25,6 +25,7 @@ class Main extends Component {
     otherEntities,
     manager,
     viewId,
+    resolvingProgress,
   }) {
     const actionGroups = [];
 
@@ -40,6 +41,8 @@ class Main extends Component {
       }
     }
 
+    const hasResults = suggestions?.length > 0 || entity || selectable;
+
     return html`
       <div class="main">
         <${Inform} id="please-feedback">
@@ -48,6 +51,11 @@ class Main extends Component {
           <p><strong>Found a bug?</strong></p>
           <p><a href="https://github.com/fuddl/wikibase-for-web/issues/new">Write a bug report</a> or <a href="https://www.wikidata.org/w/index.php?title=Wikidata_talk%3ATools%2FWikidata_for_Web&action=edit&section=new&wvprov=sticky-header">discuss on wikidata.</a></p>
         </${Inform}>
+        ${
+          !hasResults && resolvingProgress
+            ? html`<${ResolvingProgress} progress=${resolvingProgress} manager=${manager} />`
+            : null
+        }
         ${
           suggestions?.length > 0
             ? html`<${Match}

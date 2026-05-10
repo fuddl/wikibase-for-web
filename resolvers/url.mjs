@@ -2,13 +2,15 @@ import { UrlClaim } from '../types/Claim.mjs';
 
 export const url = {
 	id: 'url',
-	applies: async function (location, { wikibase, queryManager, metadata }) {
+	applies: async function (location, { wikibase, queryManager, metadata, signal }) {
 		if (!wikibase.sparqlEndpoint) {
 			return [];
 		}
 		const urlProperties = await queryManager.query(
 			wikibase,
 			queryManager.queries.urlProperties,
+			{},
+			signal
 		);
 
 		if (urlProperties.length === 0) {
@@ -51,7 +53,7 @@ export const url = {
 				? url.replace(/^(http:\/\/)www\./, '$1')
 				: url,
 	},
-	resolve: async function ({ matchFromUrl }, { wikibase, queryManager }) {
+	resolve: async function ({ matchFromUrl, matchProperties }, { wikibase, queryManager, signal }) {
 
 		// including these urls will significantly slow down these queries
 		// we would resolve them with the siteLinks resolver anyway
@@ -62,27 +64,25 @@ export const url = {
 			}
 		}
 
-		const hrefs = [];
+		const hrefs = new Set();
+		hrefs.add(matchFromUrl);
+		hrefs.add(this.urlFuzziness.trailingSlash(matchFromUrl));
+		hrefs.add(this.urlFuzziness.noTrailingSlash(matchFromUrl));
+		hrefs.add(this.urlFuzziness.secure(matchFromUrl));
+		hrefs.add(this.urlFuzziness.noScecure(matchFromUrl));
+		hrefs.add(this.urlFuzziness.noWww(matchFromUrl));
+		hrefs.add(this.urlFuzziness.noIndexHtml(matchFromUrl));
 
-		const fuzzyPermutation = binaryVariations(Object.keys(this.urlFuzziness));
-		for (const fuzzy of fuzzyPermutation) {
-			let variation = matchFromUrl;
-			for (const fuzz of fuzzy) {
-				variation = this.urlFuzziness[fuzz](variation);
-			}
-			if (variation && !hrefs.includes(variation)) {
-				if (!isPartOfUrls.includes(variation)) {
-					hrefs.push(variation);
-				}
-			}
-		}
+		const filteredHrefs = Array.from(hrefs).filter(h => !isPartOfUrls.includes(h));
 
 		const results = await queryManager.query(
 			wikibase,
 			queryManager.queries.itemByUrl,
 			{
-				urls: hrefs,
+				urls: filteredHrefs,
+				properties: matchProperties,
 			},
+			signal
 		);
 
 		const found = [];
