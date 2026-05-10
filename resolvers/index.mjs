@@ -131,8 +131,11 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 		this.abortController.abort();
 	}
 
-	const { disabledResolvers } = await browser.storage.sync.get('disabledResolvers');
-	const activeResolvers = this.list.filter(r => !(disabledResolvers || []).includes(r.id));
+	const settings = await browser.storage.sync.get('disabledResolvers');
+	const disabledResolvers = settings.disabledResolvers !== undefined 
+		? settings.disabledResolvers 
+		: ['error429', 'error5xx'];
+	const activeResolvers = this.list.filter(r => !disabledResolvers.includes(r.id));
 
 	this.abortController = new AbortController();
 	const signal = this.abortController.signal;
