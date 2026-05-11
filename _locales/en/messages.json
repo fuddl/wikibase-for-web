@@ -148,6 +148,9 @@
   "resolver_sitelinks_desc": {
     "message": "Matches a Wiki to an item via it's sitelinks."
   },
+  "resolving_taking_long": {
+    "message": "Resolving process is taking longer then expected. There might be an issue."
+  },
   "resolver_url_name": {
     "message": "URL"
   },
