@@ -5,6 +5,7 @@ import { url } from './url.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlMatchPatternByDomain } from './urlMatchPatternByDomain.mjs';
 import { wikibase } from './wikibase.mjs';
+import { mediawikiCommonsFile } from './mediawiki-commons-file.mjs';
 import { error429, error5xx } from './test.mjs';
 import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
@@ -13,7 +14,7 @@ import Logger from '../modules/Logger.mjs';
 const queryManager = new WikiBaseQueryManager();
 
 const resolvers = {
-	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain, error429, error5xx],
+	list: [hash, siteLinks, url, urlMatchPatternByDomain, urlMatchPattern, wikibase, domain, mediawikiCommonsFile, error429, error5xx],
 	abortController: null,
 };
 

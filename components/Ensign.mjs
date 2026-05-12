@@ -71,9 +71,12 @@ class Ensign extends Component {
           descLang: description.language,
         };
       } else {
-        return {
-          desc: html`<${AutoDesc} id=${localId} api=${autoDescApi} />`,
-        };
+        if (autoDescApi) {
+          return {
+            desc: html`<${AutoDesc} id=${localId} api=${autoDescApi} />`,
+          };
+        }
+        return { desc: '' };
       }
     })();
 
@@ -111,11 +114,11 @@ class Ensign extends Component {
       <div
         class="ensign ${this.state.mayEdit ? 'ensign--editable' : null}"
         onMouseEnter=${e => {
-          this.checkEditPermissions();
-        }}>
+        this.checkEditPermissions();
+      }}>
         <h1 class="ensign__title" lang=${label?.language}>
           ${label?.value ||
-          (lemmas ? html`<${Lament} lemmas=${lemmas} />` : null)}
+      (lemmas ? html`<${Lament} lemmas=${lemmas} />` : null)}
         </h1>
         ${' '}
         <small class="ensign__id" aria-hidden="true">
@@ -125,10 +128,10 @@ class Ensign extends Component {
         </small>
         <p class="ensign__description" lang=${descLang}>${desc}</p>
         ${editAction
-          ? html`<span class="ensign__edit">
+        ? html`<span class="ensign__edit">
               <${Edit} action=${editAction} />
             </span>`
-          : null}
+        : null}
       </div>
     `;
   }

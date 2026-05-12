@@ -15,6 +15,7 @@ import Remark from './Remark.mjs';
 import Register from './Register.mjs';
 import Haste from './Haste.mjs';
 import Refer from './Refer.mjs';
+import Mediate from './Mediate.mjs';
 import Chart from './Chart.mjs';
 import Senses from './Senses.mjs';
 import Forms from './Forms.mjs';
@@ -135,6 +136,7 @@ function enrichMonolingualTextClaims(claims, props) {
 class Entity extends Component {
   render({
     claims,
+    statements,
     descriptions,
     id,
     labels,
@@ -146,6 +148,7 @@ class Entity extends Component {
     senses,
     forms,
     title,
+    type,
   }) {
     const [wikibase, localId] = id.split(':');
     const sectionRef = useRef(null);
@@ -192,6 +195,10 @@ class Entity extends Component {
       manager.wikibases[wikibase]?.propOrder ?? null,
     );
 
+    if (typeof claims === 'undefined') {
+      claims = statements;
+    }
+
     if (!propOrder) {
       useEffect(() => {
         (async () => {
@@ -215,8 +222,6 @@ class Entity extends Component {
         })();
       }, []);
     }
-
-    //console.debug(propIcons);
 
     let mainClaims = Object.values(claims).filter(claim => {
       return !['external-id', 'url'].includes(claim[0].mainsnak.datatype);
@@ -324,9 +329,10 @@ class Entity extends Component {
 
     return html`
       <${HoverProvider}>
+        ${type == 'mediainfo' && html`<${Mediate} datavalue=${{ value: title }} datatype='commonsMedia' manager=${manager} />`}
         <section ref=${sectionRef}>
           ${(labels && descriptions) || lemmas
-            ? html`
+        ? html`
                 <${Ensign}
                   labels=${labels}
                   lemmas=${lemmas}
@@ -337,9 +343,9 @@ class Entity extends Component {
                   manager=${manager}
                   title=${title} />
               `
-            : null}
+        : null}
           ${senses
-            ? html`
+        ? html`
                 <${Senses} 
                   senses=${senses} 
                   manager=${manager} 
@@ -348,9 +354,9 @@ class Entity extends Component {
                   id=${id} 
                 />
               `
-            : null}
+        : null}
           ${forms
-            ? html`
+        ? html`
                 <${Forms} 
                   forms=${forms} 
                   manager=${manager} 
@@ -360,73 +366,73 @@ class Entity extends Component {
                   claims=${claims}
                 />
               `
-            : null}
+        : null}
           ${experimental &&
-          (('instanceOf' in manager.wikibase.props &&
-            manager.wikibase.props.instanceOf in claims) ||
-            language) &&
-          html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
+      (('instanceOf' in manager.wikibase.props &&
+        manager.wikibase.props.instanceOf in claims) ||
+        language) &&
+      html`<${Edit} icon=${'🔍︎'} action=${searchIds} />`}
           ${mainClaims.map(
-            claim =>
-              html`<${Remark}
+        claim =>
+          html`<${Remark}
                 claim=${claim}
                 references=${references}
                 manager=${manager}
                 key=${claim[0].mainsnak.property} />`,
-          )}
+      )}
           <${Hint}
             text=${mainClaims.length === 0
-              ? browser.i18n.getMessage('no_claims')
-              : null}
+        ? browser.i18n.getMessage('no_claims')
+        : null}
             icon=${'+'}
             actionTitle=${browser.i18n.getMessage('add_claims')}
             action=${addClaims} />
 
           ${quickLinkClaims.length > 0
-            ? html`
+        ? html`
                 <h2 key="links">
                   ${browser.i18n.getMessage(
-                    quickLinkClaims.length === 1 ? 'quick_link' : 'quick_links',
-                  )}
+          quickLinkClaims.length === 1 ? 'quick_link' : 'quick_links',
+        )}
                 </h2>
                 <${Haste} claims=${quickLinkClaims} manager=${manager} />
               `
-            : null}
+        : null}
           ${urlClaims.length > 0
-            ? html`
+        ? html`
                 <h2 key="links">
                   ${browser.i18n.getMessage(
-                    urlClaims.length === 1 ? 'link' : 'links',
-                  )}
+          urlClaims.length === 1 ? 'link' : 'links',
+        )}
                 </h2>
                 <${Register} claims=${urlClaims} manager=${manager} />
               `
-            : null}
+        : null}
           ${numberOfReferences > 0
-            ? html`
+        ? html`
                 <h2 key="links">
                   ${browser.i18n.getMessage(
-                    numberOfReferences === 1 ? 'reference' : 'references',
-                  )}
+          numberOfReferences === 1 ? 'reference' : 'references',
+        )}
                 </h2>
                 <${Refer}
                   references=${references}
                   manager=${manager}
                   wikibase=${wikibase} />
               `
-            : null}
+        : null}
           ${externalIdClaims.length > 0
-            ? html`
+        ? html`
                 <h2 key="external_ids">
                   ${browser.i18n.getMessage(
-                    externalIdClaims.length === 1
-                      ? 'external_id'
-                      : 'external_ids',
-                  )}
+          externalIdClaims.length === 1
+            ? 'external_id'
+            : 'external_ids',
+        )}
                 </h2>
                 <${Chart} claims=${externalIdClaims} manager=${manager} />
               `
-            : null}
+        : null}
         </section>
       </${HoverProvider}>
     `;

@@ -26,23 +26,23 @@ class Remark extends Component {
           <${Thin} id=${verb} manager=${manager} />
         </dt>
         ${objects.map(
-          object => html`
+      object => html`
             <dd id="${object.id}" class="remark__objects">
               <div class="remark__object">
                 <div class="remark__object__main">
                   <${Snack} mainsnak=${object.mainsnak} manager=${manager} />
                   ${object?.references &&
-                  html` <sup>
+        html` <sup>
                     ${object.references.map(
-                      (reference, index) =>
-                        html`<a href="#${reference.hash}"
+          (reference, index) =>
+            html`<a href="#${reference.hash}"
                             >${references[reference.hash].number}</a
                           >${index < object.references.length - 1 ? '/' : ''}`,
-                    )}</sup
+        )}</sup
                   >`}
                 </div>
                 ${object.qualifiers &&
-                html`
+        html`
                   <div class="remark__qualifiers">
                     <${Snack}
                       qualifiers=${object.qualifiers}
@@ -52,7 +52,7 @@ class Remark extends Component {
               </div>
             </dd>
           `,
-        )}
+    )}
       </dl>
     `;
   }

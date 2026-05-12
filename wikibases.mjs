@@ -302,7 +302,12 @@ const wikibases = {
 		instance: 'https://commons.wikimedia.org',
 		resolve: true,
 		icon: browser.runtime.getURL('icons/commons.svg'),
-		//sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
+		sparqlEndpoint: 'https://commons-query.wikimedia.org/sparql',
+		entitySources: {
+			P: 'wikidata',
+			Q: 'wikidata',
+			L: 'wikidata',
+		},
 	},
 };
 

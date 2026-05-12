@@ -175,6 +175,12 @@
   "resolver_wikibase_desc": {
     "message": "Directly matches a Wikibase item or property URL."
   },
+  "resolver_mediawikiCommonsFile_name": {
+    "message": "Wikimedia Commons File"
+  },
+  "resolver_mediawikiCommonsFile_desc": {
+    "message": "Resolves Wikimedia Commons File URLs to their structured data entity (M-id)."
+  },
   "resolver_domain_name": {
     "message": "Domain Name"
   },

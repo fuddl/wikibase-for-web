@@ -8,6 +8,7 @@ class WikiBaseEntityManager {
 		this.wikibases = wikibases;
 		this.entities = [];
 		this.designators = [];
+		this.datatypes = {};
 		this.languages = params.languages;
 		this.queryManager = new WikiBaseQueryManager();
 
@@ -137,6 +138,35 @@ class WikiBaseEntityManager {
 		}
 	}
 
+	async resolveDatatypes(propertyIds) {
+		const missingIds = [...new Set(propertyIds)].filter(
+			id => !this.datatypes[id],
+		);
+		if (missingIds.length === 0) return;
+
+		const byWikibase = {};
+		for (const id of missingIds) {
+			const [wikibase, localId] = id.split(':');
+			if (!byWikibase[wikibase]) byWikibase[wikibase] = [];
+			byWikibase[wikibase].push(localId);
+		}
+
+		await Promise.all(
+			Object.entries(byWikibase).map(async ([wikibase, ids]) => {
+				const url = this.wikibases[wikibase].api.getEntities({
+					ids: ids,
+					props: ['datatype'],
+				});
+				const data = await fetchJSON(url);
+				if (data.entities) {
+					for (const [localId, entity] of Object.entries(data.entities)) {
+						this.datatypes[`${wikibase}:${localId}`] = entity.datatype;
+					}
+				}
+			}),
+		);
+	}
+
 	async add(id, useCache = true, options) {
 		if (this.entities?.[id] && useCache) {
 			return this.entities[id];
@@ -149,7 +179,7 @@ class WikiBaseEntityManager {
 
 		const result = await fetchJSON(url);
 
-		const entityWithContext = this.entityAddContext({
+		const entityWithContext = await this.entityAddContext({
 			entity: result.entities[entity],
 			wikibase: wikibase,
 		});
@@ -158,45 +188,72 @@ class WikiBaseEntityManager {
 
 		return this.entities[id];
 	}
-	entityAddContext({ entity, wikibase }) {
+	idAddNamespace(id, wikibase) {
+		const entitySource = this.wikibases?.[wikibase]?.entitySources?.[id.charAt(0)];
+		if (entitySource) {
+			return `${entitySource}:${id}`;
+		}
+		return `${wikibase}:${id}`;
+	}
+	async entityAddContext({ entity, wikibase }) {
 		entity.wikibase = wikibase;
 		if (entity.lexicalCategory) {
-			entity.lexicalCategory = `${wikibase}:${entity.lexicalCategory}`;
+			entity.lexicalCategory = this.idAddNamespace(
+				entity.lexicalCategory,
+				wikibase,
+			);
 		}
 		if (entity.language) {
-			entity.language = `${wikibase}:${entity.language}`;
+			entity.language = this.idAddNamespace(entity.language, wikibase);
 		}
 		if (entity?.grammaticalFeatures?.length > 0) {
-			entity.grammaticalFeatures = entity.grammaticalFeatures.map(
-				id => `${wikibase}:${id}`,
+			entity.grammaticalFeatures = entity.grammaticalFeatures.map(id =>
+				this.idAddNamespace(id, wikibase),
 			);
 		}
 
-		const iterate = (item, prefix) => {
+		const missingDatatypes = [];
+
+		const iterate = item => {
 			if (Array.isArray(item)) {
 				// If the item is an array, iterate over its elements
-				item.forEach(element => iterate(element, prefix));
+				item.forEach(element => iterate(element));
 			} else if (typeof item === 'object' && item !== null) {
 				// If the item is an object, iterate over its properties
 				for (const key in item) {
 					if (Object.hasOwnProperty.call(item, key)) {
 						if (key === 'id' && typeof item.id === 'string') {
-							item.id = `${wikibase}:${item[key]}`;
+							item.id = this.idAddNamespace(item[key], wikibase);
 						} else if (key === 'property') {
-							item.property = `${wikibase}:${item[key]}`;
+							item.property = this.idAddNamespace(item[key], wikibase);
 						} else if (key === 'unit' && item.unit !== '1') {
 							item.unit = this.idFromEntityUrl(item[key]);
 						} else if (key === 'calendarmodel') {
 							item.calendarmodel = this.idFromEntityUrl(item[key]);
 						} else {
 							// Otherwise, recursively call the function for nested objects/arrays
-							iterate(item[key], prefix);
+							iterate(item[key]);
 						}
 					}
+				}
+				// datatype is missing on shared properties.
+				if ('datavalue' in item && !('datatype' in item)) {
+					missingDatatypes.push(item);
 				}
 			}
 		};
 		iterate(entity);
+
+		if (missingDatatypes.length > 0) {
+			const propertyIds = missingDatatypes.map(item => item.property);
+			await this.resolveDatatypes(propertyIds);
+			for (const item of missingDatatypes) {
+				if (this.datatypes[item.property]) {
+					item.datatype = this.datatypes[item.property];
+				}
+			}
+		}
+
 		return entity;
 	}
 	async fetchLanguages(wikibase, context) {
@@ -268,7 +325,7 @@ class WikiBaseEntityManager {
 
 		this.designators[id] = result.entities[entity];
 
-		return this.entityAddContext({
+		return await this.entityAddContext({
 			entity: this.designators[id],
 			wikibase: wikibase,
 		});

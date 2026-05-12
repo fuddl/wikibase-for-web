@@ -12,6 +12,7 @@ const resolverIds = [
 	'urlMatchPattern',
 	'wikibase',
 	'domain',
+	'mediawikiCommonsFile',
 	'error429',
 	'error5xx',
 ];
