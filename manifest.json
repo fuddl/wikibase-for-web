@@ -49,6 +49,12 @@
         "content/hash-change-observer.js",
         "content/element-highlighter.js"
       ]
+    },
+    {
+      "matches": ["https://www.openstreetmap.org/export/embed.html*"],
+      "run_at": "document_end",
+      "js": ["content/openstreetmap-compact.js"],
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
