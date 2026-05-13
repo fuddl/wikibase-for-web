@@ -25,10 +25,10 @@ if (urlParams.get('attribution') == 'minimal') {
 	const minimalAttributionStyle = document.createElement('style');
 	minimalAttributionStyle.textContent = 
 	`.minimal-attribution {
-	  position: absolute;
-	  inset: auto 0px 0px auto;
-	  background-color: rgba(255, 255, 255, 0.5);
-	  padding: 0px 5px;
+		position: absolute;
+		inset: auto 0px 0px auto;
+		background-color: rgba(255, 255, 255, 0.5);
+		padding: 0px 5px;
 		color: rgba(0,0,0,.75);
 		font: 12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;
 		a {
@@ -47,11 +47,11 @@ if (urlParams.get('attribution') == 'minimal') {
 	minimalAttribution.appendChild(link);
 
 	const donateLink = document.createElement('a');
-  donateLink.href = 'https://donate.openstreetmap.org';
-  donateLink.target = '_blank';
-  donateLink.textContent = ' ♥';
-  donateLink.title = 'Make a Donation';
-  donateLink.style.textDecoration = 'none';
+	donateLink.href = 'https://donate.openstreetmap.org';
+	donateLink.target = '_blank';
+	donateLink.textContent = ' ♥';
+	donateLink.title = 'Make a Donation';
+	donateLink.style.textDecoration = 'none';
 	minimalAttribution.appendChild(donateLink);
 
 	document.body.appendChild(minimalAttribution);
