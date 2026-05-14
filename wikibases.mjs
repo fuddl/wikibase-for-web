@@ -59,6 +59,7 @@ const wikibases = {
 			formatterURL: 'P1630',
 			grammaticalGender: 'P5185',
 			hasCharacteristic: 'P1552',
+			height: 'P2048',
 			hyperonym: 'P6593',
 			icon: 'P2910',
 			image: 'P18',
@@ -124,6 +125,7 @@ const wikibases = {
 			urlMatchPattern: 'P8966',
 			urlMatchReplacementValue: 'P8967',
 			websiteTitleExtractPattern: 'P10999',
+			width: 'P2049',
 			wikimediaLanguageCode: 'P424',
 		},
 		items: {
@@ -153,6 +155,7 @@ const wikibases = {
 			musicalWork: 'Q2188189',
 			muteH: 'Q131441009',
 			obsoleteProperty: 'Q18644427',
+			pixel: 'Q355198',
 			playlist: 'Q1569406',
 			propertyLinkingToArticlesInMediaWikiWebsites: 'Q123667996',
 			propertyScopeConstraint: 'Q53869507',
@@ -385,6 +388,24 @@ try {
 
 Object.keys(wikibases).forEach(name => {
 	wikibases[name].id = name;
+
+	// Copy props and items from source Wikibases if they are shared
+	if (wikibases[name].entitySources) {
+		const sources = wikibases[name].entitySources;
+		Object.entries({ P: 'props', Q: 'items' }).forEach(([prefix, prop]) => {
+			if (sources[prefix] && wikibases[sources[prefix]]?.[prop]) {
+				if (!wikibases[name][prop]) {
+					wikibases[name][prop] = wikibases[sources[prefix]][prop];
+				} else {
+					wikibases[name][prop] = {
+						...wikibases[sources[prefix]][prop],
+						...wikibases[name][prop],
+					};
+				}
+			}
+		});
+	}
+
 	const wgScriptPath = wikibases[name]?.wgScriptPath ?? '/w';
 	wikibases[name].api = WBK({
 		instance: wikibases[name].instance,

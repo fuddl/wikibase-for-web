@@ -46,8 +46,13 @@ class Main extends Component {
 
     return html`
       <div class="main">
-        <${Inform} id="please-feedback">
-          <p><strong>Like this extension?</strong></p>
+        <${Inform} id="whats-new-2026-05">
+          <p><strong>What's new?</strong></p>
+          <ul>
+            <li>You can now display <a href="https://commons.wikimedia.org/wiki/File:Takht-i-Bahi_Buddhist_Monastery.jpg">Mediaitems on Wikimedia Commons.</a></li>
+            <li>Maps now use OpenStreetMap's vector tiles.</li>
+            <li>The sidebar now shows the resolvation process in case it takes longer then usual. You can disable individual resolvers if you don't need them.</li>
+          </ul>
           <p>Please consider <a href="https://addons.mozilla.org/en-US/firefox/addon/wikidata/">leaving a review.</a></p>
           <p><strong>Found a bug?</strong></p>
           <p><a href="https://github.com/fuddl/wikibase-for-web/issues/new">Write a bug report</a> or <a href="https://www.wikidata.org/w/index.php?title=Wikidata_talk%3ATools%2FWikidata_for_Web&action=edit&section=new&wvprov=sticky-header">discuss on wikidata.</a></p>

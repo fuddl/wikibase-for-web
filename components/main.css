@@ -1,7 +1,5 @@
 main {
-  --main-padding: 1rem;
   background: white;
-  padding: var( --main-padding);
   min-height: 100vh;
 }
 
@@ -13,7 +11,6 @@ main {
 
 .main__content {
   background: var(--background);
-  padding: 1rem;
 }
 
 .main__content:not(:first-child) {

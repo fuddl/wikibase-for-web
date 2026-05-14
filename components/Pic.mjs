@@ -1,4 +1,5 @@
 import { h, Component } from '../importmap/preact/src/index.js';
+import { useState } from '../importmap/preact/hooks/src/index.js';
 import htm from '../importmap/htm/src/index.mjs';
 import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
@@ -8,13 +9,20 @@ class Pic extends Component {
   componentDidMount() {
     requireStylesheet(browser.runtime.getURL('/components/pic.css'));
   }
-  render({ src, sources, scaleable, onLoad }) {
+  render({ src, sources, scaleable, onLoad, aspectRatio }) {
+    const [loaded, setLoaded] = useState(false);
+    const handleOnLoad = event => {
+      console.log('loading')
+      setLoaded(true);
+      onLoad && onLoad();
+    };
+    const ratioStyle = !loaded && aspectRatio && `--pic-aspect-ratio:${aspectRatio};`;
     return html`<picture class="pic ${scaleable && 'pic--scaleable'}">
       ${sources &&
       sources.map(source => {
         html`<source srcset=${source.srcSet} />`;
       })}
-      <img class="pic__placeholder" src=${src} loading="lazy" onLoad=${onLoad} />
+      <img class="pic__placeholder ${loaded ? 'pic__placeholder--loaded' : 'pic__placeholder--loading'}" src=${src} loading="lazy" onLoad=${handleOnLoad} style=${ratioStyle} />
     </picture>`;
   }
 }

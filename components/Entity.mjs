@@ -9,6 +9,7 @@ import htm from '../importmap/htm/src/index.mjs';
 import Edit from './Edit.mjs';
 import Hint from './Hint.mjs';
 import { HoverProvider } from '../modules/hoverState.mjs';
+import { requireStylesheet } from '../modules/requireStylesheet.mjs';
 
 import Ensign from './Ensign.mjs';
 import Remark from './Remark.mjs';
@@ -134,6 +135,9 @@ function enrichMonolingualTextClaims(claims, props) {
 }
 
 class Entity extends Component {
+  componentDidMount() {
+    requireStylesheet(browser.runtime.getURL('/components/entity.css'));
+  }
   render({
     claims,
     statements,
@@ -329,8 +333,9 @@ class Entity extends Component {
 
     return html`
       <${HoverProvider}>
-        ${type == 'mediainfo' && html`<${Mediate} datavalue=${{ value: title }} datatype='commonsMedia' manager=${manager} />`}
-        <section ref=${sectionRef}>
+        <section class="entity" ref=${sectionRef}>
+        ${type == 'mediainfo' && html`<${Mediate} datavalue=${{ value: title }} datatype='commonsMedia' manager=${manager} mediaInfo=${statements} />`}
+        <header class="entity__head">
           ${(labels && descriptions) || lemmas
         ? html`
                 <${Ensign}
@@ -344,6 +349,8 @@ class Entity extends Component {
                   title=${title} />
               `
         : null}
+        </header>
+        <div class="entity__body">
           ${senses
         ? html`
                 <${Senses} 
@@ -433,6 +440,7 @@ class Entity extends Component {
                 <${Chart} claims=${externalIdClaims} manager=${manager} />
               `
         : null}
+        </div>
         </section>
       </${HoverProvider}>
     `;

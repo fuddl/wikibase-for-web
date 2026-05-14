@@ -7,9 +7,26 @@ import Watch from './Watch.mjs';
 
 const html = htm.bind(h);
 
+const getAspectRatio = (mediaInfo, manager) => {
+  const sizeProps = {
+    width: manager.wikibase.props?.width,
+    height: manager.wikibase.props?.height,
+  };
+  const pixelProp = manager.wikibase.items.pixel;
+  const size = {};
+  for (const [dimension, property] of Object.entries(sizeProps)) {
+    mediaInfo?.[property]?.forEach(item => {
+      if (item.mainsnak.datavalue.value.unit.endsWith(pixelProp)) {
+        size[dimension] = Number.parseInt(item.mainsnak.datavalue.value.amount, 10);
+      }
+    });
+  }
+  return size.height && size.width ? `${size.width}/${size.height}` : null;
+};
+
 const info = (href, text) => html`<small><a href="${href}">${text}</a></small>`;
 
-const Mediate = ({ datavalue, datatype, manager }) => {
+const Mediate = ({ datavalue, datatype, manager, mediaInfo = {} }) => {
   const fileName = encodeURIComponent(datavalue.value);
   const mediaPrefix = {
     localMedia: `${manager.wikibase.api.instance.root}/index.php?title=Special:Redirect/file/`,
@@ -20,11 +37,13 @@ const Mediate = ({ datavalue, datatype, manager }) => {
     localMedia: manager.wikibase.api.instance.root,
     commonsMedia: 'https://commons.wikimedia.org/wiki',
   };
+
   const srcUrl = `${mediaPrefix[datatype]}${fileName}`;
   const href = `${hrefPrefix[datatype]}/File:${fileName}`;
   let image = '';
   let audio = '';
   let video = '';
+  const aspectRatio = getAspectRatio(mediaInfo, manager);
   if (fileName.match(/\.svg$/i)) {
     image = {
       src: srcUrl,
@@ -56,7 +75,7 @@ const Mediate = ({ datavalue, datatype, manager }) => {
   const media_info = browser.i18n.getMessage('media_info');
   return html`
     <div class="medius">
-      ${image && html`<a href="${href}"><${Pic} ...${image} /></a>`}
+      ${image && html`<a href="${href}"><${Pic} ...${image} aspectRatio=${aspectRatio} /></a>`}
       ${audio && html`<${Play} ...${audio} />${info(href, media_info)}`}
       ${video && html`<${Watch} ...${video} />${info(href, media_info)}`}
     </div>
