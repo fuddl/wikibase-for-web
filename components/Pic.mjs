@@ -15,7 +15,7 @@ class Pic extends Component {
       setLoaded(true);
       onLoad && onLoad();
     };
-    const ratioStyle = !loaded && aspectRatio && `--pic-aspect-ratio:${aspectRatio};`;
+    const ratioStyle = aspectRatio && `--pic-aspect-ratio: ${aspectRatio};`;
     return html`<picture class="pic ${scaleable ? 'pic--scaleable' : ''}">
       ${sources &&
       sources.map(source => html`<source srcset=${source.srcSet} sizes="auto" />`)}

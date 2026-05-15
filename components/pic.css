@@ -1,7 +1,6 @@
 .pic__placeholder {
 	vertical-align: bottom;
 	display: block;
-	aspect-ratio: var(--pic-aspect-ratio);
 }
 
 .pic__placeholder--loading {
