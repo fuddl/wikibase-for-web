@@ -32,10 +32,10 @@ let isSidebarOpen = false;
 async function checkSidebarState() {
 	try {
 		isSidebarOpen = await browser.sidebarAction.isOpen({});
-		
+
 		// Start the sidebar check interval
 		checkSidebarToUnhighlight(true);
-		
+
 		// If sidebar is open on startup, initialize with current tab
 		if (isSidebarOpen) {
 			const currentTab = await getCurrentTab();
@@ -90,17 +90,17 @@ async function isTabStillValidForUpdate(tabId, originalUrl) {
 	// Check if the tab is still the active tab
 	const currentTab = await getCurrentTab();
 	const isStillActive = currentTab.id === tabId;
-	
+
 	// Check if the URL is still the same (no navigation occurred)
 	const noNavigation = originalUrl && currentTab.url === originalUrl;
-	
+
 	// Return true only if the tab is still active and no navigation occurred
 	return isStillActive && noNavigation;
 }
 
 async function updateSidebar(resolved) {
 	if (!isSidebarOpen) return;
-	
+
 	await browser.runtime.sendMessage({
 		type: 'resolved',
 		candidates: resolved,
@@ -120,10 +120,10 @@ async function resolveAndUpdateSidebar(url, tabId) {
 		}
 		return cachedResults;
 	}
-	
+
 	// Only do a new resolution if the sidebar is open
 	if (!isSidebarOpen) return null;
-	
+
 	const results = await resolveUrl(url);
 	if (results) {
 		await updateSidebar(results);
@@ -138,7 +138,7 @@ async function resolveAndUpdateSidebar(url, tabId) {
 
 async function resolveCurrentTab(tabId) {
 	const currentTab = await getCurrentTab();
-	
+
 	// First check cache before doing anything else
 	if (resolvedCache.request(tabId)) {
 		const cachedResults = resolvedCache.request(tabId);
@@ -147,10 +147,10 @@ async function resolveCurrentTab(tabId) {
 		}
 		return cachedResults;
 	}
-	
+
 	// Don't proceed with resolution if sidebar is closed
 	if (!isSidebarOpen) return null;
-	
+
 	if (
 		currentTab.url.startsWith('about:') ||
 		currentTab.url.startsWith('chrome:') ||
@@ -161,18 +161,18 @@ async function resolveCurrentTab(tabId) {
 		// early escape internal urls and navigation that occours in frames
 		return null;
 	}
-	
+
 	let results = [];
 	if (tabId === currentTab.id) {
 		// Store the URL we're resolving to check later if navigation occurred
 		const urlToResolve = currentTab.url;
-		
+
 		results = await resolveUrl(currentTab.url);
-		
+
 		if (results && results.length > 0) {
 			// Always cache results
 			resolvedCache.add(tabId, currentTab.url, results);
-			
+
 			// Only update sidebar if the tab is still active and no navigation occurred
 			if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
 				await updateSidebar(results);
@@ -185,16 +185,16 @@ async function resolveCurrentTab(tabId) {
 			resolvedCache.add(tabId, currentTab.url, results);
 		}
 	}
-	
+
 	return results;
 }
 
 browser.webNavigation.onCommitted.addListener(async function (details) {
 	const currentTab = await getCurrentTab();
-	
+
 	// Always clear cache for the tab that navigated
 	resolvedCache.remove(details.tabId);
-	
+
 	// Only resolve if sidebar is open
 	if (isSidebarOpen && currentTab.id === details.tabId) {
 		await resolveCurrentTab(details.tabId);
@@ -205,15 +205,15 @@ browser.webNavigation.onCommitted.addListener(async function (details) {
 let historyStateTimer = null;
 
 browser.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
-  clearTimeout(historyStateTimer);
+	clearTimeout(historyStateTimer);
 
-  historyStateTimer = setTimeout(async () => {
-    const currentTab = await getCurrentTab();
-    if (isSidebarOpen && currentTab.id === details.tabId) {
-      resolvedCache.remove(details.tabId);
-      await resolveCurrentTab(details.tabId);
-    }
-  }, 300);
+	historyStateTimer = setTimeout(async () => {
+		const currentTab = await getCurrentTab();
+		if (isSidebarOpen && currentTab.id === details.tabId) {
+			resolvedCache.remove(details.tabId);
+			await resolveCurrentTab(details.tabId);
+		}
+	}, 300);
 });
 
 
@@ -238,7 +238,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
 		if (!message.url) {
 			const currentTab = await getCurrentTab();
-			
+
 			// Check cache first
 			if (resolvedCache.request(currentTab.id)) {
 				const cachedResults = resolvedCache.request(currentTab.id);
@@ -247,20 +247,20 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 				}
 				return Promise.resolve(cachedResults);
 			}
-			
+
 			// Only do an actual resolution if the sidebar is open
 			if (!isSidebarOpen) return Promise.resolve('sidebar closed');
-			
+
 			// Store current URL to check if navigation occurred
 			const urlToResolve = currentTab.url;
 			const tabToResolve = currentTab.id;
-			
+
 			const results = await resolveUrl(currentTab.url);
-			
+
 			if (results && results.length > 0) {
 				// Always cache results
 				resolvedCache.add(currentTab.id, currentTab.url, results);
-				
+
 				// Only update the sidebar if the tab is still active and no navigation occurred
 				if (isSidebarOpen && await isTabStillValidForUpdate(tabToResolve, urlToResolve)) {
 					await updateSidebar(results);
@@ -282,25 +282,25 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		return Promise.resolve({ response: metadata });
 	} else if (message.type === 'hash_changed') {
 		const tabId = await findTabByUrl(message.url);
-		
+
 		if (tabId) {
 			// Store the URL to check for navigation
 			const urlToResolve = message.url;
-			
+
 			// Always do a new resolution for hash changes as they might change the entity
 			const results = await resolveUrl(message.url);
-			
+
 			if (results && results.length > 0) {
 				// Always update the cache
 				resolvedCache.add(tabId, message.url, results);
-				
+
 				// Only update the sidebar if it's open and this is still the active tab
 				if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
 					await updateSidebar(results);
 				}
 			}
 		}
-		
+
 		return Promise.resolve('done');
 	} else if (message.type === 'request_finish') {
 		if (resolvers.abortController) {
@@ -374,11 +374,11 @@ async function checkSidebarToUnhighlight(active) {
 
 		sidebarCheckInterval = setInterval(async () => {
 			const sidebarPanel = await browser.sidebarAction.isOpen({});
-			
+
 			// Update the global sidebar state
 			if (isSidebarOpen !== sidebarPanel) {
 				isSidebarOpen = sidebarPanel;
-				
+
 				// If sidebar just opened, update with cached content for current tab
 				if (isSidebarOpen) {
 					const currentTab = await getCurrentTab();
@@ -394,7 +394,7 @@ async function checkSidebarToUnhighlight(active) {
 					}
 				}
 			}
-			
+
 			if (!sidebarPanel) {
 				// If the sidebar is closed, send 'unhighlight_links' to all tabs
 				for (const tab of await browser.tabs.query(contentTabsQuery)) {
@@ -423,39 +423,82 @@ const requestFilter = {
 	),
 };
 
+const pendingEdits = new Map();
+
+// detects if an entity was changed in order to possibly reload and rerender 
+// the entity in the sidebar.
 browser.webRequest.onCompleted.addListener(function (details) {
 	if (details.method === 'POST') {
 		const wbk = Object.values(wikibases).find(
 			entry => details.url.startsWith(entry.api.instance.apiEndpoint),
 		);
 
-		const editedEnity = details.originUrl
-			.replace(wbk.instance, '')
-			.match(/([QPLM]\d+)/);
+		if (!wbk) return;
 
-		if (editedEnity) {
+		let editedEntity = pendingEdits.get(details.requestId);
+		pendingEdits.delete(details.requestId);
+
+		if (!editedEntity) {
+			const match = details.originUrl
+				.replace(wbk.instance, '')
+				.match(/([QPLM]\d+)/);
+			if (match) {
+				editedEntity = match[0];
+			}
+		}
+
+		if (editedEntity) {
 			browser.runtime
 				.sendMessage({
 					type: 'update_entity',
-					entity: `${wbk.id}:${editedEnity[0]}`,
+					entity: `${wbk.id}:${editedEntity}`,
 				})
-				.then(response => {})
+				.then(response => { })
 				.catch(error => console.error('Message failed:', error));
 		}
 	}
+}, requestFilter);
+
+browser.webRequest.onErrorOccurred.addListener(function (details) {
+	pendingEdits.delete(details.requestId);
 }, requestFilter);
 
 browser.webRequest.onBeforeRequest.addListener(
 	function (details) {
 		if (details.method === 'POST') {
 			const wbk = Object.values(wikibases).find(
-				entry => entry.api.instance.apiEndpoint == details.url,
+				entry => details.url.startsWith(entry.api.instance.apiEndpoint),
 			);
+			if (!wbk) return;
+
 			const tracker = new WikibaseEntityUsageTracker(wbk.id);
 			const action = details.requestBody?.formData?.action;
 			if (!action) {
 				return;
 			}
+
+			const formData = details.requestBody.formData;
+			let entityId = null;
+
+			if (formData.entity && formData.entity[0]) {
+				entityId = formData.entity[0];
+			} else if (formData.id && formData.id[0]) {
+				entityId = formData.id[0];
+			} else if (formData.claim && formData.claim[0]) {
+				try {
+					const claimObj = JSON.parse(formData.claim[0]);
+					if (claimObj.id) entityId = claimObj.id.split('$')[0];
+				} catch (e) {
+					entityId = formData.claim[0].split('|')[0].split('$')[0];
+				}
+			} else if (formData.statement && formData.statement[0]) {
+				entityId = formData.statement[0].split('|')[0].split('$')[0];
+			}
+
+			if (entityId) {
+				pendingEdits.set(details.requestId, entityId);
+			}
+
 
 			if (action.includes('wbcreateclaim')) {
 				if (details.requestBody?.formData?.entity?.length) {
@@ -493,23 +536,23 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
 
 browser.browserAction.onClicked.addListener(async () => {
 	await browser.sidebarAction.toggle();
-	
+
 	// Update sidebar state after toggle
 	isSidebarOpen = await browser.sidebarAction.isOpen({});
-	
+
 	// Start/restart the check interval
 	checkSidebarToUnhighlight(isSidebarOpen);
 });
 
 // Add listener for keyboard shortcuts
 browser.commands.onCommand.addListener(async (command) => {
-    if (command === "toggle-sidebar") {
-        await browser.sidebarAction.toggle();
-        
-        // Update sidebar state after toggle
-        isSidebarOpen = await browser.sidebarAction.isOpen({});
-        
-        // Start/restart the check interval
-        checkSidebarToUnhighlight(isSidebarOpen);
-    }
+	if (command === "toggle-sidebar") {
+		await browser.sidebarAction.toggle();
+
+		// Update sidebar state after toggle
+		isSidebarOpen = await browser.sidebarAction.isOpen({});
+
+		// Start/restart the check interval
+		checkSidebarToUnhighlight(isSidebarOpen);
+	}
 });
