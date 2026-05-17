@@ -133,8 +133,8 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 	}
 
 	const settings = await browser.storage.sync.get('disabledResolvers');
-	const disabledResolvers = settings.disabledResolvers !== undefined 
-		? settings.disabledResolvers 
+	const disabledResolvers = settings.disabledResolvers !== undefined
+		? settings.disabledResolvers
 		: ['error429', 'error5xx'];
 	const activeResolvers = this.list.filter(r => !disabledResolvers.includes(r.id));
 
@@ -161,6 +161,18 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 				await Promise.all(
 					wikibaseNames.map(async name => {
 						if (signal.aborted) return;
+
+						if (wikibases[name].disabledResolvers?.includes(resolver.id)) {
+							await browser.runtime.sendMessage({
+								type: 'resolving_progress',
+								url,
+								resolver: resolver.id,
+								wikibase: name,
+								applies: false,
+							});
+							return;
+						}
+
 						const context = {
 							wikibase: wikibases[name],
 							queryManager: queryManager,

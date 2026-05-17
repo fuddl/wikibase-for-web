@@ -311,6 +311,8 @@ const wikibases = {
 			Q: 'wikidata',
 			L: 'wikidata',
 		},
+		fileNamespace: 'File',
+		disabledResolvers: ['domain', 'urlMatchPattern', 'urlMatchPatternByDomain', 'url', 'wikibase'],
 	},
 };
 
