@@ -426,7 +426,7 @@ const requestFilter = {
 browser.webRequest.onCompleted.addListener(function (details) {
 	if (details.method === 'POST') {
 		const wbk = Object.values(wikibases).find(
-			entry => entry.api.instance.apiEndpoint == details.url,
+			entry => details.url.startsWith(entry.api.instance.apiEndpoint),
 		);
 
 		const editedEnity = details.originUrl
