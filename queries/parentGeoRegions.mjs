@@ -41,7 +41,18 @@ export const parentGeoRegions = {
         const bindings = results.bindings;
         const parseWikidataPoint = parentGeoRegions.parseWikidataPoint;
 
-        return bindings.map(row => {
+        const getBboxSize = (bbox) => {
+            if (!bbox) return Infinity;
+            const [west, south, east, north] = bbox;
+            let width = east - west;
+            if (width < 0) {
+                width += 360;
+            }
+            const height = Math.abs(north - south);
+            return width * height;
+        };
+
+        const regions = bindings.map(row => {
             // Extract raw string values safely
             const west = parseWikidataPoint(row.westPoint?.value);
             const south = parseWikidataPoint(row.southPoint?.value);
@@ -55,5 +66,9 @@ export const parentGeoRegions = {
                 bbox: west && south && east && north ? [west.lng, south.lat, east.lng, north.lat] : null
             };
         });
+
+        regions.sort((a, b) => getBboxSize(a.bbox) - getBboxSize(b.bbox));
+
+        return regions;
     },
 };

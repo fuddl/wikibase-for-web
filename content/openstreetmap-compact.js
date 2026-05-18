@@ -14,6 +14,12 @@ if (urlParams.get('controls') == 'false') {
 	document.head.appendChild(style);
 }
 
+if (urlParams.get('zoomDisabled') == 'true') {
+	const style = document.createElement('style');
+    style.textContent = '#map, .maplibregl-canvas { pointer-events: none !important; }';
+    document.head.appendChild(style);
+}
+
 if (urlParams.get('attribution') == 'minimal') {
 	const style = document.createElement('style');
 	style.textContent = '.maplibregl-ctrl-bottom-right { display: none !important; }';

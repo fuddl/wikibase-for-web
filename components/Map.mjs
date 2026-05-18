@@ -16,6 +16,21 @@ function getBbox(lat, lon, precision) {
   return `${minLon},${minLat},${maxLon},${maxLat}`;
 }
 
+function bboxAspectRatio(bbox) {
+  if (bbox) {
+    const [minLon, minLat, maxLon, maxLat] = bbox;
+    const width = Math.abs(maxLon - minLon);
+    const height = Math.abs(maxLat - minLat);
+    if (height > 0) {
+      // Calculate visual aspect ratio for Web Mercator projection
+      const midLat = (minLat + maxLat) / 2;
+      const ratio = (width * Math.cos(midLat * Math.PI / 180)) / height;
+      return ratio;
+    }
+  }
+  return '';
+}
+
 class Map extends Component {
   componentDidMount() {
     requireStylesheet(browser.runtime.getURL('/components/map.css'));
@@ -24,6 +39,7 @@ class Map extends Component {
     const src = browser.runtime.getURL(`sidebar/map.html`);
 
     const [mapBbox, setMapBbox] = useState(bbox);
+    const [aspectRatio, setAspectRatio] = useState(bboxAspectRatio(mapBbox));
 
     useEffect(() => {
       const doFetch = async () => {
@@ -48,23 +64,14 @@ class Map extends Component {
       }
     }, []);
 
-    let style = '';
-    if (bbox) {
-      const [minLon, minLat, maxLon, maxLat] = bbox.split(',').map(Number);
-      const width = Math.abs(maxLon - minLon);
-      const height = Math.abs(maxLat - minLat);
-      if (height > 0) {
-        // Calculate visual aspect ratio for Web Mercator projection
-        const midLat = (minLat + maxLat) / 2;
-        const ratio = (width * Math.cos(midLat * Math.PI / 180)) / height;
-        style = `--intrinisic-aspectratio: ${ratio};`;
-      }
-    }
+    useEffect(() => {
+      setAspectRatio(bboxAspectRatio(mapBbox))
+    }, [mapBbox]);
 
     return html`<iframe
       class="map"
-      style=${style || null}
-      src="https://www.openstreetmap.org/export/embed.html?layer=shortbread&marker=${latitude},${longitude}&bbox=${mapBbox ?? ''}&controls=false&attribution=minimal"
+      style=${`--intrinisic-aspectratio: ${aspectRatio}` || null}
+      src="https://www.openstreetmap.org/export/embed.html?layer=shortbread&marker=${latitude},${longitude}&bbox=${mapBbox ?? ''}&controls=false&attribution=minimal&zoomDisabled=true"
       loading="lazy"></iframe>`;
   }
 }

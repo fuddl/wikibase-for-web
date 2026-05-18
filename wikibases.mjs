@@ -48,6 +48,7 @@ const wikibases = {
 			class: 'P2308',
 			conjugationClass: 'P5186',
 			countsInstancesOf: 'P10927',
+			country: 'P17',
 			demonymOf: 'P6271',
 			domainName: 'P13337',
 			duration: 'P2047',
