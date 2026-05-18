@@ -47,7 +47,6 @@ const wikibases = {
 			auxiliaryVerb: 'P5401',
 			class: 'P2308',
 			conjugationClass: 'P5186',
-			coordinateLocation: 'P625',
 			countsInstancesOf: 'P10927',
 			demonymOf: 'P6271',
 			domainName: 'P13337',
@@ -73,6 +72,8 @@ const wikibases = {
 			languageOfWorkOrName: 'P407',
 			languageStyle: 'P6191',
 			location: 'P276',
+			locatedInTheAdministrativeTerritorialEntity: 'P131',
+			locatedInOrOnPhysicalFeature: 'P706',
 			locationOfSenseUsage: 'P6084',
 			mastodonAddress: 'P4033',
 			mediaLegend: 'P2096',
@@ -127,6 +128,15 @@ const wikibases = {
 			websiteTitleExtractPattern: 'P10999',
 			width: 'P2049',
 			wikimediaLanguageCode: 'P424',
+
+			/* coordinates */
+			coordinateLocation: 'P625',
+			coordinatesOfEasternmostPoint: 'P1334',
+			coordinatesOfGeographicCenter: 'P5140',
+			coordinatesOfNorthernmostPoint: 'P1332',
+			coordinatesOfSouthernmostPoint: 'P1333',
+			coordinatesOfWesternmostPoint: 'P1335',
+
 		},
 		items: {
 			album: 'Q482994',

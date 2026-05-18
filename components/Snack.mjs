@@ -54,7 +54,7 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
             ...${mainsnak.datavalue.value}
             manager=${manager} />`;
         case 'globe-coordinate':
-          return html`<${Map} ...${mainsnak.datavalue.value} />`;
+          return html`<${Map} ...${mainsnak.datavalue.value} manager=${manager}  />`;
         default:
           return html`<span>
             ${`Unsupported datatype ${mainsnak.datatype}`}

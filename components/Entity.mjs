@@ -134,6 +134,92 @@ function enrichMonolingualTextClaims(claims, props) {
   });
 }
 
+function enrichGeoClaims(claims, props, contextId) {
+  const bboxProps = [
+    'coordinatesOfEasternmostPoint',
+    'coordinatesOfNorthernmostPoint',
+    'coordinatesOfSouthernmostPoint',
+    'coordinatesOfWesternmostPoint',
+  ];
+
+  const enrichableProps = [
+    'coordinatesOfGeographicCenter',
+  ];
+
+  const onlyAddContextProps = [
+    'coordinateLocation',
+    'coordinatesOfEasternmostPoint',
+    'coordinatesOfNorthernmostPoint',
+    'coordinatesOfSouthernmostPoint',
+    'coordinatesOfWesternmostPoint',
+  ];
+
+  const getPropId = name => props[name];
+
+  const bboxPropIds = bboxProps.map(getPropId);
+  const enrichablePropIds = enrichableProps.map(getPropId).filter(id => id);
+
+  const getBestClaim = claimGroup => {
+    if (!claimGroup) return null;
+    return (
+      claimGroup.find(c => c.rank === 'preferred') ||
+      claimGroup.find(c => c.rank === 'normal')
+    );
+  };
+
+  if (
+    bboxPropIds.every(id => id) &&
+    bboxPropIds.every(id => id in claims)
+  ) {
+
+    const bboxCoords = bboxPropIds.map(
+      id => getBestClaim(claims[id])?.mainsnak?.datavalue?.value,
+    );
+    if (bboxCoords.every(coord => coord)) {
+      console.debug('Enriching with bbox')
+      const minLon = bboxCoords[3].longitude;
+      const minLat = bboxCoords[2].latitude;
+      const maxLon = bboxCoords[0].longitude;
+      const maxLat = bboxCoords[1].latitude;
+      const bboxStr = `${minLon},${minLat},${maxLon},${maxLat}`;
+
+      let enrichedAny = false;
+
+      enrichablePropIds.forEach(id => {
+        if (claims[id]) {
+          const bestClaim = getBestClaim(claims[id]);
+          if (bestClaim && bestClaim.mainsnak?.datavalue?.value) {
+            bestClaim.mainsnak.datavalue.value.bbox = bboxStr;
+            bestClaim.mainsnak.datavalue.value.contextId = contextId;
+            enrichedAny = true;
+          }
+        }
+      });
+
+      if (enrichedAny) {
+        bboxPropIds.forEach(id => {
+          //if (claims[id]) {
+          //  claims[id].forEach(c => (c.hidden = true));
+          //}
+        });
+      }
+    }
+  }
+
+  const onlyAddContextIds = onlyAddContextProps.map(getPropId).filter(id => id);
+
+  onlyAddContextIds.forEach(id => {
+    if (claims[id]) {
+      const bestClaim = getBestClaim(claims[id]);
+      if (bestClaim && bestClaim.mainsnak?.datavalue?.value) {
+        bestClaim.mainsnak.datavalue.value.contextId = contextId;
+      }
+    }
+  })
+
+  return claims;
+}
+
 class Entity extends Component {
   componentDidMount() {
     requireStylesheet(browser.runtime.getURL('/components/entity.css'));
@@ -227,12 +313,14 @@ class Entity extends Component {
       }, []);
     }
 
+    claims = enrichGeoClaims(claims, manager.wikibases[wikibase].props, id);
+
+
     let mainClaims = Object.values(claims).filter(claim => {
       return !['external-id', 'url'].includes(claim[0].mainsnak.datatype);
     });
 
     mainClaims = filterBadClaims(mainClaims);
-
     mainClaims = enrichMonolingualTextClaims(
       mainClaims,
       manager.wikibases[wikibase].props,
@@ -294,7 +382,7 @@ class Entity extends Component {
           const fullOrdinal = prefix
             ? `${prefix}${currentOrdinalSegment}`
             : currentOrdinalSegment;
-          
+
           // Add to the ordinal map
           ordinalMap[sense.id] = fullOrdinal;
 

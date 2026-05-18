@@ -13,6 +13,7 @@ import { itemByUrl } from './itemByUrl.mjs';
 import { labels } from './labels.mjs';
 import { languageByIETF } from './languageByIETF.mjs';
 import { languageByIso6391Code } from './languageByIso6391Code.mjs';
+import { parentGeoRegions } from './parentGeoRegions.mjs';
 import { propertyIcons } from './propertyIcons.mjs';
 import { randomLemmaByLang } from './randomLemmaByLang.mjs';
 import { reviewScoreHostnames } from './reviewScoreHostnames.mjs';
@@ -39,6 +40,7 @@ const queries = {
 	labels,
 	languageByIETF,
 	languageByIso6391Code,
+	parentGeoRegions,
 	propertyIcons,
 	randomLemmaByLang,
 	reviewScoreHostnames,
