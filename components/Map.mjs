@@ -48,8 +48,20 @@ class Map extends Component {
           manager.queryManager.queries.parentGeoRegions,
           { item: contextId.split(':')[1] },
         );
-        if (boundingBoxes && boundingBoxes.length > 0) {
-          setMapBbox(boundingBoxes[0].bbox);
+        const lat = parseFloat(latitude);
+        const lon = parseFloat(longitude);
+        const filtered = (boundingBoxes || []).filter(region => {
+          if (!region.bbox) return false;
+          const [minLon, minLat, maxLon, maxLat] = region.bbox;
+          if (lat < minLat || lat > maxLat) return false;
+          if (minLon <= maxLon) {
+            return lon >= minLon && lon <= maxLon;
+          } else {
+            return lon >= minLon || lon <= maxLon;
+          }
+        });
+        if (filtered.length > 0) {
+          setMapBbox(filtered[0].bbox);
         } else {
           setMapBbox(getBbox(latitude, longitude, precision));
         }
