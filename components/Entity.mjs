@@ -176,12 +176,11 @@ function enrichGeoClaims(claims, props, contextId) {
       id => getBestClaim(claims[id])?.mainsnak?.datavalue?.value,
     );
     if (bboxCoords.every(coord => coord)) {
-      console.debug('Enriching with bbox')
       const minLon = bboxCoords[3].longitude;
       const minLat = bboxCoords[2].latitude;
       const maxLon = bboxCoords[0].longitude;
       const maxLat = bboxCoords[1].latitude;
-      const bboxStr = `${minLon},${minLat},${maxLon},${maxLat}`;
+      const bbox = [minLon, minLat, maxLon, maxLat];
 
       let enrichedAny = false;
 
@@ -189,7 +188,7 @@ function enrichGeoClaims(claims, props, contextId) {
         if (claims[id]) {
           const bestClaim = getBestClaim(claims[id]);
           if (bestClaim && bestClaim.mainsnak?.datavalue?.value) {
-            bestClaim.mainsnak.datavalue.value.bbox = bboxStr;
+            bestClaim.mainsnak.datavalue.value.bbox = bbox;
             bestClaim.mainsnak.datavalue.value.contextId = contextId;
             enrichedAny = true;
           }

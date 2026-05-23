@@ -16,6 +16,24 @@ function getBbox(lat, lon, precision) {
   return `${minLon},${minLat},${maxLon},${maxLat}`;
 }
 
+function widenBbox(bbox, amount = 0.01) {
+  if (!bbox) return bbox;
+  const [minLon, minLat, maxLon, maxLat] = bbox;
+  const width = Math.abs(maxLon - minLon);
+  const height = Math.abs(maxLat - minLat);
+  const padding = Math.max(width, height) * amount;
+  return [minLon - padding, minLat - padding, maxLon + padding, maxLat + padding];
+}
+
+function narrowBbox(bbox, amount = 0.01) {
+  if (!bbox) return bbox;
+  const [minLon, minLat, maxLon, maxLat] = bbox;
+  const width = Math.abs(maxLon - minLon);
+  const height = Math.abs(maxLat - minLat);
+  const padding = Math.max(width, height) * amount;
+  return [minLon + padding, minLat + padding, maxLon - padding, maxLat - padding];
+}
+
 function bboxAspectRatio(bbox) {
   if (bbox) {
     const [minLon, minLat, maxLon, maxLat] = bbox;
@@ -42,6 +60,11 @@ class Map extends Component {
     const [aspectRatio, setAspectRatio] = useState(bboxAspectRatio(mapBbox));
 
     useEffect(() => {
+      if (bbox) {
+        setMapBbox(bbox);
+        return;
+      }
+
       const doFetch = async () => {
         const boundingBoxes = await manager.queryManager.query(
           manager.wikibase,
@@ -52,7 +75,7 @@ class Map extends Component {
         const lon = parseFloat(longitude);
         const filtered = (boundingBoxes || []).filter(region => {
           if (!region.bbox) return false;
-          const [minLon, minLat, maxLon, maxLat] = region.bbox;
+          const [minLon, minLat, maxLon, maxLat] = narrowBbox(region.bbox, 0.1);
           if (lat < minLat || lat > maxLat) return false;
           if (minLon <= maxLon) {
             return lon >= minLon && lon <= maxLon;
@@ -67,23 +90,22 @@ class Map extends Component {
         }
       };
 
-      if (!mapBbox) {
-        if (contextId) {
-          doFetch();
-        } else {
-          setMapBbox(getBbox(latitude, longitude, precision));
-        }
+      if (contextId) {
+        doFetch();
+      } else {
+        setMapBbox(getBbox(latitude, longitude, precision));
       }
-    }, []);
+    }, [latitude, longitude, contextId, precision, bbox]);
 
     useEffect(() => {
       setAspectRatio(bboxAspectRatio(mapBbox))
     }, [mapBbox]);
 
     return html`<iframe
+      key=${`${latitude},${longitude}`}
       class="map"
       style=${`--intrinisic-aspectratio: ${aspectRatio}` || null}
-      src="https://www.openstreetmap.org/export/embed.html?layer=shortbread&marker=${latitude},${longitude}&bbox=${mapBbox ?? ''}&controls=false&attribution=minimal&zoomDisabled=true"
+      src="https://www.openstreetmap.org/export/embed.html?layer=shortbread&marker=${latitude},${longitude}&bbox=${widenBbox(mapBbox) ?? ''}&controls=false&attribution=minimal&zoomDisabled=true"
       loading="lazy"></iframe>`;
   }
 }

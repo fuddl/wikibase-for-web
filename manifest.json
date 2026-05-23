@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.713",
+  "version": "0.715",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
