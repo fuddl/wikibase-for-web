@@ -13,7 +13,7 @@ function getBbox(lat, lon, precision) {
   const minLon = lon - padding;
   const maxLon = lon + padding;
 
-  return `${minLon},${minLat},${maxLon},${maxLat}`;
+  return [minLon, minLat, maxLon, maxLat];
 }
 
 function widenBbox(bbox, amount = 0.01) {
@@ -83,6 +83,7 @@ class Map extends Component {
             return lon >= minLon || lon <= maxLon;
           }
         });
+        console.debug(filtered)
         if (filtered.length > 0) {
           setMapBbox(filtered[0].bbox);
         } else {

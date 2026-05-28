@@ -148,9 +148,11 @@ function enrichGeoClaims(claims, props, contextId) {
 
   const onlyAddContextProps = [
     'coordinateLocation',
+    //'coordinatesOfDepictedPlace', // since cross-wikibase queries don't work yet
     'coordinatesOfEasternmostPoint',
     'coordinatesOfNorthernmostPoint',
     'coordinatesOfSouthernmostPoint',
+    //'coordinatesOfThePointOfView', // since cross-wikibase queries don't work yet
     'coordinatesOfWesternmostPoint',
   ];
 

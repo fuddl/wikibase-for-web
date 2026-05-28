@@ -1,7 +1,7 @@
 export const wikibase = {
 	id: 'wikibase',
 	getRegex: function (url) {
-		const baseUrl = url.replace(/[.*+?^${}/()|[\]\\]/g, '\\$&');
+		const baseUrl = url.replace(/\/$/, "").replace(/[.*+?^${}/()|[\]\\]/g, '\\$&');
 		const pathPrefix = 'w(?:iki\\/|\\/index\\.php\\?title=)';
 		const namespaces =
 			'(?:Special:WhatLinksHere\\/|Talk:|Item:|Lexeme:|Property:)?';

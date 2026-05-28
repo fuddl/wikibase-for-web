@@ -137,7 +137,9 @@ const wikibases = {
 			coordinatesOfNorthernmostPoint: 'P1332',
 			coordinatesOfSouthernmostPoint: 'P1333',
 			coordinatesOfWesternmostPoint: 'P1335',
-
+			coordinatesOfThePointOfView: 'P1259',
+			coordinatesOfDepictedPlace: 'P9149',
+			
 		},
 		items: {
 			album: 'Q482994',
