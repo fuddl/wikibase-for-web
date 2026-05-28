@@ -1,31 +1,35 @@
-import { h, render, Component } from '../importmap/preact/src/index.js';
-import { useState, useEffect } from '../importmap/preact/hooks/src/index.js';
-import htm from '../importmap/htm/src/index.mjs';
-import { requireStylesheet } from '../modules/requireStylesheet.mjs';
-import { formDataToData } from '../modules/formDataToData.mjs';
-import OptionsHistoryAPI from '../modules/OptionsHistoryAPI.mjs';
-import { getPropertySubjectByConstraint } from '../modules/getPropertySubjectByConstraint.mjs';
-import { processEdits } from '../modules/processEdits.js';
+import { h, render, Component } from "../importmap/preact/src/index.js";
+import { useState, useEffect } from "../importmap/preact/hooks/src/index.js";
+import htm from "../importmap/htm/src/index.mjs";
+import { requireStylesheet } from "../modules/requireStylesheet.mjs";
+import { formDataToData } from "../modules/formDataToData.mjs";
+import OptionsHistoryAPI from "../modules/OptionsHistoryAPI.mjs";
+import { getPropertySubjectByConstraint } from "../modules/getPropertySubjectByConstraint.mjs";
+import { processEdits } from "../modules/processEdits.js";
 
-import Logger from '../modules/Logger.mjs';
+import Logger from "../modules/Logger.mjs";
 
 const logger = new Logger();
 
-import { suggestedEdits, addMediaWikiQualifiers, addUrlQualifiers } from '../mapping/index.mjs';
+import {
+  suggestedEdits,
+  addMediaWikiQualifiers,
+  addUrlQualifiers,
+} from "../mapping/index.mjs";
 
-import Choose from './Choose.mjs';
-import Change from './Change.mjs';
-import Engage from './Engage.mjs';
-import Wait from './Wait.mjs';
+import Choose from "./Choose.mjs";
+import Change from "./Change.mjs";
+import Engage from "./Engage.mjs";
+import Wait from "./Wait.mjs";
 
 const html = htm.bind(h);
 
-const submit = e => {
+const submit = (e) => {
   for (const component of e.target.form) {
-    if (component.nodeName === 'SELECT' && component.disabled == false) {
+    if (component.nodeName === "SELECT" && component.disabled == false) {
       const optionsHistoryAPI = new OptionsHistoryAPI();
       optionsHistoryAPI.updateOptionPick(
-        Array.from(component.children).map(option => option.value),
+        Array.from(component.children).map((option) => option.value),
         component.value,
       );
     }
@@ -34,11 +38,11 @@ const submit = e => {
   const data = formDataToData(e.target.form);
   const jobs = [];
 
-  if (data.subjectId === 'CREATE') {
+  if (data.subjectId === "CREATE") {
     jobs.push({
-      action: 'entity:create',
+      action: "entity:create",
       instance: data.instance,
-      new: 'item',
+      new: "item",
       data: {
         labels: [
           {
@@ -50,22 +54,22 @@ const submit = e => {
     });
   }
 
-  logger.info('Processing edits');
+  logger.info("Processing edits");
 
   processEdits(data, jobs);
 
-  logger.info('Prepered edit jobs');
+  logger.info("Prepered edit jobs");
 
   try {
     browser.runtime.sendMessage({
-      type: 'add_to_edit_queue',
+      type: "add_to_edit_queue",
       edits: jobs,
       viewId: data.viewId,
     });
     // todo: this should be done by the editqueue
-    if (data.subjectId !== 'CREATE') {
+    if (data.subjectId !== "CREATE") {
       browser.runtime.sendMessage({
-        type: 'resolved',
+        type: "resolved",
         candidates: [
           {
             instance: data.instance,
@@ -82,57 +86,71 @@ const submit = e => {
       });
     }
   } catch (error) {
-    logger.error('Failed to send jobs', error);
+    logger.error("Failed to send jobs", error);
   }
 };
 
 const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
   const [subjectSelected, setSubjectSelected] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [searchText, setSeachText] = useState('');
+  const [searchText, setSeachText] = useState("");
   const [allEdits, setAllEdits] = useState(edits);
   const [metaData, setMetaData] = useState({});
   const [loading, setLoading] = useState(true);
   const [qualifiersAdded, setQualifiersAdded] = useState(false);
   const [lang, setLang] = useState(navigator.language);
-  const [subjectType, setSubjectType] = useState('item');
+  const [subjectType, setSubjectType] = useState("item");
 
   useEffect(() => {
     setAllEdits(edits);
   }, []);
 
-  const updateAdditionalEdits = async metadata => {
-    let newSearchTitle = '';
+  const updateAdditionalEdits = async (metadata) => {
+    let newSearchTitle = "";
     let newEdits = [...edits];
 
     if (
       metadata?.mediawiki?.wgArticleId &&
       newEdits[0]?.claim &&
-      !('qualifiers' in newEdits[0].claim)
+      !("qualifiers" in newEdits[0].claim)
     ) {
       await addMediaWikiQualifiers(newEdits[0], metadata.mediawiki, manager);
-    } else if(
+    } else if (
       metadata?.lang &&
-      newEdits[0]?.claim?.mainsnak?.datatype === 'url' &&
-      !('qualifiers' in newEdits[0].claim)
+      newEdits[0]?.claim?.mainsnak?.datatype === "url" &&
+      !("qualifiers" in newEdits[0].claim)
     ) {
       await addUrlQualifiers(newEdits[0], metadata, manager);
     }
 
-    if (metadata?.mediawiki?.wgTitle && subjectType === 'item') {
-      newSearchTitle = metadata.mediawiki.wgTitle;
-      newEdits.push({
-        action: 'labels:add',
-        signature: `mediawiki-title:${new URL(metadata.location).host}`,
-        labels: {
-          add: metadata.mediawiki.wgTitle,
-          language: metadata.mediawiki?.wgPageContentLanguage,
-        },
-      });
-    } else if (metadata?.title && subjectType === 'item') {
+    if (metadata?.mediawiki?.wgTitle && subjectType === "item") {
+      if (metadata.mediawiki.wikibaseLabel) {
+        newSearchTitle = metadata.mediawiki.wikibaseLabel;
+        newEdits.push({
+          action: "labels:add",
+          signature: `mediawiki-title:${new URL(metadata.location).host}`,
+          labels: {
+            add: metadata.mediawiki.wikibaseLabel,
+            language:
+              metadata.mediawiki.wikibaseLabelLanguage ||
+              metadata.mediawiki.wgPageContentLanguage,
+          },
+        });
+      } else {
+        newSearchTitle = metadata.mediawiki.wgTitle;
+        newEdits.push({
+          action: "labels:add",
+          signature: `mediawiki-title:${new URL(metadata.location).host}`,
+          labels: {
+            add: metadata.mediawiki.wgTitle,
+            language: metadata.mediawiki?.wgPageContentLanguage,
+          },
+        });
+      }
+    } else if (metadata?.title && subjectType === "item") {
       const labelLanguage = await manager.validateLanguage(
         metadata?.lang,
-        'term',
+        "term",
         manager.wikibase,
       );
 
@@ -141,7 +159,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
         if (matches?.[1]) {
           newSearchTitle = matches[1];
           newEdits.push({
-            action: 'labels:add',
+            action: "labels:add",
             signature: `extracted-title:${suggestion.titleExtractPattern}`,
             labels: {
               add: matches[1],
@@ -166,7 +184,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
 
   const requestMetadata = async () => {
     const requestedMetadata = await browser.runtime.sendMessage({
-      type: 'request_metadata',
+      type: "request_metadata",
       url: suggestion.matchFromUrl,
     });
 
@@ -201,7 +219,7 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
   const filteredEdits = [];
   for (const edit of allEdits) {
     // labels only apply to items, so lets filter that out
-    if (edit.action === 'labels:add' && subjectType !== 'item') {
+    if (edit.action === "labels:add" && subjectType !== "item") {
       continue;
     }
     filteredEdits.push(edit);
@@ -223,13 +241,15 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
                 signature=${edit?.signature}
                 disabledByDefault=${edit?.disabledByDefault}
                 name=${`edits.${editId}`}
-                manager=${manager} />`,
+                manager=${manager}
+              />`,
           )}
         </div>
         ${loading
           ? html`<${Wait}
-              status=${browser.i18n.getMessage('aquiring_metadata')} />`
-          : ''}
+              status=${browser.i18n.getMessage("aquiring_metadata")}
+            />`
+          : ""}
         <${Choose}
           label=${searchText}
           manager=${manager}
@@ -240,7 +260,8 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
           shouldFocus=${true}
           onSelected=${() => {
             setSubjectSelected(true);
-          }} />
+          }}
+        />
       </div>
       <input type="hidden" name="viewId" value=${viewId} />
       <input type="hidden" name="matchUrl" value=${suggestion.matchFromUrl} />
@@ -248,17 +269,19 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
         <input
           type="hidden"
           name="lang"
-          value=${navigator.language.toLowerCase()} />
+          value=${navigator.language.toLowerCase()}
+        />
         <input name="instance" type="hidden" value=${suggestion.instance} />
         <${Engage}
-          text=${browser.i18n.getMessage('send_to_instance', [
+          text=${browser.i18n.getMessage("send_to_instance", [
             manager.wikibases[suggestion.instance].name,
           ])}
-          onClick=${e => {
+          onClick=${(e) => {
             setSubmitted(true);
             submit(e);
           }}
-          disabled=${!subjectSelected || submitted} />
+          disabled=${!subjectSelected || submitted}
+        />
       </div>
     </form>
   `;
@@ -266,10 +289,10 @@ const MatchInstance = ({ suggestion, manager, edits, viewId }) => {
 
 const Match = ({ suggestions, manager, viewId }) => {
   const [open, setOpen] = useState(0);
-  const [forceRefresh, setForceRefresh] = useState('');
+  const [forceRefresh, setForceRefresh] = useState("");
 
   useEffect(() => {
-    requireStylesheet(browser.runtime.getURL('/components/match.css'));
+    requireStylesheet(browser.runtime.getURL("/components/match.css"));
   }, []);
 
   useEffect(() => {
@@ -284,7 +307,7 @@ const Match = ({ suggestions, manager, viewId }) => {
 
   return html`
     <div class="match">
-      <h1>${browser.i18n.getMessage('match_title')}</h1>
+      <h1>${browser.i18n.getMessage("match_title")}</h1>
       ${suggestions.map((suggestion, index) => {
         let edits = suggestion.proposeEdits;
         manager.wikibase = manager.wikibases[suggestion.instance];
@@ -292,10 +315,11 @@ const Match = ({ suggestions, manager, viewId }) => {
           <details ...${{ open: index === open }} class="match__instance">
             <summary
               class="match__instance-name"
-              onClick=${e => {
+              onClick=${(e) => {
                 e.preventDefault();
                 setOpen(index);
-              }}>
+              }}
+            >
               ${suggestion?.proposeSummary ??
               manager.wikibases[suggestion.instance].name}
             </summary>
@@ -305,7 +329,8 @@ const Match = ({ suggestions, manager, viewId }) => {
               manager=${manager}
               key=${`${forceRefresh}-${index}`}
               edits=${edits}
-              viewId=${viewId} />`}
+              viewId=${viewId}
+            />`}
           </details>
         `;
       })}
