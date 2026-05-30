@@ -254,8 +254,39 @@ class WikiBaseEntityManager {
 			}
 		}
 
+		this.entityAddCrossWikiContext({ entity, wikibase });
+
 		return entity;
 	}
+	externalIdAddInterWikiContext(datavalue, wikibase) {
+		if (this.wikibases[wikibase].api.isEntityId(datavalue.value)) {
+			datavalue.crossWikiId = `${wikibase}:${datavalue.value}`;
+		}
+	}
+	entityAddCrossWikiContext({ entity, wikibase }) {
+		const crossWikiProps = this.wikibases?.[wikibase]?.crossWikiProps;
+		if (!crossWikiProps) {
+			return;
+		}
+		Object.entries(crossWikiProps).forEach(([wiki, props]) => {
+			['claims'].forEach(type => {
+				if (!entity[type]) {
+					return;
+				}
+				Object.entries(entity[type]).forEach(([prop, values]) =>{
+					if (props.includes(prop)) {
+						console.debug(wiki)
+						values.forEach(value => {
+							if (value.mainsnak?.datavalue?.value) {
+								this.externalIdAddInterWikiContext(value.mainsnak.datavalue, wiki)
+							}
+						})
+					}
+				})
+			})
+		})
+	}
+
 	async fetchLanguages(wikibase, context) {
 		const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
 		const url = new URL(endPoint);

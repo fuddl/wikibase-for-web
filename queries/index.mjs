@@ -22,6 +22,7 @@ import { unitSymbol } from './unitSymbol.mjs';
 import { urlMatchPattern } from './urlMatchPattern.mjs';
 import { urlMatchPatternByDomain } from './urlMatchPatternByDomain.mjs';
 import { urlProperties } from './urlProperties.mjs';
+import { propertyByFormatterUrl } from './propertyByFormatterUrl.mjs';
 import { fetchJSON } from '../modules/fetch.mjs';
 
 const queries = {
@@ -41,6 +42,7 @@ const queries = {
 	languageByIETF,
 	languageByIso6391Code,
 	parentGeoRegions,
+	propertyByFormatterUrl,
 	propertyIcons,
 	randomLemmaByLang,
 	reviewScoreHostnames,

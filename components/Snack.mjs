@@ -19,6 +19,11 @@ const Snack = ({ mainsnak, qualifiers, manager }) => html`
     (function () {
       switch (mainsnak.datatype) {
         case 'external-id':
+          if (mainsnak.datavalue.crossWikiId) {
+            return html`<${Thing}
+              id=${mainsnak.datavalue.crossWikiId}
+              manager=${manager} />`;
+          }
           return html`<${Spot}
             value=${mainsnak.datavalue.value}
             property=${mainsnak.property}

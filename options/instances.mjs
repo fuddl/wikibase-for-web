@@ -122,10 +122,11 @@ function Instances() {
 
 		// Fetch data from MediaWiki API and WikibaseManifest when instance URL is filled out
 		if (field === 'instance' && value) {
+			const cleanedValue = value.replace(/\/+$/, '');
 			try {
 				// Fetch the WikibaseManifest to check for SPARQL endpoint
 				const manifestResponse = await fetchWithUserAgent(
-					`${value}${newInstance.wgScriptPath}/rest.php/wikibase-manifest/v0/manifest`,
+					`${cleanedValue}${newInstance.wgScriptPath}/rest.php/wikibase-manifest/v0/manifest`,
 				);
 				if (manifestResponse.ok) {
 					const manifestData = await manifestResponse.json();
@@ -139,13 +140,13 @@ function Instances() {
 
 				// Fetch site info using MediaWiki API
 				const apiResponse = await fetchWithUserAgent(
-					`${value}${newInstance.wgScriptPath}/api.php?action=query&meta=siteinfo&format=json&origin=*`,
+					`${cleanedValue}${newInstance.wgScriptPath}/api.php?action=query&meta=siteinfo&format=json&origin=*`,
 				);
 				const apiData = await apiResponse.json();
 				const siteInfo = apiData.query?.general;
 
 				// Fetch the icon from the front page
-				const iconUrl = await fetchWikiIcon(value);
+				const iconUrl = await fetchWikiIcon(cleanedValue);
 
 				setNewInstance(prev => ({
 					...prev,
@@ -161,11 +162,13 @@ function Instances() {
 	// Handle the submission of the new instance form
 	const handleAddInstance = async () => {
 		if (newInstance.instance) {
+			const cleanedInstance = newInstance.instance.replace(/\/+$/, '');
 			const newId = newInstance.name.toLowerCase().replace(/\s+/g, '-');
 			const updatedCustomWikibases = {
 				...customWikibases,
 				[newId]: {
 					...newInstance,
+					instance: cleanedInstance,
 					resolve: true,
 					disabled: false,
 				},
@@ -250,7 +253,8 @@ function Instances() {
 						<input
 							type="text"
 							value=${newInstance.instance}
-							onInput=${e => handleInputChange('instance', e.target.value)} />
+							onInput=${e => handleInputChange('instance', e.target.value)}
+							onBlur=${e => handleInputChange('instance', e.target.value.replace(/\/+$/, ''))} />
 					</label>
 				</p>
 				<p>

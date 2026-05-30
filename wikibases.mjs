@@ -1,6 +1,7 @@
 import { WBK } from './importmap/wikibase-sdk/dist/src/wikibase-sdk.js';
 import wikidataSites from './wikidataSites.mjs';
 import { fetchWithUserAgent } from './modules/fetch.mjs';
+import WikiBaseQueryManager from '../queries/index.mjs';
 
 async function fetchInterwikiMap(api) {
 	// Construct the full API endpoint URL
@@ -429,5 +430,29 @@ Object.keys(wikibases).forEach(name => {
 		wikiRoot: `${wikibases[name].instance}${wgScriptPath}`,
 	});
 });
+
+try {
+	await Promise.all(
+		Object.values(wikibases).map(async sourceWikibase => {
+			sourceWikibase.crossWikiProps = {};
+			await Promise.all(
+				Object.values(wikibases).map(async targetWikibase => {
+					if (
+						targetWikibase.instance !== sourceWikibase.instance &&
+						typeof sourceWikibase?.entitySources?.Q === 'undefined' &&
+						typeof targetWikibase?.entitySources?.Q === 'undefined' &&
+						typeof sourceWikibase?.props?.formatterURL === 'string'
+					) {
+						const queryManager = new WikiBaseQueryManager();
+						const properties = await queryManager.query(sourceWikibase, queryManager.queries['propertyByFormatterUrl'], { url: targetWikibase.instance });
+						sourceWikibase.crossWikiProps[targetWikibase.id] = [ ...properties ];
+					}
+				})
+			);
+		})
+	);
+} catch (error) {
+	console.error('Error adding crosslinking properties:', error);
+}
 
 export default wikibases;
