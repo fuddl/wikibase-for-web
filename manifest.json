@@ -31,7 +31,8 @@
     "tabs",
     "webNavigation",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "contextMenus"
   ],
   "background": {
     "page": "background/index.html"

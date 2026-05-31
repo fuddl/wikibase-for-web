@@ -105,6 +105,7 @@ function applyPropOrder(claims, propOrder) {
 }
 
 function enrichMonolingualTextClaims(claims, props) {
+  if (!props) return claims;
   return claims.map(claimGroup => {
     for (const claim of claimGroup) {
       if (claim?.mainsnak?.datatype === 'monolingualtext') {
@@ -135,6 +136,7 @@ function enrichMonolingualTextClaims(claims, props) {
 }
 
 function enrichGeoClaims(claims, props, contextId) {
+  if (!props) return claims;
   const bboxProps = [
     'coordinatesOfEasternmostPoint',
     'coordinatesOfNorthernmostPoint',

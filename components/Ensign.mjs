@@ -30,6 +30,13 @@ class Ensign extends Component {
       )
     ) {
       this.setState({ mayEdit: true });
+      if (this.props.descriptions || this.props.lemmas) {
+        try {
+          await browser.runtime.sendMessage({ type: 'show_context_menu' });
+        } catch (e) {
+          console.error(e);
+        }
+      }
     }
   }
 
@@ -113,8 +120,30 @@ class Ensign extends Component {
     return html`
       <div
         class="ensign ${this.state.mayEdit ? 'ensign--editable' : null}"
-        onMouseEnter=${e => {
-        this.checkEditPermissions();
+        onMouseEnter=${async e => {
+        if (this.state.mayEdit) {
+          if (editAction) {
+            try {
+              await browser.runtime.sendMessage({ type: 'show_context_menu' });
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        } else {
+          this.checkEditPermissions();
+        }
+      }}
+        onMouseLeave=${async e => {
+        if (this.state.mayEdit && editAction) {
+          try {
+            await browser.runtime.sendMessage({ type: 'hide_context_menu' });
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }}
+        onContextMenu=${e => {
+        window.lastRightClickedEditAction = editAction || null;
       }}>
         <h1 class="ensign__title" lang=${label?.language}>
           ${label?.value ||

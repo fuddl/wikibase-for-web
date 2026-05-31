@@ -172,6 +172,11 @@ class Sidebar extends Component {
 				workbench: message.workbench,
 			});
 			return Promise.resolve('done');
+		} else if (message.type === 'execute_context_edit') {
+			if (typeof window.lastRightClickedEditAction === 'function') {
+				window.lastRightClickedEditAction();
+			}
+			return Promise.resolve('done');
 		}
 	};
 

@@ -357,8 +357,6 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 				console.error(error);
 			}
 		}
-
-		return true;
 	}
 	return false;
 });
