@@ -107,8 +107,8 @@ async function updateSidebar(resolved) {
 	});
 }
 
-async function resolveUrl(url) {
-	return await resolvers.resolve(url);
+async function resolveUrl(url, options = {}) {
+	return await resolvers.resolve(url, null, options);
 }
 
 async function resolveAndUpdateSidebar(url, tabId) {
@@ -124,7 +124,7 @@ async function resolveAndUpdateSidebar(url, tabId) {
 	// Only do a new resolution if the sidebar is open
 	if (!isSidebarOpen) return null;
 
-	const results = await resolveUrl(url);
+	const results = await resolveUrl(url, { progress: true, abort: true });
 	if (results) {
 		await updateSidebar(results);
 		// Always cache the results regardless of sidebar state
@@ -167,7 +167,7 @@ async function resolveCurrentTab(tabId) {
 		// Store the URL we're resolving to check later if navigation occurred
 		const urlToResolve = currentTab.url;
 
-		results = await resolveUrl(currentTab.url);
+		results = await resolveUrl(currentTab.url, { progress: true, abort: true });
 
 		if (results && results.length > 0) {
 			// Always cache results
@@ -179,7 +179,7 @@ async function resolveCurrentTab(tabId) {
 			}
 		}
 	} else {
-		results = await resolveUrl(currentTab.url);
+		results = await resolveUrl(currentTab.url, { progress: false, abort: false });
 		if (results && results.length > 0) {
 			// Always cache results
 			resolvedCache.add(tabId, currentTab.url, results);
@@ -234,74 +234,84 @@ browser.tabs.onActivated.addListener(async activeInfo => {
 	}
 });
 
-browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
-		if (!message.url) {
-			const currentTab = await getCurrentTab();
+		return (async () => {
+			if (!message.url) {
+				const currentTab = await getCurrentTab();
 
-			// Check cache first
-			if (resolvedCache.request(currentTab.id)) {
-				const cachedResults = resolvedCache.request(currentTab.id);
-				if (isSidebarOpen) {
-					await updateSidebar(cachedResults);
+				// Check cache first
+				if (resolvedCache.request(currentTab.id)) {
+					const cachedResults = resolvedCache.request(currentTab.id);
+					if (isSidebarOpen) {
+						await updateSidebar(cachedResults);
+					}
+					return cachedResults;
 				}
-				return Promise.resolve(cachedResults);
-			}
 
-			// Only do an actual resolution if the sidebar is open
-			if (!isSidebarOpen) return Promise.resolve('sidebar closed');
+				// Only do an actual resolution if the sidebar is open
+				if (!isSidebarOpen) return 'sidebar closed';
 
-			// Store current URL to check if navigation occurred
-			const urlToResolve = currentTab.url;
-			const tabToResolve = currentTab.id;
+				// Store current URL to check if navigation occurred
+				const urlToResolve = currentTab.url;
+				const tabToResolve = currentTab.id;
 
-			const results = await resolveUrl(currentTab.url);
+				const results = await resolveUrl(currentTab.url, { progress: true, abort: true });
 
-			if (results && results.length > 0) {
-				// Always cache results
-				resolvedCache.add(currentTab.id, currentTab.url, results);
+				if (results && results.length > 0) {
+					// Always cache results
+					resolvedCache.add(currentTab.id, currentTab.url, results);
 
-				// Only update the sidebar if the tab is still active and no navigation occurred
-				if (isSidebarOpen && await isTabStillValidForUpdate(tabToResolve, urlToResolve)) {
-					await updateSidebar(results);
+					// Only update the sidebar if the tab is still active and no navigation occurred
+					if (isSidebarOpen && await isTabStillValidForUpdate(tabToResolve, urlToResolve)) {
+						await updateSidebar(results);
+					}
+					return results;
 				}
-				return Promise.resolve(results);
+				return 'done';
+			} else {
+				// For specific URL requests
+				const results = await resolveUrl(message.url, { progress: false, abort: false });
+				return results;
 			}
-			return Promise.resolve('done');
-		} else {
-			// For specific URL requests
-			const results = await resolveUrl(message.url);
-			return results;
-		}
+		})();
 	} else if (message.type === 'add_to_edit_queue') {
 		wikibaseEditQueue.addJobs(message.edits, message.viewId);
 		return Promise.resolve('done');
 	} else if (message.type === 'request_metadata') {
-		const tabId = await findTabByUrl(message.url);
-		const metadata = await getTabMetadata(tabId);
-		return Promise.resolve({ response: metadata });
+		return (async () => {
+			const tabId = await findTabByUrl(message.url);
+			const metadata = await getTabMetadata(tabId);
+			return { response: metadata };
+		})();
 	} else if (message.type === 'hash_changed') {
-		const tabId = await findTabByUrl(message.url);
+		return (async () => {
+			const tabId = await findTabByUrl(message.url);
 
-		if (tabId) {
-			// Store the URL to check for navigation
-			const urlToResolve = message.url;
+			if (tabId) {
+				// Store the URL to check for navigation
+				const urlToResolve = message.url;
 
-			// Always do a new resolution for hash changes as they might change the entity
-			const results = await resolveUrl(message.url);
+				// Determine if it is for the active tab to show progress and abort previous runs
+				const currentTab = await getCurrentTab();
+				const isForActiveTab = (currentTab && currentTab.id === tabId);
 
-			if (results && results.length > 0) {
-				// Always update the cache
-				resolvedCache.add(tabId, message.url, results);
+				// Always do a new resolution for hash changes as they might change the entity
+				const results = await resolveUrl(message.url, { progress: isForActiveTab, abort: isForActiveTab });
 
-				// Only update the sidebar if it's open and this is still the active tab
-				if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
-					await updateSidebar(results);
+				if (results && results.length > 0) {
+					// Always update the cache
+					resolvedCache.add(tabId, message.url, results);
+
+					// Only update the sidebar if it's open and this is still the active tab
+					if (isSidebarOpen && await isTabStillValidForUpdate(tabId, urlToResolve)) {
+						await updateSidebar(results);
+					}
 				}
 			}
-		}
 
-		return Promise.resolve('done');
+			return 'done';
+		})();
 	} else if (message.type === 'request_finish') {
 		if (resolvers.abortController) {
 			resolvers.abortController.abort();
@@ -311,54 +321,64 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 		if (resolvers.abortController) {
 			resolvers.abortController.abort();
 		}
-		try {
-			await browser.runtime.sendMessage({
-				type: 'navigate',
-				entity: message.entity,
-			});
-		} catch (error) {
-			console.error(error);
-		}
-		return Promise.resolve('done');
-	} else if (message.type === 'request_workbench') {
-		try {
-			await browser.runtime.sendMessage({
-				type: 'workbench',
-				workbench: message.workbench,
-			});
-		} catch (error) {
-			console.error(error);
-		}
-		return Promise.resolve('done');
-	} else if (message.type === 'highlight_elements') {
-		// Forward 'highlight_links' to the active tab
-		shouldHighlightLinks = message ?? true;
-		const activeTab = await getCurrentTab();
-		await browser.tabs.sendMessage(activeTab.id, message);
-		await checkSidebarToUnhighlight(true);
-
-		return true;
-	} else if (message.type === 'unhighlight_elements') {
-		// Forward 'unhighlight_links' to all open tabs
-		for (const tab of await browser.tabs.query(contentTabsQuery)) {
-			await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_elements' });
-		}
-		shouldHighlightLinks = false;
-		await checkSidebarToUnhighlight(false);
-
-		return true;
-	} else if (message.type === 'highlight_jobs') {
-		// Forward 'highlight_jobs' to all open tabs
-		for (const tab of await browser.tabs.query(contentTabsQuery)) {
+		return (async () => {
 			try {
-				await browser.tabs.sendMessage(tab.id, message);
+				await browser.runtime.sendMessage({
+					type: 'navigate',
+					entity: message.entity,
+				});
 			} catch (error) {
-				// tab may not respond due to it not being loaded
 				console.error(error);
 			}
-		}
+			return 'done';
+		})();
+	} else if (message.type === 'request_workbench') {
+		return (async () => {
+			try {
+				await browser.runtime.sendMessage({
+					type: 'workbench',
+					workbench: message.workbench,
+				});
+			} catch (error) {
+				console.error(error);
+			}
+			return 'done';
+		})();
+	} else if (message.type === 'highlight_elements') {
+		return (async () => {
+			// Forward 'highlight_links' to the active tab
+			shouldHighlightLinks = message ?? true;
+			const activeTab = await getCurrentTab();
+			await browser.tabs.sendMessage(activeTab.id, message);
+			await checkSidebarToUnhighlight(true);
+
+			return true;
+		})();
+	} else if (message.type === 'unhighlight_elements') {
+		return (async () => {
+			// Forward 'unhighlight_links' to all open tabs
+			for (const tab of await browser.tabs.query(contentTabsQuery)) {
+				await browser.tabs.sendMessage(tab.id, { type: 'unhighlight_elements' });
+			}
+			shouldHighlightLinks = false;
+			await checkSidebarToUnhighlight(false);
+
+			return true;
+		})();
+	} else if (message.type === 'highlight_jobs') {
+		return (async () => {
+			// Forward 'highlight_jobs' to all open tabs
+			for (const tab of await browser.tabs.query(contentTabsQuery)) {
+				try {
+					await browser.tabs.sendMessage(tab.id, message);
+				} catch (error) {
+					// tab may not respond due to it not being loaded
+					console.error(error);
+				}
+			}
+			return 'done';
+		})();
 	}
-	return false;
 });
 
 let sidebarCheckInterval = null;

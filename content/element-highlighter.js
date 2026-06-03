@@ -433,6 +433,10 @@ class ElementHighlighter {
 		}
 	}
 	filterCandidates(candidates) {
+		if (!Array.isArray(candidates)) {
+			return [];
+		}
+
 		const minSpecificity = candidates.reduce(
 			(highest, item) => Math.max(highest, item.specificity),
 			0,
@@ -470,9 +474,16 @@ class ElementHighlighter {
 		return candidates;
 	}
 	resolve(highlight, element, retry = 3) {
+		const url = highlight.element.href;
+		if (!url) {
+			highlight.resolved = [];
+			highlight.resolveRequested = true;
+			return;
+		}
+
 		const sending = browser.runtime.sendMessage({
 			type: 'request_resolve',
-			url: highlight.element.href,
+			url: url,
 		});
 
 		highlight.resolveRequested = true;
@@ -489,7 +500,7 @@ class ElementHighlighter {
 
 				highlight.resolved = this.filterCandidates(candidates);
 
-				if (candidates.length > 0) {
+				if (Array.isArray(candidates) && candidates.length > 0) {
 					this.updateView();
 				} else {
 					return [];

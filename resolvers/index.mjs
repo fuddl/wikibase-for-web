@@ -123,13 +123,24 @@ class ResolverCache {
 
 const resolvedCache = new ResolverCache();
 
-resolvers.resolve = async function (url, allowedWikibases = null) {
+resolvers.resolve = async function (url, allowedWikibases = null, options = {}) {
+	const showProgress = options.progress ?? false;
+	const shouldAbortGlobal = options.abort ?? false;
+
 	if (resolvedCache.request(url)) {
 		return resolvedCache.request(url);
 	}
 
-	if (this.abortController) {
-		this.abortController.abort();
+	let signal = null;
+	if (shouldAbortGlobal) {
+		if (this.abortController) {
+			this.abortController.abort();
+		}
+		this.abortController = new AbortController();
+		signal = this.abortController.signal;
+	} else {
+		const localAbortController = new AbortController();
+		signal = localAbortController.signal;
 	}
 
 	const settings = await browser.storage.sync.get('disabledResolvers');
@@ -138,21 +149,20 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 		: ['error429', 'error5xx'];
 	const activeResolvers = this.list.filter(r => !disabledResolvers.includes(r.id));
 
-	this.abortController = new AbortController();
-	const signal = this.abortController.signal;
-
 	const wikibaseNames = Object.keys(wikibases).filter(name => {
 		if (allowedWikibases && !allowedWikibases.includes(name)) return false;
 		if (wikibases[name]?.resolve === false) return false;
 		return true;
 	});
 
-	await browser.runtime.sendMessage({
-		type: 'resolving_started',
-		url,
-		resolvers: activeResolvers.map(r => r.id),
-		wikibases: wikibaseNames
-	});
+	if (showProgress) {
+		await browser.runtime.sendMessage({
+			type: 'resolving_started',
+			url,
+			resolvers: activeResolvers.map(r => r.id),
+			wikibases: wikibaseNames
+		});
+	}
 
 	let candidates = [];
 	try {
@@ -163,13 +173,15 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 						if (signal.aborted) return;
 
 						if (wikibases[name].disabledResolvers?.includes(resolver.id)) {
-							await browser.runtime.sendMessage({
-								type: 'resolving_progress',
-								url,
-								resolver: resolver.id,
-								wikibase: name,
-								applies: false,
-							});
+							if (showProgress) {
+								await browser.runtime.sendMessage({
+									type: 'resolving_progress',
+									url,
+									resolver: resolver.id,
+									wikibase: name,
+									applies: false,
+								});
+							}
 							return;
 						}
 
@@ -193,26 +205,30 @@ resolvers.resolve = async function (url, allowedWikibases = null) {
 								candidates = [...candidates, ...applies];
 							}
 
-							await browser.runtime.sendMessage({
-								type: 'resolving_progress',
-								url,
-								resolver: resolver.id,
-								wikibase: name,
-								status: 'finished',
-								results: results,
-								applies: applies.length > 0,
-							});
+							if (showProgress) {
+								await browser.runtime.sendMessage({
+									type: 'resolving_progress',
+									url,
+									resolver: resolver.id,
+									wikibase: name,
+									status: 'finished',
+									results: results,
+									applies: applies.length > 0,
+								});
+							}
 						} catch (error) {
 							console.error(`Error resolving ${resolver.id} for ${name}:`, error);
-							await browser.runtime.sendMessage({
-								type: 'resolving_progress',
-								url,
-								resolver: resolver.id,
-								wikibase: name,
-								status: 'error',
-								error: error.message,
-								errorCode: error.status,
-							});
+							if (showProgress) {
+								await browser.runtime.sendMessage({
+									type: 'resolving_progress',
+									url,
+									resolver: resolver.id,
+									wikibase: name,
+									status: 'error',
+									error: error.message,
+									errorCode: error.status,
+								});
+							}
 						}
 					}),
 				);

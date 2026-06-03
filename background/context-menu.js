@@ -25,21 +25,20 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	}
 });
 
-browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === 'show_context_menu') {
-		try {
-			await browser.contextMenus.update('edit-wikibase-element', { visible: true });
-		} catch (error) {
-			console.error(error);
-		}
-		return true;
+		return browser.contextMenus.update('edit-wikibase-element', { visible: true })
+			.then(() => true)
+			.catch(error => {
+				console.error(error);
+				return true;
+			});
 	} else if (message.type === 'hide_context_menu') {
-		try {
-			await browser.contextMenus.update('edit-wikibase-element', { visible: false });
-		} catch (error) {
-			console.error(error);
-		}
-		return true;
+		return browser.contextMenus.update('edit-wikibase-element', { visible: false })
+			.then(() => true)
+			.catch(error => {
+				console.error(error);
+				return true;
+			});
 	}
-	return false;
 });
