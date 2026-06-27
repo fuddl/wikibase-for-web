@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+  <path stroke="#900" stroke-linecap="round" stroke-width="3" d="M1.5 5.5v13" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.25 0.1 0.25 1"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#900" stroke-linecap="round" stroke-width="2" d="M5 5v14" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.1s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.42 0 0.58 1"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#396" stroke-linecap="round" stroke-width="2" d="M8 5v14" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.2s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.55 0.055 0.675 0.19"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#396" stroke-linecap="round" stroke-width="3" d="M11.5 5.5v13" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.05s"
+      dur="1s"
+      values="0;28"
+      calcMode="linear"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#069" stroke-linecap="round" stroke-width="3" d="M15.5 5.5v13" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.3s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.215 0.610 0.355 1"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#396" stroke-linecap="round" stroke-width="2" d="M19 5v14" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.15s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.68 -0.55 0.265 1.55"
+      repeatCount="indefinite" />
+  </path>
+
+  <path stroke="#069" stroke-linecap="round" stroke-width="3" d="M22.5 5.5v13" stroke-dasharray="14 14">
+    <animate
+      attributeName="stroke-dashoffset"
+      begin="0.25s"
+      dur="1s"
+      values="0;28"
+      calcMode="spline"
+      keyTimes="0;1"
+      keySplines="0.77 0 0.175 1"
+      repeatCount="indefinite" />
+  </path>
+</svg>

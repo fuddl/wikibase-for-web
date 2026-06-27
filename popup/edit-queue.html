@@ -1,10 +1,32 @@
 <!doctype html>
 <html>
   <head>
-    <title>Edit Progress</title>
-    <script src="edit-queue.mjs"></script>
+    <meta charset="utf-8" />
+    <title>Edit Queue</title>
+    <link rel="stylesheet" href="edit-queue.css" />
   </head>
   <body>
-    <progress max="1" value="0"></progress>
+    <div class="edit-queue">
+      <div class="edit-queue__header">
+        <span class="edit-queue__title" id="popup-title">Edit Queue</span>
+        <span class="edit-queue__status" id="popup-status"></span>
+      </div>
+      <div class="edit-queue__progress" id="progress-container">
+        <progress id="progress-bar" max="1" value="0"></progress>
+      </div>
+      <div class="edit-queue__content">
+        <ul class="edit-queue__list" id="job-list"></ul>
+        <div class="edit-queue__empty edit-queue--hidden" id="empty-state">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>No pending edits</span>
+        </div>
+      </div>
+      <div class="edit-queue__footer" id="popup-footer">
+        <button class="edit-queue__button edit-queue__button--secondary edit-queue--hidden" id="clear-btn">Clear completed</button>
+      </div>
+    </div>
+    <script type="module" src="edit-queue.mjs"></script>
   </body>
 </html>

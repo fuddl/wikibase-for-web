@@ -31,7 +31,7 @@ const close = async () => {
 	});
 };
 
-const submit = e => {
+const submit = async e => {
 	e.preventDefault();
 
 	const data = formDataToData(e.target.form);
@@ -45,13 +45,24 @@ const submit = e => {
 	logger.info('Prepered edit jobs', jobs);
 
 	try {
+		try {
+			const [activeTab] = await browser.tabs.query({ active: true, currentWindow: true });
+			if (activeTab) {
+				await browser.pageAction.show(activeTab.id);
+				await browser.pageAction.setPopup({ tabId: activeTab.id, popup: browser.runtime.getURL('popup/edit-queue.html') });
+			}
+			await browser.pageAction.openPopup();
+		} catch(e) {
+			console.warn("Could not open pageAction popup:", e);
+		}
+
 		browser.runtime.sendMessage({
 			type: 'add_to_edit_queue',
 			edits: jobs,
 		});
 		close();
 	} catch (error) {
-		logger.jobs('Failed to send jobs', error, 'error');
+		logger.error('Failed to send jobs', error);
 	}
 };
 

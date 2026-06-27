@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.718",
+  "version": "0.719",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
@@ -52,9 +52,13 @@
       ]
     },
     {
-      "matches": ["https://www.openstreetmap.org/export/embed.html*"],
+      "matches": [
+        "https://www.openstreetmap.org/export/embed.html*"
+      ],
       "run_at": "document_end",
-      "js": ["content/openstreetmap-compact.js"],
+      "js": [
+        "content/openstreetmap-compact.js"
+      ],
       "all_frames": true
     }
   ],
@@ -75,5 +79,9 @@
       },
       "description": "Toggle sidebar"
     }
+  },
+  "page_action": {
+    "default_icon": "icons/wikidata-edit.svg",
+    "default_title": "Wikibase Edit Queue"
   }
 }

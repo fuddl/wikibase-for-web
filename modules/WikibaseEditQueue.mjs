@@ -19,7 +19,7 @@ export class WikibaseEditQueue {
   addJobs(jobs, jobId) {
     this.jobId = jobId;
     jobs.forEach(job => {
-      this.queue.push({ job, done: false });
+      this.queue.push({ job, done: false, status: 'pending' });
     });
     this.processQueue(); // Start processing if not already doing so
     if (this.onProgressUpdate) {
@@ -31,7 +31,7 @@ export class WikibaseEditQueue {
 
   // Process the queue
   processQueue() {
-    if (this.isProcessing || this.queue.every(job => job.done)) {
+    if (this.isProcessing || this.queue.every(job => job.done || job.status === 'failed')) {
       return;
     }
     this.isProcessing = true;
@@ -40,15 +40,33 @@ export class WikibaseEditQueue {
 
   // Process the next job in the queue
   processNextJob() {
-    const nextJob = this.queue.find(job => !job.done);
+    const nextJob = this.queue.find(job => !job.done && job.status !== 'failed');
     if (!nextJob) {
       this.isProcessing = false; // Done processing
       return;
     }
 
+    nextJob.status = 'processing';
+    if (this.onProgressUpdate) {
+      this.onProgressUpdate({
+        queue: this.queue,
+      });
+    }
+
     this.performEdit(nextJob.job).then(() => {
       // Mark job as done and notify progress
       nextJob.done = true;
+      nextJob.status = 'success';
+      if (this.onProgressUpdate) {
+        this.onProgressUpdate({
+          queue: this.queue,
+        });
+      }
+      this.processNextJob();
+    }).catch(error => {
+      nextJob.done = false;
+      nextJob.status = 'failed';
+      nextJob.error = error.message || String(error);
       if (this.onProgressUpdate) {
         this.onProgressUpdate({
           queue: this.queue,
@@ -186,6 +204,7 @@ export class WikibaseEditQueue {
         instance: instance,
         response: parsedResponse,
       });
+      throw new Error(parsedResponse.error.info || 'Edit failed');
     }
 
     return parsedResponse;
@@ -408,11 +427,28 @@ export class WikibaseEditQueue {
 
   // Method to clear completed jobs from the queue and trigger progress update
   clearCompletedJobs() {
-    this.queue = this.queue.filter(job => !job.done);
+    this.queue = this.queue.filter(job => !job.done && job.status !== 'success');
 
     // After clearing completed jobs, update progress
     if (this.onProgressUpdate) {
-      this.onProgressUpdate(this.queue);
+      this.onProgressUpdate({
+        queue: this.queue,
+      });
+    }
+  }
+
+  // Method to retry a failed job
+  retryJob(index) {
+    if (this.queue[index]) {
+      this.queue[index].status = 'pending';
+      this.queue[index].done = false;
+      this.queue[index].error = undefined;
+      this.processQueue();
+      if (this.onProgressUpdate) {
+        this.onProgressUpdate({
+          queue: this.queue,
+        });
+      }
     }
   }
 }

@@ -14,14 +14,49 @@ const contentTabsQuery = {
 	status: 'complete',
 };
 
-wikibaseEditQueue.setProgressUpdateCallback(async queue => {
+let prevQueueLength = 0;
+
+async function updatePageActionVisibility(tabId) {
+	const queue = wikibaseEditQueue.queue || [];
+	if (queue.length > 0) {
+		await browser.pageAction.show(tabId);
+		await browser.pageAction.setPopup({ tabId, popup: browser.runtime.getURL('popup/edit-queue.html') });
+	} else {
+		await browser.pageAction.hide(tabId);
+		await browser.pageAction.setPopup({ tabId, popup: '' });
+	}
+}
+
+async function updateAllPageActions() {
+	const tabs = await browser.tabs.query({});
+	for (const tab of tabs) {
+		await updatePageActionVisibility(tab.id);
+	}
+}
+
+// On startup, clear any stale popup registration from a previous session
+browser.tabs.query({}).then(tabs => {
+	for (const tab of tabs) {
+		browser.pageAction.setPopup({ tabId: tab.id, popup: '' });
+		browser.pageAction.hide(tab.id);
+	}
+});
+
+wikibaseEditQueue.setProgressUpdateCallback(async queueObj => {
 	try {
+		const queue = queueObj.queue || [];
+		const len = queue.length;
+
+		await updateAllPageActions();
+
+		prevQueueLength = len;
+
 		await browser.runtime.sendMessage({
 			type: 'update_edit_queue_progress',
-			...queue,
+			queue: queue,
 		});
 	} catch (error) {
-		console.error(error);
+		// Ignore message delivery errors if popup is closed
 	}
 });
 
@@ -234,6 +269,10 @@ browser.tabs.onActivated.addListener(async activeInfo => {
 	}
 });
 
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+	await updatePageActionVisibility(tabId);
+});
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === 'request_resolve') {
 		return (async () => {
@@ -277,6 +316,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		})();
 	} else if (message.type === 'add_to_edit_queue') {
 		wikibaseEditQueue.addJobs(message.edits, message.viewId);
+		return Promise.resolve('done');
+	} else if (message.type === 'get_edit_queue') {
+		return Promise.resolve({
+			queue: wikibaseEditQueue.queue,
+			isProcessing: wikibaseEditQueue.isProcessing,
+		});
+	} else if (message.type === 'retry_job') {
+		wikibaseEditQueue.retryJob(message.index);
+		return Promise.resolve('done');
+	} else if (message.type === 'clear_completed_edits') {
+		wikibaseEditQueue.clearCompletedJobs();
 		return Promise.resolve('done');
 	} else if (message.type === 'request_metadata') {
 		return (async () => {
@@ -560,6 +610,8 @@ browser.browserAction.onClicked.addListener(async () => {
 
 	// Start/restart the check interval
 	checkSidebarToUnhighlight(isSidebarOpen);
+
+	await updateAllPageActions();
 });
 
 // Add listener for keyboard shortcuts
@@ -572,5 +624,7 @@ browser.commands.onCommand.addListener(async (command) => {
 
 		// Start/restart the check interval
 		checkSidebarToUnhighlight(isSidebarOpen);
+
+		await updateAllPageActions();
 	}
 });
