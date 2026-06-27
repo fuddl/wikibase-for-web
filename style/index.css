@@ -15,6 +15,7 @@
   --icon-flood: brightness(0) saturate(100%) invert(48%) sepia(2%)
     saturate(1347%) hue-rotate(173deg) brightness(93%) contrast(69%);
   --background: #fff;
+  --layout-inset: 1em;
 }
 
 @media (max-width: 300px) {

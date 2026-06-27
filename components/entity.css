@@ -4,9 +4,8 @@
 
 .entity__head,
 .entity__body {
-	--main-padding: 1em;
 	margin-block: 1em;
-	padding-inline: var(--main-padding, 1em);
+	padding-inline: var(--layout-inset, 1em);
 }
 
 /* Applies for non-mediainfo entities */

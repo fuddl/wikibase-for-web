@@ -1,5 +1,7 @@
 .resolving-progress {
-	padding: 1rem;
+	padding: var(--layout-inset, 1em);
+	min-height: 100vh;
+	box-sizing: border-box;
 }
 
 .resolving-progress__list {
