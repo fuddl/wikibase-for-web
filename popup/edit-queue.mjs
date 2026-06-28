@@ -18,6 +18,11 @@ const ICON = {
     <circle cx="8" cy="8" r="7" fill="var(--color-error)" fill-opacity="0.15"/>
     <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="var(--color-error)" stroke-width="1.5" stroke-linecap="round"/>
   </svg>`,
+
+  skipped: `<svg class="edit-queue__item-status edit-queue__item-status--skipped" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="7" fill="currentColor" fill-opacity="0.15"/>
+    <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
 };
 
 // Human-readable labels for job actions
@@ -79,7 +84,7 @@ function renderQueue(queue) {
   emptyState.classList.add('edit-queue--hidden');
 
   const total = queue.length;
-  const done = queue.filter(q => q.status === 'success').length;
+  const done = queue.filter(q => q.status === 'success' || q.status === 'skipped').length;
   const failed = queue.filter(q => q.status === 'failed').length;
   const processing = queue.find(q => q.status === 'processing');
   const pending = queue.filter(q => q.status === 'pending').length;
@@ -172,7 +177,7 @@ window.addEventListener('unload', () => {
   if (!userIsInteracting) {
     browser.runtime.sendMessage({ type: 'get_edit_queue' }).then(response => {
       if (!response?.queue?.length) return;
-      const allDone = response.queue.every(q => q.status === 'success');
+      const allDone = response.queue.every(q => q.status === 'success' || q.status === 'skipped');
       const hasFailed = response.queue.some(q => q.status === 'failed');
       if (allDone && !hasFailed) {
         browser.runtime.sendMessage({ type: 'clear_completed_edits' });

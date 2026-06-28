@@ -167,6 +167,10 @@ progress::-moz-progress-bar {
   color: var(--color-error);
 }
 
+.edit-queue__item-status--skipped {
+  color: var(--text-muted);
+}
+
 .edit-queue__item-status--pending {
   color: var(--text-muted);
 }

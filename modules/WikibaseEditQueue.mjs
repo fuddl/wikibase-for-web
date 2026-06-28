@@ -53,10 +53,10 @@ export class WikibaseEditQueue {
       });
     }
 
-    this.performEdit(nextJob.job).then(() => {
+    this.performEdit(nextJob.job).then((response) => {
       // Mark job as done and notify progress
       nextJob.done = true;
-      nextJob.status = 'success';
+      nextJob.status = response?.skipped ? 'skipped' : 'success';
       if (this.onProgressUpdate) {
         this.onProgressUpdate({
           queue: this.queue,
@@ -151,7 +151,7 @@ export class WikibaseEditQueue {
         entity: entity,
         jobId: this.jobId,
       })
-      .then(response => {})
+      .then(response => { })
       .catch(error => console.error('Message failed:', error));
   }
 
@@ -199,6 +199,20 @@ export class WikibaseEditQueue {
       }
     }
     if (parsedResponse?.error) {
+      if (
+        parsedResponse.error.code === 'modification-failed' &&
+        parsedResponse.error.info &&
+        (parsedResponse.error.info.includes('already a qualifier with hash') || parsedResponse.error.info.includes('already a reference with hash'))
+      ) {
+        this.logger.info('Edit already exists (modification-failed ignored)', {
+          edit: params,
+          instance: instance,
+          response: parsedResponse,
+        });
+        parsedResponse.skipped = true;
+        return parsedResponse;
+      }
+
       this.logger.error('Edit failed', {
         edit: params,
         instance: instance,
