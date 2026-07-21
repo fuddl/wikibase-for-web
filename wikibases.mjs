@@ -115,6 +115,7 @@ const wikibases = {
 			seriesOrdinal: 'P1545',
 			shortTitle: 'P1813',
 			sourceWebsiteForTheProperty: 'P1896',
+			statedIn: 'P9073',
 			subclassOf: 'P279',
 			subjectNamedAs: 'P1810',
 			subpropertyOf: 'P1647',

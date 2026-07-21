@@ -9,7 +9,7 @@ export const expectedIdsByLanguage = {
 	query: ({ instance, params }) => {
 		return `
 			SELECT DISTINCT ?prop ?search ?url WHERE {
-				SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+				SERVICE wikibase:label { bd:serviceParam wikibase:language "${instance.languages.join(', ')}". }
 
 				?prop p:${instance.props.propertyConstraint} ?cst. 
 				?cst ps:${instance.props.propertyConstraint} wd:${instance.items.lexemeRequiresLanguageConstraint}.

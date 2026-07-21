@@ -20,7 +20,7 @@ export const parentGeoRegions = {
             ?parent t:${instance.props.coordinatesOfEasternmostPoint} ?eastPoint. 
             ?parent t:${instance.props.coordinatesOfNorthernmostPoint} ?northPoint. 
             
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "${instance.languages.join(', ')}". }
             }
   `;
     },

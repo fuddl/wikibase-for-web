@@ -12,13 +12,20 @@ class Haste extends Component {
     requireStylesheet(browser.runtime.getURL('/components/haste.css'));
   }
 
+
   render({ claims, manager }) {
     return html`<ul class="haste">
       ${claims &&
       claims.map(
         claim =>
           html`<li class="haste__item" key=${claim[0].id}>
-            <img class="haste__icon" src=${claim[0].icon[0]} loading="lazy" />
+            <img
+              class="haste__icon"
+              src=${claim[0].icon[0].icon}
+              alt=${claim[0].icon[0].title}
+              title=${claim[0].icon[0].title}
+              loading="lazy"
+            />
             <div class="haste__links">
               ${claim.map(
                 object =>
