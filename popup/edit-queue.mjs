@@ -28,20 +28,9 @@ const ICON = {
 // Human-readable labels for job actions
 function jobLabel(job) {
   const action = job?.action ?? '';
-  const map = {
-    'claim:create':     'Add claim',
-    'qualifier:set':    'Set qualifier',
-    'reference:set':    'Set reference',
-    'sitelink:set':     'Set sitelink',
-    'labels:add':       'Add label',
-    'lemma:set':        'Set lemma',
-    'lemma:edit':       'Edit lemma',
-    'lemma:remove':     'Remove lemma',
-    'description:set':  'Set description',
-    'entity:create':    'Create entity',
-    'resolver:add':     'Add URL match',
-  };
-  return map[action] ?? action;
+  const key = 'edit_queue_job_' + action.replace(':', '_');
+  const msg = browser.i18n.getMessage(key);
+  return msg || action;
 }
 
 // Job meta info (entity/property details)
@@ -62,6 +51,12 @@ document.addEventListener('mouseover', () => { userIsInteracting = true; });
 document.addEventListener('mouseout', () => { userIsInteracting = false; });
 document.addEventListener('focusin', () => { userIsInteracting = true; });
 document.addEventListener('focusout', () => { userIsInteracting = false; });
+
+// Localize static UI elements
+document.title = browser.i18n.getMessage("edit_queue_empty_title") || "Edit Queue";
+document.getElementById('popup-title').textContent = browser.i18n.getMessage("edit_queue_empty_title") || "Edit Queue";
+document.querySelector('#empty-state span').textContent = browser.i18n.getMessage("edit_queue_empty_desc") || "No pending edits";
+document.getElementById('clear-btn').textContent = browser.i18n.getMessage("edit_queue_clear") || "Clear completed";
 
 // Render the queue into the DOM
 function renderQueue(queue) {
@@ -96,11 +91,11 @@ function renderQueue(queue) {
 
   // Status text
   if (failed > 0 && pending === 0 && !processing) {
-    statusEl.textContent = `${done} of ${total} done · ${failed} failed`;
+    statusEl.textContent = browser.i18n.getMessage("edit_queue_status_partial_failed", [done, total, failed]);
   } else if (done === total) {
-    statusEl.textContent = `All ${total} edits complete`;
+    statusEl.textContent = browser.i18n.getMessage("edit_queue_status_all_complete", [total]);
   } else {
-    statusEl.textContent = `${done} of ${total} done`;
+    statusEl.textContent = browser.i18n.getMessage("edit_queue_status_partial", [done, total]);
   }
 
   // Show clear button when there are successes
@@ -125,7 +120,7 @@ function renderQueue(queue) {
     }
 
     const retryBtn = status === 'failed'
-      ? `<div class="edit-queue__item-actions"><button class="edit-queue__button edit-queue__button--danger edit-queue__button--retry" data-index="${index}">Retry</button></div>`
+      ? `<div class="edit-queue__item-actions"><button class="edit-queue__button edit-queue__button--danger edit-queue__button--retry" data-index="${index}">${browser.i18n.getMessage("edit_queue_retry")}</button></div>`
       : '';
 
     const errorMsg = error
@@ -156,7 +151,7 @@ document.getElementById('job-list').addEventListener('click', async (e) => {
   if (!btn) return;
   const index = parseInt(btn.dataset.index, 10);
   btn.disabled = true;
-  btn.textContent = 'Retrying…';
+  btn.textContent = browser.i18n.getMessage("edit_queue_retrying");
   await browser.runtime.sendMessage({ type: 'retry_job', index });
 });
 

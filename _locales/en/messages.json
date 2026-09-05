@@ -626,5 +626,86 @@
   "lemma": {
     "message": "Lemma",
     "description": "Indicates that a form is equal to a lemma."
+  },
+  "edit_queue_job_claim_create": {
+    "message": "Add claim"
+  },
+  "edit_queue_job_qualifier_set": {
+    "message": "Set qualifier"
+  },
+  "edit_queue_job_reference_set": {
+    "message": "Set reference"
+  },
+  "edit_queue_job_sitelink_set": {
+    "message": "Set sitelink"
+  },
+  "edit_queue_job_labels_add": {
+    "message": "Add label"
+  },
+  "edit_queue_job_lemma_set": {
+    "message": "Set lemma"
+  },
+  "edit_queue_job_lemma_edit": {
+    "message": "Edit lemma"
+  },
+  "edit_queue_job_lemma_remove": {
+    "message": "Remove lemma"
+  },
+  "edit_queue_job_description_set": {
+    "message": "Set description"
+  },
+  "edit_queue_job_entity_create": {
+    "message": "Create entity"
+  },
+  "edit_queue_job_resolver_add": {
+    "message": "Add URL match"
+  },
+  "edit_queue_status_partial_failed": {
+    "message": "$DONE$ of $TOTAL$ done · $FAILED$ failed",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      },
+      "failed": {
+        "content": "$3"
+      }
+    }
+  },
+  "edit_queue_status_all_complete": {
+    "message": "All $TOTAL$ edits complete",
+    "placeholders": {
+      "total": {
+        "content": "$1"
+      }
+    }
+  },
+  "edit_queue_status_partial": {
+    "message": "$DONE$ of $TOTAL$ done",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "edit_queue_retry": {
+    "message": "Retry"
+  },
+  "edit_queue_retrying": {
+    "message": "Retrying…"
+  },
+  "edit_queue_clear": {
+    "message": "Clear completed"
+  },
+  "edit_queue_empty_title": {
+    "message": "Edit Queue"
+  },
+  "edit_queue_empty_desc": {
+    "message": "No edits in progress."
   }
 }

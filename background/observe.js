@@ -507,7 +507,7 @@ browser.webRequest.onCompleted.addListener(function (details) {
 		pendingEdits.delete(details.requestId);
 
 		if (!editedEntity) {
-			const match = details.originUrl
+			const match = (details.originUrl || details.initiator || details.url || '')
 				.replace(wbk.instance, '')
 				.match(/([QPLM]\d+)/);
 			if (match) {
@@ -516,6 +516,11 @@ browser.webRequest.onCompleted.addListener(function (details) {
 		}
 
 		if (editedEntity) {
+			const finalMatch = String(editedEntity).match(/([QPLM]\d+)/);
+			if (finalMatch) {
+				editedEntity = finalMatch[0];
+			}
+
 			browser.runtime
 				.sendMessage({
 					type: 'update_entity',
