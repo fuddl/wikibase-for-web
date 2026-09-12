@@ -4,11 +4,25 @@ import { requireStylesheet } from '../../modules/requireStylesheet.mjs';
 import { organiseView } from './organise-view.js';
 import Main from '../components/Main.mjs';
 import WikiBaseEntityManager from '../modules/WikiBaseEntityManager.mjs';
+import { DesignatorRefresher } from '../modules/DesignatorRefresher.mjs';
 
 const html = htm.bind(h);
 const manager = new WikiBaseEntityManager({
 	languages: navigator.languages.map(lang => lang.toLowerCase()),
 });
+
+// Start the idle refresher — it will silently update stale cached designators
+// during quiet periods without interfering with user-triggered requests.
+const designatorRefresher = new DesignatorRefresher(manager);
+designatorRefresher.start();
+
+// Notify the refresher whenever the manager fetches a designator so it can
+// back off during active usage.
+const _origFetchDesignators = manager.fetchDesignators.bind(manager);
+manager.fetchDesignators = async function (id) {
+	designatorRefresher.notifyActivity();
+	return _origFetchDesignators(id);
+};
 
 if (manager.languages[0]) {
 	document.documentElement.lang = navigator.language;

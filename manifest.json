@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Wikidata",
-  "version": "0.722",
+  "version": "0.724",
   "default_locale": "en",
   "description": "Display information from wikidata.",
   "icons": {
@@ -39,9 +39,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
+      "matches": ["<all_urls>"],
       "run_at": "document_end",
       "js": [
         "content/url-reference.js",
@@ -52,19 +50,13 @@
       ]
     },
     {
-      "matches": [
-        "https://www.openstreetmap.org/export/embed.html*"
-      ],
+      "matches": ["https://www.openstreetmap.org/export/embed.html*"],
       "run_at": "document_end",
-      "js": [
-        "content/openstreetmap-compact.js"
-      ],
+      "js": ["content/openstreetmap-compact.js"],
       "all_frames": true
     }
   ],
-  "web_accessible_resources": [
-    "/content/element-highlighter.css"
-  ],
+  "web_accessible_resources": ["/content/element-highlighter.css"],
   "browser_specific_settings": {
     "gecko": {
       "id": "{8b348118-df28-4d6b-aa90-4e90049c7f19}",

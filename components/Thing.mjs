@@ -11,28 +11,31 @@ const html = htm.bind(h);
 
 class Thing extends Component {
   render({ id, manager, onDescriptorAquired }) {
+    // Initialise from whatever the manager already knows (in-memory cache,
+    // which is pre-seeded from localStorage at startup).
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const elementRef = useRef(null);
 
     const href = manager.urlFromId(id);
 
     useEffect(() => {
-      const setUpObserver = () => {
-        const observer = new IntersectionObserver(async entries => {
-          if (entries[0].isIntersecting) {
-            const newDesignators = await manager.fetchDesignators(id);
-            setDesignator(newDesignators);
-          }
-        });
+      // If we already have a designator (from cache), skip the observer —
+      // the idle refresher will take care of keeping it up to date.
+      if (designator) return;
 
-        if (elementRef.current) {
-          observer.observe(elementRef.current);
+      const observer = new IntersectionObserver(async entries => {
+        if (entries[0].isIntersecting) {
+          const newDesignators = await manager.fetchDesignators(id);
+          setDesignator(newDesignators);
+          observer.disconnect();
         }
+      });
 
-        return () => observer.disconnect();
-      };
+      if (elementRef.current) {
+        observer.observe(elementRef.current);
+      }
 
-      return setUpObserver();
+      return () => observer.disconnect();
     }, [id, manager]);
 
     let label = designator ? getByUserLanguage(designator.labels) : '';

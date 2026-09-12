@@ -13,6 +13,9 @@ const html = htm.bind(h);
 class Thin extends Component {
   render({ id, manager, unit = false }) {
     const query = unit ? 'unitSymbol' : 'shortTitle';
+
+    // Initialise from whatever the manager already knows (in-memory cache,
+    // which is pre-seeded from localStorage at startup).
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const [short, setShort] = useState({});
     const elementRef = useRef(null);
@@ -20,17 +23,37 @@ class Thin extends Component {
     const href = manager.urlFromId(id);
 
     useEffect(() => {
+      // If we already have a designator (from cache), skip the observer for
+      // the label/description fetch.  The short-title SPARQL query is always
+      // fetched on intersection because it is not cached.
+      if (designator) return;
+
       const observer = new IntersectionObserver(async entries => {
         if (entries[0].isIntersecting) {
           const newDesignators = await manager.fetchDesignators(id);
           setDesignator(newDesignators);
-          if (newDesignators) {
-            const [wikibase, localId] = id.split(':');
-            const newShort = await manager.query(wikibase, query, {
-              subject: localId,
-            });
-            setShort(getByUserLanguage(newShort));
-          }
+          observer.disconnect();
+        }
+      });
+
+      if (elementRef.current) {
+        observer.observe(elementRef.current);
+      }
+
+      return () => observer.disconnect();
+    }, [id, manager]);
+
+    // The short-title / unit symbol is fetched lazily via a second observer,
+    // independently of whether the designator was cached.
+    useEffect(() => {
+      const observer = new IntersectionObserver(async entries => {
+        if (entries[0].isIntersecting) {
+          const [wikibase, localId] = id.split(':');
+          const newShort = await manager.query(wikibase, query, {
+            subject: localId,
+          });
+          setShort(getByUserLanguage(newShort));
+          observer.disconnect();
         }
       });
 

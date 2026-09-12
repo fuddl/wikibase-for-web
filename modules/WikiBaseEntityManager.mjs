@@ -2,6 +2,7 @@ import wikibases from '../wikibases.mjs';
 import WikiBaseQueryManager from '../queries/index.mjs';
 import { fetchJSON } from './fetch.mjs';
 import NavigationManager from './NavigationManager.mjs';
+import { DesignatorCache } from './DesignatorCache.mjs';
 
 class WikiBaseEntityManager {
 	constructor(params) {
@@ -11,6 +12,16 @@ class WikiBaseEntityManager {
 		this.datatypes = {};
 		this.languages = params.languages;
 		this.queryManager = new WikiBaseQueryManager();
+
+		// Long-term designator cache (localStorage-backed)
+		this.designatorCache = new DesignatorCache();
+
+		// Pre-populate in-memory designators from the persistent cache so that
+		// Thing / Thin components can render labels immediately on first paint.
+		this.designatorCache._load();
+		if (this.designatorCache._cache) {
+			Object.assign(this.designators, this.designatorCache._cache);
+		}
 
 		for (const wikibase in this.wikibases) {
 			this.wikibases[wikibase].manager = this;
@@ -342,9 +353,29 @@ class WikiBaseEntityManager {
 	}
 
 	async fetchDesignators(id) {
+		// 1. Already resolved in-memory (covers both session fetches and
+		//    entries pre-loaded from the persistent cache at startup).
 		if (id in this.designators) {
 			return this.designators[id];
 		}
+
+		// 2. Found in the persistent cache — serve it immediately, no network.
+		const persisted = this.designatorCache.get(id);
+		if (persisted) {
+			this.designators[id] = persisted;
+			return persisted;
+		}
+
+		// 3. Unknown — fetch from the API, then persist for future sessions.
+		return await this._fetchAndCacheDesignator(id);
+	}
+
+	/**
+	 * Force-fetch a designator from the API (ignoring in-memory cache) and
+	 * update both the in-memory store and the persistent cache.
+	 * Used internally by fetchDesignators and externally by DesignatorRefresher.
+	 */
+	async _fetchAndCacheDesignator(id) {
 		const [wikibase, entity] = id.split(':');
 		const url = this.wikibases[wikibase].api.getEntities({
 			ids: [entity],
@@ -355,11 +386,20 @@ class WikiBaseEntityManager {
 		const result = await fetchJSON(url);
 
 		this.designators[id] = result.entities[entity];
+		this.designatorCache.set(id, result.entities[entity]);
 
 		return await this.entityAddContext({
 			entity: this.designators[id],
 			wikibase: wikibase,
 		});
+	}
+
+	/**
+	 * Refresh a batch of designators from the API unconditionally.
+	 * Called by DesignatorRefresher during idle periods.
+	 */
+	async refreshDesignators(ids) {
+		await Promise.all(ids.map(id => this._fetchAndCacheDesignator(id)));
 	}
 	async query(wikibase, queryId, params) {
 		const queryObject = this.queryManager.queries[queryId];
