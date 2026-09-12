@@ -81,6 +81,7 @@ const submit = async (e) => {
     if (data.subjectId !== "CREATE") {
       browser.runtime.sendMessage({
         type: "resolved",
+        priority: "low",
         candidates: [
           {
             instance: data.instance,

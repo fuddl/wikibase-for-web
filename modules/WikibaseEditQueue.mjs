@@ -15,10 +15,24 @@ export class WikibaseEditQueue {
     this.logger = new Logger();
   }
 
+  // Jobs that are synchronous and should be executed immediately, bypassing the queue
+  static SYNC_ACTIONS = new Set(['resolver:add']);
+
   // Add multiple jobs at once
   addJobs(jobs, jobId) {
     this.jobId = jobId;
-    jobs.forEach(job => {
+    const asyncJobs = [];
+    for (const job of jobs) {
+      if (WikibaseEditQueue.SYNC_ACTIONS.has(job.action)) {
+        // Execute synchronous jobs immediately without queuing
+        this.performEdit(job).catch(error => {
+          this.logger.error('Sync job failed', { job, error });
+        });
+      } else {
+        asyncJobs.push(job);
+      }
+    }
+    asyncJobs.forEach(job => {
       this.queue.push({ job, done: false, status: 'pending' });
     });
     this.processQueue(); // Start processing if not already doing so

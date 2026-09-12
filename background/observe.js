@@ -133,12 +133,13 @@ async function isTabStillValidForUpdate(tabId, originalUrl) {
 	return isStillActive && noNavigation;
 }
 
-async function updateSidebar(resolved) {
+async function updateSidebar(resolved, priority = 'high') {
 	if (!isSidebarOpen) return;
 
 	await browser.runtime.sendMessage({
 		type: 'resolved',
 		candidates: resolved,
+		priority,
 	});
 }
 
@@ -525,6 +526,7 @@ browser.webRequest.onCompleted.addListener(function (details) {
 				.sendMessage({
 					type: 'update_entity',
 					entity: `${wbk.id}:${editedEntity}`,
+					priority: 'low',
 				})
 				.then(response => { })
 				.catch(error => console.error('Message failed:', error));

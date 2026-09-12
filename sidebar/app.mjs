@@ -40,6 +40,7 @@ class Sidebar extends Component {
 			workbench: null,
 			resolvingProgress: null,
 			ignoredResolvers: [],
+			displayPriority: 'high',
 		};
 		requireStylesheet(
 			browser.runtime.getURL('/node_modules/normalize.css/normalize.css'),
@@ -125,16 +126,31 @@ class Sidebar extends Component {
 			});
 			return Promise.resolve('done');
 		} else if (message.type === 'resolved') {
+			const incomingPriority = message.priority ?? 'high';
+
+			// Determine the best-match entity id from candidates without fully resolving yet
+			const organised = await organiseView(message, manager);
+			const incomingEntityId = organised?.bestMatches?.[0]?.id ?? null;
+
+			// Priority gate: a low-priority update for a *different* entity is dropped
+			// when the sidebar was last populated by a high-priority source.
+			const isSameEntity = incomingEntityId && this.state.entity?.id === incomingEntityId;
+			if (
+				incomingPriority === 'low' &&
+				this.state.displayPriority === 'high' &&
+				!isSameEntity
+			) {
+				return Promise.resolve('done');
+			}
+
 			let viewId = Date.now();
 			this.setState({
 				viewId: viewId,
 				resolvingProgress: null,
 			});
 
-			const organised = await organiseView(message, manager);
-
-			const currentEntity = organised?.bestMatches?.[0]?.id
-				? await manager.add(organised.bestMatches[0].id)
+			const currentEntity = incomingEntityId
+				? await manager.add(incomingEntityId)
 				: null;
 			this.setState({
 				suggestions:
@@ -143,12 +159,21 @@ class Sidebar extends Component {
 				selectable:
 					organised.bestMatches.length > 1 ? organised.bestMatches : null,
 				otherEntities: organised.otherMatches,
+				displayPriority: incomingPriority,
 			});
 			scrollToTopInstantly();
 			return Promise.resolve('done');
 		} else if (message.type === 'update_entity') {
 			const updatedIsCurrent = this.state.entity?.id === message.entity;
 			const isCurrentJob = message?.jobId == this.state.viewId;
+			const incomingPriority = message.priority ?? 'high';
+
+			// Don't replace a high-priority navigation view with a different entity
+			// if this update carries a lower priority
+			const wouldChangeEntity = !updatedIsCurrent;
+			if (wouldChangeEntity && incomingPriority === 'low' && this.state.displayPriority === 'high') {
+				return Promise.resolve('done');
+			}
 
 			const shouldUpdate = isCurrentJob || updatedIsCurrent;
 
