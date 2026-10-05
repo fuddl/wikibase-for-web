@@ -84,7 +84,10 @@ export class DesignatorCache {
 
 		this._cache[id] = {
 			labels: entity.labels ?? {},
+			lemmas: entity.lemmas ?? {},
+			representations: entity.representations ?? {},
 			descriptions: entity.descriptions ?? {},
+			glosses: entity.glosses ?? {},
 			cachedAt: Date.now(),
 		};
 

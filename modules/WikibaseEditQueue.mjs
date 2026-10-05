@@ -18,13 +18,23 @@ export class WikibaseEditQueue {
   // Jobs that are synchronous and should be executed immediately, bypassing the queue
   static SYNC_ACTIONS = new Set(['resolver:add']);
 
+  // Returns true if a job references LAST for entity or statement.
+  // Such jobs must always go through the queue so FIFO ordering correctly
+  // resolves LAST relative to the preceding job in the same batch.
+  usesLast(job) {
+    return job.entity === 'LAST' || job.statement === 'LAST';
+  }
+
   // Add multiple jobs at once
   addJobs(jobs, jobId) {
     this.jobId = jobId;
     const asyncJobs = [];
     for (const job of jobs) {
-      if (WikibaseEditQueue.SYNC_ACTIONS.has(job.action)) {
-        // Execute synchronous jobs immediately without queuing
+      if (WikibaseEditQueue.SYNC_ACTIONS.has(job.action) && !this.usesLast(job)) {
+        // Execute synchronous jobs immediately without queuing, only when
+        // no LAST reference is involved. Jobs using LAST must be queued so
+        // that FIFO ordering resolves LAST against the correct preceding job,
+        // even if lastEntity/lastClaim happens to be set from a prior batch.
         this.performEdit(job).catch(error => {
           this.logger.error('Sync job failed', { job, error });
         });

@@ -52,8 +52,6 @@ class WikiBaseEntityManager {
 		}
 	}
 
-
-
 	async getUsername(wikibase) {
 		try {
 			const endPoint = this.wikibases[wikibase].api.instance.apiEndpoint;
@@ -105,7 +103,12 @@ class WikiBaseEntityManager {
 				return [];
 			}
 
-			const babelInfo = data.query.babel;
+			if (!data || typeof data !== 'object' || Array.isArray(data)) {
+				console.warn('Unexpected Babel response:', data);
+				return [];
+			}
+
+			const babelInfo = data?.query?.babel;
 			if (!babelInfo) {
 				return [];
 			}
@@ -200,7 +203,8 @@ class WikiBaseEntityManager {
 		return this.entities[id];
 	}
 	idAddNamespace(id, wikibase) {
-		const entitySource = this.wikibases?.[wikibase]?.entitySources?.[id.charAt(0)];
+		const entitySource =
+			this.wikibases?.[wikibase]?.entitySources?.[id.charAt(0)];
 		if (entitySource) {
 			return `${entitySource}:${id}`;
 		}
@@ -284,18 +288,21 @@ class WikiBaseEntityManager {
 				if (!entity[type]) {
 					return;
 				}
-				Object.entries(entity[type]).forEach(([prop, values]) =>{
+				Object.entries(entity[type]).forEach(([prop, values]) => {
 					if (props.includes(prop)) {
-						console.debug(wiki)
+						console.debug(wiki);
 						values.forEach(value => {
 							if (value.mainsnak?.datavalue?.value) {
-								this.externalIdAddInterWikiContext(value.mainsnak.datavalue, wiki)
+								this.externalIdAddInterWikiContext(
+									value.mainsnak.datavalue,
+									wiki,
+								);
 							}
-						})
+						});
 					}
-				})
-			})
-		})
+				});
+			});
+		});
 	}
 
 	async fetchLanguages(wikibase, context) {

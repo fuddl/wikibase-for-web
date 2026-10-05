@@ -10,12 +10,15 @@ import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 
 const html = htm.bind(h);
 
-class Thin extends Component {
+class InnerThin extends Component {
   render({ id, manager, unit = false }) {
     const query = unit ? 'unitSymbol' : 'shortTitle';
 
     // Initialise from whatever the manager already knows (in-memory cache,
     // which is pre-seeded from localStorage at startup).
+    // Because the parent wrapper sets key={id}, this component is completely
+    // re-mounted when the id changes, meaning this initialiser will run again
+    // for the new id, so we don't need a manual state reset inside a useEffect.
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const [short, setShort] = useState({});
     const elementRef = useRef(null);
@@ -82,4 +85,5 @@ class Thin extends Component {
   }
 }
 
+const Thin = (props) => h(InnerThin, { key: props.id, ...props });
 export default Thin;

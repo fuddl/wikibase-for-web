@@ -9,10 +9,13 @@ import { getByUserLanguage } from '../modules/getByUserLanguage.mjs';
 
 const html = htm.bind(h);
 
-class Thing extends Component {
+class InnerThing extends Component {
   render({ id, manager, onDescriptorAquired }) {
     // Initialise from whatever the manager already knows (in-memory cache,
     // which is pre-seeded from localStorage at startup).
+    // Because the parent wrapper sets key={id}, this component is completely
+    // re-mounted when the id changes, meaning this initialiser will run again
+    // for the new id, so we don't need a manual state reset inside a useEffect.
     const [designator, setDesignator] = useState(manager?.designators?.[id]);
     const elementRef = useRef(null);
 
@@ -58,4 +61,5 @@ class Thing extends Component {
   }
 }
 
+const Thing = (props) => h(InnerThing, { key: props.id, ...props });
 export default Thing;

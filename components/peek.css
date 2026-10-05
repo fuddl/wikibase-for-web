@@ -1,5 +1,5 @@
 .peek {
-	position: fixed;
+	position: sticky;
 	inset: auto 0 0 0;
 	width: 100vw;
 	border: none;

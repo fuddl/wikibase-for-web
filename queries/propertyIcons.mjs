@@ -10,11 +10,15 @@ export const propertyIcons = {
         ?prop t:${instance.props.formatterURL} ?formatterUrl.
         ${'' /*FILTER(STRENDS(?formatterUrl, "$1")). */}
         FILTER(STRENDS(STR(?icon), ".svg")).
-        ${'statedIn' in instance.props ? `
+        ${
+          'statedIn' in instance.props
+            ? `
           OPTIONAL {
             ?prop t:${instance.props.statedIn} ?statedIn.
           }
-        ` : ''}
+        `
+            : ''
+        }
       }
   `;
   },
@@ -27,7 +31,6 @@ export const propertyIcons = {
       if (!(key in processed)) {
         processed[key] = [];
       }
-      console.debug(result)
       processed[key].push({
         icon: result.icon.value,
         title: result?.statedInLabel?.value ?? '',
