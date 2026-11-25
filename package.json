@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "user-tests": "./node_modules/http-server/bin/http-server ./user-tests",
-    "setup": "git clone git@github.com:fuddl/isbn3-es6.git importmap/isbn3-es6 && git clone git@github.com:fuddl/ucsur-sitelen-pona.git importmap/ucsur-sitelen-pona && node prepare-importmap.js",
+    "user-tests": "http-server ./user-tests",
+    "setup": "git clone https://github.com/fuddl/isbn3-es6.git importmap/isbn3-es6 && git clone https://github.com/fuddl/ucsur-sitelen-pona.git importmap/ucsur-sitelen-pona && node prepare-importmap.js",
     "check-translations": "node check-translations.js"
   },
   "author": "",

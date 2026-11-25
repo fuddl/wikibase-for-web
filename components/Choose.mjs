@@ -172,7 +172,7 @@ const Choose = ({
 	}, []);
 
 	useEffect(() => {
-		setInputValue(label);
+		setInputValue(label ?? '');
 	}, [label]);
 
 	useEffect(() => {
@@ -256,7 +256,7 @@ const Choose = ({
 		};
 
 		if (shouldFetch && (isFocused || (!requireFocusForSuggestions && !isFocused))) {
-			if (inputValue !== '') {
+			if (inputValue?.trim()) {
 				const debounce = setTimeout(() => {
 					fetchSuggestions(getFallbackSuggestions);
 				}, 100);
@@ -370,7 +370,7 @@ const Choose = ({
 							class=${`choose__picker__pick ${index === selectedIndex ? 'choose__picker__pick--active' : ''} ${suggestion?.suggested ? 'choose__picker__pick--suggested' : ''}`}
 							onMouseUp=${() => {
 								setShouldFetch(false);
-								setInputValue(suggestion.label);
+								setInputValue(suggestion.label ?? '');
 								setSuggestions([]);
 								setChoosenId(suggestion.id);
 								setSelectedIndex(-1);

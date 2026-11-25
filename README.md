@@ -46,7 +46,7 @@ For development follow these steps:
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) and npm
-- [web-ext](https://github.com/mozilla/web-ext) (for testing)
+- [web-ext](https://github.com/mozilla/web-ext) (for testing; `npx` can download it when needed)
 
 ### Setup
 
@@ -61,7 +61,7 @@ For development follow these steps:
    npm install
    ```
 
-3. Run setup script to clone required repositories:
+3. Run setup script to clone the required public repositories over HTTPS (no GitHub SSH key is required):
    ```
    npm run setup
    ```
@@ -77,8 +77,17 @@ For development follow these steps:
 
 2. Run the extension in Firefox:
    ```
-   web-ext run --start-url http://127.0.0.1:8080/book_meta_tags.html --browser-console
+   npx web-ext run --start-url http://127.0.0.1:8080/book_meta_tags.html --browser-console
    ```
+
+### Testing in regular Firefox
+
+1. Start the local test server with `npm run user-tests`.
+2. In Firefox, open `about:debugging#/runtime/this-firefox`.
+3. Select **Load Temporary Add-on…** and choose the project's [`manifest.json`](./manifest.json).
+4. Open `http://127.0.0.1:8080/book_meta_tags.html` in a tab.
+
+The add-on remains loaded until Firefox closes. Load it again from `about:debugging` after restarting Firefox.
 
 ## Development
 
